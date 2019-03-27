@@ -1,23 +1,25 @@
 import React, {Component} from "react";
 import LoginForm from '../Login/LoginForm';
 import {BrowserRouter as Router, Switch, Route, Link} from 'react-router-dom';
-import './App.scss';
-import {history} from '../../redux/services/history';
 import {PrivateRoute} from "../privateRoute";
+
+import './App.scss';
+
+import {history} from '../../redux/services/history';
 import {tokenService} from "../../redux/services/token";
 import {setUser, logoutRequest} from "../../redux/actions/index";
 import {connect} from "react-redux";
 
 import DashboardComponent from '../../components/Dashboard/DashboardComponent';
+
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
-
 import {MuiThemeProvider, createMuiTheme} from '@material-ui/core/styles';
 import red from '@material-ui/core/colors/red';
-import {SnackbarProvider} from "notistack";
 import {PopupComponent} from "../material/PopupComponent/PopupComponent";
+import {SnackbarProvider} from "notistack";
 
 const theme = createMuiTheme({
   palette: {

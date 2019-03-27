@@ -1,10 +1,12 @@
 import React from 'react';
 import {connect} from 'react-redux';
-import {loginRequest, changePassRequest} from "../../redux/actions/index";
-import {history} from '../../redux/services/history';
 import store from '../../redux/store/index'
-import TextField from '@material-ui/core/TextField';
+import {history} from '../../redux/services/history';
+import {loginRequest, changePassRequest} from "../../redux/actions/index";
+
 import './login.scss';
+
+import TextField from '@material-ui/core/TextField';
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
 import CardContent from '@material-ui/core/CardContent';
@@ -27,8 +29,6 @@ class LoginPage extends React.Component {
         this.state = {
             email: '',
             password: '',
-            newPassword: '',
-            login: true,
             loading: false
         };
 
@@ -65,14 +65,8 @@ class LoginPage extends React.Component {
         this.props.changePassRequest({email, password, newPassword});
     }
 
-    switchView(){
-        const {login} = this.state;
-        this.setState({login: !login});
-    }
-
     render() {
-        const {email, password, newPassword, login, loading} = this.state;
-        const passPattern = /^(((?=.*[a-z])(?=.*[A-Z]))|((?=.*[a-z])(?=.*[0-9]))|((?=.*[A-Z])(?=.*[0-9])))(?=.{6,})/;
+        const {email, password, loading} = this.state;
         return (
             <div>
                 <div id='loginContainer'>
