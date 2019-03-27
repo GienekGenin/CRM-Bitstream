@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import LoginForm from '../login/LoginForm';
+import LoginForm from '../Login/LoginForm';
 import {BrowserRouter as Router, Switch, Route, Link} from 'react-router-dom';
 import './App.scss';
 import {history} from '../../redux/services/history';
@@ -16,6 +16,8 @@ import Button from '@material-ui/core/Button';
 
 import {MuiThemeProvider, createMuiTheme} from '@material-ui/core/styles';
 import red from '@material-ui/core/colors/red';
+import {SnackbarProvider} from "notistack";
+import {PopupComponent} from "../material/PopupComponent/PopupComponent";
 
 const theme = createMuiTheme({
   palette: {
@@ -59,7 +61,6 @@ class AppComponent extends Component {
       const user = JSON.parse(localStorage.getItem('user')).user;
       this.props.setUser(user);
     }
-    console.log('https://onedrive.live.com/edit.aspx?cid=278eacdab8a1cb85&page=view&resid=278eacdab8a1cb85!1667&parId=278eacdab8a1cb85!105&app=PowerPoint')
   }
 
   render() {
@@ -89,6 +90,9 @@ class AppComponent extends Component {
                   <PrivateRoute exact path='/dash' component={DashboardComponent}/>
                   <Route exact path='/login' component={LoginForm}/>
                 </Switch>
+                <SnackbarProvider maxSnack={5}>
+                  <PopupComponent />
+                </SnackbarProvider>
               </div>
             </MuiThemeProvider>
           </Router>)
@@ -113,6 +117,9 @@ class AppComponent extends Component {
                 <PrivateRoute exact path='/dash' component={DashboardComponent}/>
                 <Route exact path='/login' component={LoginForm}/>
               </Switch>
+              <SnackbarProvider maxSnack={5}>
+                <PopupComponent />
+              </SnackbarProvider>
             </div>
           </MuiThemeProvider>
         </Router>
