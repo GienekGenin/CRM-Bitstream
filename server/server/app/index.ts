@@ -3,10 +3,15 @@ import * as cors from 'cors';
 import * as logger from 'morgan';
 import * as bodyParser from 'body-parser';
 import {initializeAPIRoutes} from './routes';
-
+import {
+	successOrEmptyPayload,
+	errorPayload
+} from './common/middleware/payload.middleware';
 import {dbConnectionService} from '../db/connect';
 
 export const app = express();
+
+
 
 dbConnectionService.connect();
 
@@ -18,6 +23,12 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.text());
 
 initializeAPIRoutes(app);
+
+// pre-sending middleware
+app.use(successOrEmptyPayload);
+
+// error handler
+app.use(errorPayload);
 
 app.get('/', (req, res) => {
 	res.send('Hello World');
