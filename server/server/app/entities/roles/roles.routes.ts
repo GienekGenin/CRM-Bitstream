@@ -1,14 +1,18 @@
 export const roles = require('express').Router();
 import {rolesService} from './roles.service';
+import {PayloadGeneratorService} from '../../common/services/payload-generator.service';
+import {TokenValidator} from '../../common/middleware/request-validation/token.validator';
 
-roles.get('/', (req, res, next) => {
-	rolesService.getAll()
-		.then(d=>res.json(d))
-		.catch(e=>console.log(e));
+roles.get('/', TokenValidator.validateToken, (req, res, next) => {
+    rolesService
+        .getAll()
+        .then(PayloadGeneratorService.nextWithData(next, res))
+        .catch(next);
 });
 
-roles.get('/:id', (req, res, next) => {
-	rolesService.findById(req.params.id)
-		.then(d=>res.json(d))
-		.catch(e=>console.log(e));
+roles.get('/:id', TokenValidator.validateToken, (req, res, next) => {
+    rolesService
+        .findById(req.params.id)
+        .then(PayloadGeneratorService.nextWithData(next, res))
+        .catch(next);
 });

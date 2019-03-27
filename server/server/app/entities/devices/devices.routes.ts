@@ -1,20 +1,22 @@
 export const devices = require('express').Router();
 import {deviceService} from './devices.service';
+import {PayloadGeneratorService} from '../../common/services/payload-generator.service';
+import {TokenValidator} from '../../common/middleware/request-validation/token.validator';
 
-devices.get('/', (req, res, next) => {
-	deviceService.getAll()
-		.then(d=>res.json(d))
-		.catch(e=>console.log(e));
+devices.get('/', TokenValidator.validateToken, (req, res, next) => {
+    deviceService.getAll()
+        .then(PayloadGeneratorService.nextWithData(next, res))
+        .catch(next);
 });
 
-devices.get('/:id', (req, res, next) => {
-	deviceService.findById(req.params.id)
-		.then(d=>res.json(d))
-		.catch(e=>console.log(e));
+devices.get('/:id', TokenValidator.validateToken, (req, res, next) => {
+    deviceService.findById(req.params.id)
+        .then(PayloadGeneratorService.nextWithData(next, res))
+        .catch(next);
 });
 
-devices.post('/', (req, res, next) => {
-	deviceService.save(req.body)
-		.then(d=>res.json(d))
-		.catch(e=>console.log(e));
+devices.post('/', TokenValidator.validateToken, (req, res, next) => {
+    deviceService.save(req.body)
+        .then(PayloadGeneratorService.nextWithData(next, res))
+        .catch(next);
 });
