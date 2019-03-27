@@ -8,7 +8,7 @@ roles.get('/', (req, res, next) => {
 });
 
 roles.get('/:id', (req, res, next) => {
-	rolesService.getById(req.params.id)
+	rolesService.findById(req.params.id)
 		.then(d=>res.json(d))
 		.catch(e=>console.log(e));
 });

@@ -1,4 +1,5 @@
 import {FirmRepository} from './firm.repository';
+import {Types} from 'mongoose';
 
 class FirmService {
 	private firmRepository: FirmRepository;
@@ -11,8 +12,8 @@ class FirmService {
 		return this.firmRepository.getAll();
 	}
 
-	getById(id) {
-		return this.firmRepository.getById(id);
+	findById(id: Types.ObjectId) {
+		return this.firmRepository.findById(id);
 	}
 
 	save(firm) {

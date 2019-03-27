@@ -8,7 +8,7 @@ firms.get('/', (req, res, next) => {
 });
 
 firms.get('/:id', (req, res, next) => {
-	firmService.getById(req.params.id)
+	firmService.findById(req.params.id)
 		.then(d=>res.json(d))
 		.catch(e=>console.log(e));
 });

@@ -12,8 +12,8 @@ class UsersService {
 		return this.usersRepository.getAll();
 	}
 
-	getById(id: Types.ObjectId) {
-		return this.usersRepository.getById(id);
+	findById(id: Types.ObjectId) {
+		return this.usersRepository.findById(id);
 	}
 	
 	save(user) {

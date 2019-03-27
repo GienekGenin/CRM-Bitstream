@@ -28,8 +28,8 @@ export const firmModel = mongoose.model('Firm', new mongoose.Schema({
 		ref: 'Firm',
 		validate: {
 			isAsync: true,
-			validator: (id) =>  {
-				if(id) firmService.getById(id);
+			validator: (v) =>  {
+				if(v) firmService.findById(v);
 				return true;
 			},
 			message: 'Firm with such _id does not exist'

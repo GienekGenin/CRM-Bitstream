@@ -29,7 +29,7 @@ const userSchema = new mongoose.Schema({
 		ref: 'Firm',
 		validate: {
 			isAsync: true,
-			validator: (v) =>  firmService.getById(v),
+			validator: (v) =>  firmService.findById(v),
 			message: 'Firm with such _id does not exist'
 		},
 	},
@@ -38,7 +38,7 @@ const userSchema = new mongoose.Schema({
 		ref: 'Roles',
 		validate: {
 			isAsync: true,
-			validator: (v) =>  rolesService.getById(v),
+			validator: (v) =>  rolesService.findById(v),
 			message: 'Role with such _id does not exist'
 		},
 	}

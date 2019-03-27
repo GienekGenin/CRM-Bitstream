@@ -11,12 +11,12 @@ class DeviceService {
 		return this.deviceRepository.getAll();
 	}
 
-	getById(id) {
-		return this.deviceRepository.getById(id);
+	findById(sid) {
+		return this.deviceRepository.findById(sid);
 	}
 
-	save(device) {
-		return this.deviceRepository.save(device);
+	save(firm) {
+		return this.deviceRepository.save(firm);
 	}
 }
 

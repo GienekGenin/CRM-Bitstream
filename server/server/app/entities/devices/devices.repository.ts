@@ -6,5 +6,4 @@ export class DeviceRepository extends Repository{
 		super(deviceModel);
 		this.model = deviceModel;
 	}
-
 }

@@ -8,7 +8,7 @@ devices.get('/', (req, res, next) => {
 });
 
 devices.get('/:id', (req, res, next) => {
-	deviceService.getById(req.params.id)
+	deviceService.findById(req.params.id)
 		.then(d=>res.json(d))
 		.catch(e=>console.log(e));
 });

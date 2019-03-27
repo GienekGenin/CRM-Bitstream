@@ -12,8 +12,8 @@ class RolesService {
 		return this.rolesRepository.getAll();
 	}
 
-	getById(id: Types.ObjectId) {
-		return this.rolesRepository.getById(id);
+	findById(id: Types.ObjectId) {
+		return this.rolesRepository.findById(id);
 	}
 	
 }

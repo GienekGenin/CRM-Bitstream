@@ -14,7 +14,7 @@ const deviceSchema = new mongoose.Schema({
 		ref: 'User',
 		validate: {
 			isAsync: true,
-			validator: (v) => usersService.getById(v),
+			validator: (v) => usersService.findById(v),
 			message: 'User with such _id does not exist'
 		},
 	}],
@@ -26,7 +26,7 @@ const deviceSchema = new mongoose.Schema({
 		ref: 'Device',
 		validate: {
 			isAsync: true,
-			validator: (v) => deviceService.getById(v),
+			validator: (v) => deviceService.findById(v),
 			message: 'Parent device with such sid does not exist'
 		}
 	}
