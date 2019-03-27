@@ -1,7 +1,9 @@
 import * as async from 'async';
 import * as bcryptjs from 'bcryptjs';
+import * as _ from 'lodash';
 import {UserRepository} from './user.repository';
 import {Types} from 'mongoose';
+import {tokenService} from '../../common/services/token.service';
 
 class UsersService {
 	private usersRepository: UserRepository;
@@ -10,6 +12,10 @@ class UsersService {
 		this.usersRepository = new UserRepository();
 	}
 
+	static createUserPayload(user) {
+		return _.omit(user, ['password']);
+	}
+	
 	getAll() {
 		return this.usersRepository.getAll();
 	}
@@ -42,6 +48,45 @@ class UsersService {
 					resolve(payload);
 				});
 		});
+	}
+
+	login(userCredentials) {
+		return new Promise((resolve, reject) => {
+			async.waterfall(
+				[
+					callback => {
+						this.usersRepository.findByEmail(userCredentials.email)
+							.then(user => {
+								if (user === null) {
+									throw new Error('User did not exist');
+								}
+								callback(null, user._doc);
+							})
+							.catch(err => {
+								callback(err);
+							});
+					},
+					(user, callback) => {
+						bcryptjs.compare(userCredentials.password, user.password)
+							.then(result => {
+								if (result === true) {
+									const userPayload = UsersService.createUserPayload(user);
+									callback(null, {
+										user: userPayload,
+										tokenSecret: tokenService.createToken(userPayload)
+									})
+								} else {
+									callback('Wrong password');
+								}
+							}).catch(e => callback(e));
+					}],
+				(err, payload) => {
+					if (err) {
+						reject(err);
+					}
+					resolve(payload);
+				})
+		})
 	}
 }
 
