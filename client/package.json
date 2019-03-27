@@ -3,9 +3,24 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@material-ui/core": "^3.9.2",
+    "@material-ui/icons": "^3.0.2",
+    "@types/core-js": "^2.5.0",
+    "classnames": "^2.2.6",
+    "d3": "^5.9.2",
+    "dotenv": "^7.0.0",
+    "history": "^4.9.0",
+    "jsonwebtoken": "^8.5.1",
+    "mapbox-gl": "^0.53.1",
+    "notistack": "^0.5.1",
+    "prop-types": "^15.7.2",
     "react": "^16.8.5",
+    "react-bootstrap": "^1.0.0-beta.6",
     "react-dom": "^16.8.5",
-    "react-scripts": "2.1.8"
+    "react-iframe": "^1.5.0",
+    "react-map-gl": "^4.1.1",
+    "react-router-dom": "^5.0.0",
+    "react-scripts": "^2.1.8"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -21,5 +36,11 @@
     "not dead",
     "not ie <= 11",
     "not op_mini all"
-  ]
+  ],
+  "devDependencies": {
+    "node-sass": "^4.11.0",
+    "react-app-env": "^1.2.3",
+    "react-redux": "^6.0.1",
+    "redux": "^4.0.1"
+  }
 }
