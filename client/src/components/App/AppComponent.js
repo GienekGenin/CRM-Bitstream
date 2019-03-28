@@ -20,6 +20,12 @@ import {MuiThemeProvider, createMuiTheme} from '@material-ui/core/styles';
 import red from '@material-ui/core/colors/red';
 import {PopupComponent} from "../material/PopupComponent/PopupComponent";
 import {SnackbarProvider} from "notistack";
+import FirmAdminComponent from "../FirmAdministration/FirmAdminComponent";
+import UserAdminComponent from "../UserAdministration/UserAdminComponent";
+import FirmDevicesComponent from "../FirmDevicesComponent/FirmDevicesComponent";
+import DeviceAdminComponent from "../DeviceAdministration/DeviceAdminComponent";
+
+import {checkAccess} from "../privateRoute";
 
 const theme = createMuiTheme({
   palette: {
@@ -66,7 +72,7 @@ class AppComponent extends Component {
   }
 
   render() {
-    if (this.props.user) {
+      const {user} = this.props;
       return (
           <Router history={history}>
             <MuiThemeProvider theme={theme}>
@@ -81,15 +87,32 @@ class AppComponent extends Component {
                     <Typography variant="h6" color="inherit">
                       <Button color="inherit"><Link to={'/'}>Home</Link></Button>
                     </Typography>
-                    <Typography variant="h6" color="inherit">
-                      <Button color="inherit"> <Link to={'/dash'}> Dashboard </Link></Button>
-                    </Typography>
-                    <Button color="inherit" onClick={this.props.logoutRequest}><Link
-                        to={'/login'}>Logout</Link></Button>
+                      {checkAccess('/dashboard') && <Typography variant="h6" color="inherit">
+                          <Button color="inherit"> <Link to={'/dashboard'}> Dashboard </Link></Button>
+                      </Typography>}
+                      {checkAccess('/firms') && <Typography variant="h6" color="inherit">
+                          <Button color="inherit"> <Link to={'/firms'}> firms </Link></Button>
+                      </Typography>}
+                      {checkAccess('/firmDevices') && <Typography variant="h6" color="inherit">
+                          <Button color="inherit"> <Link to={'/firmDevices'}> firmDevices </Link></Button>
+                      </Typography>}
+                      {checkAccess('/users') && <Typography variant="h6" color="inherit">
+                          <Button color="inherit"> <Link to={'/users'}> users </Link></Button>
+                      </Typography>}
+                      {checkAccess('/devices') && <Typography variant="h6" color="inherit">
+                          <Button color="inherit"> <Link to={'/devices'}> devices </Link></Button>
+                      </Typography>}
+                      {user ? <Button color="inherit" onClick={this.props.logoutRequest}><Link
+                          to={'/login'}>Logout</Link></Button> :
+                          <Button color="inherit"><Link to={'/login'}>Login</Link></Button>}
                   </Toolbar>
                 </AppBar>
                 <Switch history={history}>
-                  <PrivateRoute exact path='/dash' component={DashboardComponent}/>
+                  <PrivateRoute exact path='/dashboard' component={DashboardComponent}/>
+                  <PrivateRoute exact path='/firms' component={FirmAdminComponent}/>
+                  <PrivateRoute exact path='/firmDevices' component={FirmDevicesComponent}/>
+                  <PrivateRoute exact path='/users' component={UserAdminComponent}/>
+                  <PrivateRoute exact path='/devices' component={DeviceAdminComponent}/>
                   <Route exact path='/login' component={LoginForm}/>
                 </Switch>
                 <SnackbarProvider maxSnack={5}>
@@ -99,34 +122,6 @@ class AppComponent extends Component {
             </MuiThemeProvider>
           </Router>)
     }
-    return (
-        <Router history={history}>
-          <MuiThemeProvider theme={theme}>
-            <div>
-              <AppBar position="static" color="primary">
-                <Toolbar>
-                  <div className="logo">
-                    <img src="http://bitstream.pl/wp-content/uploads/2018/03/Logo-Bitstream-4-01.png"
-                         alt=""/>
-                  </div>
-                  <Typography variant="h6" color="inherit">
-                  <Button color="inherit"><Link to={'/'}>Home</Link></Button>
-                </Typography>
-                  <Button color="inherit"><Link to={'/login'}>Login</Link></Button>
-                </Toolbar>
-              </AppBar>
-              <Switch history={history}>
-                <PrivateRoute exact path='/dash' component={DashboardComponent}/>
-                <Route exact path='/login' component={LoginForm}/>
-              </Switch>
-              <SnackbarProvider maxSnack={5}>
-                <PopupComponent />
-              </SnackbarProvider>
-            </div>
-          </MuiThemeProvider>
-        </Router>
-    );
-  }
 }
 
 const App = connect(mapStateToProps, mapDispatchToProps)(AppComponent);
