@@ -7,9 +7,13 @@ const deviceSchema = new mongoose.Schema({
 		type: String,
 		required: true
 	},
+	sid: {
+		type: String,
+		required: true,
+		unique: true
+	},
 	type: {
-		type: mongoose.Types.ObjectId,
-		required: true
+		type: mongoose.Types.ObjectId
 	},
 	phyid: {
 		type: String,
@@ -22,7 +26,7 @@ const deviceSchema = new mongoose.Schema({
 			isAsync: true,
 			validator: (v) => usersService.findById(v),
 			message: 'User with such _id does not exist'
-		},
+		}
 	}],
 	description: {
 		type: String
@@ -37,11 +41,11 @@ const deviceSchema = new mongoose.Schema({
 		type: [mongoose.Schema.Types.Number]
 	},
 	parent_id: {
-		type: mongoose.Schema.Types.ObjectId,
+		type: String,
 		ref: 'Device',
 		validate: {
 			isAsync: true,
-			validator: (v) => deviceService.findById(v),
+			validator: (v) => deviceService.findBySid(v),
 			message: 'Parent device with such sid does not exist'
 		}
 	},

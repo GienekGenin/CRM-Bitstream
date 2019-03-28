@@ -6,4 +6,8 @@ export class DeviceRepository extends Repository{
 		super(deviceModel);
 		this.model = deviceModel;
 	}
+
+	findBySid(sid){
+		return this.model.findOne({sid})
+	}
 }

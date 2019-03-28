@@ -20,3 +20,10 @@ devices.post('/', TokenValidator.validateToken, (req, res, next) => {
         .then(PayloadGeneratorService.nextWithData(next, res))
         .catch(next);
 });
+
+// todo: test api for creating data sources
+devices.post('/source', TokenValidator.validateToken, (req, res, next) => {
+    deviceService.createDataSource(req.body)
+        .then(PayloadGeneratorService.nextWithData(next, res))
+        .catch(next);
+});
