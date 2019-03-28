@@ -26,6 +26,7 @@ import FirmDevicesComponent from "../FirmDevicesComponent/FirmDevicesComponent";
 import DeviceAdminComponent from "../DeviceAdministration/DeviceAdminComponent";
 
 import {checkAccess} from "../privateRoute";
+import HomeComponent from "../Home/HomeComponent";
 
 const theme = createMuiTheme({
   palette: {
@@ -108,6 +109,7 @@ class AppComponent extends Component {
                   </Toolbar>
                 </AppBar>
                 <Switch history={history}>
+                  <Route exact path='/' component={HomeComponent}/>
                   <PrivateRoute exact path='/dashboard' component={DashboardComponent}/>
                   <PrivateRoute exact path='/firms' component={FirmAdminComponent}/>
                   <PrivateRoute exact path='/firmDevices' component={FirmDevicesComponent}/>

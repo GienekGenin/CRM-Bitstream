@@ -4,7 +4,7 @@ export default class HomeComponent extends React.Component {
     render() {
         return(
             <h2>
-                Firm admin panel
+                Home admin panel
             </h2>
         )
     }
