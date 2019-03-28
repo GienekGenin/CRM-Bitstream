@@ -1,6 +1,23 @@
 import React from "react";
+import {firmRequest} from "../../redux/actions/index";
+import {connect} from "react-redux";
 
-export default class FirmAdminComponent extends React.Component {
+const mapDispatchToProps = (dispatch) => {
+    return {
+        firmRequest: () => dispatch(firmRequest()),
+    };
+};
+
+const mapStateToProps = state => {
+    return {firms: state.firmReducer.firms};
+};
+
+class FirmAdmin extends React.Component {
+
+    componentWillMount() {
+        this.props.firmRequest();
+    }
+
     render() {
         return(
             <h2>
@@ -9,3 +26,5 @@ export default class FirmAdminComponent extends React.Component {
         )
     }
 }
+
+export default connect(mapStateToProps, mapDispatchToProps)(FirmAdmin);
