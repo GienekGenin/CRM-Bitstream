@@ -10,11 +10,12 @@ const initialState = {
 export const firmReducer = (state = initialState, action) => {
     switch (action.type) {
 
-        case firmConstants.FIRMS_GET_REQUEST: {
-            return Object.assign({}, state, {
-                firms: action.payload,
+        case firmConstants.FIRMS_GET_REQUEST:
+        case firmConstants.UPDATE_FIRM_REQUEST : {
+            return {
+                ...state,
                 loading: true
-            });
+            }
         }
         case firmConstants.FIRMS_GET_SUCCESS: {
             return Object.assign({}, state, {
@@ -23,11 +24,18 @@ export const firmReducer = (state = initialState, action) => {
                 success: 'Firms loaded successfully'
             });
         }
-        case firmConstants.FIRMS_GET_FAILURE: {
+        case firmConstants.FIRMS_GET_FAILURE:
+        case firmConstants.UPDATE_FIRM_FAILURE: {
             return {
                 ...state,
                 loading: false,
                 error: action.payload
+            }
+        }
+        case firmConstants.UPDATE_FIRM_SUCCESS: {
+            return {
+                ...state,
+                success: action.payload
             }
         }
         case firmConstants.CLEAN_FIRMS_ERRORS: {

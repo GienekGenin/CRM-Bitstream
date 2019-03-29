@@ -75,31 +75,6 @@ class AdminPanel extends React.Component {
         }
     }
 
-    componentDidMount() {
-        this._isMounted = true;
-
-        this.props.firmRequest();
-        this.unsubscribe = store.subscribe(()=>{
-            if(store.getState().firmReducer.firms){
-                const reduxFirms = store.getState().firmReducer.firms;
-                if(reduxFirms !== this.state.firms && this._isMounted){
-                    this.setState({firms: reduxFirms})
-                }
-            }
-            if(store.getState().loginReducer.user && this._isMounted){
-                this.setState({
-                    user: store.getState().loginReducer.user,
-                    firm: store.getState().loginReducer.firm
-                })
-            }
-        });
-    }
-
-    componentWillUnmount() {
-        this._isMounted = false;
-        this.unsubscribe();
-    }
-
     handleChange = (event, value) => {
         this.setState({ value });
     };
@@ -130,7 +105,7 @@ class AdminPanel extends React.Component {
                 </AppBar>
                 {checkAccess('/editFirms') ?
                     <div>
-                        {value === 0 && firms && <TabContainer><FirmAdminComponent firms={firms} onFirmSelect={this.handleFirmSelect}/></TabContainer>}
+                        {value === 0 &&  <TabContainer><FirmAdminComponent firms={firms} onFirmSelect={this.handleFirmSelect}/></TabContainer>}
                         {value === 1 && user && firm && <TabContainer><FirmDevicesComponent user={user} firm={firm} selectedFirm={selectedFirm}/></TabContainer>}
                         {value === 2 && user && firm && <TabContainer><UserAdminComponent  user={user} firm={firm} selectedFirm={selectedFirm}/></TabContainer>}
                         {value === 3 && <TabContainer><DeviceAdminComponent /></TabContainer>}
