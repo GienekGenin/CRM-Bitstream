@@ -34,6 +34,7 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogActions from "@material-ui/core/DialogActions";
 import TextField from "@material-ui/core/TextField";
+import LinearProgress from "@material-ui/core/LinearProgress";
 
 const mapDispatchToProps = (dispatch) => {
     return {
@@ -354,7 +355,7 @@ class FirmAdmin extends React.Component {
             loading: false
         };
 
-        // this.resetSelected = this.resetSelected.bind(this);
+        this.resetSelected = this.resetSelected.bind(this);
 
         this.handleFirmSelect = this.handleFirmSelect.bind(this)
     }
@@ -382,13 +383,6 @@ class FirmAdmin extends React.Component {
     handleFirmSelect(firm){
         this.props.onFirmSelect(firm);
     }
-
-
-    //-------------------------------------------------
-
-
-
-
 
     handleRequestSort = (event, property) => {
         const orderBy = property;
@@ -429,28 +423,15 @@ class FirmAdmin extends React.Component {
 
     isSelected = id => this.state.selected.indexOf(id) !== -1;
 
-
-
-
-
-
-    //-------------------------------------------------
-
-
-
-
-
-
-
-
     render() {
         const {firms, classes} = this.props;
-        const {data, order, orderBy, selected, rowsPerPage, page, firm, access, loading} = this.state;
+        const {data, order, orderBy, selected, rowsPerPage, page, firm, loading} = this.state;
         const emptyRows = rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
         return(
             <Paper className={classes.root}>
                 <DeviceTableToolbar numSelected={selected.length} firm={firm} />
                 <DeviceToolBarComponent selected={firm} loading={loading} resetSelected={() => this.resetSelected()}/>
+                {loading && <LinearProgress color="secondary" />}
                 <div className={classes.tableWrapper}>
                     <Table className={classes.table} aria-labelledby="tableTitle">
                         <DeviceTableHead
