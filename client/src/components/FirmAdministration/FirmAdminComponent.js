@@ -37,34 +37,50 @@ import TextField from "@material-ui/core/TextField";
 import LinearProgress from "@material-ui/core/LinearProgress";
 
 const mapDispatchToProps = (dispatch) => {
-    return {
-
-    };
+    return {};
 };
 
 class DeviceToolBar extends React.Component {
 
-    state = {
+constructor(props){
+    super(props);
+    this.state = {
         editDialog: false,
         addDialog: false,
         confirmDeleteDialog: false,
-        newDeviceId: ''
+        newFirm: {
+            name: '',
+            address: '',
+            email: '',
+            tel: '',
+            nip: ''
+        }
     };
+}
 
     handleClickOpen = (state) => {
         this.setState({[state]: true});
     };
 
     handleClose = (state) => {
-        this.setState({[state]: false, newDeviceId: ''});
+        this.setState({
+            [state]: false,
+            newFirm: {
+                name: '',
+                address: '',
+                email: '',
+                tel: '',
+                nip: ''
+            }
+        });
     };
 
     handleAddDevice = () => {
-
+        console.log(this.state.newFirm)
     };
 
-    updateNewDeviceId(e) {
-
+    updateNewFirm(e, param) {
+        this.setState({newFirm:Object.assign({}, this.state.newFirm, {[param]: e.target.value})})
     }
 
     handleDeleteDevice() {
@@ -117,17 +133,61 @@ class DeviceToolBar extends React.Component {
                             <TextField
                                 autoFocus
                                 margin="dense"
-                                id="device-name"
-                                label="Device name"
+                                id="firm-name"
+                                label="Firm name"
                                 type="text"
                                 required={true}
-                                value={this.state.newDeviceId}
-                                onChange={(e) => this.updateNewDeviceId(e)}
+                                value={this.state.newFirm.name}
+                                onChange={(e) => this.updateNewFirm(e,'name')}
+                                fullWidth
+                            />
+                            <TextField
+                                autoFocus
+                                margin="dense"
+                                id="firm-address"
+                                label="Firms address"
+                                type="text"
+                                required={true}
+                                value={this.state.newFirm.address}
+                                onChange={(e) => this.updateNewFirm(e, 'address')}
+                                fullWidth
+                            />
+                            <TextField
+                                autoFocus
+                                margin="dense"
+                                id="firm-email"
+                                label="Firm email"
+                                type="text"
+                                required={true}
+                                value={this.state.newFirm.email}
+                                onChange={(e) => this.updateNewFirm(e, 'email')}
+                                fullWidth
+                            />
+                            <TextField
+                                autoFocus
+                                margin="dense"
+                                id="firm-tel"
+                                label="Firm contact number"
+                                type="text"
+                                required={true}
+                                value={this.state.newFirm.tel}
+                                onChange={(e) => this.updateNewFirm(e, 'tel')}
+                                fullWidth
+                            />
+                            <TextField
+                                autoFocus
+                                margin="dense"
+                                id="firm-nip"
+                                label="NIP"
+                                type="text"
+                                required={true}
+                                value={this.state.newFirm.nip}
+                                onChange={(e) => this.updateNewFirm(e, 'nip')}
                                 fullWidth
                             />
                         </DialogContent>
                         <DialogActions>
-                            <Button disabled={this.state.newDeviceId === ''} variant="outlined" color="primary"
+                            <Button  variant="outlined" color="primary"
                                     onClick={() => this.handleAddDevice()}>
                                 Add
                             </Button>
@@ -138,7 +198,7 @@ class DeviceToolBar extends React.Component {
                     </Dialog>
                 </div>
                 <div>
-                    <Button disabled={true} variant="contained" color="primary"
+                    <Button variant="contained" color="primary" disabled={!this.props.selected}
                             onClick={() => this.handleClickOpen('confirmDeleteDialog')}>
                         Delete
                     </Button>
@@ -174,9 +234,6 @@ class DeviceToolBar extends React.Component {
 DeviceToolBar.propTypes = {selected: PropTypes.object, resetSelected: PropTypes.func, loading: PropTypes.bool};
 
 const DeviceToolBarComponent = connect(null, mapDispatchToProps)(DeviceToolBar);
-
-
-
 
 
 class DeviceTableHead extends React.Component {
@@ -322,26 +379,9 @@ const styles = theme => ({
 });
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 class FirmAdmin extends React.Component {
 
-    constructor(props){
+    constructor(props) {
         super(props);
 
         this.state = {
@@ -366,7 +406,7 @@ class FirmAdmin extends React.Component {
 
     componentWillMount() {
         let data = [];
-        this.props.firms.map(record=>{
+        this.props.firms.map(record => {
             let row = [
                 record._id,
                 record.name,
@@ -384,7 +424,7 @@ class FirmAdmin extends React.Component {
         })
     }
 
-    handleFirmSelect(firm){
+    handleFirmSelect(firm) {
         this.props.onFirmSelect(firm);
     }
 
@@ -432,11 +472,11 @@ class FirmAdmin extends React.Component {
         const {classes} = this.props;
         const {data, order, orderBy, selected, rowsPerPage, page, firm, loading} = this.state;
         const emptyRows = rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
-        return(
+        return (
             <Paper className={classes.root}>
-                <DeviceTableToolbar numSelected={selected.length} firm={firm} />
+                <DeviceTableToolbar numSelected={selected.length} firm={firm}/>
                 <DeviceToolBarComponent selected={firm} loading={loading} resetSelected={() => this.resetSelected()}/>
-                {loading && <LinearProgress color="secondary" />}
+                {loading && <LinearProgress color="secondary"/>}
                 <div className={classes.tableWrapper}>
                     <Table className={classes.table} aria-labelledby="tableTitle">
                         <DeviceTableHead
