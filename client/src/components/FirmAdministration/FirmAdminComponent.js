@@ -1,30 +1,33 @@
 import React from "react";
-import {firmRequest} from "../../redux/actions/index";
-import {connect} from "react-redux";
-
-const mapDispatchToProps = (dispatch) => {
-    return {
-        firmRequest: () => dispatch(firmRequest()),
-    };
-};
-
-const mapStateToProps = state => {
-    return {firms: state.firmReducer.firms};
-};
+import * as PropTypes from 'prop-types';
 
 class FirmAdmin extends React.Component {
 
-    componentWillMount() {
-        this.props.firmRequest();
+    constructor(props){
+        super(props);
+
+        this.handleFirmSelect = this.handleFirmSelect.bind(this)
+    }
+
+    handleFirmSelect(firm){
+        this.props.onFirmSelect(firm);
     }
 
     render() {
+        const {firms} = this.props;
         return(
-            <h2>
-                Firm admin panel
-            </h2>
+            <div>
+                <ul>
+                    {firms && firms.map((el,i)=><li onClick={()=>this.handleFirmSelect(el)} key={i}>{el.name}</li>)}
+                </ul>
+            </div>
         )
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(FirmAdmin);
+FirmAdmin.propTypes = {
+    firms: PropTypes.array,
+    onFirmSelect: PropTypes.func.isRequired
+};
+
+export default FirmAdmin;

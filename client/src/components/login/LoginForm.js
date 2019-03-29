@@ -32,20 +32,30 @@ class LoginPage extends React.Component {
             loading: false
         };
 
-        history.listen((location, action) => {
-
-        });
-
         this.handleChange = this.handleChange.bind(this);
         this.handleLoginSubmit = this.handleLoginSubmit.bind(this);
         this.handleChangePassSubmit = this.handleChangePassSubmit.bind(this);
+    }
 
-        store.subscribe(() => {
+    _isMounted = false;
+
+    componentDidMount() {
+
+        this._isMounted = true;
+
+        this.unsubscribe = store.subscribe(() => {
             if (store.getState().loginReducer.user) {
-                this.props.history.push('/dash');
+                this.props.history.push('/');
             }
-            this.setState({loading: store.getState().loginReducer.loading});
+            if(this._isMounted){
+                this.setState({loading: store.getState().loginReducer.loading});
+            }
         })
+    }
+
+    componentWillUnmount() {
+        this._isMounted = false;
+        this.unsubscribe();
     }
 
     handleChange(e) {

@@ -27,6 +27,7 @@ import DeviceAdminComponent from "../DeviceAdministration/DeviceAdminComponent";
 
 import {checkAccess} from "../privateRoute";
 import HomeComponent from "../Home/HomeComponent";
+import AdminPanelComponent from "../AdminPanel/AdminPanelComponent";
 
 const theme = createMuiTheme({
   palette: {
@@ -88,18 +89,12 @@ class AppComponent extends Component {
                     <Typography variant="h6" color="inherit">
                       <Button color="inherit"><Link to={'/'}>Home</Link></Button>
                     </Typography>
+
                       {checkAccess('/dashboard') && <Typography variant="h6" color="inherit">
                           <Button color="inherit"> <Link to={'/dashboard'}> Dashboard </Link></Button>
-                      </Typography>}
-                      {checkAccess('/firms') && <Typography variant="h6" color="inherit">
-                          <Button color="inherit"> <Link to={'/firms'}> firms </Link></Button>
-                      </Typography>}
-                      {checkAccess('/firmDevices') && <Typography variant="h6" color="inherit">
-                          <Button color="inherit"> <Link to={'/firmDevices'}> firmDevices </Link></Button>
-                      </Typography>}
-                      {checkAccess('/users') && <Typography variant="h6" color="inherit">
-                          <Button color="inherit"> <Link to={'/users'}> users </Link></Button>
-                      </Typography>}
+                      </Typography>}                    {checkAccess('/admin_panel') && <Typography variant="h6" color="inherit">
+                    <Button color="inherit"> <Link to={'/admin_panel'}> Admin Panel </Link></Button>
+                  </Typography>}
                       {checkAccess('/devices') && <Typography variant="h6" color="inherit">
                           <Button color="inherit"> <Link to={'/devices'}> devices </Link></Button>
                       </Typography>}
@@ -110,10 +105,8 @@ class AppComponent extends Component {
                 </AppBar>
                 <Switch history={history}>
                   <Route exact path='/' component={HomeComponent}/>
+                  <PrivateRoute exact path='/admin_panel' component={AdminPanelComponent}/>
                   <PrivateRoute exact path='/dashboard' component={DashboardComponent}/>
-                  <PrivateRoute exact path='/firms' component={FirmAdminComponent}/>
-                  <PrivateRoute exact path='/firmDevices' component={FirmDevicesComponent}/>
-                  <PrivateRoute exact path='/users' component={UserAdminComponent}/>
                   <PrivateRoute exact path='/devices' component={DeviceAdminComponent}/>
                   <Route exact path='/login' component={LoginForm}/>
                 </Switch>
