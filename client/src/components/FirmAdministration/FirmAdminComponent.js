@@ -415,6 +415,7 @@ class FirmAdmin extends React.Component {
             newSelected = newSelected.concat(selected.slice(1));
         }
         this.setState({selected: newSelected, firm});
+        this.handleFirmSelect(firm);
     };
 
     handleChangePage = (event, page) => {
@@ -428,7 +429,7 @@ class FirmAdmin extends React.Component {
     isSelected = id => this.state.selected.indexOf(id) !== -1;
 
     render() {
-        const {firms, classes} = this.props;
+        const {classes} = this.props;
         const {data, order, orderBy, selected, rowsPerPage, page, firm, loading} = this.state;
         const emptyRows = rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
         return(
