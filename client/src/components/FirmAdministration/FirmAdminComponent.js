@@ -21,8 +21,203 @@ import Paper from "@material-ui/core/Paper";
 import TableBody from "@material-ui/core/TableBody";
 import TablePagination from "@material-ui/core/TablePagination";
 
+import {connect} from "react-redux";
 import store from "../../redux/store";
+
 import Checkbox from "@material-ui/core/Checkbox";
+import Button from "@material-ui/core/Button";
+import Dialog from "@material-ui/core/Dialog";
+import DialogTitle from "@material-ui/core/DialogTitle";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogContentText from "@material-ui/core/DialogContentText";
+import DialogActions from "@material-ui/core/DialogActions";
+import TextField from "@material-ui/core/TextField";
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+
+    };
+};
+
+class DeviceToolBar extends React.Component {
+
+    state = {
+        keyDialog: false,
+        addDialog: false,
+        propsDialog: false,
+        confirmDeleteDialog: false,
+        newDeviceId: ''
+    };
+
+    handleClickOpen = (state) => {
+        this.setState({[state]: true});
+    };
+
+    handleClose = (state) => {
+        this.setState({[state]: false, newDeviceId: ''});
+    };
+
+    handleAddDevice = () => {
+
+    };
+
+    updateNewDeviceId(e) {
+
+    }
+
+    handleDeleteDevice() {
+
+    }
+
+    handleSetStatusOne() {
+
+    }
+
+    handleSetStatusAll(status) {
+    }
+
+    handleRefresh() {
+    }
+
+    render() {
+        return (
+            <div className="device-controls">
+                <div>
+                    <Button disabled={!this.props.selected} variant="contained" color="primary"
+                            onClick={() => this.handleClickOpen('keyDialog')}>
+                        Key
+                    </Button>
+                    <Dialog
+                        open={this.state.keyDialog}
+                        onClose={() => this.handleClose('keyDialog')}
+                        aria-labelledby="key-dialog-title"
+                        aria-describedby="alert-dialog-description"
+                    >
+                        <DialogTitle id="alert-dialog-title">Connection key</DialogTitle>
+                        <DialogContent>
+                            <DialogContentText id="alert-dialog-description">
+                                {this.props.selected ? this.props.selected.key : ''}
+                            </DialogContentText>
+                        </DialogContent>
+                        <DialogActions>
+                            <Button onClick={() => this.handleClose('keyDialog')} color="primary">
+                                Close
+                            </Button>
+                        </DialogActions>
+                    </Dialog>
+                </div>
+                <div>
+                    <Button variant="outlined" color="primary" disabled={this.props.loading}
+                            onClick={() => this.handleClickOpen('addDialog')}>
+                        Add
+                    </Button>
+                    <Dialog
+                        open={this.state.addDialog}
+                        onClose={() => this.handleClose('addDialog')}
+                        aria-labelledby="alert-dialog-title"
+                        aria-describedby="alert-dialog-description"
+                    >
+                        <DialogTitle id="alert-dialog-title-">Add new device</DialogTitle>
+                        <DialogContent>
+                            <TextField
+                                autoFocus
+                                margin="dense"
+                                id="device-name"
+                                label="Device name"
+                                type="text"
+                                required={true}
+                                value={this.state.newDeviceId}
+                                onChange={(e) => this.updateNewDeviceId(e)}
+                                fullWidth
+                            />
+                        </DialogContent>
+                        <DialogActions>
+                            <Button disabled={this.state.newDeviceId === ''} variant="outlined" color="primary"
+                                    onClick={() => this.handleAddDevice()}>
+                                Add
+                            </Button>
+                            <Button onClick={() => this.handleClose('addDialog')} color="primary">
+                                Close
+                            </Button>
+                        </DialogActions>
+                    </Dialog>
+                </div>
+                <div>
+                    <Button disabled={true} variant="contained" color="primary"
+                            onClick={() => this.handleClickOpen('confirmDeleteDialog')}>
+                        Delete
+                    </Button>
+                    <Dialog
+                        open={this.state.confirmDeleteDialog}
+                        onClose={() => this.handleClose('confirmDeleteDialog')}
+                        aria-labelledby="alert-dialog-title"
+                        aria-describedby="alert-dialog-description"
+                    >
+                        <DialogTitle id="alert-dialog-title-">Device properties</DialogTitle>
+                        <DialogContent>
+                            Confirm deletion of {this.props.selected ? this.props.selected._id : ''}
+                        </DialogContent>
+                        <DialogActions>
+                            <Button onClick={() => this.handleClose('confirmDeleteDialog')} color="primary">
+                                Close
+                            </Button>
+                            <Button disabled={!this.props.selected} variant="contained" color="secondary"
+                                    onClick={() => this.handleDeleteDevice()}>
+                                Confirm
+                            </Button>
+                        </DialogActions>
+                    </Dialog>
+                </div>
+                <div>
+                    <Button disabled={!this.props.selected} variant="contained" color="primary"
+                            onClick={() => this.handleClickOpen('propsDialog')}>
+                        Properties
+                    </Button>
+                    <Dialog
+                        open={this.state.propsDialog}
+                        onClose={() => this.handleClose('propsDialog')}
+                        aria-labelledby="alert-dialog-title"
+                        aria-describedby="alert-dialog-description"
+                    >
+                        <DialogTitle id="alert-dialog-title-">Device properties</DialogTitle>
+                        <DialogContent>
+                            <DialogContentText>
+                                {this.props.selected ? Object.keys(this.props.selected).map(key => (
+                                    <span key={key}>
+                                        <span>{key} = </span>
+                                        <span>{this.props.selected[key]}</span><br/>
+                                    </span>
+                                )) : ''}
+                            </DialogContentText>
+                        </DialogContent>
+                        <DialogActions>
+                            <Button onClick={() => this.handleClose('propsDialog')} color="primary">
+                                Close
+                            </Button>
+                        </DialogActions>
+                    </Dialog>
+                </div>
+                <Button variant="contained" disabled={this.props.loading} onClick={() => this.handleSetStatusAll('enabled')}>
+                    Turn on all
+                </Button>
+                <Button variant="contained" disabled={this.props.loading} onClick={() => this.handleSetStatusAll('disabled')}>
+                    Turn off all
+                </Button>
+                <Button disabled={!this.props.selected} variant="contained" onClick={() => this.handleSetStatusOne()}>
+                    Change activity
+                </Button>
+                <Button variant="contained" disabled={this.props.loading} onClick={() => this.handleRefresh()}>
+                    Refresh
+                </Button>
+            </div>
+        )
+    }
+}
+
+DeviceToolBar.propTypes = {selected: PropTypes.object, resetSelected: PropTypes.func, loading: PropTypes.bool};
+
+const DeviceToolBarComponent = connect(null, mapDispatchToProps)(DeviceToolBar);
+
 
 
 
@@ -294,10 +489,12 @@ class FirmAdmin extends React.Component {
 
     render() {
         const {firms, classes} = this.props;
-        const {data, order, orderBy, selected, rowsPerPage, page, device, access, loading} = this.state;
+        const {data, order, orderBy, selected, rowsPerPage, page, firm, access, loading} = this.state;
         const emptyRows = rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
         return(
             <Paper className={classes.root}>
+                <DeviceTableToolbar numSelected={selected.length} firm={firm} />
+                <DeviceToolBarComponent selected={firm} loading={loading} resetSelected={() => this.resetSelected()}/>
                 <div className={classes.tableWrapper}>
                     <Table className={classes.table} aria-labelledby="tableTitle">
                         <DeviceTableHead
