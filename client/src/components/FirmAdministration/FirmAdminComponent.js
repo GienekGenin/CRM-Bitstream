@@ -35,19 +35,10 @@ import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogActions from "@material-ui/core/DialogActions";
 import TextField from "@material-ui/core/TextField";
 import LinearProgress from "@material-ui/core/LinearProgress";
-import {firmsRequest} from "../../redux/actions";
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        firmRequest: () => dispatch(firmsRequest()),
-    };
-};
 
-const mapStateToProps = state => {
-    return {
-        firms: state.firmReducer.firms,
-        user: state.loginReducer.user,
-        firm: state.loginReducer.firm
     };
 };
 
@@ -357,7 +348,6 @@ class FirmAdmin extends React.Component {
             order: 'asc',
             orderBy: 'id',
             selected: [],
-            firms: null,
             data: [],
             page: 0,
             rowsPerPage: 5,
@@ -368,52 +358,30 @@ class FirmAdmin extends React.Component {
         this.resetSelected = this.resetSelected.bind(this);
 
         this.handleFirmSelect = this.handleFirmSelect.bind(this);
+
+        store.subscribe(() => {
+            this.setState({loading: store.getState().firmReducer.loading});
+        })
     }
 
-    _isMounted = false;
-
-    componentDidMount() {
-        this._isMounted = true;
-        this.props.firmRequest();
-
-        this.unsubscribe = store.subscribe(()=>{
-            if(store.getState().firmReducer.firms){
-                const reduxFirms = store.getState().firmReducer.firms;
-                if(reduxFirms && this._isMounted){
-                    this.setState({firms: reduxFirms});
-                    let data = [];
-                    reduxFirms.map(record=>{
-                        let row = [
-                            record._id,
-                            record.name,
-                        ];
-                        data.push(createData(...row));
-                        const obj = {
-                            order: this.state.order,
-                            orderBy: this.state.orderBy,
-                            selected: [],
-                            data,
-                            page: this.state.page,
-                            rowsPerPage: this.state.rowsPerPage
-                        };
-
-                        this.setState(obj);
-                    })
-                }
-            }
-            if(store.getState().loginReducer.user && this._isMounted){
-                this.setState({
-                    user: store.getState().loginReducer.user,
-                    firm: store.getState().loginReducer.firm
-                })
-            }
-        });
-
-    }
-
-    componentWillUnmount() {
-        this._isMounted = false;
-        this.unsubscribe();
+    componentWillMount() {
+        let data = [];
+        this.props.firms.map(record=>{
+            let row = [
+                record._id,
+                record.name,
+            ];
+            data.push(createData(...row));
+            const obj = {
+                order: this.state.order,
+                orderBy: this.state.orderBy,
+                selected: [],
+                data,
+                page: this.state.page,
+                rowsPerPage: this.state.rowsPerPage
+            };
+            this.setState(obj);
+        })
     }
 
     handleFirmSelect(firm){
@@ -536,5 +504,4 @@ FirmAdmin.propTypes = {
 
 const FirmAdminStyles = withStyles(styles)(FirmAdmin);
 
-export default connect(mapStateToProps, mapDispatchToProps)(FirmAdminStyles);
-
+export default FirmAdminStyles;

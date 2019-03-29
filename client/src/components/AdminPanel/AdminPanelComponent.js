@@ -16,6 +16,9 @@ import {connect} from "react-redux";
 import store from '../../redux/store'
 import {checkAccess} from "../privateRoute";
 import FirmDevicesComponent from "../FirmDevicesComponent/FirmDevicesComponent";
+import LinearProgress from "@material-ui/core/LinearProgress";
+
+import './adminPanel.scss';
 
 const mapDispatchToProps = (dispatch) => {
     return {
@@ -59,10 +62,30 @@ class AdminPanel extends React.Component {
         user: null,
         firm: null,
         selectedFirm: null,
+        loading: false
     };
 
     constructor(){
         super();
+
+        store.subscribe(() => {
+            this.setState({loading: store.getState().firmReducer.loading});
+        });
+
+        this.unsubscribe = store.subscribe(()=>{
+            if(store.getState().firmReducer.firms){
+                const reduxFirms = store.getState().firmReducer.firms;
+                if(reduxFirms !== this.state.firms && this._isMounted){
+                    this.setState({firms: reduxFirms})
+                }
+            }
+            if(store.getState().loginReducer.user && this._isMounted){
+                this.setState({
+                    user: store.getState().loginReducer.user,
+                    firm: store.getState().loginReducer.firm
+                })
+            }
+        });
 
         this.handleFirmSelect = this.handleFirmSelect.bind(this);
     }
@@ -75,16 +98,28 @@ class AdminPanel extends React.Component {
         }
     }
 
+    componentDidMount() {
+        this._isMounted = true;
+        this.props.firmRequest();
+
+    }
+
+    componentWillUnmount() {
+        this._isMounted = false;
+        this.unsubscribe();
+    }
+
     handleChange = (event, value) => {
         this.setState({ value });
     };
 
     render() {
         const { classes } = this.props;
-        const { value, firms, selectedFirm, user, firm } = this.state;
+        const { value, firms, selectedFirm, user, firm, loading } = this.state;
         return (
             <div className={classes.root}>
                 <AppBar position="static" color="default">
+                    {loading && <LinearProgress color="secondary" />}
                     <Toolbar>
                         <Tabs
                             value={value}
@@ -105,7 +140,7 @@ class AdminPanel extends React.Component {
                 </AppBar>
                 {checkAccess('/editFirms') ?
                     <div>
-                        {value === 0 &&  <TabContainer><FirmAdminComponent firms={firms} onFirmSelect={this.handleFirmSelect}/></TabContainer>}
+                        {value === 0 && firms && <TabContainer><FirmAdminComponent firms={firms} onFirmSelect={this.handleFirmSelect}/></TabContainer>}
                         {value === 1 && user && firm && <TabContainer><FirmDevicesComponent user={user} firm={firm} selectedFirm={selectedFirm}/></TabContainer>}
                         {value === 2 && user && firm && <TabContainer><UserAdminComponent  user={user} firm={firm} selectedFirm={selectedFirm}/></TabContainer>}
                         {value === 3 && <TabContainer><DeviceAdminComponent /></TabContainer>}
