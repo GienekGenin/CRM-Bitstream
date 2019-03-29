@@ -130,7 +130,7 @@ class AdminPanel extends React.Component {
                 </AppBar>
                 {checkAccess('/editFirms') ?
                     <div>
-                        {value === 0 && <TabContainer><FirmAdminComponent firms={firms} onFirmSelect={this.handleFirmSelect}/></TabContainer>}
+                        {value === 0 && firms && <TabContainer><FirmAdminComponent firms={firms} onFirmSelect={this.handleFirmSelect}/></TabContainer>}
                         {value === 1 && user && firm && <TabContainer><FirmDevicesComponent user={user} firm={firm} selectedFirm={selectedFirm}/></TabContainer>}
                         {value === 2 && user && firm && <TabContainer><UserAdminComponent  user={user} firm={firm} selectedFirm={selectedFirm}/></TabContainer>}
                         {value === 3 && <TabContainer><DeviceAdminComponent /></TabContainer>}
