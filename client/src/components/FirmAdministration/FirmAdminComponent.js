@@ -21,7 +21,8 @@ import Paper from "@material-ui/core/Paper";
 import TableBody from "@material-ui/core/TableBody";
 import TablePagination from "@material-ui/core/TablePagination";
 
-
+import store from "../../redux/store";
+import Checkbox from "@material-ui/core/Checkbox";
 
 
 
@@ -37,6 +38,9 @@ class DeviceTableHead extends React.Component {
         return (
             <TableHead>
                 <TableRow>
+                    <TableCell>
+                        Select
+                    </TableCell>
                     {rows.map(
                         row => (
                             <TableCell
@@ -71,7 +75,6 @@ class DeviceTableHead extends React.Component {
 DeviceTableHead.propTypes = {
     numSelected: PropTypes.number.isRequired,
     onRequestSort: PropTypes.func.isRequired,
-    onSelectAllClick: PropTypes.func.isRequired,
     order: PropTypes.string.isRequired,
     orderBy: PropTypes.string.isRequired,
     rowCount: PropTypes.number.isRequired,
@@ -247,16 +250,22 @@ class FirmAdmin extends React.Component {
         this.setState({order, orderBy});
     };
 
-    handleSelectAllClick = event => {
-        if (event.target.checked) {
-            this.setState(state => ({selected: state.data.map(n => n._id)}));
-            return;
-        }
-        this.setState({selected: []});
-    };
-
     resetSelected = () => {
         this.setState({selected: [], firm: null});
+    };
+
+    handleClick = (event, id) => {
+        const {selected} = this.state;
+        const selectedIndex = selected.indexOf(id);
+        let newSelected = [];
+        let firm = null;
+        if (selectedIndex === -1) {
+            newSelected.push(id);
+            firm = this.props.firms.filter(el => el._id === id ? el : null)[0];
+        } else if (selectedIndex === 0) {
+            newSelected = newSelected.concat(selected.slice(1));
+        }
+        this.setState({selected: newSelected, firm});
     };
 
     handleChangePage = (event, page) => {
@@ -295,7 +304,6 @@ class FirmAdmin extends React.Component {
                             numSelected={selected.length}
                             order={order}
                             orderBy={orderBy}
-                            onSelectAllClick={this.handleSelectAllClick}
                             onRequestSort={this.handleRequestSort}
                             rowCount={data.length}
                         />
@@ -303,15 +311,22 @@ class FirmAdmin extends React.Component {
                             {stableSort(data, getSorting(order, orderBy))
                                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                 .map(n => {
+                                    const isSelected = this.isSelected(n._id);
                                     return (
                                         <TableRow
                                             hover
                                             onClick={event => this.handleClick(event, n._id)}
                                             role="checkbox"
+                                            aria-checked={isSelected}
                                             tabIndex={-1}
+                                            key={n._id}
+                                            selected={isSelected}
                                         >
-                                            <TableCell align="right">{n._id}</TableCell>
-                                            <TableCell align="right">{n.name}</TableCell>
+                                            <TableCell padding="checkbox">
+                                                <Checkbox checked={isSelected}/>
+                                            </TableCell>
+                                            <TableCell align="right" key={n._id}>{n._id}</TableCell>
+                                            <TableCell align="right" key={n.name}>{n.name}</TableCell>
                                         </TableRow>
                                     );
                                 })}
