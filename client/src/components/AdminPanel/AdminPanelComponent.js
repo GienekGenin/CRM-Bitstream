@@ -112,7 +112,7 @@ class AdminPanel extends React.Component {
                             variant="scrollable"
                             scrollButtons="auto"
                         >
-                            <Tab label="Firms" disabled={!checkAccess('/editFirms')}/>
+                            {checkAccess('/editFirms') && <Tab label="Firms"/>}
                             <Tab label="Firm devices" />
                             <Tab label="Users" disabled={!selectedFirm}/>
                             <Tab label="Devices" />
@@ -121,12 +121,23 @@ class AdminPanel extends React.Component {
                         </Tabs>
                     </Toolbar>
                 </AppBar>
-                {value === 0 && <TabContainer><FirmAdminComponent firms={firms} onFirmSelect={this.handleFirmSelect}/></TabContainer>}
-                {value === 1 && <TabContainer><FirmDevicesComponent /></TabContainer>}
-                {value === 2 && <TabContainer><UserAdminComponent selectedFirm={selectedFirm}/></TabContainer>}
-                {value === 3 && <TabContainer><DeviceAdminComponent /></TabContainer>}
-                {value === 4 && <TabContainer>Visualisation</TabContainer>}
-                {value === 5 && <TabContainer>Optional</TabContainer>}
+                {checkAccess('/editFirms') ?
+                    <div>
+                        {value === 0 && <TabContainer><FirmAdminComponent firms={firms} onFirmSelect={this.handleFirmSelect}/></TabContainer>}
+                        {value === 1 && <TabContainer><FirmDevicesComponent /></TabContainer>}
+                        {value === 2 && <TabContainer><UserAdminComponent selectedFirm={selectedFirm}/></TabContainer>}
+                        {value === 3 && <TabContainer><DeviceAdminComponent /></TabContainer>}
+                        {value === 4 && <TabContainer>Visualisation</TabContainer>}
+                        {value === 5 && <TabContainer>Optional</TabContainer>}
+                    </div> :
+                    <div>
+                        {value === 0 && <TabContainer><FirmDevicesComponent /></TabContainer>}
+                        {value === 1 && <TabContainer><UserAdminComponent selectedFirm={selectedFirm}/></TabContainer>}
+                        {value === 2 && <TabContainer><DeviceAdminComponent /></TabContainer>}
+                        {value === 3 && <TabContainer>Visualisation</TabContainer>}
+                        {value === 4 && <TabContainer>Optional</TabContainer>}
+                    </div>}
+
             </div>
         );
     }

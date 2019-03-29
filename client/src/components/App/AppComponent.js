@@ -1,6 +1,6 @@
 import React, {Component} from "react";
 import LoginForm from '../Login/LoginForm';
-import {BrowserRouter as Router, Switch, Route, Link} from 'react-router-dom';
+import {Router, Switch, Route, Link} from 'react-router-dom';
 import {PrivateRoute} from "../privateRoute";
 
 import './App.scss';
@@ -20,9 +20,6 @@ import {MuiThemeProvider, createMuiTheme} from '@material-ui/core/styles';
 import red from '@material-ui/core/colors/red';
 import {PopupComponent} from "../material/PopupComponent/PopupComponent";
 import {SnackbarProvider} from "notistack";
-import FirmAdminComponent from "../FirmAdministration/FirmAdminComponent";
-import UserAdminComponent from "../UserAdministration/UserAdminComponent";
-import FirmDevicesComponent from "../FirmDevicesComponent/FirmDevicesComponent";
 import DeviceAdminComponent from "../DeviceAdministration/DeviceAdminComponent";
 
 import {checkAccess} from "../privateRoute";
@@ -61,10 +58,6 @@ const mapStateToProps = state => {
 };
 
 class AppComponent extends Component {
-
-  constructor(props) {
-    super(props);
-  }
 
   componentWillMount() {
     if (tokenService.verifyToken()) {

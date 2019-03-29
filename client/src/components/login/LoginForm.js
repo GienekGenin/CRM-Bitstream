@@ -1,7 +1,6 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import store from '../../redux/store/index'
-import {history} from '../../redux/services/history';
 import {loginRequest, changePassRequest} from "../../redux/actions/index";
 
 import './login.scss';
