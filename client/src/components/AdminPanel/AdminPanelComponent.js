@@ -11,7 +11,7 @@ import UserAdminComponent from '../../components/UserAdministration/UserAdminCom
 import DeviceAdminComponent from '../../components/DeviceAdministration/DeviceAdminComponent';
 import Toolbar from '@material-ui/core/Toolbar';
 
-import {firmRequest} from "../../redux/actions/index";
+import {firmsRequest} from "../../redux/actions/index";
 import {connect} from "react-redux";
 import store from '../../redux/store'
 import {checkAccess} from "../privateRoute";
@@ -19,14 +19,15 @@ import FirmDevicesComponent from "../FirmDevicesComponent/FirmDevicesComponent";
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        firmRequest: () => dispatch(firmRequest()),
+        firmRequest: () => dispatch(firmsRequest()),
     };
 };
 
 const mapStateToProps = state => {
     return {
         firms: state.firmReducer.firms,
-        user: state.loginReducer.user
+        user: state.loginReducer.user,
+        firm: state.loginReducer.firm
     };
 };
 
@@ -55,6 +56,8 @@ class AdminPanel extends React.Component {
     state = {
         value: 0,
         firms: null,
+        user: null,
+        firm: null,
         selectedFirm: null,
     };
 
@@ -83,8 +86,13 @@ class AdminPanel extends React.Component {
                     this.setState({firms: reduxFirms})
                 }
             }
+            if(store.getState().loginReducer.user && this._isMounted){
+                this.setState({
+                    user: store.getState().loginReducer.user,
+                    firm: store.getState().loginReducer.firm
+                })
+            }
         });
-
     }
 
     componentWillUnmount() {
@@ -98,8 +106,7 @@ class AdminPanel extends React.Component {
 
     render() {
         const { classes } = this.props;
-        const { value, firms, selectedFirm } = this.state;
-
+        const { value, firms, selectedFirm, user, firm } = this.state;
         return (
             <div className={classes.root}>
                 <AppBar position="static" color="default">
@@ -113,8 +120,8 @@ class AdminPanel extends React.Component {
                             scrollButtons="auto"
                         >
                             {checkAccess('/editFirms') && <Tab label="Firms"/>}
-                            <Tab label="Firm devices" />
-                            <Tab label="Users" disabled={!selectedFirm}/>
+                            <Tab label="Firm devices" disabled={!selectedFirm && checkAccess('/editFirms')}/>
+                            <Tab label="Users" disabled={!selectedFirm && checkAccess('/editFirms')}/>
                             <Tab label="Devices" />
                             <Tab label="Visualisation" />
                             <Tab label="Optional" />
@@ -124,15 +131,15 @@ class AdminPanel extends React.Component {
                 {checkAccess('/editFirms') ?
                     <div>
                         {value === 0 && <TabContainer><FirmAdminComponent firms={firms} onFirmSelect={this.handleFirmSelect}/></TabContainer>}
-                        {value === 1 && <TabContainer><FirmDevicesComponent /></TabContainer>}
-                        {value === 2 && <TabContainer><UserAdminComponent selectedFirm={selectedFirm}/></TabContainer>}
+                        {value === 1 && user && firm && <TabContainer><FirmDevicesComponent user={user} firm={firm} selectedFirm={selectedFirm}/></TabContainer>}
+                        {value === 2 && user && firm && <TabContainer><UserAdminComponent  user={user} firm={firm} selectedFirm={selectedFirm}/></TabContainer>}
                         {value === 3 && <TabContainer><DeviceAdminComponent /></TabContainer>}
                         {value === 4 && <TabContainer>Visualisation</TabContainer>}
                         {value === 5 && <TabContainer>Optional</TabContainer>}
                     </div> :
                     <div>
-                        {value === 0 && <TabContainer><FirmDevicesComponent /></TabContainer>}
-                        {value === 1 && <TabContainer><UserAdminComponent selectedFirm={selectedFirm}/></TabContainer>}
+                        {value === 0 && user && firm && <TabContainer><FirmDevicesComponent user={user} firm={firm}/></TabContainer>}
+                        {value === 1 && user && firm && <TabContainer><UserAdminComponent user={user} firm={firm} selectedFirm={selectedFirm}/></TabContainer>}
                         {value === 2 && <TabContainer><DeviceAdminComponent /></TabContainer>}
                         {value === 3 && <TabContainer>Visualisation</TabContainer>}
                         {value === 4 && <TabContainer>Optional</TabContainer>}

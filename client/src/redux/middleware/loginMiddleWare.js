@@ -16,19 +16,10 @@ export const loginMiddleWare = ({dispatch}) => {
             if (action.type === loginConstants.LOGIN_REQUEST) {
                 userService.login(action.payload.email, action.payload.password)
                     .then(userData => {
-                        return dispatch({type: loginConstants.LOGIN_SUCCESS, payload: userData.user})
+                        return dispatch({type: loginConstants.LOGIN_SUCCESS, payload: {user: userData.user, firm: userData.firm}})
                     })
                     .catch(err => {
                         dispatch({type: loginConstants.LOGIN_FAILURE, payload: errorParser(err)})
-                    });
-            }
-            if (action.type === loginConstants.CHANGE_PASS_REQUEST) {
-                userService.changePass(action.payload)
-                    .then(userData => {
-                        return dispatch({type: loginConstants.CHANGE_PASS_SUCCESS, payload: userData.user})
-                    })
-                    .catch(err => {
-                        dispatch({type: loginConstants.CHANGE_PASS_FAILURE, payload: errorParser(err)})
                     });
             }
             if (action.type === loginConstants.LOGOUT_REQUEST) {

@@ -2,6 +2,7 @@ import {loginConstants} from "../constants/index";
 
 const initialState = {
     user: null,
+    firm: null,
     loading: false,
     error: null
 };
@@ -10,7 +11,8 @@ export const loginReducer = (state = initialState, action) => {
 
         case loginConstants.LOGIN_SUCCESS: {
             return Object.assign({}, state, {
-                user: action.payload,
+                user: action.payload.user,
+                firm: action.payload.firm,
                 loading: false
             });
         }
@@ -18,6 +20,7 @@ export const loginReducer = (state = initialState, action) => {
         case loginConstants.CHANGE_PASS_REQUEST: {
             return Object.assign({}, state, {
                 user: null,
+                firm: null,
                 loading: true
             });
         }
@@ -36,10 +39,10 @@ export const loginReducer = (state = initialState, action) => {
             }
         }
         case loginConstants.LOGOUT_REQUEST: {
-            return Object.assign({}, state, {user: null, loading: false});
+            return Object.assign({}, state, {user: null, firm: null, loading: false});
         }
         case loginConstants.SET_USER: {
-            return Object.assign({}, state, {user: action.payload, loading: false});
+            return Object.assign({}, state, {user: action.payload.user, firm: action.payload.firm, loading: false});
         }
         case loginConstants.CLEAN_LOGIN_ERRORS: {
             return {

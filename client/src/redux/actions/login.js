@@ -8,8 +8,8 @@ export const logoutRequest = () => {
     return { type: loginConstants.LOGOUT_REQUEST, payload: null }
 };
 
-export const setUser = (user) => {
-    return { type: loginConstants.SET_USER, payload: user }
+export const setUser = (payload) => {
+    return { type: loginConstants.SET_USER, payload }
 };
 
 export const changePassRequest = (payload) => {

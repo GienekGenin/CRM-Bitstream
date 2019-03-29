@@ -61,7 +61,7 @@ class AppComponent extends Component {
 
   componentWillMount() {
     if (tokenService.verifyToken()) {
-      const user = JSON.parse(localStorage.getItem('user')).user;
+      const user = JSON.parse(localStorage.getItem('user'));
       this.props.setUser(user);
     }
   }
