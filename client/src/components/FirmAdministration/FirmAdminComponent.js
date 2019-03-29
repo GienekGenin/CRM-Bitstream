@@ -25,7 +25,7 @@ import TablePagination from "@material-ui/core/TablePagination";
 
 import {connect} from "react-redux";
 import store from "../../redux/store";
-import {addFirmRequest, deleteFirmRequest} from "../../redux/actions";
+import {addFirmRequest, deleteFirmRequest, updateFirmRequest} from "../../redux/actions";
 
 import Checkbox from "@material-ui/core/Checkbox";
 import Button from "@material-ui/core/Button";
@@ -41,6 +41,7 @@ const mapDispatchToProps = (dispatch) => {
     return {
         addFirmRequest: (payload) => dispatch(addFirmRequest(payload)),
         deleteFirmRequest: (payload) => dispatch(deleteFirmRequest(payload)),
+        updateFirmRequest: (payload) => dispatch(updateFirmRequest(payload)),
     };
 };
 
@@ -64,6 +65,9 @@ constructor(props){
 
     handleClickOpen = (state) => {
         this.setState({[state]: true});
+        if(state === 'editDialog'){
+            this.setState({newFirm: this.props.selected})
+        }
     };
 
     handleClose = (state) => {
@@ -103,6 +107,12 @@ constructor(props){
         this.handleClose('confirmDeleteDialog');
     }
 
+    handleUpdateFirm(){
+        this.props.updateFirmRequest(this.state.newFirm)
+        this.props.resetSelected();
+        this.handleClose('editDialog');
+    }
+
     handleRefresh() {
     }
 
@@ -122,11 +132,67 @@ constructor(props){
                     >
                         <DialogTitle id="alert-dialog-title">editDialog</DialogTitle>
                         <DialogContent>
-                            <DialogContentText id="alert-dialog-description">
-                                {this.props.selected ? this.props.selected.key : ''}
-                            </DialogContentText>
+                            <TextField
+                                autoFocus
+                                margin="dense"
+                                id="firm-name"
+                                label="Firm name"
+                                type="text"
+                                required={true}
+                                value={this.state.newFirm.name}
+                                onChange={(e) => this.updateNewFirm(e,'name')}
+                                fullWidth
+                            />
+                            <TextField
+                                autoFocus
+                                margin="dense"
+                                id="firm-address"
+                                label="Firms address"
+                                type="text"
+                                required={true}
+                                value={this.state.newFirm.address}
+                                onChange={(e) => this.updateNewFirm(e, 'address')}
+                                fullWidth
+                            />
+                            <TextField
+                                autoFocus
+                                margin="dense"
+                                id="firm-email"
+                                label="Firm email"
+                                type="text"
+                                required={true}
+                                value={this.state.newFirm.email}
+                                onChange={(e) => this.updateNewFirm(e, 'email')}
+                                fullWidth
+                            />
+                            <TextField
+                                autoFocus
+                                margin="dense"
+                                id="firm-tel"
+                                label="Firm contact number"
+                                type="text"
+                                required={true}
+                                value={this.state.newFirm.tel}
+                                onChange={(e) => this.updateNewFirm(e, 'tel')}
+                                fullWidth
+                            />
+                            <TextField
+                                autoFocus
+                                margin="dense"
+                                id="firm-nip"
+                                label="NIP"
+                                type="text"
+                                required={true}
+                                value={this.state.newFirm.nip}
+                                onChange={(e) => this.updateNewFirm(e, 'nip')}
+                                fullWidth
+                            />
                         </DialogContent>
                         <DialogActions>
+                            <Button  variant="outlined" color="primary"
+                                     onClick={() => this.handleUpdateFirm()}>
+                                Update
+                            </Button>
                             <Button onClick={() => this.handleClose('editDialog')} color="primary">
                                 Close
                             </Button>
