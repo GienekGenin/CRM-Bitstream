@@ -61,16 +61,11 @@ class AdminPanel extends React.Component {
         firms: null,
         user: null,
         firm: null,
-        selectedFirm: null,
-        loading: false
+        selectedFirm: null
     };
 
     constructor(){
         super();
-
-        store.subscribe(() => {
-            this.setState({loading: store.getState().firmReducer.loading});
-        });
 
         this.unsubscribe = store.subscribe(()=>{
             if(store.getState().firmReducer.firms){
@@ -115,11 +110,10 @@ class AdminPanel extends React.Component {
 
     render() {
         const { classes } = this.props;
-        const { value, firms, selectedFirm, user, firm, loading } = this.state;
+        const { value, firms, selectedFirm, user, firm } = this.state;
         return (
             <div className={classes.root}>
                 <AppBar position="static" color="default">
-                    {loading && <LinearProgress color="secondary" />}
                     <Toolbar>
                         <Tabs
                             value={value}

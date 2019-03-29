@@ -25,6 +25,7 @@ import TablePagination from "@material-ui/core/TablePagination";
 
 import {connect} from "react-redux";
 import store from "../../redux/store";
+import {addFirmRequest} from "../../redux/actions";
 
 import Checkbox from "@material-ui/core/Checkbox";
 import Button from "@material-ui/core/Button";
@@ -37,7 +38,9 @@ import TextField from "@material-ui/core/TextField";
 import LinearProgress from "@material-ui/core/LinearProgress";
 
 const mapDispatchToProps = (dispatch) => {
-    return {};
+    return {
+        addFirmRequest: (payload) => dispatch(addFirmRequest(payload)),
+    };
 };
 
 class DeviceToolBar extends React.Component {
@@ -76,7 +79,17 @@ constructor(props){
     };
 
     handleAddDevice = () => {
-        console.log(this.state.newFirm)
+        this.props.addFirmRequest(this.state.newFirm);
+        this.setState({
+            addDialog: false,
+            newFirm: {
+                name: '',
+                address: '',
+                email: '',
+                tel: '',
+                nip: ''
+            }
+        });
     };
 
     updateNewFirm(e, param) {
@@ -401,7 +414,26 @@ class FirmAdmin extends React.Component {
 
         store.subscribe(() => {
             this.setState({loading: store.getState().firmReducer.loading});
-        })
+            if(store.getState().firmReducer.firms){
+                let data = [];
+                const reduxFirms = store.getState().firmReducer.firms;
+                reduxFirms.map(record => {
+                    let row = [
+                        record._id,
+                        record.name,
+                    ];
+                    data.push(createData(...row));
+                    const obj = {
+                        order: this.state.order,
+                        orderBy: this.state.orderBy,
+                        selected: [],
+                        data,
+                        page: this.state.page,
+                        rowsPerPage: this.state.rowsPerPage
+                    };
+                    this.setState(obj);})
+            }
+        });
     }
 
     componentWillMount() {

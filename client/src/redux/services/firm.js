@@ -18,6 +18,25 @@ const getAll = () => {
         })
 };
 
+const addFirm = (firm) => {
+    const token = JSON.parse(localStorage.getItem('user')).tokenSecret;
+    const requestOptions = {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(firm)
+    };
+
+
+    return fetch(`${apiBase}firms/`, requestOptions)
+        .then(handleResponse)
+        .then(firm => {
+            return firm;
+        })
+};
+
 const handleResponse = (response) => {
     return response.text().then(text => {
         const data = text && JSON.parse(text);
@@ -34,5 +53,6 @@ const handleResponse = (response) => {
 };
 
 export const firmService = {
-    getAll
+    getAll,
+    addFirm
 };

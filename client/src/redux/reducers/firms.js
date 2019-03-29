@@ -11,10 +11,20 @@ export const firmReducer = (state = initialState, action) => {
     switch (action.type) {
 
         case firmConstants.FIRMS_GET_REQUEST:
+        case firmConstants.ADD_FIRM_REQUEST:
         case firmConstants.UPDATE_FIRM_REQUEST : {
             return {
                 ...state,
                 loading: true
+            }
+        }
+        case firmConstants.ADD_FIRM_SUCCESS: {
+            console.log(action.payload)
+            return {
+                ...state,
+                firms: [...state.firms, action.payload],
+                loading: false,
+                success: 'Firm was successfully created'
             }
         }
         case firmConstants.FIRMS_GET_SUCCESS: {
@@ -25,7 +35,8 @@ export const firmReducer = (state = initialState, action) => {
             });
         }
         case firmConstants.FIRMS_GET_FAILURE:
-        case firmConstants.UPDATE_FIRM_FAILURE: {
+        case firmConstants.UPDATE_FIRM_FAILURE:
+        case firmConstants.ADD_FIRM_FAILURE: {
             return {
                 ...state,
                 loading: false,

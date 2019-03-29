@@ -21,18 +21,16 @@ export const firmMiddleWare = ({dispatch}) => {
                         dispatch({type: firmConstants.FIRMS_GET_FAILURE, payload: errorParser(err)})
                     });
             }
-            if (action.type === firmConstants.UPDATE_FIRM_REQUEST) {
-                firmService.update()
-                    .then(() => {
-                        // todo: return updated object and not call all firms
-                        dispatch({type: firmConstants.FIRMS_GET_REQUEST});
+            if (action.type === firmConstants.ADD_FIRM_REQUEST) {
+                firmService.addFirm(action.payload)
+                    .then((firm) => {
                         return dispatch({
-                            type: firmConstants.UPDATE_FIRM_SUCCESS,
-                            payload: 'Firm was successfully updated'
+                            type: firmConstants.ADD_FIRM_SUCCESS,
+                            payload: firm
                         })
                     })
                     .catch(err => {
-                        dispatch({type: firmConstants.UPDATE_FIRM_FAILURE, payload: errorParser(err)})
+                        dispatch({type: firmConstants.ADD_FIRM_FAILURE, payload: errorParser(err)})
                     });
             }
             return next(action);

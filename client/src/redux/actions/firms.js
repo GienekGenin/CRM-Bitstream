@@ -15,3 +15,7 @@ export const cleanFirmsSuccess = () => {
 export const updateFirmRequest = (firm) => {
     return { type: firmConstants.UPDATE_FIRM_REQUEST, payload: firm}
 };
+
+export const addFirmRequest = (payload) => {
+    return { type: firmConstants.ADD_FIRM_REQUEST, payload}
+};
