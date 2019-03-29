@@ -1,6 +1,8 @@
 import React from "react";
 import * as PropTypes from 'prop-types';
 
+import './firmAdmin.scss';
+
 import classNames from 'classnames';
 import {lighten} from '@material-ui/core/styles/colorManipulator';
 import {withStyles} from '@material-ui/core/styles';
@@ -42,9 +44,8 @@ const mapDispatchToProps = (dispatch) => {
 class DeviceToolBar extends React.Component {
 
     state = {
-        keyDialog: false,
+        editDialog: false,
         addDialog: false,
-        propsDialog: false,
         confirmDeleteDialog: false,
         newDeviceId: ''
     };
@@ -69,13 +70,6 @@ class DeviceToolBar extends React.Component {
 
     }
 
-    handleSetStatusOne() {
-
-    }
-
-    handleSetStatusAll(status) {
-    }
-
     handleRefresh() {
     }
 
@@ -84,23 +78,23 @@ class DeviceToolBar extends React.Component {
             <div className="device-controls">
                 <div>
                     <Button disabled={!this.props.selected} variant="contained" color="primary"
-                            onClick={() => this.handleClickOpen('keyDialog')}>
-                        Key
+                            onClick={() => this.handleClickOpen('editDialog')}>
+                        editDialog
                     </Button>
                     <Dialog
-                        open={this.state.keyDialog}
-                        onClose={() => this.handleClose('keyDialog')}
+                        open={this.state.editDialog}
+                        onClose={() => this.handleClose('editDialog')}
                         aria-labelledby="key-dialog-title"
                         aria-describedby="alert-dialog-description"
                     >
-                        <DialogTitle id="alert-dialog-title">Connection key</DialogTitle>
+                        <DialogTitle id="alert-dialog-title">editDialog</DialogTitle>
                         <DialogContent>
                             <DialogContentText id="alert-dialog-description">
                                 {this.props.selected ? this.props.selected.key : ''}
                             </DialogContentText>
                         </DialogContent>
                         <DialogActions>
-                            <Button onClick={() => this.handleClose('keyDialog')} color="primary">
+                            <Button onClick={() => this.handleClose('editDialog')} color="primary">
                                 Close
                             </Button>
                         </DialogActions>
@@ -168,44 +162,6 @@ class DeviceToolBar extends React.Component {
                         </DialogActions>
                     </Dialog>
                 </div>
-                <div>
-                    <Button disabled={!this.props.selected} variant="contained" color="primary"
-                            onClick={() => this.handleClickOpen('propsDialog')}>
-                        Properties
-                    </Button>
-                    <Dialog
-                        open={this.state.propsDialog}
-                        onClose={() => this.handleClose('propsDialog')}
-                        aria-labelledby="alert-dialog-title"
-                        aria-describedby="alert-dialog-description"
-                    >
-                        <DialogTitle id="alert-dialog-title-">Device properties</DialogTitle>
-                        <DialogContent>
-                            <DialogContentText>
-                                {this.props.selected ? Object.keys(this.props.selected).map(key => (
-                                    <span key={key}>
-                                        <span>{key} = </span>
-                                        <span>{this.props.selected[key]}</span><br/>
-                                    </span>
-                                )) : ''}
-                            </DialogContentText>
-                        </DialogContent>
-                        <DialogActions>
-                            <Button onClick={() => this.handleClose('propsDialog')} color="primary">
-                                Close
-                            </Button>
-                        </DialogActions>
-                    </Dialog>
-                </div>
-                <Button variant="contained" disabled={this.props.loading} onClick={() => this.handleSetStatusAll('enabled')}>
-                    Turn on all
-                </Button>
-                <Button variant="contained" disabled={this.props.loading} onClick={() => this.handleSetStatusAll('disabled')}>
-                    Turn off all
-                </Button>
-                <Button disabled={!this.props.selected} variant="contained" onClick={() => this.handleSetStatusOne()}>
-                    Change activity
-                </Button>
                 <Button variant="contained" disabled={this.props.loading} onClick={() => this.handleRefresh()}>
                     Refresh
                 </Button>
@@ -316,7 +272,7 @@ let DeviceTableToolbar = props => {
                     </Typography>
                 ) : (
                     <Typography variant="h6" id="tableTitle">
-                        Deviot
+                        Firms
                     </Typography>
                 )}
             </div>
