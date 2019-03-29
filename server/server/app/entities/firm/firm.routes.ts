@@ -23,3 +23,17 @@ firms.post('/', TokenValidator.validateToken, (req, res, next) => {
         .then(PayloadGeneratorService.nextWithData(next, res))
         .catch(next);
 });
+
+firms.delete('/:id', TokenValidator.validateToken, (req, res, next) => {
+    firmService
+        .removeById(req.params.id)
+        .then(PayloadGeneratorService.nextWithData(next, res))
+        .catch(next);
+});
+
+firms.put('/', TokenValidator.validateToken, (req, res, next) => {
+    firmService
+        .updateById(req.body._id, req.body)
+        .then(PayloadGeneratorService.nextWithData(next, res))
+        .catch(next);
+});

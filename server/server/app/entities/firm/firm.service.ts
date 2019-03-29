@@ -16,6 +16,14 @@ class FirmService {
 		return this.firmRepository.findById(id);
 	}
 
+	removeById(id){
+		return this.firmRepository.removeById(id);
+	}
+
+	updateById(id,obj){
+		return this.firmRepository.update(id, obj);
+	}
+
 	save(firm) {
 		return this.firmRepository.save(firm);
 	}
