@@ -37,6 +37,22 @@ const addFirm = (firm) => {
         })
 };
 
+const deleteFirm = (firmId) => {
+    const token = JSON.parse(localStorage.getItem('user')).tokenSecret;
+    const requestOptions = {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        }
+    };
+    return fetch(`${apiBase}firms/${firmId}`, requestOptions)
+        .then(handleResponse)
+        .then(() => {
+            return firmId;
+        })
+};
+
 const handleResponse = (response) => {
     return response.text().then(text => {
         const data = text && JSON.parse(text);
@@ -54,5 +70,6 @@ const handleResponse = (response) => {
 
 export const firmService = {
     getAll,
-    addFirm
+    addFirm,
+    deleteFirm
 };

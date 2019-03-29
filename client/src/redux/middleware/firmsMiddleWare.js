@@ -33,6 +33,18 @@ export const firmMiddleWare = ({dispatch}) => {
                         dispatch({type: firmConstants.ADD_FIRM_FAILURE, payload: errorParser(err)})
                     });
             }
+            if (action.type === firmConstants.DELETE_FIRM_REQUEST) {
+                firmService.deleteFirm(action.payload)
+                    .then((firmId) => {
+                        return dispatch({
+                            type: firmConstants.DELETE_FIRM_SUCCESS,
+                            payload: firmId
+                        })
+                    })
+                    .catch(err => {
+                        dispatch({type: firmConstants.DELETE_FIRM_FAILURE, payload: errorParser(err)})
+                    });
+            }
             return next(action);
         };
     };

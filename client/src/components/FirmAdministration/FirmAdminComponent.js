@@ -25,7 +25,7 @@ import TablePagination from "@material-ui/core/TablePagination";
 
 import {connect} from "react-redux";
 import store from "../../redux/store";
-import {addFirmRequest} from "../../redux/actions";
+import {addFirmRequest, deleteFirmRequest} from "../../redux/actions";
 
 import Checkbox from "@material-ui/core/Checkbox";
 import Button from "@material-ui/core/Button";
@@ -40,6 +40,7 @@ import LinearProgress from "@material-ui/core/LinearProgress";
 const mapDispatchToProps = (dispatch) => {
     return {
         addFirmRequest: (payload) => dispatch(addFirmRequest(payload)),
+        deleteFirmRequest: (payload) => dispatch(deleteFirmRequest(payload)),
     };
 };
 
@@ -97,7 +98,9 @@ constructor(props){
     }
 
     handleDeleteDevice() {
-
+        this.props.deleteFirmRequest(this.props.selected._id);
+        this.props.resetSelected();
+        this.handleClose('confirmDeleteDialog');
     }
 
     handleRefresh() {
