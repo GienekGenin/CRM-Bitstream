@@ -32,7 +32,6 @@ import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import DialogContent from "@material-ui/core/DialogContent";
-import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogActions from "@material-ui/core/DialogActions";
 import TextField from "@material-ui/core/TextField";
 import LinearProgress from "@material-ui/core/LinearProgress";
@@ -45,7 +44,7 @@ const mapDispatchToProps = (dispatch) => {
     };
 };
 
-class DeviceToolBar extends React.Component {
+class FirmToolBar extends React.Component {
 
 constructor(props){
     super(props);
@@ -108,7 +107,7 @@ constructor(props){
     }
 
     handleUpdateFirm(){
-        this.props.updateFirmRequest(this.state.newFirm)
+        this.props.updateFirmRequest(this.state.newFirm);
         this.props.resetSelected();
         this.handleClose('editDialog');
     }
@@ -313,12 +312,12 @@ constructor(props){
     }
 }
 
-DeviceToolBar.propTypes = {selected: PropTypes.object, resetSelected: PropTypes.func, loading: PropTypes.bool};
+FirmToolBar.propTypes = {selected: PropTypes.object, resetSelected: PropTypes.func, loading: PropTypes.bool};
 
-const DeviceToolBarComponent = connect(null, mapDispatchToProps)(DeviceToolBar);
+const FirmToolBarComponent = connect(null, mapDispatchToProps)(FirmToolBar);
 
 
-class DeviceTableHead extends React.Component {
+class FirmTableHead extends React.Component {
     createSortHandler = property => event => {
         this.props.onRequestSort(event, property);
     };
@@ -363,7 +362,7 @@ class DeviceTableHead extends React.Component {
     }
 }
 
-DeviceTableHead.propTypes = {
+FirmTableHead.propTypes = {
     numSelected: PropTypes.number.isRequired,
     onRequestSort: PropTypes.func.isRequired,
     order: PropTypes.string.isRequired,
@@ -371,7 +370,7 @@ DeviceTableHead.propTypes = {
     rowCount: PropTypes.number.isRequired,
 };
 
-const deviceTableToolbarStyles = theme => ({
+const firmTableToolbarStyles = theme => ({
     root: {
         paddingRight: theme.spacing.unit,
     },
@@ -396,7 +395,7 @@ const deviceTableToolbarStyles = theme => ({
     },
 });
 
-let DeviceTableToolbar = props => {
+let FirmTableToolbar = props => {
     const {numSelected, classes, firm} = props;
 
     return (
@@ -436,13 +435,13 @@ let DeviceTableToolbar = props => {
     );
 };
 
-DeviceTableToolbar.propTypes = {
+FirmTableToolbar.propTypes = {
     classes: PropTypes.object.isRequired,
     numSelected: PropTypes.number.isRequired,
     firm: PropTypes.object
 };
 
-DeviceTableToolbar = withStyles(deviceTableToolbarStyles)(DeviceTableToolbar);
+FirmTableToolbar = withStyles(firmTableToolbarStyles)(FirmTableToolbar);
 
 const styles = theme => ({
     root: {
@@ -506,6 +505,7 @@ class FirmAdmin extends React.Component {
     }
 
     componentWillMount() {
+        this.props.resetSelectedParent();
         let data = [];
         this.props.firms.map(record => {
             let row = [
@@ -575,12 +575,12 @@ class FirmAdmin extends React.Component {
         const emptyRows = rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
         return (
             <Paper className={classes.root}>
-                <DeviceTableToolbar numSelected={selected.length} firm={firm}/>
-                <DeviceToolBarComponent selected={firm} loading={loading} resetSelected={() => this.resetSelected()}/>
+                <FirmTableToolbar numSelected={selected.length} firm={firm}/>
+                <FirmToolBarComponent selected={firm} loading={loading} resetSelected={() => this.resetSelected()}/>
                 {loading && <LinearProgress color="secondary"/>}
                 <div className={classes.tableWrapper}>
                     <Table className={classes.table} aria-labelledby="tableTitle">
-                        <DeviceTableHead
+                        <FirmTableHead
                             numSelected={selected.length}
                             order={order}
                             orderBy={orderBy}
@@ -641,7 +641,8 @@ class FirmAdmin extends React.Component {
 FirmAdmin.propTypes = {
     firms: PropTypes.array,
     onFirmSelect: PropTypes.func.isRequired,
-    classes: PropTypes.object.isRequired
+    classes: PropTypes.object.isRequired,
+    resetSelectedParent: PropTypes.func
 };
 
 const FirmAdminStyles = withStyles(styles)(FirmAdmin);

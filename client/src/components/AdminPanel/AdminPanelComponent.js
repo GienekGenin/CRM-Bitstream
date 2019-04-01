@@ -83,6 +83,7 @@ class AdminPanel extends React.Component {
         });
 
         this.handleFirmSelect = this.handleFirmSelect.bind(this);
+        this.resetSelectedFirm = this.resetSelectedFirm.bind(this);
     }
 
     _isMounted = false;
@@ -90,6 +91,12 @@ class AdminPanel extends React.Component {
     handleFirmSelect(selectedFirm){
         if(this._isMounted){
             this.setState({selectedFirm})
+        }
+    }
+
+    resetSelectedFirm(){
+        if(this._isMounted){
+            this.setState({selectedFirm: null})
         }
     }
 
@@ -134,7 +141,7 @@ class AdminPanel extends React.Component {
                 </AppBar>
                 {checkAccess('/editFirms') ?
                     <div>
-                        {value === 0 && firms && <TabContainer><FirmAdminComponent firms={firms} onFirmSelect={this.handleFirmSelect}/></TabContainer>}
+                        {value === 0 && firms && <TabContainer><FirmAdminComponent resetSelectedParent={this.resetSelectedFirm} firms={firms} onFirmSelect={this.handleFirmSelect}/></TabContainer>}
                         {value === 1 && user && firm && <TabContainer><FirmDevicesComponent user={user} firm={firm} selectedFirm={selectedFirm}/></TabContainer>}
                         {value === 2 && user && firm && <TabContainer><UserAdminComponent  user={user} firm={firm} selectedFirm={selectedFirm}/></TabContainer>}
                         {value === 3 && <TabContainer><DeviceAdminComponent /></TabContainer>}
