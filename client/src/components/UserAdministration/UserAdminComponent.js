@@ -57,7 +57,7 @@ const mapStateToProps = state => {
 
 class FirmToolBar extends React.Component {
 
-    constructor(props){
+    constructor(props) {
         super(props);
         this.state = {
             editDialog: false,
@@ -77,7 +77,7 @@ class FirmToolBar extends React.Component {
 
     handleClickOpen = (state) => {
         this.setState({[state]: true});
-        if(state === 'editDialog'){
+        if (state === 'editDialog') {
             this.setState({newFirm: this.props.selected})
         }
     };
@@ -98,7 +98,7 @@ class FirmToolBar extends React.Component {
     };
 
     handleAddDevice = () => {
-        this.props.addFirmRequest(this.state.newFirm);
+        this.props.addUserRequest(this.state.newFirm);
         this.setState({
             addDialog: false,
             newFirm: {
@@ -114,17 +114,17 @@ class FirmToolBar extends React.Component {
     };
 
     updateNewFirm(e, param) {
-        this.setState({newFirm:Object.assign({}, this.state.newFirm, {[param]: e.target.value})})
+        this.setState({newFirm: Object.assign({}, this.state.newFirm, {[param]: e.target.value})})
     }
 
     handleDeleteDevice() {
-        this.props.deleteFirmRequest(this.props.selected.email);
+        this.props.deleteUserRequest(this.props.selected.email);
         this.props.resetSelected();
         this.handleClose('confirmDeleteDialog');
     }
 
-    handleUpdateFirm(){
-        this.props.updateFirmRequest(this.state.newFirm);
+    handleUpdateFirm() {
+        this.props.updateUserRequest(this.state.newFirm);
         this.props.resetSelected();
         this.handleClose('editDialog');
     }
@@ -156,7 +156,7 @@ class FirmToolBar extends React.Component {
                                 type="text"
                                 required={true}
                                 value={this.state.newFirm.name}
-                                onChange={(e) => this.updateNewFirm(e,'name')}
+                                onChange={(e) => this.updateNewFirm(e, 'name')}
                                 fullWidth
                             />
                             <TextField
@@ -227,8 +227,8 @@ class FirmToolBar extends React.Component {
                             />
                         </DialogContent>
                         <DialogActions>
-                            <Button  variant="outlined" color="primary"
-                                     onClick={() => this.handleUpdateFirm()}>
+                            <Button variant="outlined" color="primary"
+                                    onClick={() => this.handleUpdateFirm()}>
                                 Update
                             </Button>
                             <Button onClick={() => this.handleClose('editDialog')} color="primary">
@@ -258,7 +258,7 @@ class FirmToolBar extends React.Component {
                                 type="text"
                                 required={true}
                                 value={this.state.newFirm.name}
-                                onChange={(e) => this.updateNewFirm(e,'name')}
+                                onChange={(e) => this.updateNewFirm(e, 'name')}
                                 fullWidth
                             />
                             <TextField
@@ -329,8 +329,8 @@ class FirmToolBar extends React.Component {
                             />
                         </DialogContent>
                         <DialogActions>
-                            <Button  variant="outlined" color="primary"
-                                     onClick={() => this.handleAddDevice()}>
+                            <Button variant="outlined" color="primary"
+                                    onClick={() => this.handleAddDevice()}>
                                 Add
                             </Button>
                             <Button onClick={() => this.handleClose('addDialog')} color="primary">
@@ -520,18 +520,11 @@ const styles = theme => ({
 });
 
 
-
-
-
-
-
-
-
 class UserAdminComponent extends React.Component {
 
     _isMounted = false;
 
-    constructor(props){
+    constructor(props) {
         super(props);
 
         this.state = {
@@ -551,41 +544,9 @@ class UserAdminComponent extends React.Component {
     }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     componentWillMount() {
         let data = [];
-        if(this.props.parentUsers){
+        if (this.props.parentUsers) {
             this.props.parentUsers.map(record => {
                 let row = [
                     record.email,
@@ -600,7 +561,8 @@ class UserAdminComponent extends React.Component {
                     page: this.state.page,
                     rowsPerPage: this.state.rowsPerPage
                 };
-                this.setState(obj);})
+                this.setState(obj);
+            })
         }
     }
 
@@ -609,20 +571,20 @@ class UserAdminComponent extends React.Component {
 
         if (this.props.selectedFirm) {
             this.setState({selectedFirm: this.props.selectedFirm});
-            if(!this.props.parentUsers){
+            if (!this.props.parentUsers) {
                 this.props.usersRequest(this.props.selectedFirm._id);
             }
         } else {
             let selectedFirm = JSON.parse(localStorage.getItem('user')).firm;
             this.setState({selectedFirm});
-            if(!this.props.parentUsers){
+            if (!this.props.parentUsers) {
                 this.props.usersRequest(selectedFirm._id);
             }
         }
 
         this.unsubscribe = store.subscribe(() => {
             this.setState({loading: store.getState().userReducer.loading});
-            if(store.getState().userReducer.users){
+            if (store.getState().userReducer.users) {
                 const users = store.getState().userReducer.users;
                 this.setState({users});
                 this.props.handleSetUsers(users);
@@ -642,7 +604,8 @@ class UserAdminComponent extends React.Component {
                         page: this.state.page,
                         rowsPerPage: this.state.rowsPerPage
                     };
-                    this.setState(obj);})
+                    this.setState(obj);
+                })
             }
         });
     }
@@ -703,7 +666,8 @@ class UserAdminComponent extends React.Component {
         return (
             <Paper className={classes.root}>
                 <FirmTableToolbar numSelected={selected.length} selectedUser={selectedUser}/>
-                <FirmToolBarComponent selected={selectedUser} loading={loading} resetSelected={() => this.resetSelected()}/>
+                <FirmToolBarComponent selected={selectedUser} loading={loading}
+                                      resetSelected={() => this.resetSelected()}/>
                 {loading && <LinearProgress color="secondary"/>}
                 <div className={classes.tableWrapper}>
                     <Table className={classes.table} aria-labelledby="tableTitle">

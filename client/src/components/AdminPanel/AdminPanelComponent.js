@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from 'prop-types';
-import { withStyles } from '@material-ui/core/styles';
+import {withStyles} from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
@@ -33,7 +33,7 @@ const mapStateToProps = state => {
 
 const TabContainer = (props) => {
     return (
-        <Typography component="div" style={{ padding: 8 * 3 }}>
+        <Typography component="div" style={{padding: 8 * 3}}>
             {props.children}
         </Typography>
     );
@@ -61,13 +61,13 @@ class AdminPanel extends React.Component {
         selectedUser: null
     };
 
-    constructor(){
+    constructor() {
         super();
 
-        this.unsubscribe = store.subscribe(()=>{
-            if(store.getState().firmReducer.firms){
+        this.unsubscribe = store.subscribe(() => {
+            if (store.getState().firmReducer.firms) {
                 const reduxFirms = store.getState().firmReducer.firms;
-                if(reduxFirms !== this.state.firms && this._isMounted){
+                if (reduxFirms !== this.state.firms && this._isMounted) {
                     this.setState({firms: reduxFirms})
                 }
             }
@@ -82,40 +82,39 @@ class AdminPanel extends React.Component {
 
     _isMounted = false;
 
-    handleFirmSelect(selectedFirm){
-        if(this._isMounted){
+    handleFirmSelect(selectedFirm) {
+        if (this._isMounted) {
             this.setState({selectedFirm})
         }
     }
 
-    handleUserSelect(selectedUser){
-        if(this._isMounted){
+    handleUserSelect(selectedUser) {
+        if (this._isMounted) {
             this.setState({selectedUser})
         }
     }
 
-    resetSelectedFirm(){
-        if(this._isMounted){
+    resetSelectedFirm() {
+        if (this._isMounted) {
             this.setState({selectedFirm: null, users: null, selectedUser: null})
         }
     }
 
-    resetSelectedUser(){
-        if(this._isMounted){
+    resetSelectedUser() {
+        if (this._isMounted) {
             this.setState({selectedUser: null})
         }
     }
 
-    handleSetUsers(users){
-        console.log(users);
-        if(this._isMounted){
+    handleSetUsers(users) {
+        if (this._isMounted) {
             this.setState({users});
         }
     }
 
     componentDidMount() {
         this._isMounted = true;
-        if(checkAccess('/editFirms')){
+        if (checkAccess('/editFirms')) {
             this.props.firmRequest();
         }
     }
@@ -126,12 +125,12 @@ class AdminPanel extends React.Component {
     }
 
     handleChange = (event, value) => {
-        this.setState({ value });
+        this.setState({value});
     };
 
     render() {
-        const { classes } = this.props;
-        const { value, firms, selectedFirm, selectedUser, users } = this.state;
+        const {classes} = this.props;
+        const {value, firms, selectedFirm, selectedUser, users} = this.state;
         return (
             <div className={classes.root}>
                 <AppBar position="static" color="default">
@@ -147,9 +146,9 @@ class AdminPanel extends React.Component {
                             {checkAccess('/editFirms') && <Tab label="Firms"/>}
                             <Tab label="Firm devices" disabled={!selectedFirm && checkAccess('/editFirms')}/>
                             <Tab label="Users" disabled={!selectedFirm && checkAccess('/editFirms')}/>
-                            <Tab label="Devices" />
-                            <Tab label="Visualisation" />
-                            <Tab label="Optional" />
+                            <Tab label="Devices" disabled={!selectedUser}/>
+                            <Tab label="Visualisation"/>
+                            <Tab label="Optional"/>
                         </Tabs>
                     </Toolbar>
                 </AppBar>
@@ -160,11 +159,11 @@ class AdminPanel extends React.Component {
                                 resetSelectedParent={this.resetSelectedFirm}
                                 firms={firms} onFirmSelect={this.handleFirmSelect}/>
                         </TabContainer>}
-                        {value === 1 &&   <TabContainer>
+                        {value === 1 && <TabContainer>
                             <FirmDevicesComponent
                                 selectedFirm={selectedFirm}/>
                         </TabContainer>}
-                        {value === 2 &&   <TabContainer>
+                        {value === 2 && <TabContainer>
                             <UserAdminComponent
                                 handleSetUsers={this.handleSetUsers}
                                 resetSelectedUserParent={this.resetSelectedUser}
@@ -172,13 +171,13 @@ class AdminPanel extends React.Component {
                                 selectedFirm={selectedUser}
                                 parentUsers={users}
                             /></TabContainer>}
-                        {value === 3 && <TabContainer><DeviceAdminComponent /></TabContainer>}
+                        {value === 3 && <TabContainer><DeviceAdminComponent/></TabContainer>}
                         {value === 4 && <TabContainer>Visualisation</TabContainer>}
                         {value === 5 && <TabContainer>Optional</TabContainer>}
                     </div> :
                     <div>
-                        {value === 0 &&   <TabContainer><FirmDevicesComponent  /></TabContainer>}
-                        {value === 1 &&   <TabContainer>
+                        {value === 0 && <TabContainer><FirmDevicesComponent/></TabContainer>}
+                        {value === 1 && <TabContainer>
                             <UserAdminComponent
                                 handleSetUsers={this.handleSetUsers}
                                 resetSelectedUserParent={this.resetSelectedUser}
@@ -186,7 +185,9 @@ class AdminPanel extends React.Component {
                                 selectedFirm={selectedUser}
                                 parentUsers={users}
                             /></TabContainer>}
-                        {value === 2 && <TabContainer><DeviceAdminComponent /></TabContainer>}
+                        {value === 2 && <TabContainer>
+                            <DeviceAdminComponent/>
+                        </TabContainer>}
                         {value === 3 && <TabContainer>Visualisation</TabContainer>}
                         {value === 4 && <TabContainer>Optional</TabContainer>}
                     </div>}
@@ -200,6 +201,6 @@ AdminPanel.propTypes = {
     classes: PropTypes.object.isRequired,
 };
 
-const AdminPanelWithStyles =  withStyles(styles)(AdminPanel);
+const AdminPanelWithStyles = withStyles(styles)(AdminPanel);
 
 export default connect(mapStateToProps, mapDispatchToProps)(AdminPanelWithStyles);
