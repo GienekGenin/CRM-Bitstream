@@ -12,7 +12,7 @@ export const cleanUsersSuccess = () => {
     return {type: userConstants.CLEAN_USERS_SUCCESS}
 };
 
-export const updateFirmRequest = (user) => {
+export const updateUserRequest = (user) => {
     return {type: userConstants.UPDATE_USER_REQUEST, payload: user}
 };
 

@@ -56,7 +56,9 @@ class AdminPanel extends React.Component {
     state = {
         value: 0,
         firms: null,
-        selectedFirm: null
+        users: null,
+        selectedFirm: null,
+        selectedUser: null
     };
 
     constructor(){
@@ -73,6 +75,9 @@ class AdminPanel extends React.Component {
 
         this.handleFirmSelect = this.handleFirmSelect.bind(this);
         this.resetSelectedFirm = this.resetSelectedFirm.bind(this);
+        this.handleUserSelect = this.handleUserSelect.bind(this);
+        this.resetSelectedUser = this.resetSelectedUser.bind(this);
+        this.handleSetUsers = this.handleSetUsers.bind(this);
     }
 
     _isMounted = false;
@@ -83,9 +88,28 @@ class AdminPanel extends React.Component {
         }
     }
 
+    handleUserSelect(selectedUser){
+        if(this._isMounted){
+            this.setState({selectedUser})
+        }
+    }
+
     resetSelectedFirm(){
         if(this._isMounted){
-            this.setState({selectedFirm: null})
+            this.setState({selectedFirm: null, users: null, selectedUser: null})
+        }
+    }
+
+    resetSelectedUser(){
+        if(this._isMounted){
+            this.setState({selectedUser: null})
+        }
+    }
+
+    handleSetUsers(users){
+        console.log(users);
+        if(this._isMounted){
+            this.setState({users});
         }
     }
 
@@ -107,7 +131,7 @@ class AdminPanel extends React.Component {
 
     render() {
         const { classes } = this.props;
-        const { value, firms, selectedFirm } = this.state;
+        const { value, firms, selectedFirm, selectedUser, users } = this.state;
         return (
             <div className={classes.root}>
                 <AppBar position="static" color="default">
@@ -133,14 +157,21 @@ class AdminPanel extends React.Component {
                     <div>
                         {value === 0 && firms && <TabContainer><FirmAdminComponent resetSelectedParent={this.resetSelectedFirm} firms={firms} onFirmSelect={this.handleFirmSelect}/></TabContainer>}
                         {value === 1 &&   <TabContainer><FirmDevicesComponent  selectedFirm={selectedFirm}/></TabContainer>}
-                        {value === 2 &&   <TabContainer><UserAdminComponent    selectedFirm={selectedFirm}/></TabContainer>}
+                        {value === 2 &&   <TabContainer><UserAdminComponent handleSetUsers={this.handleSetUsers} resetSelectedUserParent={this.resetSelectedUser} onUserSelect={this.handleUserSelect} selectedFirm={selectedUser}/></TabContainer>}
                         {value === 3 && <TabContainer><DeviceAdminComponent /></TabContainer>}
                         {value === 4 && <TabContainer>Visualisation</TabContainer>}
                         {value === 5 && <TabContainer>Optional</TabContainer>}
                     </div> :
                     <div>
                         {value === 0 &&   <TabContainer><FirmDevicesComponent  /></TabContainer>}
-                        {value === 1 &&   <TabContainer><UserAdminComponent   selectedFirm={selectedFirm}/></TabContainer>}
+                        {value === 1 &&   <TabContainer>
+                            <UserAdminComponent
+                                handleSetUsers={this.handleSetUsers}
+                                resetSelectedUserParent={this.resetSelectedUser}
+                                onUserSelect={this.handleUserSelect}
+                                selectedFirm={selectedUser}
+                                parentUsers={users}
+                            /></TabContainer>}
                         {value === 2 && <TabContainer><DeviceAdminComponent /></TabContainer>}
                         {value === 3 && <TabContainer>Visualisation</TabContainer>}
                         {value === 4 && <TabContainer>Optional</TabContainer>}
