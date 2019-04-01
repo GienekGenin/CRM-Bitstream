@@ -10,8 +10,8 @@ const errorParser = (err) => {
 };
 
 export const usersMiddleWare = ({dispatch}) => {
-    return function (next) {
-        return function (action) {
+    return (next) => {
+        return (action) => {
             if (action.type === userConstants.USERS_GET_REQUEST) {
                 userService.getAllByFirmId(action.payload)
                     .then(users => {

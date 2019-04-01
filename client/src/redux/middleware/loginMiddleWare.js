@@ -11,8 +11,8 @@ const errorParser = (err) => {
 };
 
 export const loginMiddleWare = ({dispatch}) => {
-    return function (next) {
-        return function (action) {
+    return (next) => {
+        return (action) => {
             if (action.type === loginConstants.LOGIN_REQUEST) {
                 userService.login(action.payload.email, action.payload.password)
                     .then(userData => {

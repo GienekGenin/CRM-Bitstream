@@ -10,8 +10,8 @@ const errorParser = (err) => {
 };
 
 export const firmMiddleWare = ({dispatch}) => {
-    return function (next) {
-        return function (action) {
+    return (next) => {
+        return (action) => {
             if (action.type === firmConstants.FIRMS_GET_REQUEST) {
                 firmService.getAll()
                     .then(firms => {
