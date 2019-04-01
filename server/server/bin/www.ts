@@ -1,6 +1,7 @@
 import {app} from '../app';
 import * as http from 'http';
 import {config} from '../config';
+import {socketService} from '../app/common/services/socket.service';
 
 /**
  * Setup an express server and define port to listen all incoming requests for this application
@@ -10,6 +11,8 @@ const setUpExpress = () => {
 	app.set('port', port);
 
 	const server = http.createServer(app);
+
+	socketService(server);
 
 	/**
 	 * Event listener for HTTP server "error" event.

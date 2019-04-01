@@ -25,6 +25,7 @@ import DeviceAdminComponent from "../DeviceAdministration/DeviceAdminComponent";
 import {checkAccess} from "../privateRoute";
 import HomeComponent from "../Home/HomeComponent";
 import AdminPanelComponent from "../AdminPanel/AdminPanelComponent";
+import * as PropTypes from "prop-types";
 
 const theme = createMuiTheme({
   palette: {
