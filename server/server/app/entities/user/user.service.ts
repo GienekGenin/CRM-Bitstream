@@ -4,7 +4,7 @@ import * as _ from 'lodash';
 import {UserRepository} from './user.repository';
 import {Types} from 'mongoose';
 import {tokenService} from '../../common/services/token.service';
-import {firmService} from "../firm/firm.service";
+import {firmService} from '../firm/firm.service';
 
 class UsersService {
     private usersRepository: UserRepository;

@@ -22,9 +22,17 @@ export const firmReducer = (state = initialState, action) => {
         case firmConstants.ADD_FIRM_SUCCESS: {
             return {
                 ...state,
-                firms: [...state.firms, action.payload],
+                firms: [...state.firms, action.payload.firm],
                 loading: false,
-                success: 'Firm was successfully created'
+                success: action.payload.success
+            }
+        }
+        case firmConstants.UPDATE_FIRM_SUCCESS:{
+            return {
+                ...state,
+                firms: state.firms.map(el => (el._id === action.payload.firm._id) ? action.payload.firm : el),
+                loading: false,
+                success: action.payload.success
             }
         }
         case firmConstants.DELETE_FIRM_SUCCESS: {
@@ -49,12 +57,6 @@ export const firmReducer = (state = initialState, action) => {
                 ...state,
                 loading: false,
                 error: action.payload
-            }
-        }
-        case firmConstants.UPDATE_FIRM_SUCCESS: {
-            return {
-                ...state,
-                success: action.payload
             }
         }
         case firmConstants.CLEAN_FIRMS_ERRORS: {

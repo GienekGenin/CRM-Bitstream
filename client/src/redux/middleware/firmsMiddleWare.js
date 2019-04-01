@@ -26,7 +26,10 @@ export const firmMiddleWare = ({dispatch}) => {
                     .then((firm) => {
                         return dispatch({
                             type: firmConstants.ADD_FIRM_SUCCESS,
-                            payload: firm
+                            payload: {
+                                firm,
+                                success: 'Firm was successfully created'
+                            }
                         })
                     })
                     .catch(err => {
@@ -43,6 +46,21 @@ export const firmMiddleWare = ({dispatch}) => {
                     })
                     .catch(err => {
                         dispatch({type: firmConstants.DELETE_FIRM_FAILURE, payload: errorParser(err)})
+                    });
+            }
+            if (action.type === firmConstants.UPDATE_FIRM_REQUEST) {
+                firmService.updateFirm(action.payload)
+                    .then((firm) => {
+                        return dispatch({
+                            type: firmConstants.UPDATE_FIRM_SUCCESS,
+                            payload: {
+                                firm,
+                                success: 'Firm was successfully updated'
+                            }
+                        })
+                    })
+                    .catch(err => {
+                        dispatch({type: firmConstants.UPDATE_FIRM_FAILURE, payload: errorParser(err)})
                     });
             }
             return next(action);

@@ -27,7 +27,7 @@ export const checkAccess = (path) => {
     let result = false;
     paths.forEach(el => {
         if (el.path === path && el.keys.includes(key)) {
-            return result = true;
+            return result = tokenService.verifyToken();
         }
     });
     return result;

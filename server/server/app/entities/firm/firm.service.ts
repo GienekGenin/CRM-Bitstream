@@ -1,5 +1,6 @@
 import {FirmRepository} from './firm.repository';
 import {Types} from 'mongoose';
+import * as async from 'async';
 
 class FirmService {
     private firmRepository: FirmRepository;
@@ -31,14 +32,28 @@ class FirmService {
 
     updateById(id, obj) {
         return new Promise(((resolve, reject) => {
-            this.firmRepository.update(id, obj)
-                .then(d => {
-                    if (d['nModified'] === 0) {
-                        reject(new Error('Unable to update'));
-                    }
-                    resolve(d);
-                })
-                .catch(e => reject(e));
+            async.waterfall([
+                callback => {
+                    this.firmRepository.update(id, obj)
+                        .then(d => {
+                            if (d['nModified'] === 0) {
+                                callback(new Error('Unable to update'));
+                            }
+                            callback(null);
+                        })
+                        .catch(e => callback(e));
+                },
+                callback => {
+                    this.firmRepository.findById(id)
+                        .then(firm => callback(null, firm))
+                        .catch(e => callback(e));
+                }
+            ], (err, payload) => {
+                if (err) {
+                    reject(err);
+                }
+                resolve(payload);
+            })
         }))
     }
 
