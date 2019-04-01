@@ -55,7 +55,7 @@ const mapStateToProps = state => {
 
 // table copy
 
-class FirmToolBar extends React.Component {
+class UserToolBar extends React.Component {
 
     constructor(props) {
         super(props);
@@ -67,7 +67,6 @@ class FirmToolBar extends React.Component {
                 name: '',
                 surname: '',
                 role_id: '',
-                firm_id: '',
                 email: '',
                 password: '',
                 tel: ''
@@ -89,7 +88,6 @@ class FirmToolBar extends React.Component {
                 name: '',
                 surname: '',
                 role_id: '',
-                firm_id: '',
                 email: '',
                 password: '',
                 tel: ''
@@ -98,14 +96,13 @@ class FirmToolBar extends React.Component {
     };
 
     handleAddDevice = () => {
-        this.props.addUserRequest(this.state.newFirm);
+        this.props.addUserRequest(Object.assign({}, this.state.newFirm, {firm_id: this.props.selectedFirmId}));
         this.setState({
             addDialog: false,
             newFirm: {
                 name: '',
                 surname: '',
                 role_id: '',
-                firm_id: '',
                 email: '',
                 password: '',
                 tel: ''
@@ -124,7 +121,7 @@ class FirmToolBar extends React.Component {
     }
 
     handleUpdateFirm() {
-        this.props.updateUserRequest(this.state.newFirm);
+        this.props.updateUserRequest(Object.assign({}, this.state.newFirm, {firm_id: this.props.selectedFirmId}));
         this.props.resetSelected();
         this.handleClose('editDialog');
     }
@@ -179,17 +176,6 @@ class FirmToolBar extends React.Component {
                                 required={true}
                                 value={this.state.newFirm.role_id}
                                 onChange={(e) => this.updateNewFirm(e, 'role_id')}
-                                fullWidth
-                            />
-                            <TextField
-                                autoFocus
-                                margin="dense"
-                                id="firm_id"
-                                label="firm_id"
-                                type="text"
-                                required={true}
-                                value={this.state.newFirm.firm_id}
-                                onChange={(e) => this.updateNewFirm(e, 'firm_id')}
                                 fullWidth
                             />
                             <TextField
@@ -286,17 +272,6 @@ class FirmToolBar extends React.Component {
                             <TextField
                                 autoFocus
                                 margin="dense"
-                                id="firm_id"
-                                label="firm_id"
-                                type="text"
-                                required={true}
-                                value={this.state.newFirm.firm_id}
-                                onChange={(e) => this.updateNewFirm(e, 'firm_id')}
-                                fullWidth
-                            />
-                            <TextField
-                                autoFocus
-                                margin="dense"
                                 id="email"
                                 label="email"
                                 type="text"
@@ -373,11 +348,16 @@ class FirmToolBar extends React.Component {
     }
 }
 
-FirmToolBar.propTypes = {selected: PropTypes.object, resetSelected: PropTypes.func, loading: PropTypes.bool};
+UserToolBar.propTypes = {
+    selected: PropTypes.object,
+    resetSelected: PropTypes.func,
+    selectedFirmId: PropTypes.string,
+    loading: PropTypes.bool
+};
 
-const FirmToolBarComponent = connect(null, mapDispatchToProps)(FirmToolBar);
+const UserToolBarComponent = connect(null, mapDispatchToProps)(UserToolBar);
 
-class FirmTableHead extends React.Component {
+class UserTableHead extends React.Component {
     createSortHandler = property => event => {
         this.props.onRequestSort(event, property);
     };
@@ -422,7 +402,7 @@ class FirmTableHead extends React.Component {
     }
 }
 
-FirmTableHead.propTypes = {
+UserTableHead.propTypes = {
     numSelected: PropTypes.number.isRequired,
     onRequestSort: PropTypes.func.isRequired,
     order: PropTypes.string.isRequired,
@@ -430,7 +410,7 @@ FirmTableHead.propTypes = {
     rowCount: PropTypes.number.isRequired,
 };
 
-const firmTableToolbarStyles = theme => ({
+const userTableToolbarStyles = theme => ({
     root: {
         paddingRight: theme.spacing.unit,
     },
@@ -455,7 +435,7 @@ const firmTableToolbarStyles = theme => ({
     },
 });
 
-let FirmTableToolbar = props => {
+let UserTableToolbar = props => {
     const {numSelected, classes, selectedUser} = props;
 
     return (
@@ -495,13 +475,13 @@ let FirmTableToolbar = props => {
     );
 };
 
-FirmTableToolbar.propTypes = {
+UserTableToolbar.propTypes = {
     classes: PropTypes.object.isRequired,
     numSelected: PropTypes.number.isRequired,
     selectedUser: PropTypes.object,
 };
 
-FirmTableToolbar = withStyles(firmTableToolbarStyles)(FirmTableToolbar);
+UserTableToolbar = withStyles(userTableToolbarStyles)(UserTableToolbar);
 
 const styles = theme => ({
     root: {
@@ -660,17 +640,21 @@ class UserAdminComponent extends React.Component {
 
     render() {
         const {classes} = this.props;
-        const {data, order, orderBy, selected, rowsPerPage, page, selectedUser, loading} = this.state;
+        const {data, order, orderBy, selected, rowsPerPage, page, selectedUser, loading, selectedFirm} = this.state;
         const emptyRows = rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
         return (
             <Paper className={classes.root}>
-                <FirmTableToolbar numSelected={selected.length} selectedUser={selectedUser}/>
-                <FirmToolBarComponent selected={selectedUser} loading={loading}
-                                      resetSelected={() => this.resetSelected()}/>
+                <UserTableToolbar numSelected={selected.length} selectedUser={selectedUser}/>
+                <UserToolBarComponent
+                    selected={selectedUser}
+                    loading={loading}
+                    resetSelected={() => this.resetSelected()}
+                    selectedFirmId={selectedFirm ? selectedFirm._id : ''}
+                />
                 {loading && <LinearProgress color="secondary"/>}
                 <div className={classes.tableWrapper}>
                     <Table className={classes.table} aria-labelledby="tableTitle">
-                        <FirmTableHead
+                        <UserTableHead
                             numSelected={selected.length}
                             order={order}
                             orderBy={orderBy}
