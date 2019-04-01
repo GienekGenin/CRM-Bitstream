@@ -12,10 +12,11 @@ export default class FirmDevicesComponent extends React.Component {
 
     componentDidMount() {
         this._isMounted = true;
-        if (this.props.user && this.props.user.role_id === '5c99e474345b492d20a19660') {
+        if (this.props.selectedFirm) {
             this.setState({selectedFirm: this.props.selectedFirm});
         } else {
-            this.setState({selectedFirm: this.props.firm, user: this.props.user});
+            let selectedFirm = JSON.parse(localStorage.getItem('user')).firm;
+            this.setState({selectedFirm});
         }
     }
 
@@ -34,6 +35,4 @@ export default class FirmDevicesComponent extends React.Component {
 
 FirmDevicesComponent.propTypes = {
     selectedFirm: PropTypes.object,
-    user: PropTypes.object.isRequired,
-    firm: PropTypes.object
 };
