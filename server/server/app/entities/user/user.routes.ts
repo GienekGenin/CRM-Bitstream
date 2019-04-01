@@ -24,3 +24,10 @@ users.post('/login', UserPayloadValidator.loginUser, (req, res, next) => {
         .then(PayloadGeneratorService.nextWithData(next, res))
         .catch(next);
 });
+
+users.get('/:id', TokenValidator.validateToken, (req, res, next) => {
+    usersService
+        .findByFirmId(req.params.id)
+        .then(PayloadGeneratorService.nextWithData(next, res))
+        .catch(next);
+});

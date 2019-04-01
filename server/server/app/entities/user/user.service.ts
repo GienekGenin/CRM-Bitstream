@@ -25,6 +25,10 @@ class UsersService {
         return this.usersRepository.findById(id);
     }
 
+    findByFirmId(id){
+        return this.usersRepository.findByFirmId(id);
+    }
+
     save(user) {
         return new Promise((resolve, reject) => {
             async.waterfall(

@@ -60,6 +60,7 @@ class FirmService {
     save(firm) {
         return this.firmRepository.save(firm);
     }
+
 }
 
 export const firmService = new FirmService();

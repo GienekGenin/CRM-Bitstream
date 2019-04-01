@@ -10,4 +10,9 @@ export class UserRepository extends Repository {
     findByEmail(email) {
         return this.model.findOne({email}).select({_id: 0});
     }
+
+    findByFirmId(firmId) {
+        return this.model.find({firm_id: firmId}).select({_id: 0});
+    }
+
 }
