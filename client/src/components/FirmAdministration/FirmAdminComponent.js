@@ -460,6 +460,8 @@ const styles = theme => ({
 
 class FirmAdmin extends React.Component {
 
+    _isMounted = false;
+
     constructor(props) {
         super(props);
 
@@ -477,8 +479,11 @@ class FirmAdmin extends React.Component {
         this.resetSelected = this.resetSelected.bind(this);
 
         this.handleFirmSelect = this.handleFirmSelect.bind(this);
+    }
 
-        store.subscribe(() => {
+    componentDidMount() {
+        this._isMounted = true;
+        this.unsubscribe = store.subscribe(() => {
             this.setState({loading: store.getState().firmReducer.loading});
             if(store.getState().firmReducer.firms){
                 let data = [];
@@ -500,6 +505,11 @@ class FirmAdmin extends React.Component {
                     this.setState(obj);})
             }
         });
+    }
+
+    componentWillUnmount() {
+        this._isMounted = false;
+        this.unsubscribe();
     }
 
     componentWillMount() {

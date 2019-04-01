@@ -16,7 +16,6 @@ import {connect} from "react-redux";
 import store from '../../redux/store'
 import {checkAccess} from "../privateRoute";
 import FirmDevicesComponent from "../FirmDevicesComponent/FirmDevicesComponent";
-import LinearProgress from "@material-ui/core/LinearProgress";
 
 import './adminPanel.scss';
 
@@ -29,8 +28,6 @@ const mapDispatchToProps = (dispatch) => {
 const mapStateToProps = state => {
     return {
         firms: state.firmReducer.firms,
-        user: state.loginReducer.user,
-        firm: state.loginReducer.firm
     };
 };
 
@@ -95,7 +92,6 @@ class AdminPanel extends React.Component {
     componentDidMount() {
         this._isMounted = true;
         this.props.firmRequest();
-
     }
 
     componentWillUnmount() {

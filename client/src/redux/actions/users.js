@@ -1,7 +1,7 @@
 import {userConstants} from "../constants/index";
 
-export const usersRequest = () => {
-    return {type: userConstants.USERS_GET_REQUEST}
+export const usersRequest = (firmId) => {
+    return {type: userConstants.USERS_GET_REQUEST, payload: firmId}
 };
 
 export const cleanUsersErrors = () => {
