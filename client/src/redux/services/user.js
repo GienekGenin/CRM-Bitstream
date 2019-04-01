@@ -1,6 +1,6 @@
 const apiBase = 'http://localhost:5000/api/';
 
-const getAll = () => {
+const getAllByFirmId = (firmId) => {
     const token = JSON.parse(localStorage.getItem('user')).tokenSecret;
     const requestOptions = {
         method: 'GET',
@@ -10,15 +10,15 @@ const getAll = () => {
         }
     };
 
-    return fetch(`${apiBase}firms`, requestOptions)
+    return fetch(`${apiBase}users/${firmId}`, requestOptions)
         .then(handleResponse)
-        .then(firms => {
+        .then(users => {
             // store user details and jwt token in local storage to keep user logged in between page refreshes
-            return firms;
+            return users;
         })
 };
 
-const addFirm = (firm) => {
+const addUser = (user) => {
     const token = JSON.parse(localStorage.getItem('user')).tokenSecret;
     const requestOptions = {
         method: 'POST',
@@ -26,18 +26,18 @@ const addFirm = (firm) => {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify(firm)
+        body: JSON.stringify(user)
     };
 
 
-    return fetch(`${apiBase}firms/`, requestOptions)
+    return fetch(`${apiBase}users/`, requestOptions)
         .then(handleResponse)
-        .then(firm => {
-            return firm;
+        .then(user => {
+            return user;
         })
 };
 
-const deleteFirm = (firmId) => {
+const deleteUser = (userId) => {
     const token = JSON.parse(localStorage.getItem('user')).tokenSecret;
     const requestOptions = {
         method: 'DELETE',
@@ -46,14 +46,14 @@ const deleteFirm = (firmId) => {
             'Authorization': `Bearer ${token}`
         }
     };
-    return fetch(`${apiBase}firms/${firmId}`, requestOptions)
+    return fetch(`${apiBase}users/${userId}`, requestOptions)
         .then(handleResponse)
         .then(() => {
-            return firmId;
+            return userId;
         })
 };
 
-const updateFirm = (payload) => {
+const updateUser = (payload) => {
     const token = JSON.parse(localStorage.getItem('user')).tokenSecret;
     const requestOptions = {
         method: 'PUT',
@@ -64,10 +64,10 @@ const updateFirm = (payload) => {
         body: JSON.stringify(payload)
     };
 
-    return fetch(`${apiBase}firms`, requestOptions)
+    return fetch(`${apiBase}users`, requestOptions)
         .then(handleResponse)
-        .then(firm => {
-            return firm;
+        .then(user => {
+            return user;
         })
 };
 
@@ -86,9 +86,9 @@ const handleResponse = (response) => {
     });
 };
 
-export const firmService = {
-    getAll,
-    addFirm,
-    deleteFirm,
-    updateFirm
+export const userService = {
+    getAllByFirmId,
+    addUser,
+    deleteUser,
+    updateUser
 };
