@@ -91,7 +91,9 @@ class AdminPanel extends React.Component {
 
     componentDidMount() {
         this._isMounted = true;
-        this.props.firmRequest();
+        if(checkAccess('/editFirms')){
+            this.props.firmRequest();
+        }
     }
 
     componentWillUnmount() {
