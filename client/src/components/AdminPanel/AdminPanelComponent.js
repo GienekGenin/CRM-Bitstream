@@ -155,9 +155,23 @@ class AdminPanel extends React.Component {
                 </AppBar>
                 {checkAccess('/editFirms') ?
                     <div>
-                        {value === 0 && firms && <TabContainer><FirmAdminComponent resetSelectedParent={this.resetSelectedFirm} firms={firms} onFirmSelect={this.handleFirmSelect}/></TabContainer>}
-                        {value === 1 &&   <TabContainer><FirmDevicesComponent  selectedFirm={selectedFirm}/></TabContainer>}
-                        {value === 2 &&   <TabContainer><UserAdminComponent handleSetUsers={this.handleSetUsers} resetSelectedUserParent={this.resetSelectedUser} onUserSelect={this.handleUserSelect} selectedFirm={selectedUser}/></TabContainer>}
+                        {value === 0 && firms && <TabContainer>
+                            <FirmAdminComponent
+                                resetSelectedParent={this.resetSelectedFirm}
+                                firms={firms} onFirmSelect={this.handleFirmSelect}/>
+                        </TabContainer>}
+                        {value === 1 &&   <TabContainer>
+                            <FirmDevicesComponent
+                                selectedFirm={selectedFirm}/>
+                        </TabContainer>}
+                        {value === 2 &&   <TabContainer>
+                            <UserAdminComponent
+                                handleSetUsers={this.handleSetUsers}
+                                resetSelectedUserParent={this.resetSelectedUser}
+                                onUserSelect={this.handleUserSelect}
+                                selectedFirm={selectedUser}
+                                parentUsers={users}
+                            /></TabContainer>}
                         {value === 3 && <TabContainer><DeviceAdminComponent /></TabContainer>}
                         {value === 4 && <TabContainer>Visualisation</TabContainer>}
                         {value === 5 && <TabContainer>Optional</TabContainer>}

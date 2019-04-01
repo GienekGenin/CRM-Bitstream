@@ -606,7 +606,7 @@ class UserAdminComponent extends React.Component {
 
     componentDidMount() {
         this._isMounted = true;
-        //---------------------------------------------------------------------------
+
         if (this.props.selectedFirm) {
             this.setState({selectedFirm: this.props.selectedFirm});
             if(!this.props.parentUsers){
@@ -619,7 +619,7 @@ class UserAdminComponent extends React.Component {
                 this.props.usersRequest(selectedFirm._id);
             }
         }
-        //---------------------------------------------------------------------------
+
         this.unsubscribe = store.subscribe(() => {
             this.setState({loading: store.getState().userReducer.loading});
             if(store.getState().userReducer.users){
@@ -652,7 +652,6 @@ class UserAdminComponent extends React.Component {
         this.unsubscribe();
     }
 
-    // func ----------------------------------------------------------------------------
     handleUserSelect(user) {
         this.props.onUserSelect(user);
     }
@@ -696,8 +695,6 @@ class UserAdminComponent extends React.Component {
     };
 
     isSelected = id => this.state.selected.indexOf(id) !== -1;
-    // func ----------------------------------------------------------------------------
-
 
     render() {
         const {classes} = this.props;
