@@ -316,7 +316,6 @@ FirmToolBar.propTypes = {selected: PropTypes.object, resetSelected: PropTypes.fu
 
 const FirmToolBarComponent = connect(null, mapDispatchToProps)(FirmToolBar);
 
-
 class FirmTableHead extends React.Component {
     createSortHandler = property => event => {
         this.props.onRequestSort(event, property);
@@ -458,7 +457,6 @@ const styles = theme => ({
         left: 0
     },
 });
-
 
 class FirmAdmin extends React.Component {
 
