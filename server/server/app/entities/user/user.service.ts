@@ -25,12 +25,48 @@ class UsersService {
         return this.usersRepository.findById(id);
     }
 
-    findByFirmId(id){
+    findByFirmId(id) {
         return this.usersRepository.findByFirmId(id);
     }
 
-    deleteByEmail(email){
-        return this.usersRepository.deleteByEmail(email);
+    deleteByEmail(email) {
+        return new Promise(((resolve, reject) => {
+            this.usersRepository.deleteByEmail(email)
+                .then(d => {
+                    if (d['deletedCount'] === 0) {
+                        reject(new Error('Unable to delete'));
+                    }
+                    resolve(d);
+                })
+                .catch(e => reject(e));
+        }));
+    }
+
+    updateByEmail(user) {
+        return new Promise(((resolve, reject) => {
+            async.waterfall([
+                    callback => {
+                        this.usersRepository.updateByEmail(user)
+                            .then(d => {
+                                if (d['nModified'] === 0) {
+                                    callback(new Error('Unable to update'));
+                                }
+                                callback(null);
+                            })
+                            .catch(e => callback(e));
+                    },
+                    callback => {
+                        this.usersRepository.findByEmail(user.email)
+                            .then(user => callback(null, user))
+                            .catch(e => callback(e));
+                    }],
+                (err, payload) => {
+                    if (err) {
+                        reject(err);
+                    }
+                    resolve(payload);
+                })
+        }))
     }
 
     save(user) {

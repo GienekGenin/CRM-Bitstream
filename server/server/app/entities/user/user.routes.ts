@@ -38,3 +38,10 @@ users.delete('/', TokenValidator.validateToken, (req, res, next) => {
         .then(PayloadGeneratorService.nextWithData(next, res))
         .catch(next);
 });
+
+users.put('/', TokenValidator.validateToken, (req, res, next) => {
+    usersService
+        .updateByEmail(req.body)
+        .then(PayloadGeneratorService.nextWithData(next, res))
+        .catch(next);
+});
