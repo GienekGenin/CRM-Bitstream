@@ -8,7 +8,6 @@ import {Provider} from "react-redux";
 import socketIOClient from "socket.io-client";
 
 const socket = socketIOClient('http://localhost:5000');
-socket.emit('Get_Roles');
 
 socket.on('Roles', rolesPayload => {
     localStorage.setItem('roles', JSON.stringify(rolesPayload));

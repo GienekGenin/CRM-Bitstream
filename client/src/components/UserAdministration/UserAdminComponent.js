@@ -35,6 +35,10 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogActions from "@material-ui/core/DialogActions";
 import TextField from "@material-ui/core/TextField";
 import LinearProgress from "@material-ui/core/LinearProgress";
+import FormControl from "@material-ui/core/FormControl";
+import InputLabel from "@material-ui/core/InputLabel";
+import Select from "@material-ui/core/Select";
+import MenuItem from "@material-ui/core/MenuItem";
 // new imports
 
 
@@ -70,8 +74,14 @@ class UserToolBar extends React.Component {
                 email: '',
                 password: '',
                 tel: ''
-            }
+            },
+            roles: null
         };
+    }
+
+    componentWillMount() {
+        const roles = JSON.parse(localStorage.getItem('roles'));
+        this.setState({roles});
     }
 
     handleClickOpen = (state) => {
@@ -130,6 +140,7 @@ class UserToolBar extends React.Component {
     }
 
     render() {
+        const {roles} = this.state;
         return (
             <div className="device-controls">
                 <div>
@@ -167,17 +178,16 @@ class UserToolBar extends React.Component {
                                 onChange={(e) => this.updateNewFirm(e, 'surname')}
                                 fullWidth
                             />
-                            <TextField
-                                autoFocus
-                                margin="dense"
-                                id="role_id"
-                                label="role_id"
-                                type="text"
-                                required={true}
-                                value={this.state.newFirm.role_id}
-                                onChange={(e) => this.updateNewFirm(e, 'role_id')}
-                                fullWidth
-                            />
+                            <FormControl>
+                                <InputLabel htmlFor="role">Role</InputLabel>
+                                <Select
+                                    value={this.state.newFirm.role_id}
+                                    onChange={(e) => this.updateNewFirm(e, 'role_id')}
+                                    id='role'
+                                >
+                                    {roles.map((el, i)=><MenuItem key={i} value={el._id}>{el.name}</MenuItem>)}
+                                </Select>
+                            </FormControl>
                             <TextField
                                 autoFocus
                                 margin="dense"
@@ -258,17 +268,16 @@ class UserToolBar extends React.Component {
                                 onChange={(e) => this.updateNewFirm(e, 'surname')}
                                 fullWidth
                             />
-                            <TextField
-                                autoFocus
-                                margin="dense"
-                                id="role_id"
-                                label="role_id"
-                                type="text"
-                                required={true}
-                                value={this.state.newFirm.role_id}
-                                onChange={(e) => this.updateNewFirm(e, 'role_id')}
-                                fullWidth
-                            />
+                            <FormControl>
+                                <InputLabel htmlFor="role">Role</InputLabel>
+                                <Select
+                                    value={this.state.newFirm.role_id}
+                                    onChange={(e) => this.updateNewFirm(e, 'role_id')}
+                                    id='role'
+                                >
+                                    {roles.map((el, i)=><MenuItem key={i} value={el._id}>{el.name}</MenuItem>)}
+                                </Select>
+                            </FormControl>
                             <TextField
                                 autoFocus
                                 margin="dense"
