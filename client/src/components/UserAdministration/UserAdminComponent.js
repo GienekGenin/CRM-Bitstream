@@ -471,7 +471,7 @@ let FirmTableToolbar = props => {
                     </Typography>
                 ) : (
                     <Typography variant="h6" id="tableTitle">
-                        Firms
+                        Users
                     </Typography>
                 )}
             </div>
@@ -568,19 +568,17 @@ class UserAdminComponent extends React.Component {
 
     componentDidMount() {
         this._isMounted = true;
-        console.log('props: ',this.props.selectedFirm)
         if (this.props.selectedFirm) {
             this.setState({selectedFirm: this.props.selectedFirm});
             if (!this.props.parentUsers) {
                 this.props.usersRequest(this.props.selectedFirm._id);
-            }
+            } else this.setState({users: this.props.parentUsers});
         } else {
             let selectedFirm = JSON.parse(localStorage.getItem('user')).firm;
             this.setState({selectedFirm});
-            console.log('storage:', selectedFirm);
             if (!this.props.parentUsers) {
                 this.props.usersRequest(selectedFirm._id);
-            }
+            } else this.setState({users: this.props.parentUsers});
         }
 
         this.unsubscribe = store.subscribe(() => {
