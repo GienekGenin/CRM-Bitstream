@@ -37,19 +37,20 @@ const addUser = (user) => {
         })
 };
 
-const deleteUser = (userId) => {
+const deleteUser = (email) => {
     const token = JSON.parse(localStorage.getItem('user')).tokenSecret;
     const requestOptions = {
         method: 'DELETE',
         headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`
-        }
+        },
+        body: JSON.stringify({email})
     };
-    return fetch(`${apiBase}users/${userId}`, requestOptions)
+    return fetch(`${apiBase}users`, requestOptions)
         .then(handleResponse)
         .then(() => {
-            return userId;
+            return email;
         })
 };
 

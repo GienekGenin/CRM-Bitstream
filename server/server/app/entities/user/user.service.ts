@@ -29,6 +29,10 @@ class UsersService {
         return this.usersRepository.findByFirmId(id);
     }
 
+    deleteByEmail(email){
+        return this.usersRepository.deleteByEmail(email);
+    }
+
     save(user) {
         return new Promise((resolve, reject) => {
             async.waterfall(

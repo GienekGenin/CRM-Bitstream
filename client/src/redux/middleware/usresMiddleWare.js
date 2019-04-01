@@ -22,7 +22,7 @@ export const usersMiddleWare = ({dispatch}) => {
                     });
             }
             if (action.type === userConstants.ADD_USER_REQUEST) {
-                userService.addFirm(action.payload)
+                userService.addUser(action.payload)
                     .then((user) => {
                         return dispatch({
                             type: userConstants.ADD_USER_SUCCESS,
@@ -37,11 +37,11 @@ export const usersMiddleWare = ({dispatch}) => {
                     });
             }
             if (action.type === userConstants.DELETE_USER_REQUEST) {
-                userService.deleteFirm(action.payload)
-                    .then((userId) => {
+                userService.deleteUser(action.payload)
+                    .then((email) => {
                         return dispatch({
                             type: userConstants.DELETE_USER_SUCCESS,
-                            payload: userId
+                            payload: email
                         })
                     })
                     .catch(err => {
@@ -49,7 +49,7 @@ export const usersMiddleWare = ({dispatch}) => {
                     });
             }
             if (action.type === userConstants.UPDATE_USER_REQUEST) {
-                userService.updateFirm(action.payload)
+                userService.updateUser(action.payload)
                     .then((user) => {
                         return dispatch({
                             type: userConstants.UPDATE_USER_SUCCESS,

@@ -31,3 +31,10 @@ users.get('/:id', TokenValidator.validateToken, (req, res, next) => {
         .then(PayloadGeneratorService.nextWithData(next, res))
         .catch(next);
 });
+
+users.delete('/', TokenValidator.validateToken, (req, res, next) => {
+    usersService
+        .deleteByEmail(req.body.email)
+        .then(PayloadGeneratorService.nextWithData(next, res))
+        .catch(next);
+});

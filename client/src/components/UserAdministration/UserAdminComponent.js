@@ -42,7 +42,7 @@ const mapDispatchToProps = (dispatch) => {
     return {
         usersRequest: (firmId) => dispatch(usersRequest(firmId)),
         addUserRequest: (user) => dispatch(addUserRequest(user)),
-        deleteUserRequest: (userId) => dispatch(deleteUserRequest(userId)),
+        deleteUserRequest: (email) => dispatch(deleteUserRequest(email)),
         updateUserRequest: (user) => dispatch(updateUserRequest(user)),
     };
 };
@@ -568,7 +568,7 @@ class UserAdminComponent extends React.Component {
 
     componentDidMount() {
         this._isMounted = true;
-
+        console.log('props: ',this.props.selectedFirm)
         if (this.props.selectedFirm) {
             this.setState({selectedFirm: this.props.selectedFirm});
             if (!this.props.parentUsers) {
@@ -577,6 +577,7 @@ class UserAdminComponent extends React.Component {
         } else {
             let selectedFirm = JSON.parse(localStorage.getItem('user')).firm;
             this.setState({selectedFirm});
+            console.log('storage:', selectedFirm);
             if (!this.props.parentUsers) {
                 this.props.usersRequest(selectedFirm._id);
             }

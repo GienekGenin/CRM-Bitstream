@@ -168,7 +168,7 @@ class AdminPanel extends React.Component {
                                 handleSetUsers={this.handleSetUsers}
                                 resetSelectedUserParent={this.resetSelectedUser}
                                 onUserSelect={this.handleUserSelect}
-                                selectedFirm={selectedUser}
+                                selectedFirm={selectedFirm}
                                 parentUsers={users}
                             /></TabContainer>}
                         {value === 3 && <TabContainer><DeviceAdminComponent/></TabContainer>}
@@ -182,7 +182,7 @@ class AdminPanel extends React.Component {
                                 handleSetUsers={this.handleSetUsers}
                                 resetSelectedUserParent={this.resetSelectedUser}
                                 onUserSelect={this.handleUserSelect}
-                                selectedFirm={selectedUser}
+                                selectedFirm={selectedFirm}
                                 parentUsers={users}
                             /></TabContainer>}
                         {value === 2 && <TabContainer>

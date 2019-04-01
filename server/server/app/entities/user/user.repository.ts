@@ -15,4 +15,8 @@ export class UserRepository extends Repository {
         return this.model.find({firm_id: firmId}).select({_id: 0});
     }
 
+    deleteByEmail(email){
+        return this.model.deleteOne({email});
+    }
+
 }

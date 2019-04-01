@@ -20,6 +20,6 @@ export const addUserRequest = (payload) => {
     return {type: userConstants.ADD_USER_REQUEST, payload}
 };
 
-export const deleteUserRequest = (userId) => {
-    return {type: userConstants.DELETE_USER_REQUEST, payload: userId}
+export const deleteUserRequest = (email) => {
+    return {type: userConstants.DELETE_USER_REQUEST, payload: email}
 };

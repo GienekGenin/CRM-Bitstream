@@ -30,14 +30,14 @@ export const userReducer = (state = initialState, action) => {
         case userConstants.UPDATE_USER_SUCCESS:{
             return {
                 ...state,
-                users: state.users.map(el => (el._id === action.payload.user._id) ? action.payload.user : el),
+                users: state.users.map(el => (el.email === action.payload.user.email) ? action.payload.user : el),
                 loading: false,
                 success: action.payload.success
             }
         }
         case userConstants.DELETE_USER_SUCCESS: {
             return {
-                users: state.users.filter(el => el._id !== action.payload),
+                users: state.users.filter(el => el.email !== action.payload),
                 loading: false,
                 success: 'User was successfully deleted'
             }
