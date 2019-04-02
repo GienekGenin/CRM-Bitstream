@@ -57,8 +57,10 @@ class AdminPanel extends React.Component {
         value: 0,
         firms: null,
         users: null,
+        devices: null,
         selectedFirm: null,
-        selectedUser: null
+        selectedUser: null,
+        selectedDevice: null,
     };
 
     constructor() {
@@ -78,6 +80,10 @@ class AdminPanel extends React.Component {
         this.handleUserSelect = this.handleUserSelect.bind(this);
         this.resetSelectedUser = this.resetSelectedUser.bind(this);
         this.handleSetUsers = this.handleSetUsers.bind(this);
+
+        this.handleDeviceSelect = this.handleDeviceSelect.bind(this);
+        this.resetSelectedDevice = this.resetSelectedDevice.bind(this);
+        this.handleSetDevices = this.handleSetDevices.bind(this);
     }
 
     _isMounted = false;
@@ -94,6 +100,13 @@ class AdminPanel extends React.Component {
         }
     }
 
+    handleDeviceSelect(selectedDevice) {
+        if (this._isMounted) {
+            this.setState({selectedDevice})
+        }
+    }
+
+
     resetSelectedFirm() {
         if (this._isMounted) {
             this.setState({selectedFirm: null, users: null, selectedUser: null})
@@ -106,9 +119,21 @@ class AdminPanel extends React.Component {
         }
     }
 
+    resetSelectedDevice() {
+        if (this._isMounted) {
+            this.setState({selectedDevice: null})
+        }
+    }
+
     handleSetUsers(users) {
         if (this._isMounted) {
             this.setState({users});
+        }
+    }
+
+    handleSetDevices(devices) {
+        if (this._isMounted) {
+            this.setState({devices});
         }
     }
 
@@ -130,7 +155,7 @@ class AdminPanel extends React.Component {
 
     render() {
         const {classes} = this.props;
-        const {value, firms, selectedFirm, selectedUser, users} = this.state;
+        const {value, firms, selectedFirm, selectedUser, users, devices} = this.state;
         return (
             <div className={classes.root}>
                 <AppBar position="static" color="default">
@@ -161,7 +186,12 @@ class AdminPanel extends React.Component {
                         </TabContainer>}
                         {value === 1 && <TabContainer>
                             <FirmDevicesComponent
-                                selectedFirm={selectedFirm}/>
+                                handleSetDevices={this.handleSetDevices}
+                                resetSelectedDeviceParent={this.resetSelectedDevice}
+                                onDeviceSelect={this.handleDeviceSelect}
+                                selectedFirm={selectedFirm}
+                                parentDevices={devices}
+                            />
                         </TabContainer>}
                         {value === 2 && <TabContainer>
                             <UserAdminComponent
@@ -170,13 +200,22 @@ class AdminPanel extends React.Component {
                                 onUserSelect={this.handleUserSelect}
                                 selectedFirm={selectedFirm}
                                 parentUsers={users}
-                            /></TabContainer>}
+                            />
+                        </TabContainer>}
                         {value === 3 && <TabContainer><DeviceAdminComponent/></TabContainer>}
                         {value === 4 && <TabContainer>Visualisation</TabContainer>}
                         {value === 5 && <TabContainer>Optional</TabContainer>}
                     </div> :
                     <div>
-                        {value === 0 && <TabContainer><FirmDevicesComponent/></TabContainer>}
+                        {value === 0 && <TabContainer>
+                            <FirmDevicesComponent
+                                handleSetDevices={this.handleSetDevices}
+                                resetSelectedDeviceParent={this.resetSelectedDevice}
+                                onDeviceSelect={this.handleDeviceSelect}
+                                selectedFirm={selectedFirm}
+                                parentDevices={devices}
+                            />
+                        </TabContainer>}
                         {value === 1 && <TabContainer>
                             <UserAdminComponent
                                 handleSetUsers={this.handleSetUsers}

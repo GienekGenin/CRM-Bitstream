@@ -495,9 +495,8 @@ class FirmDevicesComponent extends React.Component {
             data: [],
             page: 0,
             rowsPerPage: 5,
-            selectedDevice: null,
-            loading: false,
-            selectedFirm: null
+            device: null,
+            loading: false
         };
 
         this.resetSelected = this.resetSelected.bind(this);
@@ -505,7 +504,25 @@ class FirmDevicesComponent extends React.Component {
 
     //todo: new
     componentWillMount() {
-
+        let data = [];
+        if (this.props.parentDevices) {
+            this.props.parentDevices.map(record => {
+                let row = [
+                    record._id,
+                    record.name,
+                ];
+                data.push(createData(...row));
+                const obj = {
+                    order: this.state.order,
+                    orderBy: this.state.orderBy,
+                    selected: [],
+                    data,
+                    page: this.state.page,
+                    rowsPerPage: this.state.rowsPerPage
+                };
+                this.setState(obj);
+            })
+        }
     }
 
 
@@ -513,11 +530,15 @@ class FirmDevicesComponent extends React.Component {
         this._isMounted = true;
         if (this.props.selectedFirm) {
             this.setState({selectedFirm: this.props.selectedFirm});
-            this.props.firmDevicesRequest(this.props.selectedFirm._id);
+            if (!this.props.parentDevices) {
+                this.props.firmDevicesRequest(this.props.selectedFirm._id);
+            } else this.setState({devices: this.props.parentDevices});
         } else {
             let selectedFirm = tokenService.verifyToken().firm;
-            this.props.firmDevicesRequest(selectedFirm._id);
             this.setState({selectedFirm});
+            if (!this.props.parentDevices) {
+                this.props.firmDevicesRequest(selectedFirm._id);
+            } else this.setState({devices: this.props.parentDevices});
         }
 
 
@@ -528,6 +549,7 @@ class FirmDevicesComponent extends React.Component {
             if (store.getState().devicesReducer.devices) {
                 const devices = store.getState().devicesReducer.devices;
                 this.setState({devices});
+                this.props.handleSetDevices(devices);
                 let data = [];
                 devices.map(record => {
                     let row = [
@@ -556,8 +578,8 @@ class FirmDevicesComponent extends React.Component {
     }
 
 
-    handleFirmSelect(firm) {
-        this.props.onFirmSelect(firm);
+    handleDeviceSelect(device) {
+        this.props.onDeviceSelect(device);
     }
 
     handleRequestSort = (event, property) => {
@@ -572,22 +594,22 @@ class FirmDevicesComponent extends React.Component {
     };
 
     resetSelected = () => {
-        this.setState({selected: [], firm: null});
+        this.setState({selected: [], device: null});
     };
 
     handleClick = (event, id) => {
         const {selected} = this.state;
         const selectedIndex = selected.indexOf(id);
         let newSelected = [];
-        let firm = null;
+        let device = null;
         if (selectedIndex === -1) {
             newSelected.push(id);
-            firm = this.props.firms.filter(el => el._id === id ? el : null)[0];
+            device = this.state.devices.filter(el => el._id === id ? el : null)[0];
         } else if (selectedIndex === 0) {
             newSelected = newSelected.concat(selected.slice(1));
         }
-        this.setState({selected: newSelected, firm});
-        this.handleFirmSelect(firm);
+        this.setState({selected: newSelected, device});
+        this.handleDeviceSelect(device);
     };
 
     handleChangePage = (event, page) => {
@@ -606,11 +628,11 @@ class FirmDevicesComponent extends React.Component {
 
     render() {
         const {classes} = this.props;
-        const {data, order, orderBy, selected, rowsPerPage, page, firm, loading, selectedFirm} = this.state;
+        const {data, order, orderBy, selected, rowsPerPage, page, device, loading} = this.state;
         const emptyRows = rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
         return (
             <Paper className={classes.root}>
-                {/*<FirmTableToolbar numSelected={selected.length} firm={firm}/>*/}
+                {/*<FirmTableToolbar numSelected={selected.length} firm={device}/>*/}
                 {/*<FirmToolBarComponent selected={firm} loading={loading} resetSelected={() => this.resetSelected()}/>*/}
                 {/*{loading && <LinearProgress color="secondary"/>}*/}
                 <div className={classes.tableWrapper}>
@@ -676,6 +698,10 @@ class FirmDevicesComponent extends React.Component {
 FirmDevicesComponent.propTypes = {
     selectedFirm: PropTypes.object,
     classes: PropTypes.object.isRequired,
+    onDeviceSelect: PropTypes.func.isRequired,
+    resetSelectedDeviceParent: PropTypes.func,
+    handleSetDevices: PropTypes.func,
+    parentDevices: PropTypes.array
 };
 
 const FirmDevicesWithProps =  connect(mapStateToProps, mapDispatchToProps)(FirmDevicesComponent);
