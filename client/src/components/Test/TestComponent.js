@@ -5,7 +5,6 @@ import * as _ from 'lodash';
 
 import './test.scss'
 
-let devices = [];
 const unflatten = ( array, parent, tree )=>{
     console.log('top')
     tree = typeof tree !== 'undefined' ? tree : [];
@@ -24,17 +23,6 @@ const unflatten = ( array, parent, tree )=>{
 
     return tree;
 };
-
-firmService.getFirmDevices('5c99e3d4345b492d20a1965c')
-    .then(d => {
-        let arr = [];
-        d[0].firm_devices.forEach(el=>{
-            if(el.sid.includes('SX5c99e52d345b492d20a19666')){
-                arr.push(el)
-            }
-        })
-    })
-    .catch(e => console.log(e));
 
 export default class TestComponent extends React.Component {
 
