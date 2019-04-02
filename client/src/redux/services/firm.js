@@ -1,4 +1,4 @@
-const apiBase = 'http://localhost:5000/api/';
+const apiBase = 'http://10.0.0.118:5000/api/';
 
 const getAll = () => {
     const token = localStorage.getItem('token');
@@ -71,6 +71,24 @@ const updateFirm = (payload) => {
         })
 };
 
+const getFirmDevices = (firmId) => {
+    const token = localStorage.getItem('token');
+    const requestOptions = {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        }
+    };
+
+    return fetch(`${apiBase}firms/devices/${firmId}`, requestOptions)
+        .then(handleResponse)
+        .then(firms => {
+            // store user details and jwt token in local storage to keep user logged in between page refreshes
+            return firms;
+        })
+};
+
 const handleResponse = (response) => {
     return response.text().then(text => {
         const data = text && JSON.parse(text);
@@ -90,5 +108,6 @@ export const firmService = {
     getAll,
     addFirm,
     deleteFirm,
-    updateFirm
+    updateFirm,
+    getFirmDevices
 };

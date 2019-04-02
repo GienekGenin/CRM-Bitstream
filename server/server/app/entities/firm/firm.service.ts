@@ -61,6 +61,11 @@ class FirmService {
         return this.firmRepository.save(firm);
     }
 
+    getFirmDevices(firmId){
+        return this.firmRepository.getFirmDevices(firmId)
+            .then(d=>d)
+            .catch(e=>e);
+    }
 }
 
 export const firmService = new FirmService();

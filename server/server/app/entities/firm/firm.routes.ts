@@ -10,6 +10,13 @@ firms.get('/', TokenValidator.validateToken, (req, res, next) => {
         .catch(next);
 });
 
+firms.get('/devices/:firmId', TokenValidator.validateToken, (req, res, next) => {
+    firmService
+        .getFirmDevices(req.params.firmId)
+        .then(PayloadGeneratorService.nextWithData(next, res))
+        .catch(next);
+});
+
 firms.get('/:id', TokenValidator.validateToken, (req, res, next) => {
     firmService
         .findById(req.params.id)
