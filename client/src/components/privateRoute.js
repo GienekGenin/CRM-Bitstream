@@ -12,14 +12,14 @@ export const PrivateRoute = ({component: Component, ...rest}) => {
 };
 
 export const checkAccess = (path) => {
-    const userStorage = JSON.parse(localStorage.getItem('user'));
+    const user = tokenService.verifyToken().user;
     const roles = JSON.parse(localStorage.getItem('roles'));
-    if (!userStorage || !roles) return false;
-    const key = userStorage.user.role_id;
+    if (!user || !roles) return false;
+    const key = user.role_id;
     let result = false;
     roles.forEach(role=>{
        if(key === role._id){
-           return result = role.features.includes(path) && tokenService.verifyToken();
+            return result = !!(role.features.includes(path) && tokenService.verifyToken());
        }
     });
     return result;

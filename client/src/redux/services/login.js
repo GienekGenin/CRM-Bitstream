@@ -1,3 +1,5 @@
+import {history} from "./history";
+
 const apiBase = 'http://localhost:5000/api/';
 
 const login = (email, password) => {
@@ -9,13 +11,14 @@ const login = (email, password) => {
 
     return fetch(`${apiBase}users/login`, requestOptions)
         .then(handleResponse)
-        .then(user => {
+        .then(token => {
             // store user details and jwt token in local storage to keep user logged in between page refreshes
-            localStorage.setItem('user', JSON.stringify(user));
-            return user;
+            localStorage.setItem('token', token);
+            return token;
         })
 };
 
+// todo: change
 const changePass = (payload) => {
     const requestOptions = {
         method: 'POST',
@@ -33,8 +36,8 @@ const changePass = (payload) => {
 };
 
 const logout = () => {
-    // remove user from local storage to log user out
-    localStorage.removeItem('user');
+    history.push('/login');
+    localStorage.removeItem('token');
 };
 
 const handleResponse = (response) => {

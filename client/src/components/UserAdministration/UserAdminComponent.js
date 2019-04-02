@@ -39,6 +39,7 @@ import FormControl from "@material-ui/core/FormControl";
 import InputLabel from "@material-ui/core/InputLabel";
 import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
+import {tokenService} from "../../redux/services/token";
 
 const mapDispatchToProps = (dispatch) => {
     return {
@@ -559,7 +560,7 @@ class UserAdminComponent extends React.Component {
                 this.props.usersRequest(this.props.selectedFirm._id);
             } else this.setState({users: this.props.parentUsers});
         } else {
-            let selectedFirm = JSON.parse(localStorage.getItem('user')).firm;
+            let selectedFirm = tokenService.verifyToken().firm;
             this.setState({selectedFirm});
             if (!this.props.parentUsers) {
                 this.props.usersRequest(selectedFirm._id);

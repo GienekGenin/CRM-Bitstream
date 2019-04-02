@@ -1,7 +1,7 @@
 const apiBase = 'http://localhost:5000/api/';
 
 const getAll = () => {
-    const token = JSON.parse(localStorage.getItem('user')).tokenSecret;
+    const token = localStorage.getItem('token');
     const requestOptions = {
         method: 'GET',
         headers: {
@@ -19,7 +19,7 @@ const getAll = () => {
 };
 
 const addFirm = (firm) => {
-    const token = JSON.parse(localStorage.getItem('user')).tokenSecret;
+    const token = localStorage.getItem('token');
     const requestOptions = {
         method: 'POST',
         headers: {
@@ -38,7 +38,7 @@ const addFirm = (firm) => {
 };
 
 const deleteFirm = (firmId) => {
-    const token = JSON.parse(localStorage.getItem('user')).tokenSecret;
+    const token = localStorage.getItem('token');
     const requestOptions = {
         method: 'DELETE',
         headers: {
@@ -54,7 +54,7 @@ const deleteFirm = (firmId) => {
 };
 
 const updateFirm = (payload) => {
-    const token = JSON.parse(localStorage.getItem('user')).tokenSecret;
+    const token = localStorage.getItem('token');
     const requestOptions = {
         method: 'PUT',
         headers: {

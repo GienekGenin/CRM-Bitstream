@@ -121,11 +121,9 @@ class UsersService {
                             .then(result => {
                                 if (result === true) {
                                     const userPayload = UsersService.createUserPayload(payload.user);
-                                    callback(null, {
-                                        user: userPayload,
-                                        firm: payload.firm,
-                                        tokenSecret: tokenService.createToken(userPayload)
-                                    })
+                                    callback(null,
+                                        tokenService.createToken({user: userPayload, firm: payload.firm})
+                                    )
                                 } else {
                                     callback('Wrong password');
                                 }

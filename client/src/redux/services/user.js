@@ -1,7 +1,7 @@
 const apiBase = 'http://localhost:5000/api/';
 
 const getAllByFirmId = (firmId) => {
-    const token = JSON.parse(localStorage.getItem('user')).tokenSecret;
+    const token = localStorage.getItem('token');
     const requestOptions = {
         method: 'GET',
         headers: {
@@ -19,7 +19,7 @@ const getAllByFirmId = (firmId) => {
 };
 
 const addUser = (user) => {
-    const token = JSON.parse(localStorage.getItem('user')).tokenSecret;
+    const token = localStorage.getItem('token');
     const requestOptions = {
         method: 'POST',
         headers: {
@@ -38,7 +38,7 @@ const addUser = (user) => {
 };
 
 const deleteUser = (email) => {
-    const token = JSON.parse(localStorage.getItem('user')).tokenSecret;
+    const token = localStorage.getItem('token');
     const requestOptions = {
         method: 'DELETE',
         headers: {
@@ -55,7 +55,7 @@ const deleteUser = (email) => {
 };
 
 const updateUser = (payload) => {
-    const token = JSON.parse(localStorage.getItem('user')).tokenSecret;
+    const token = localStorage.getItem('token');
     const requestOptions = {
         method: 'PUT',
         headers: {

@@ -1,5 +1,6 @@
 import React from "react";
 import * as PropTypes from 'prop-types';
+import {tokenService} from "../../redux/services/token";
 
 export default class FirmDevicesComponent extends React.Component {
 
@@ -15,7 +16,7 @@ export default class FirmDevicesComponent extends React.Component {
         if (this.props.selectedFirm) {
             this.setState({selectedFirm: this.props.selectedFirm});
         } else {
-            let selectedFirm = JSON.parse(localStorage.getItem('user')).firm;
+            let selectedFirm = tokenService.verifyToken().firm;
             this.setState({selectedFirm});
         }
     }

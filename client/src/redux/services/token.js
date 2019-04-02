@@ -12,13 +12,13 @@ class TokenService {
      */
     verifyToken() {
         this.tokenSecret = process.env.REACT_APP_JWT;
-        const userData = localStorage.getItem('user');
-        if (userData) {
-            return jwt.verify(JSON.parse(userData).tokenSecret, this.tokenSecret, (err) => {
+        const token = localStorage.getItem('token');
+        if (token) {
+            return jwt.verify(token, this.tokenSecret, (err, decoded) => {
                 if (err) {
                     return false;
                 }
-                return true;
+                return decoded;
             });
         } else return false;
     }
