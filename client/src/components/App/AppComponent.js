@@ -25,6 +25,7 @@ import DeviceAdminComponent from "../DeviceAdministration/DeviceAdminComponent";
 import {checkAccess} from "../privateRoute";
 import HomeComponent from "../Home/HomeComponent";
 import AdminPanelComponent from "../AdminPanel/AdminPanelComponent";
+import TestComponent from "../Test/TestComponent";
 
 const theme = createMuiTheme({
     palette: {
@@ -82,7 +83,9 @@ class AppComponent extends Component {
                                 <Typography variant="h6" color="inherit">
                                     <Button color="inherit"><Link to={'/'}>Home</Link></Button>
                                 </Typography>
-
+                                <Typography variant="h6" color="inherit">
+                                    <Button color="inherit"><Link to={'/test'}>Test</Link></Button>
+                                </Typography>
                                 {checkAccess('/dashboard') && <Typography variant="h6" color="inherit">
                                     <Button color="inherit"> <Link to={'/dashboard'}> Dashboard </Link></Button>
                                 </Typography>} {checkAccess('/admin_panel') && <Typography variant="h6" color="inherit">
@@ -98,6 +101,7 @@ class AppComponent extends Component {
                         </AppBar>
                         <Switch history={history}>
                             <Route exact path='/' component={HomeComponent}/>
+                            <Route exact path='/test' component={TestComponent}/>
                             <PrivateRoute exact path='/admin_panel' component={AdminPanelComponent}/>
                             <PrivateRoute exact path='/dashboard' component={DashboardComponent}/>
                             <PrivateRoute exact path='/devices' component={DeviceAdminComponent}/>
