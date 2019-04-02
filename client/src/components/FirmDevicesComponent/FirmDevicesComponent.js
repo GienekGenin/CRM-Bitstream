@@ -538,7 +538,7 @@ class FirmDevicesComponent extends React.Component {
 // append the svg object to the body of the page
 // appends a 'group' element to 'svg'
 // moves the 'group' element to the top left margin
-                let svg = d3.select(".tree")
+                let svg = d3.select("#tree")
                     .append("svg")
                     .attr("width", width + margin.right + margin.left)
                     .attr("height", height + margin.top + margin.bottom)
@@ -941,6 +941,9 @@ class FirmDevicesComponent extends React.Component {
 
 
     handleDeviceSelect(device) {
+        d3.select('#tree').remove();
+        d3.select('#parent').append('div').attr("id", 'tree');
+
         this.buildChart(Object.assign({},device,{parent_id: '0'}));
         this.props.onDeviceSelect(device);
     }
@@ -1054,7 +1057,9 @@ class FirmDevicesComponent extends React.Component {
                         onChangeRowsPerPage={this.handleChangeRowsPerPage}
                     />
                 </Paper>
-                <div className='tree'></div>
+                <div id='parent'>
+
+                </div>
             </div>
         )
     }
