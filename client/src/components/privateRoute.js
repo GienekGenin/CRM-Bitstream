@@ -12,6 +12,11 @@ export const PrivateRoute = ({component: Component, ...rest}) => {
 };
 
 export const checkAccess = (path) => {
+    const jwt = tokenService.verifyToken();
+    if(!jwt){
+        localStorage.removeItem('token');
+        return false;
+    }
     const user = tokenService.verifyToken().user;
     const roles = JSON.parse(localStorage.getItem('roles'));
     if (!user || !roles) return false;
