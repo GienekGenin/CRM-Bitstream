@@ -723,7 +723,8 @@ UserAdminComponent.propTypes = {
     classes: PropTypes.object.isRequired,
     resetSelectedUserParent: PropTypes.func,
     handleSetUsers: PropTypes.func,
-    parentUsers: PropTypes.array
+    parentUsers: PropTypes.array,
+    selectedUser: PropTypes.object,
 };
 
 const UserAdminStyles = withStyles(styles)(UserAdminComponent);

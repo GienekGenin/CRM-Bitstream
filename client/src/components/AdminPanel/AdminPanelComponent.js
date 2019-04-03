@@ -11,7 +11,7 @@ import UserAdminComponent from '../../components/UserAdministration/UserAdminCom
 import DeviceAdminComponent from '../../components/DeviceAdministration/DeviceAdminComponent';
 import Toolbar from '@material-ui/core/Toolbar';
 
-import {firmDevicesRequest, firmsRequest} from "../../redux/actions/index";
+import {firmsRequest, usersRequest} from "../../redux/actions/index";
 import {connect} from "react-redux";
 import store from '../../redux/store'
 import {checkAccess} from "../privateRoute";
@@ -22,6 +22,7 @@ import './adminPanel.scss';
 const mapDispatchToProps = (dispatch) => {
     return {
         firmRequest: () => dispatch(firmsRequest()),
+        usersRequest: (firmId) => dispatch(usersRequest(firmId)),
     };
 };
 
@@ -93,7 +94,13 @@ class AdminPanel extends React.Component {
 
     handleFirmSelect(selectedFirm) {
         if (this._isMounted) {
-            this.setState({selectedFirm});
+            this.setState({
+                selectedFirm,
+                users: null,
+                selectedUser: null,
+                selectedDevice: null,
+                devices: null
+            });
         }
     }
 
@@ -199,6 +206,7 @@ class AdminPanel extends React.Component {
                                 resetSelectedUserParent={this.resetSelectedUser}
                                 onUserSelect={this.handleUserSelect}
                                 selectedFirm={selectedFirm}
+                                selectedUser={selectedUser}
                                 parentUsers={users}
                             />
                         </TabContainer>}

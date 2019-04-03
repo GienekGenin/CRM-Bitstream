@@ -539,9 +539,6 @@ class FirmAdmin extends React.Component {
     }
 
     handleFirmSelect(firm) {
-        if (firm) {
-            this.props.firmDevicesRequest(firm._id);
-        }
         this.props.onFirmSelect(firm);
     }
 
