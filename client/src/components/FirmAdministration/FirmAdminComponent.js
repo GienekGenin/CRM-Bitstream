@@ -46,25 +46,25 @@ const mapDispatchToProps = (dispatch) => {
 
 class FirmToolBar extends React.Component {
 
-constructor(props){
-    super(props);
-    this.state = {
-        editDialog: false,
-        addDialog: false,
-        confirmDeleteDialog: false,
-        newFirm: {
-            name: '',
-            address: '',
-            email: '',
-            tel: '',
-            nip: ''
-        }
-    };
-}
+    constructor(props) {
+        super(props);
+        this.state = {
+            editDialog: false,
+            addDialog: false,
+            confirmDeleteDialog: false,
+            newFirm: {
+                name: '',
+                address: '',
+                email: '',
+                tel: '',
+                nip: ''
+            }
+        };
+    }
 
     handleClickOpen = (state) => {
         this.setState({[state]: true});
-        if(state === 'editDialog'){
+        if (state === 'editDialog') {
             this.setState({newFirm: this.props.selected})
         }
     };
@@ -97,7 +97,7 @@ constructor(props){
     };
 
     updateNewFirm(e, param) {
-        this.setState({newFirm:Object.assign({}, this.state.newFirm, {[param]: e.target.value})})
+        this.setState({newFirm: Object.assign({}, this.state.newFirm, {[param]: e.target.value})})
     }
 
     handleDeleteDevice() {
@@ -106,7 +106,7 @@ constructor(props){
         this.handleClose('confirmDeleteDialog');
     }
 
-    handleUpdateFirm(){
+    handleUpdateFirm() {
         this.props.updateFirmRequest(this.state.newFirm);
         this.props.resetSelected();
         this.handleClose('editDialog');
@@ -139,7 +139,7 @@ constructor(props){
                                 type="text"
                                 required={true}
                                 value={this.state.newFirm.name}
-                                onChange={(e) => this.updateNewFirm(e,'name')}
+                                onChange={(e) => this.updateNewFirm(e, 'name')}
                                 fullWidth
                             />
                             <TextField
@@ -188,8 +188,8 @@ constructor(props){
                             />
                         </DialogContent>
                         <DialogActions>
-                            <Button  variant="outlined" color="primary"
-                                     onClick={() => this.handleUpdateFirm()}>
+                            <Button variant="outlined" color="primary"
+                                    onClick={() => this.handleUpdateFirm()}>
                                 Update
                             </Button>
                             <Button onClick={() => this.handleClose('editDialog')} color="primary">
@@ -219,7 +219,7 @@ constructor(props){
                                 type="text"
                                 required={true}
                                 value={this.state.newFirm.name}
-                                onChange={(e) => this.updateNewFirm(e,'name')}
+                                onChange={(e) => this.updateNewFirm(e, 'name')}
                                 fullWidth
                             />
                             <TextField
@@ -268,7 +268,7 @@ constructor(props){
                             />
                         </DialogContent>
                         <DialogActions>
-                            <Button  variant="outlined" color="primary"
+                            <Button variant="outlined" color="primary"
                                     onClick={() => this.handleAddDevice()}>
                                 Add
                             </Button>
@@ -484,10 +484,10 @@ class FirmAdmin extends React.Component {
         this._isMounted = true;
         this.unsubscribe = store.subscribe(() => {
             this.setState({loading: store.getState().firmReducer.loading});
-            if(store.getState().firmReducer.firms){
+            if (store.getState().firmReducer.firms) {
                 let data = [];
                 const reduxFirms = store.getState().firmReducer.firms;
-                const selected = [this.props.selectedFirm ? this.props.selectedFirm._id : null]
+                const selected = [this.props.selectedFirm ? this.props.selectedFirm._id : null];
                 reduxFirms.map(record => {
                     let row = [
                         record._id,
@@ -502,7 +502,8 @@ class FirmAdmin extends React.Component {
                         page: this.state.page,
                         rowsPerPage: this.state.rowsPerPage
                     };
-                    this.setState(obj);})
+                    this.setState(obj);
+                })
             }
         });
     }
@@ -513,49 +514,32 @@ class FirmAdmin extends React.Component {
     }
 
     componentWillMount() {
+        let selected = [];
         if(this.props.selectedFirm){
             this.setState({firm: this.props.selectedFirm});
-            let data = [];
-            this.props.firms.map(record => {
-                let row = [
-                    record._id,
-                    record.name,
-                ];
-                data.push(createData(...row));
-                const obj = {
-                    order: this.state.order,
-                    orderBy: this.state.orderBy,
-                    selected: [this.props.selectedFirm._id],
-                    data,
-                    page: this.state.page,
-                    rowsPerPage: this.state.rowsPerPage
-                };
-                this.setState(obj);
-            })
-        } else {
-            let data = [];
-            this.props.firms.map(record => {
-                let row = [
-                    record._id,
-                    record.name,
-                ];
-                data.push(createData(...row));
-                const obj = {
-                    order: this.state.order,
-                    orderBy: this.state.orderBy,
-                    selected: [],
-                    data,
-                    page: this.state.page,
-                    rowsPerPage: this.state.rowsPerPage
-                };
-                this.setState(obj);
-            })
+            selected.push(this.props.selectedFirm._id);
         }
-
+        let data = [];
+        this.props.firms.map(record => {
+            let row = [
+                record._id,
+                record.name,
+            ];
+            data.push(createData(...row));
+            const obj = {
+                order: this.state.order,
+                orderBy: this.state.orderBy,
+                selected,
+                data,
+                page: this.state.page,
+                rowsPerPage: this.state.rowsPerPage
+            };
+            this.setState(obj);
+        })
     }
 
     handleFirmSelect(firm) {
-        if(firm){
+        if (firm) {
             this.props.firmDevicesRequest(firm._id);
         }
         this.props.onFirmSelect(firm);
@@ -684,7 +668,7 @@ const mapDispatchToProps1 = (dispatch) => {
     };
 };
 
-const FirmAdminProps  = connect(null, mapDispatchToProps1)(FirmAdmin);
+const FirmAdminProps = connect(null, mapDispatchToProps1)(FirmAdmin);
 
 const FirmAdminStyles = withStyles(styles)(FirmAdminProps);
 
