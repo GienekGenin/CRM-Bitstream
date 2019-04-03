@@ -53,7 +53,7 @@ const mapStateToProps = state => {
 
 class FirmToolBar extends React.Component {
 
-    constructor(props){
+    constructor(props) {
         super(props);
         this.state = {
             editDialog: false,
@@ -71,7 +71,7 @@ class FirmToolBar extends React.Component {
 
     handleClickOpen = (state) => {
         this.setState({[state]: true});
-        if(state === 'editDialog'){
+        if (state === 'editDialog') {
             this.setState({newFirm: this.props.selected})
         }
     };
@@ -104,7 +104,7 @@ class FirmToolBar extends React.Component {
     };
 
     updateNewFirm(e, param) {
-        this.setState({newFirm:Object.assign({}, this.state.newFirm, {[param]: e.target.value})})
+        this.setState({newFirm: Object.assign({}, this.state.newFirm, {[param]: e.target.value})})
     }
 
     handleDeleteDevice() {
@@ -113,7 +113,7 @@ class FirmToolBar extends React.Component {
         this.handleClose('confirmDeleteDialog');
     }
 
-    handleUpdateFirm(){
+    handleUpdateFirm() {
         this.props.updateFirmRequest(this.state.newFirm);
         this.props.resetSelected();
         this.handleClose('editDialog');
@@ -146,7 +146,7 @@ class FirmToolBar extends React.Component {
                                 type="text"
                                 required={true}
                                 value={this.state.newFirm.name}
-                                onChange={(e) => this.updateNewFirm(e,'name')}
+                                onChange={(e) => this.updateNewFirm(e, 'name')}
                                 fullWidth
                             />
                             <TextField
@@ -195,8 +195,8 @@ class FirmToolBar extends React.Component {
                             />
                         </DialogContent>
                         <DialogActions>
-                            <Button  variant="outlined" color="primary"
-                                     onClick={() => this.handleUpdateFirm()}>
+                            <Button variant="outlined" color="primary"
+                                    onClick={() => this.handleUpdateFirm()}>
                                 Update
                             </Button>
                             <Button onClick={() => this.handleClose('editDialog')} color="primary">
@@ -226,7 +226,7 @@ class FirmToolBar extends React.Component {
                                 type="text"
                                 required={true}
                                 value={this.state.newFirm.name}
-                                onChange={(e) => this.updateNewFirm(e,'name')}
+                                onChange={(e) => this.updateNewFirm(e, 'name')}
                                 fullWidth
                             />
                             <TextField
@@ -275,8 +275,8 @@ class FirmToolBar extends React.Component {
                             />
                         </DialogContent>
                         <DialogActions>
-                            <Button  variant="outlined" color="primary"
-                                     onClick={() => this.handleAddDevice()}>
+                            <Button variant="outlined" color="primary"
+                                    onClick={() => this.handleAddDevice()}>
                                 Add
                             </Button>
                             <Button onClick={() => this.handleClose('addDialog')} color="primary">
@@ -466,22 +466,9 @@ const styles = theme => ({
 });
 
 
-
-
-
-
-
-
-
-
-
-
-
-
 class FirmDevicesComponent extends React.Component {
 
     _isMounted = false;
-
 
 
     constructor(props) {
@@ -504,25 +491,7 @@ class FirmDevicesComponent extends React.Component {
 
     //todo: new
     componentWillMount() {
-        let data = [];
-        if (this.props.parentDevices) {
-            this.props.parentDevices.map(record => {
-                let row = [
-                    record._id,
-                    record.name,
-                ];
-                data.push(createData(...row));
-                const obj = {
-                    order: this.state.order,
-                    orderBy: this.state.orderBy,
-                    selected: [],
-                    data,
-                    page: this.state.page,
-                    rowsPerPage: this.state.rowsPerPage
-                };
-                this.setState(obj);
-            })
-        }
+
     }
 
 
@@ -541,7 +510,32 @@ class FirmDevicesComponent extends React.Component {
             } else this.setState({devices: this.props.parentDevices});
         }
 
-
+        let data = [];
+        let selected = [];
+        let device = null;
+        if(this.props.selectedDevice){
+            selected.push(this.props.selectedDevice._id);
+            device = this.props.selectedDevice;
+        }
+        if (this.props.parentDevices) {
+            this.props.parentDevices.map(record => {
+                let row = [
+                    record._id,
+                    record.name,
+                ];
+                data.push(createData(...row));
+                const obj = {
+                    order: this.state.order,
+                    orderBy: this.state.orderBy,
+                    selected,
+                    device,
+                    data,
+                    page: this.state.page,
+                    rowsPerPage: this.state.rowsPerPage
+                };
+                this.setState(obj);
+            })
+        }
 
         // todo: new
         this.unsubscribe = store.subscribe(() => {
@@ -581,8 +575,7 @@ class FirmDevicesComponent extends React.Component {
     handleDeviceSelect(device) {
         d3.select('#tree').remove();
         d3.select('#parent').append('div').attr("id", 'tree');
-
-        buildChart(Object.assign({},device,{parent_id: '0'}), this.state.devices);
+        buildChart(Object.assign({}, device, {parent_id: '0'}), this.state.devices);
         this.props.onDeviceSelect(device);
     }
 
@@ -627,8 +620,6 @@ class FirmDevicesComponent extends React.Component {
     isSelected = id => this.state.selected.indexOf(id) !== -1;
 
 
-
-
     render() {
         const {classes} = this.props;
         const {data, order, orderBy, selected, rowsPerPage, page, device, loading} = this.state;
@@ -637,7 +628,8 @@ class FirmDevicesComponent extends React.Component {
             <div>
                 <Paper className={classes.root}>
                     <FirmTableToolbar numSelected={selected.length} firm={device}/>
-                    <FirmToolBarComponent selected={device} loading={loading} resetSelected={() => this.resetSelected()}/>
+                    <FirmToolBarComponent selected={device} loading={loading}
+                                          resetSelected={() => this.resetSelected()}/>
                     {loading && <LinearProgress color="secondary"/>}
                     <div className={classes.tableWrapper}>
                         <Table className={classes.table} aria-labelledby="tableTitle">
@@ -705,6 +697,7 @@ class FirmDevicesComponent extends React.Component {
 
 FirmDevicesComponent.propTypes = {
     selectedFirm: PropTypes.object,
+    selectedDevice: PropTypes.object,
     classes: PropTypes.object.isRequired,
     onDeviceSelect: PropTypes.func.isRequired,
     resetSelectedDeviceParent: PropTypes.func,
@@ -712,7 +705,7 @@ FirmDevicesComponent.propTypes = {
     parentDevices: PropTypes.array
 };
 
-const FirmDevicesWithProps =  connect(mapStateToProps, mapDispatchToProps)(FirmDevicesComponent);
+const FirmDevicesWithProps = connect(mapStateToProps, mapDispatchToProps)(FirmDevicesComponent);
 
 const FirmDevicesStyles = withStyles(styles)(FirmDevicesWithProps);
 

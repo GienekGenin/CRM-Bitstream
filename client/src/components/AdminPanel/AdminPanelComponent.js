@@ -160,7 +160,7 @@ class AdminPanel extends React.Component {
 
     render() {
         const {classes} = this.props;
-        const {value, firms, selectedFirm, selectedUser, users, devices} = this.state;
+        const {value, firms, selectedFirm, selectedUser, selectedDevice, users, devices} = this.state;
         return (
             <div className={classes.root}>
                 <AppBar position="static" color="default">
@@ -198,6 +198,7 @@ class AdminPanel extends React.Component {
                                 onDeviceSelect={this.handleDeviceSelect}
                                 selectedFirm={selectedFirm}
                                 parentDevices={devices}
+                                selectedDevice={selectedDevice}
                             />
                         </TabContainer>}
                         {value === 2 && <TabContainer>
