@@ -11,7 +11,7 @@ import UserAdminComponent from '../../components/UserAdministration/UserAdminCom
 import DeviceAdminComponent from '../../components/DeviceAdministration/DeviceAdminComponent';
 import Toolbar from '@material-ui/core/Toolbar';
 
-import {firmsRequest} from "../../redux/actions/index";
+import {firmDevicesRequest, firmsRequest} from "../../redux/actions/index";
 import {connect} from "react-redux";
 import store from '../../redux/store'
 import {checkAccess} from "../privateRoute";
@@ -73,10 +73,13 @@ class AdminPanel extends React.Component {
                     this.setState({firms: reduxFirms})
                 }
             }
+            if(store.getState().devicesReducer.devices){
+                const reduxDevices = store.getState().devicesReducer.devices;
+                this.setState({devices: reduxDevices});
+            }
         });
 
         this.handleFirmSelect = this.handleFirmSelect.bind(this);
-        this.resetSelectedFirm = this.resetSelectedFirm.bind(this);
         this.handleUserSelect = this.handleUserSelect.bind(this);
         this.resetSelectedUser = this.resetSelectedUser.bind(this);
         this.handleSetUsers = this.handleSetUsers.bind(this);
@@ -90,7 +93,7 @@ class AdminPanel extends React.Component {
 
     handleFirmSelect(selectedFirm) {
         if (this._isMounted) {
-            this.setState({selectedFirm})
+            this.setState({selectedFirm});
         }
     }
 
@@ -107,11 +110,6 @@ class AdminPanel extends React.Component {
     }
 
 
-    resetSelectedFirm() {
-        if (this._isMounted) {
-            this.setState({selectedFirm: null, users: null, selectedUser: null})
-        }
-    }
 
     resetSelectedUser() {
         if (this._isMounted) {
@@ -181,8 +179,10 @@ class AdminPanel extends React.Component {
                     <div>
                         {value === 0 && firms && <TabContainer>
                             <FirmAdminComponent
-                                resetSelectedParent={this.resetSelectedFirm}
-                                firms={firms} onFirmSelect={this.handleFirmSelect}/>
+                                firms={firms}
+                                onFirmSelect={this.handleFirmSelect}
+                                selectedFirm={selectedFirm}
+                            />
                         </TabContainer>}
                         {value === 1 && <TabContainer>
                             <FirmDevicesComponent

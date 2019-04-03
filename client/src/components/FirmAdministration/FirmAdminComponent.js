@@ -25,7 +25,7 @@ import TablePagination from "@material-ui/core/TablePagination";
 
 import {connect} from "react-redux";
 import store from "../../redux/store";
-import {addFirmRequest, deleteFirmRequest, updateFirmRequest} from "../../redux/actions";
+import {addFirmRequest, deleteFirmRequest, firmDevicesRequest, updateFirmRequest} from "../../redux/actions";
 
 import Checkbox from "@material-ui/core/Checkbox";
 import Button from "@material-ui/core/Button";
@@ -395,16 +395,15 @@ const firmTableToolbarStyles = theme => ({
 });
 
 let FirmTableToolbar = props => {
-    const {numSelected, classes, firm} = props;
-
+    const {classes, firm} = props;
     return (
         <Toolbar
             className={classNames(classes.root, {
-                [classes.highlight]: numSelected > 0,
+                [classes.highlight]: firm,
             })}
         >
             <div className={classes.title}>
-                {numSelected > 0 ? (
+                {firm ? (
                     <Typography color="inherit" variant="subtitle1">
                         {firm.name} selected
                     </Typography>
@@ -416,7 +415,7 @@ let FirmTableToolbar = props => {
             </div>
             <div className={classes.spacer}/>
             <div className={classes.actions}>
-                {numSelected > 0 ? (
+                {firm ? (
                     <Tooltip title="Delete">
                         <IconButton aria-label="Delete">
                             <DeleteIcon/>
@@ -488,6 +487,7 @@ class FirmAdmin extends React.Component {
             if(store.getState().firmReducer.firms){
                 let data = [];
                 const reduxFirms = store.getState().firmReducer.firms;
+                const selected = [this.props.selectedFirm ? this.props.selectedFirm._id : null]
                 reduxFirms.map(record => {
                     let row = [
                         record._id,
@@ -497,7 +497,7 @@ class FirmAdmin extends React.Component {
                     const obj = {
                         order: this.state.order,
                         orderBy: this.state.orderBy,
-                        selected: [],
+                        selected,
                         data,
                         page: this.state.page,
                         rowsPerPage: this.state.rowsPerPage
@@ -513,27 +513,51 @@ class FirmAdmin extends React.Component {
     }
 
     componentWillMount() {
-        this.props.resetSelectedParent();
-        let data = [];
-        this.props.firms.map(record => {
-            let row = [
-                record._id,
-                record.name,
-            ];
-            data.push(createData(...row));
-            const obj = {
-                order: this.state.order,
-                orderBy: this.state.orderBy,
-                selected: [],
-                data,
-                page: this.state.page,
-                rowsPerPage: this.state.rowsPerPage
-            };
-            this.setState(obj);
-        })
+        if(this.props.selectedFirm){
+            this.setState({firm: this.props.selectedFirm});
+            let data = [];
+            this.props.firms.map(record => {
+                let row = [
+                    record._id,
+                    record.name,
+                ];
+                data.push(createData(...row));
+                const obj = {
+                    order: this.state.order,
+                    orderBy: this.state.orderBy,
+                    selected: [this.props.selectedFirm._id],
+                    data,
+                    page: this.state.page,
+                    rowsPerPage: this.state.rowsPerPage
+                };
+                this.setState(obj);
+            })
+        } else {
+            let data = [];
+            this.props.firms.map(record => {
+                let row = [
+                    record._id,
+                    record.name,
+                ];
+                data.push(createData(...row));
+                const obj = {
+                    order: this.state.order,
+                    orderBy: this.state.orderBy,
+                    selected: [],
+                    data,
+                    page: this.state.page,
+                    rowsPerPage: this.state.rowsPerPage
+                };
+                this.setState(obj);
+            })
+        }
+
     }
 
     handleFirmSelect(firm) {
+        if(firm){
+            this.props.firmDevicesRequest(firm._id);
+        }
         this.props.onFirmSelect(firm);
     }
 
@@ -563,8 +587,8 @@ class FirmAdmin extends React.Component {
         } else if (selectedIndex === 0) {
             newSelected = newSelected.concat(selected.slice(1));
         }
-        this.setState({selected: newSelected, firm});
         this.handleFirmSelect(firm);
+        this.setState({selected: newSelected, firm});
     };
 
     handleChangePage = (event, page) => {
@@ -579,6 +603,7 @@ class FirmAdmin extends React.Component {
 
     render() {
         const {classes} = this.props;
+
         const {data, order, orderBy, selected, rowsPerPage, page, firm, loading} = this.state;
         const emptyRows = rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
         return (
@@ -650,9 +675,17 @@ FirmAdmin.propTypes = {
     firms: PropTypes.array,
     onFirmSelect: PropTypes.func.isRequired,
     classes: PropTypes.object.isRequired,
-    resetSelectedParent: PropTypes.func
+    selectedFirm: PropTypes.object
 };
 
-const FirmAdminStyles = withStyles(styles)(FirmAdmin);
+const mapDispatchToProps1 = (dispatch) => {
+    return {
+        firmDevicesRequest: (payload) => dispatch(firmDevicesRequest(payload)),
+    };
+};
+
+const FirmAdminProps  = connect(null, mapDispatchToProps1)(FirmAdmin);
+
+const FirmAdminStyles = withStyles(styles)(FirmAdminProps);
 
 export default FirmAdminStyles;
