@@ -529,28 +529,6 @@ class UserAdminComponent extends React.Component {
     }
 
 
-    componentWillMount() {
-        let data = [];
-        if (this.props.parentUsers) {
-            this.props.parentUsers.map(record => {
-                let row = [
-                    record.email,
-                    record.name,
-                ];
-                data.push(createData(...row));
-                const obj = {
-                    order: this.state.order,
-                    orderBy: this.state.orderBy,
-                    selected: [],
-                    data,
-                    page: this.state.page,
-                    rowsPerPage: this.state.rowsPerPage
-                };
-                this.setState(obj);
-            })
-        }
-    }
-
     componentDidMount() {
         this._isMounted = true;
         if (this.props.selectedFirm) {
@@ -564,6 +542,33 @@ class UserAdminComponent extends React.Component {
             if (!this.props.parentUsers) {
                 this.props.usersRequest(selectedFirm._id);
             } else this.setState({users: this.props.parentUsers});
+        }
+
+        let data = [];
+        let selected = [];
+        let selectedUser = null;
+        if(this.props.selectedUser){
+            selected.push(this.props.selectedUser.email);
+            selectedUser = this.props.selectedUser;
+        }
+        if (this.props.parentUsers) {
+            this.props.parentUsers.map(record => {
+                let row = [
+                    record.email,
+                    record.name,
+                ];
+                data.push(createData(...row));
+                const obj = {
+                    order: this.state.order,
+                    orderBy: this.state.orderBy,
+                    selected,
+                    selectedUser,
+                    data,
+                    page: this.state.page,
+                    rowsPerPage: this.state.rowsPerPage
+                };
+                this.setState(obj);
+            })
         }
 
         this.unsubscribe = store.subscribe(() => {

@@ -489,12 +489,6 @@ class FirmDevicesComponent extends React.Component {
     }
 
 
-    //todo: new
-    componentWillMount() {
-
-    }
-
-
     componentDidMount() {
         this._isMounted = true;
         if (this.props.selectedFirm) {
