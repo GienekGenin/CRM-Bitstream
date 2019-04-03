@@ -2,7 +2,6 @@ import * as d3 from "d3";
 import * as _ from "lodash";
 
 const unflatten = ( array, parent, tree )=>{
-    console.log('top')
     tree = typeof tree !== 'undefined' ? tree : [];
     parent = typeof parent !== 'undefined' ? parent : { sid: 0 };
 
@@ -117,20 +116,20 @@ export const buildChart = (parent, stateDevices) => {
             // todo: handle click
             .on('click', click)
             // todo: show info
-            .on("mouseover", function (d) {
-                let g = d3.select(this); // The node
-                // The class is used to remove the additional text later
-                let info = g.append('text')
-                    .classed('info', true)
-                    .attr('x', 20)
-                    .attr('y', 10)
-                    .text('More info');
-            })
+            // .on("mouseover", function (d) {
+            //     let g = d3.select(this); // The node
+            //     // The class is used to remove the additional text later
+            //     let info = g.append('text')
+            //         .classed('info', true)
+            //         .attr('x', 20)
+            //         .attr('y', 10)
+            //         .text('More info');
+            // })
             // todo: hide info
-            .on("mouseout", function () {
-                // Remove the info text on mouse out.
-                d3.select(this).select('text.info').remove()
-            });
+            // .on("mouseout", function () {
+            //     // Remove the info text on mouse out.
+            //     d3.select(this).select('text.info').remove()
+            // });
 
         // Add Circle for the nodes
         nodeEnter.append('circle')
@@ -139,6 +138,7 @@ export const buildChart = (parent, stateDevices) => {
             .style("fill", function (d) {
                 return d._children ? "lightsteelblue" : "#fff";
             });
+
 
         // Add labels for the nodes
         nodeEnter.append('text')
@@ -185,10 +185,32 @@ export const buildChart = (parent, stateDevices) => {
         // Update the node attributes and style
         // todo: size of node
         nodeUpdate.select('circle.node')
-            .attr('r', 2)
+            .attr('r', 5)
             .style("fill", function (d) {
                 //console.log("parentID",d.aspid);
-                return d._children ? "lightsteelblue" : "#fff";
+                // console.log(d)
+                let parentStatus = d.parent ? (d.parent.data.status ? d.parent.data.status: 'OFFLINE') : (d.data.status ? d.data.status : 'OFFLINE');
+                let childStatus = d.data.status ? d.data.status : 'OFFLINE';
+                if(d.parent){
+                    if(parentStatus === childStatus){
+                        if(childStatus === 'ONLINE'){
+                            return '#00FF00';
+                        } else {
+                            return '#000'
+                        };
+                    } else {
+                        return '#000'
+                    };
+                } else {
+                    if(parentStatus === 'ONLINE'){
+                        return '#00FF00';
+                    } else {
+                        return '#000'
+                    };
+                }
+
+
+                // '#000' '#00FF00'
             })
             // if(d._parentid !== null){
             // .style("fill", "blue")

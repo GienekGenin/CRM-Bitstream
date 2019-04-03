@@ -38,8 +38,6 @@ import InputLabel from "@material-ui/core/InputLabel";
 import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
 import {tokenService} from "../../redux/services/token";
-import * as _ from "lodash";
-import {firmService} from "../../redux/services/firm";
 import * as d3 from "d3";
 import {buildChart} from "./charts.service";
 
@@ -502,6 +500,7 @@ class FirmDevicesComponent extends React.Component {
 
         this.resetSelected = this.resetSelected.bind(this);
     }
+
 
     //todo: new
     componentWillMount() {
