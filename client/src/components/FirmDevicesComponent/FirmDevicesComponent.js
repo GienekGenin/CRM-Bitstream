@@ -540,7 +540,7 @@ class FirmDevicesComponent extends React.Component {
 // moves the 'group' element to the top left margin
                 let svg = d3.select("#tree")
                     .append("svg")
-                    .attr("width", width + margin.right + margin.left)
+                    .attr("width", width )
                     .attr("height", height + margin.top + margin.bottom)
                     .append("g")
                     .attr("transform", "translate(" +
@@ -551,7 +551,8 @@ class FirmDevicesComponent extends React.Component {
                     root;
 
 // declares a tree layout and assigns the size
-                let treemap = d3.tree().nodeSize([height, width]);
+        // todo: here change distance between nodes
+                let treemap = d3.tree().nodeSize([20, width]);
 
 // Assigns parent, children, height, depth
                 root = d3.hierarchy(treeData, function (d) {
@@ -646,19 +647,19 @@ class FirmDevicesComponent extends React.Component {
                         })
                         .call(wrap, 30);
 
-
-                    nodeEnter.append('text')
-                        .attr("dy", ".4em")
-                        .attr("x", function (d) {
-                            return d.children || d._children ? 4 : -4;
-                        })
-                        .attr("text-anchor", function (d) {
-                            return d.children || d._children ? "end" : "start";
-                        })
-                        .text(function (d) {
-                            let children = d.children || d._children;
-                            return children ? children.length : null;
-                        });
+                    // todo: text inside node
+                    // nodeEnter.append('text')
+                    //     .attr("dy", ".4em")
+                    //     .attr("x", function (d) {
+                    //         return d.children || d._children ? 4 : -4;
+                    //     })
+                    //     .attr("text-anchor", function (d) {
+                    //         return d.children || d._children ? "end" : "start";
+                    //     })
+                    //     .text(function (d) {
+                    //         let children = d.children || d._children;
+                    //         return children ? children.length : null;
+                    //     });
 
                     // UPDATE
                     let nodeUpdate = nodeEnter.merge(node);
@@ -671,8 +672,9 @@ class FirmDevicesComponent extends React.Component {
                         });
 
                     // Update the node attributes and style
+                    // todo: size of node
                     nodeUpdate.select('circle.node')
-                        .attr('r', 10)
+                        .attr('r', 2)
                         .style("fill", function (d) {
                             //console.log("parentID",d.aspid);
                             return d._children ? "lightsteelblue" : "#fff";
