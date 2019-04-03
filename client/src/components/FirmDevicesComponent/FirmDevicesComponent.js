@@ -510,6 +510,7 @@ class FirmDevicesComponent extends React.Component {
         if(this.props.selectedDevice){
             selected.push(this.props.selectedDevice._id);
             device = this.props.selectedDevice;
+            buildChart(Object.assign({},this.props.selectedDevice,{parent_id: '0'}), this.props.parentDevices)
         }
         if (this.props.parentDevices) {
             this.props.parentDevices.map(record => {
@@ -567,8 +568,6 @@ class FirmDevicesComponent extends React.Component {
 
 
     handleDeviceSelect(device) {
-        d3.select('#tree').remove();
-        d3.select('#parent').append('div').attr("id", 'tree');
         buildChart(Object.assign({}, device, {parent_id: '0'}), this.state.devices);
         this.props.onDeviceSelect(device);
     }

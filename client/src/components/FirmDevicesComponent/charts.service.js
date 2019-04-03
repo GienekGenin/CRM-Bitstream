@@ -45,6 +45,9 @@ export const buildChart = (parent, stateDevices) => {
         width = 960 - margin.left - margin.right,
         height = 500 - margin.top - margin.bottom;
 
+    d3.select('#tree').remove();
+    d3.select('#parent').append('div').attr("id", 'tree');
+
 // append the svg object to the body of the page
 // appends a 'group' element to 'svg'
 // moves the 'group' element to the top left margin
