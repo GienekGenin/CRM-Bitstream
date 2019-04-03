@@ -20,6 +20,10 @@ const unflatten = ( array, parent, tree )=>{
 };
 
 export const buildChart = (parent, stateDevices) => {
+
+    d3.select('#tree').remove();
+    d3.select('#parent').append('div').attr("id", 'tree');
+
     let Parent = Object.assign({}, parent);
     let devices = [...stateDevices];
     let arr = [];
@@ -44,9 +48,6 @@ export const buildChart = (parent, stateDevices) => {
         },
         width = 960 - margin.left - margin.right,
         height = 500 - margin.top - margin.bottom;
-
-    d3.select('#tree').remove();
-    d3.select('#parent').append('div').attr("id", 'tree');
 
 // append the svg object to the body of the page
 // appends a 'group' element to 'svg'

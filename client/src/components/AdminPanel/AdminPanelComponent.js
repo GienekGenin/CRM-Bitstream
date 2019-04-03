@@ -223,6 +223,7 @@ class AdminPanel extends React.Component {
                                 onDeviceSelect={this.handleDeviceSelect}
                                 selectedFirm={selectedFirm}
                                 parentDevices={devices}
+                                selectedDevice={selectedDevice}
                             />
                         </TabContainer>}
                         {value === 1 && <TabContainer>
@@ -231,6 +232,7 @@ class AdminPanel extends React.Component {
                                 resetSelectedUserParent={this.resetSelectedUser}
                                 onUserSelect={this.handleUserSelect}
                                 selectedFirm={selectedFirm}
+                                selectedUser={selectedUser}
                                 parentUsers={users}
                             /></TabContainer>}
                         {value === 2 && <TabContainer>
