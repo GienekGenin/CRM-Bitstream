@@ -15,7 +15,8 @@ import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import FilterListIcon from '@material-ui/icons/FilterList';
 
-import {createData, desc, stableSort, getSorting, rows} from "./firm_devices.service";
+// todo: import 'desc' if needed
+import {createData, stableSort, getSorting, rows} from "./firm_devices.service";
 import Table from "@material-ui/core/Table";
 import Paper from "@material-ui/core/Paper";
 import TableBody from "@material-ui/core/TableBody";
@@ -33,12 +34,7 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogActions from "@material-ui/core/DialogActions";
 import TextField from "@material-ui/core/TextField";
 import LinearProgress from "@material-ui/core/LinearProgress";
-import FormControl from "@material-ui/core/FormControl";
-import InputLabel from "@material-ui/core/InputLabel";
-import Select from "@material-ui/core/Select";
-import MenuItem from "@material-ui/core/MenuItem";
 import {tokenService} from "../../redux/services/token";
-import * as d3 from "d3";
 import {buildChart} from "./charts.service";
 
 const mapDispatchToProps = (dispatch) => {
@@ -51,7 +47,7 @@ const mapStateToProps = state => {
     return {devices: state.devicesReducer.devices};
 };
 
-class FirmToolBar extends React.Component {
+class FirmDevicesToolBar extends React.Component {
 
     constructor(props) {
         super(props);
@@ -59,7 +55,7 @@ class FirmToolBar extends React.Component {
             editDialog: false,
             addDialog: false,
             confirmDeleteDialog: false,
-            newFirm: {
+            newFirmDevice: {
                 name: '',
                 address: '',
                 email: '',
@@ -72,14 +68,14 @@ class FirmToolBar extends React.Component {
     handleClickOpen = (state) => {
         this.setState({[state]: true});
         if (state === 'editDialog') {
-            this.setState({newFirm: this.props.selected})
+            this.setState({newFirmDevice: this.props.selected})
         }
     };
 
     handleClose = (state) => {
         this.setState({
             [state]: false,
-            newFirm: {
+            newFirmDevice: {
                 name: '',
                 address: '',
                 email: '',
@@ -89,11 +85,11 @@ class FirmToolBar extends React.Component {
         });
     };
 
-    handleAddDevice = () => {
-        this.props.addFirmRequest(this.state.newFirm);
+    handleAddFirmDevice = () => {
+        this.props.addFirmRequest(this.state.newFirmDevice);
         this.setState({
             addDialog: false,
-            newFirm: {
+            newFirmDevice: {
                 name: '',
                 address: '',
                 email: '',
@@ -103,18 +99,18 @@ class FirmToolBar extends React.Component {
         });
     };
 
-    updateNewFirm(e, param) {
-        this.setState({newFirm: Object.assign({}, this.state.newFirm, {[param]: e.target.value})})
+    updateNewFirmDevice(e, param) {
+        this.setState({newFirmDevice: Object.assign({}, this.state.newFirmDevice, {[param]: e.target.value})})
     }
 
-    handleDeleteDevice() {
+    handleDeleteFirmDevice() {
         this.props.deleteFirmRequest(this.props.selected._id);
         this.props.resetSelected();
         this.handleClose('confirmDeleteDialog');
     }
 
-    handleUpdateFirm() {
-        this.props.updateFirmRequest(this.state.newFirm);
+    handleUpdateFirmDevice() {
+        this.props.updateFirmRequest(this.state.newFirmDevice);
         this.props.resetSelected();
         this.handleClose('editDialog');
     }
@@ -145,8 +141,8 @@ class FirmToolBar extends React.Component {
                                 label="Firm name"
                                 type="text"
                                 required={true}
-                                value={this.state.newFirm.name}
-                                onChange={(e) => this.updateNewFirm(e, 'name')}
+                                value={this.state.newFirmDevice.name}
+                                onChange={(e) => this.updateNewFirmDevice(e, 'name')}
                                 fullWidth
                             />
                             <TextField
@@ -156,8 +152,8 @@ class FirmToolBar extends React.Component {
                                 label="Firms address"
                                 type="text"
                                 required={true}
-                                value={this.state.newFirm.address}
-                                onChange={(e) => this.updateNewFirm(e, 'address')}
+                                value={this.state.newFirmDevice.address}
+                                onChange={(e) => this.updateNewFirmDevice(e, 'address')}
                                 fullWidth
                             />
                             <TextField
@@ -167,8 +163,8 @@ class FirmToolBar extends React.Component {
                                 label="Firm email"
                                 type="text"
                                 required={true}
-                                value={this.state.newFirm.email}
-                                onChange={(e) => this.updateNewFirm(e, 'email')}
+                                value={this.state.newFirmDevice.email}
+                                onChange={(e) => this.updateNewFirmDevice(e, 'email')}
                                 fullWidth
                             />
                             <TextField
@@ -178,8 +174,8 @@ class FirmToolBar extends React.Component {
                                 label="Firm contact number"
                                 type="text"
                                 required={true}
-                                value={this.state.newFirm.tel}
-                                onChange={(e) => this.updateNewFirm(e, 'tel')}
+                                value={this.state.newFirmDevice.tel}
+                                onChange={(e) => this.updateNewFirmDevice(e, 'tel')}
                                 fullWidth
                             />
                             <TextField
@@ -189,14 +185,14 @@ class FirmToolBar extends React.Component {
                                 label="NIP"
                                 type="text"
                                 required={true}
-                                value={this.state.newFirm.nip}
-                                onChange={(e) => this.updateNewFirm(e, 'nip')}
+                                value={this.state.newFirmDevice.nip}
+                                onChange={(e) => this.updateNewFirmDevice(e, 'nip')}
                                 fullWidth
                             />
                         </DialogContent>
                         <DialogActions>
                             <Button variant="outlined" color="primary"
-                                    onClick={() => this.handleUpdateFirm()}>
+                                    onClick={() => this.handleUpdateFirmDevice()}>
                                 Update
                             </Button>
                             <Button onClick={() => this.handleClose('editDialog')} color="primary">
@@ -225,8 +221,8 @@ class FirmToolBar extends React.Component {
                                 label="Firm name"
                                 type="text"
                                 required={true}
-                                value={this.state.newFirm.name}
-                                onChange={(e) => this.updateNewFirm(e, 'name')}
+                                value={this.state.newFirmDevice.name}
+                                onChange={(e) => this.updateNewFirmDevice(e, 'name')}
                                 fullWidth
                             />
                             <TextField
@@ -236,8 +232,8 @@ class FirmToolBar extends React.Component {
                                 label="Firms address"
                                 type="text"
                                 required={true}
-                                value={this.state.newFirm.address}
-                                onChange={(e) => this.updateNewFirm(e, 'address')}
+                                value={this.state.newFirmDevice.address}
+                                onChange={(e) => this.updateNewFirmDevice(e, 'address')}
                                 fullWidth
                             />
                             <TextField
@@ -247,8 +243,8 @@ class FirmToolBar extends React.Component {
                                 label="Firm email"
                                 type="text"
                                 required={true}
-                                value={this.state.newFirm.email}
-                                onChange={(e) => this.updateNewFirm(e, 'email')}
+                                value={this.state.newFirmDevice.email}
+                                onChange={(e) => this.updateNewFirmDevice(e, 'email')}
                                 fullWidth
                             />
                             <TextField
@@ -258,8 +254,8 @@ class FirmToolBar extends React.Component {
                                 label="Firm contact number"
                                 type="text"
                                 required={true}
-                                value={this.state.newFirm.tel}
-                                onChange={(e) => this.updateNewFirm(e, 'tel')}
+                                value={this.state.newFirmDevice.tel}
+                                onChange={(e) => this.updateNewFirmDevice(e, 'tel')}
                                 fullWidth
                             />
                             <TextField
@@ -269,14 +265,14 @@ class FirmToolBar extends React.Component {
                                 label="NIP"
                                 type="text"
                                 required={true}
-                                value={this.state.newFirm.nip}
-                                onChange={(e) => this.updateNewFirm(e, 'nip')}
+                                value={this.state.newFirmDevice.nip}
+                                onChange={(e) => this.updateNewFirmDevice(e, 'nip')}
                                 fullWidth
                             />
                         </DialogContent>
                         <DialogActions>
                             <Button variant="outlined" color="primary"
-                                    onClick={() => this.handleAddDevice()}>
+                                    onClick={() => this.handleAddFirmDevice()}>
                                 Add
                             </Button>
                             <Button onClick={() => this.handleClose('addDialog')} color="primary">
@@ -305,7 +301,7 @@ class FirmToolBar extends React.Component {
                                 Close
                             </Button>
                             <Button disabled={!this.props.selected} variant="contained" color="secondary"
-                                    onClick={() => this.handleDeleteDevice()}>
+                                    onClick={() => this.handleDeleteFirmDevice()}>
                                 Confirm
                             </Button>
                         </DialogActions>
@@ -319,11 +315,11 @@ class FirmToolBar extends React.Component {
     }
 }
 
-FirmToolBar.propTypes = {selected: PropTypes.object, resetSelected: PropTypes.func, loading: PropTypes.bool};
+FirmDevicesToolBar.propTypes = {selected: PropTypes.object, resetSelected: PropTypes.func, loading: PropTypes.bool};
 
-const FirmToolBarComponent = connect(null, mapDispatchToProps)(FirmToolBar);
+const FirmDevicesToolBarComponent = connect(null, mapDispatchToProps)(FirmDevicesToolBar);
 
-class FirmTableHead extends React.Component {
+class FirmDevicesTableHead extends React.Component {
     createSortHandler = property => event => {
         this.props.onRequestSort(event, property);
     };
@@ -368,7 +364,7 @@ class FirmTableHead extends React.Component {
     }
 }
 
-FirmTableHead.propTypes = {
+FirmDevicesTableHead.propTypes = {
     numSelected: PropTypes.number.isRequired,
     onRequestSort: PropTypes.func.isRequired,
     order: PropTypes.string.isRequired,
@@ -376,7 +372,7 @@ FirmTableHead.propTypes = {
     rowCount: PropTypes.number.isRequired,
 };
 
-const firmTableToolbarStyles = theme => ({
+const firmDevicesTableToolbarStyles = theme => ({
     root: {
         paddingRight: theme.spacing.unit,
     },
@@ -401,7 +397,7 @@ const firmTableToolbarStyles = theme => ({
     },
 });
 
-let FirmTableToolbar = props => {
+let FirmDevicesTableToolbar = props => {
     const {numSelected, classes, firm} = props;
 
     return (
@@ -441,13 +437,13 @@ let FirmTableToolbar = props => {
     );
 };
 
-FirmTableToolbar.propTypes = {
+FirmDevicesTableToolbar.propTypes = {
     classes: PropTypes.object.isRequired,
     numSelected: PropTypes.number.isRequired,
     firm: PropTypes.object
 };
 
-FirmTableToolbar = withStyles(firmTableToolbarStyles)(FirmTableToolbar);
+FirmDevicesTableToolbar = withStyles(firmDevicesTableToolbarStyles)(FirmDevicesTableToolbar);
 
 const styles = theme => ({
     root: {
@@ -464,7 +460,6 @@ const styles = theme => ({
         left: 0
     },
 });
-
 
 class FirmDevicesComponent extends React.Component {
 
@@ -529,6 +524,7 @@ class FirmDevicesComponent extends React.Component {
                     rowsPerPage: this.state.rowsPerPage
                 };
                 this.setState(obj);
+                return true;
             })
         }
 
@@ -555,6 +551,7 @@ class FirmDevicesComponent extends React.Component {
                         rowsPerPage: this.state.rowsPerPage
                     };
                     this.setState(obj);
+                    return true;
                 })
             }
         });
@@ -620,13 +617,13 @@ class FirmDevicesComponent extends React.Component {
         return (
             <div>
                 <Paper className={classes.root}>
-                    <FirmTableToolbar numSelected={selected.length} firm={device}/>
-                    <FirmToolBarComponent selected={device} loading={loading}
+                    <FirmDevicesTableToolbar numSelected={selected.length} firm={device}/>
+                    <FirmDevicesToolBarComponent selected={device} loading={loading}
                                           resetSelected={() => this.resetSelected()}/>
                     {loading && <LinearProgress color="secondary"/>}
                     <div className={classes.tableWrapper}>
                         <Table className={classes.table} aria-labelledby="tableTitle">
-                            <FirmTableHead
+                            <FirmDevicesTableHead
                                 numSelected={selected.length}
                                 order={order}
                                 orderBy={orderBy}

@@ -17,7 +17,8 @@ import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import FilterListIcon from '@material-ui/icons/FilterList';
 
-import {createData, desc, stableSort, getSorting, rows} from "./users-table.service";
+// todo: import 'desc' if needed
+import {createData, stableSort, getSorting, rows} from "./users-table.service";
 import Table from "@material-ui/core/Table";
 import Paper from "@material-ui/core/Paper";
 import TableBody from "@material-ui/core/TableBody";
@@ -64,7 +65,7 @@ class UserToolBar extends React.Component {
             editDialog: false,
             addDialog: false,
             confirmDeleteDialog: false,
-            newFirm: {
+            newUser: {
                 name: '',
                 surname: '',
                 role_id: '',
@@ -84,14 +85,14 @@ class UserToolBar extends React.Component {
     handleClickOpen = (state) => {
         this.setState({[state]: true});
         if (state === 'editDialog') {
-            this.setState({newFirm: this.props.selected})
+            this.setState({newUser: this.props.selected})
         }
     };
 
     handleClose = (state) => {
         this.setState({
             [state]: false,
-            newFirm: {
+            newUser: {
                 name: '',
                 surname: '',
                 role_id: '',
@@ -102,11 +103,11 @@ class UserToolBar extends React.Component {
         });
     };
 
-    handleAddDevice = () => {
-        this.props.addUserRequest(Object.assign({}, this.state.newFirm, {firm_id: this.props.selectedFirmId}));
+    handleAddUser = () => {
+        this.props.addUserRequest(Object.assign({}, this.state.newUser, {firm_id: this.props.selectedFirmId}));
         this.setState({
             addDialog: false,
-            newFirm: {
+            newUser: {
                 name: '',
                 surname: '',
                 role_id: '',
@@ -117,18 +118,18 @@ class UserToolBar extends React.Component {
         });
     };
 
-    updateNewFirm(e, param) {
-        this.setState({newFirm: Object.assign({}, this.state.newFirm, {[param]: e.target.value})})
+    updateNewUser(e, param) {
+        this.setState({newUser: Object.assign({}, this.state.newUser, {[param]: e.target.value})})
     }
 
-    handleDeleteDevice() {
+    handleDeleteUser() {
         this.props.deleteUserRequest(this.props.selected.email);
         this.props.resetSelected();
         this.handleClose('confirmDeleteDialog');
     }
 
-    handleUpdateFirm() {
-        this.props.updateUserRequest(Object.assign({}, this.state.newFirm, {firm_id: this.props.selectedFirmId}));
+    handleUpdateUser() {
+        this.props.updateUserRequest(Object.assign({}, this.state.newUser, {firm_id: this.props.selectedFirmId}));
         this.props.resetSelected();
         this.handleClose('editDialog');
     }
@@ -143,7 +144,7 @@ class UserToolBar extends React.Component {
                 <div>
                     <Button disabled={!this.props.selected} variant="contained" color="primary"
                             onClick={() => this.handleClickOpen('editDialog')}>
-                        editDialog
+                        Edit
                     </Button>
                     <Dialog
                         open={this.state.editDialog}
@@ -151,7 +152,7 @@ class UserToolBar extends React.Component {
                         aria-labelledby="key-dialog-title"
                         aria-describedby="alert-dialog-description"
                     >
-                        <DialogTitle id="alert-dialog-title">editDialog</DialogTitle>
+                        <DialogTitle id="alert-dialog-title">Edit user</DialogTitle>
                         <DialogContent>
                             <TextField
                                 autoFocus
@@ -160,8 +161,8 @@ class UserToolBar extends React.Component {
                                 label="name"
                                 type="text"
                                 required={true}
-                                value={this.state.newFirm.name}
-                                onChange={(e) => this.updateNewFirm(e, 'name')}
+                                value={this.state.newUser.name}
+                                onChange={(e) => this.updateNewUser(e, 'name')}
                                 fullWidth
                             />
                             <TextField
@@ -171,15 +172,15 @@ class UserToolBar extends React.Component {
                                 label="surname"
                                 type="text"
                                 required={true}
-                                value={this.state.newFirm.surname}
-                                onChange={(e) => this.updateNewFirm(e, 'surname')}
+                                value={this.state.newUser.surname}
+                                onChange={(e) => this.updateNewUser(e, 'surname')}
                                 fullWidth
                             />
                             <FormControl>
                                 <InputLabel htmlFor="role">Role</InputLabel>
                                 <Select
-                                    value={this.state.newFirm.role_id}
-                                    onChange={(e) => this.updateNewFirm(e, 'role_id')}
+                                    value={this.state.newUser.role_id}
+                                    onChange={(e) => this.updateNewUser(e, 'role_id')}
                                     id='role'
                                 >
                                     {roles.map((el, i)=><MenuItem key={i} value={el._id}>{el.name}</MenuItem>)}
@@ -192,8 +193,8 @@ class UserToolBar extends React.Component {
                                 label="email"
                                 type="text"
                                 required={true}
-                                value={this.state.newFirm.email}
-                                onChange={(e) => this.updateNewFirm(e, 'email')}
+                                value={this.state.newUser.email}
+                                onChange={(e) => this.updateNewUser(e, 'email')}
                                 fullWidth
                             />
                             <TextField
@@ -203,8 +204,8 @@ class UserToolBar extends React.Component {
                                 label="pass"
                                 type="text"
                                 required={true}
-                                value={this.state.newFirm.password}
-                                onChange={(e) => this.updateNewFirm(e, 'password')}
+                                value={this.state.newUser.password}
+                                onChange={(e) => this.updateNewUser(e, 'password')}
                                 fullWidth
                             />
                             <TextField
@@ -214,14 +215,14 @@ class UserToolBar extends React.Component {
                                 label="tel"
                                 type="text"
                                 required={true}
-                                value={this.state.newFirm.tel}
-                                onChange={(e) => this.updateNewFirm(e, 'tel')}
+                                value={this.state.newUser.tel}
+                                onChange={(e) => this.updateNewUser(e, 'tel')}
                                 fullWidth
                             />
                         </DialogContent>
                         <DialogActions>
                             <Button variant="outlined" color="primary"
-                                    onClick={() => this.handleUpdateFirm()}>
+                                    onClick={() => this.handleUpdateUser()}>
                                 Update
                             </Button>
                             <Button onClick={() => this.handleClose('editDialog')} color="primary">
@@ -241,7 +242,7 @@ class UserToolBar extends React.Component {
                         aria-labelledby="alert-dialog-title"
                         aria-describedby="alert-dialog-description"
                     >
-                        <DialogTitle id="alert-dialog-title-">Add new device</DialogTitle>
+                        <DialogTitle id="alert-dialog-title-">Add user</DialogTitle>
                         <DialogContent>
                             <TextField
                                 autoFocus
@@ -250,8 +251,8 @@ class UserToolBar extends React.Component {
                                 label="name"
                                 type="text"
                                 required={true}
-                                value={this.state.newFirm.name}
-                                onChange={(e) => this.updateNewFirm(e, 'name')}
+                                value={this.state.newUser.name}
+                                onChange={(e) => this.updateNewUser(e, 'name')}
                                 fullWidth
                             />
                             <TextField
@@ -261,15 +262,15 @@ class UserToolBar extends React.Component {
                                 label="surname"
                                 type="text"
                                 required={true}
-                                value={this.state.newFirm.surname}
-                                onChange={(e) => this.updateNewFirm(e, 'surname')}
+                                value={this.state.newUser.surname}
+                                onChange={(e) => this.updateNewUser(e, 'surname')}
                                 fullWidth
                             />
                             <FormControl>
                                 <InputLabel htmlFor="role">Role</InputLabel>
                                 <Select
-                                    value={this.state.newFirm.role_id}
-                                    onChange={(e) => this.updateNewFirm(e, 'role_id')}
+                                    value={this.state.newUser.role_id}
+                                    onChange={(e) => this.updateNewUser(e, 'role_id')}
                                     id='role'
                                 >
                                     {roles.map((el, i)=><MenuItem key={i} value={el._id}>{el.name}</MenuItem>)}
@@ -282,8 +283,8 @@ class UserToolBar extends React.Component {
                                 label="email"
                                 type="text"
                                 required={true}
-                                value={this.state.newFirm.email}
-                                onChange={(e) => this.updateNewFirm(e, 'email')}
+                                value={this.state.newUser.email}
+                                onChange={(e) => this.updateNewUser(e, 'email')}
                                 fullWidth
                             />
                             <TextField
@@ -293,8 +294,8 @@ class UserToolBar extends React.Component {
                                 label="pass"
                                 type="text"
                                 required={true}
-                                value={this.state.newFirm.password}
-                                onChange={(e) => this.updateNewFirm(e, 'password')}
+                                value={this.state.newUser.password}
+                                onChange={(e) => this.updateNewUser(e, 'password')}
                                 fullWidth
                             />
                             <TextField
@@ -304,14 +305,14 @@ class UserToolBar extends React.Component {
                                 label="tel"
                                 type="text"
                                 required={true}
-                                value={this.state.newFirm.tel}
-                                onChange={(e) => this.updateNewFirm(e, 'tel')}
+                                value={this.state.newUser.tel}
+                                onChange={(e) => this.updateNewUser(e, 'tel')}
                                 fullWidth
                             />
                         </DialogContent>
                         <DialogActions>
                             <Button variant="outlined" color="primary"
-                                    onClick={() => this.handleAddDevice()}>
+                                    onClick={() => this.handleAddUser()}>
                                 Add
                             </Button>
                             <Button onClick={() => this.handleClose('addDialog')} color="primary">
@@ -331,7 +332,7 @@ class UserToolBar extends React.Component {
                         aria-labelledby="alert-dialog-title"
                         aria-describedby="alert-dialog-description"
                     >
-                        <DialogTitle id="alert-dialog-title-">Device properties</DialogTitle>
+                        <DialogTitle id="alert-dialog-title-">Delete</DialogTitle>
                         <DialogContent>
                             Confirm deletion of {this.props.selected ? this.props.selected.email : ''}
                         </DialogContent>
@@ -340,7 +341,7 @@ class UserToolBar extends React.Component {
                                 Close
                             </Button>
                             <Button disabled={!this.props.selected} variant="contained" color="secondary"
-                                    onClick={() => this.handleDeleteDevice()}>
+                                    onClick={() => this.handleDeleteUser()}>
                                 Confirm
                             </Button>
                         </DialogActions>
@@ -568,6 +569,7 @@ class UserAdminComponent extends React.Component {
                     rowsPerPage: this.state.rowsPerPage
                 };
                 this.setState(obj);
+                return true;
             })
         }
 
@@ -594,6 +596,7 @@ class UserAdminComponent extends React.Component {
                         rowsPerPage: this.state.rowsPerPage
                     };
                     this.setState(obj);
+                    return true;
                 })
             }
         });

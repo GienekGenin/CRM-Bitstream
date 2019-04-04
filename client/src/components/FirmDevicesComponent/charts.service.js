@@ -3,12 +3,12 @@ import * as _ from "lodash";
 
 const unflatten = ( array, parent, tree )=>{
     tree = typeof tree !== 'undefined' ? tree : [];
-    parent = typeof parent !== 'undefined' ? parent : { sid: 0 };
+    parent = typeof parent !== 'undefined' ? parent : { sid: '0' };
 
-    var children = _.filter( array, function(child){ return child.parent_id == parent.sid; });
+    var children = _.filter( array, function(child){ return child.parent_id === parent.sid; });
 
     if( !_.isEmpty( children )  ){
-        if( parent.sid == 0 ){
+        if( parent.sid === '0' ){
             tree = children;
         }else{
             parent['children'] = children
@@ -120,20 +120,21 @@ export const buildChart = (parent, stateDevices) => {
             // todo: handle click
             .on('click', click)
             // todo: show info
-            // .on("mouseover", function (d) {
-            //     let g = d3.select(this); // The node
-            //     // The class is used to remove the additional text later
-            //     let info = g.append('text')
-            //         .classed('info', true)
-            //         .attr('x', 20)
-            //         .attr('y', 10)
-            //         .text('More info');
-            // })
+            .on("mouseover", function (d) {
+                let g = d3.select(this); // The node
+                // The class is used to remove the additional text later
+                // let info = g.append('text')
+                g.append('text')
+                    .classed('info', true)
+                    .attr('x', 20)
+                    .attr('y', 10)
+                    .text('More info');
+            })
             // todo: hide info
-            // .on("mouseout", function () {
-            //     // Remove the info text on mouse out.
-            //     d3.select(this).select('text.info').remove()
-            // });
+            .on("mouseout", function () {
+                // Remove the info text on mouse out.
+                d3.select(this).select('text.info').remove()
+            });
 
         // Add Circle for the nodes
         nodeEnter.append('circle')
@@ -201,24 +202,20 @@ export const buildChart = (parent, stateDevices) => {
                             return '#00FF00';
                         } else {
                             return '#000'
-                        };
+                        }
                     } else {
                         return '#000'
-                    };
+                    }
                 } else {
                     if(parentStatus === 'ONLINE'){
                         return '#00FF00';
                     } else {
                         return '#000'
-                    };
+                    }
                 }
-
-
                 // '#000' '#00FF00'
             })
-            // if(d._parentid !== null){
             // .style("fill", "blue")
-            // }
             .attr('cursor', 'pointer');
 
 
@@ -268,7 +265,8 @@ export const buildChart = (parent, stateDevices) => {
             });
 
         // Remove any exiting links
-        let linkExit = link.exit().transition()
+        // let linkExit = link.exit().transition()
+        link.exit().transition()
             .duration(duration)
             .attr('d', function (d) {
                 let o = {
@@ -296,18 +294,18 @@ export const buildChart = (parent, stateDevices) => {
             return path
         }
 
-        function mousemove(d) {
-            return d
-                .text("Info about " + d.name + ":" + d.info)
-                .style("left", (d3.event.pageX) + "px")
-                .style("top", (d3.event.pageY) + "px");
-        }
-
-        function mouseout(d) {
-            d.transition()
-                .duration(300)
-                .style("opacity", 1e-6);
-        }
+        // function mousemove(d) {
+        //     return d
+        //         .text("Info about " + d.name)
+        //         .style("left", (d3.event.pageX) + "px")
+        //         .style("top", (d3.event.pageY) + "px");
+        // }
+        //
+        // function mouseout(d) {
+        //     d.transition()
+        //         .duration(300)
+        //         .style("opacity", 1e-6);
+        // }
 
         // Toggle children on click.
         function click(d) {
@@ -322,27 +320,27 @@ export const buildChart = (parent, stateDevices) => {
             update(d);
         }
 
-        function zoom() {
-            let scale = d3.event.scale,
-                translation = d3.event.translate,
-                tbound = -height * scale * 100,
-                bbound = height * scale,
-                lbound = (-width + margin.right) * scale,
-                rbound = (width - margin.bottom) * scale;
-            console.log("pre min/max" + translation);
-            // limit translation to thresholds
-            translation = [
-                Math.max(Math.min(translation[0], rbound),
-                    lbound),
-                Math.max(Math.min(translation[1], bbound),
-                    tbound)
-            ];
-            console.log("scale" + scale);
-            console.log("translation" + translation);
-
-            svg.attr("transform", "translate(" + translation + ")" +
-                " scale(" + scale + ")");
-        }
+        // function zoom() {
+        //     let scale = d3.event.scale,
+        //         translation = d3.event.translate,
+        //         tbound = -height * scale * 100,
+        //         bbound = height * scale,
+        //         lbound = (-width + margin.right) * scale,
+        //         rbound = (width - margin.bottom) * scale;
+        //     console.log("pre min/max" + translation);
+        //     // limit translation to thresholds
+        //     translation = [
+        //         Math.max(Math.min(translation[0], rbound),
+        //             lbound),
+        //         Math.max(Math.min(translation[1], bbound),
+        //             tbound)
+        //     ];
+        //     console.log("scale" + scale);
+        //     console.log("translation" + translation);
+        //
+        //     svg.attr("transform", "translate(" + translation + ")" +
+        //         " scale(" + scale + ")");
+        // }
     }
 
     /* Word Wrap */
@@ -362,7 +360,7 @@ export const buildChart = (parent, stateDevices) => {
                     .attr("x", x)
                     .attr("y", y)
                     .attr("dy", dy + "em");
-            while (word = words.pop()) {
+            while ((word = words.pop())) {
                 line.push(word);
                 tspan.text(line.join(" "));
                 if (tspan.node().getComputedTextLength() >
@@ -384,4 +382,4 @@ export const buildChart = (parent, stateDevices) => {
 
 // Set the dimensions and margins of the diagram
 
-}
+};

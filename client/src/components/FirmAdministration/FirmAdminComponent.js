@@ -17,7 +17,8 @@ import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import FilterListIcon from '@material-ui/icons/FilterList';
 
-import {createData, desc, stableSort, getSorting, rows} from "./firms-table.service";
+// todo: import 'desc' if needed
+import {createData, stableSort, getSorting, rows} from "./firms-table.service";
 import Table from "@material-ui/core/Table";
 import Paper from "@material-ui/core/Paper";
 import TableBody from "@material-ui/core/TableBody";
@@ -121,7 +122,7 @@ class FirmToolBar extends React.Component {
                 <div>
                     <Button disabled={!this.props.selected} variant="contained" color="primary"
                             onClick={() => this.handleClickOpen('editDialog')}>
-                        editDialog
+                        Edit
                     </Button>
                     <Dialog
                         open={this.state.editDialog}
@@ -129,7 +130,7 @@ class FirmToolBar extends React.Component {
                         aria-labelledby="key-dialog-title"
                         aria-describedby="alert-dialog-description"
                     >
-                        <DialogTitle id="alert-dialog-title">editDialog</DialogTitle>
+                        <DialogTitle id="alert-dialog-title">Edit firm</DialogTitle>
                         <DialogContent>
                             <TextField
                                 autoFocus
@@ -209,7 +210,7 @@ class FirmToolBar extends React.Component {
                         aria-labelledby="alert-dialog-title"
                         aria-describedby="alert-dialog-description"
                     >
-                        <DialogTitle id="alert-dialog-title-">Add new device</DialogTitle>
+                        <DialogTitle id="alert-dialog-title-">Add firm</DialogTitle>
                         <DialogContent>
                             <TextField
                                 autoFocus
@@ -289,9 +290,9 @@ class FirmToolBar extends React.Component {
                         aria-labelledby="alert-dialog-title"
                         aria-describedby="alert-dialog-description"
                     >
-                        <DialogTitle id="alert-dialog-title-">Device properties</DialogTitle>
+                        <DialogTitle id="alert-dialog-title-">Delete firm</DialogTitle>
                         <DialogContent>
-                            Confirm deletion of {this.props.selected ? this.props.selected._id : ''}
+                            Confirm deletion of {this.props.selected ? this.props.selected.name : ''}
                         </DialogContent>
                         <DialogActions>
                             <Button onClick={() => this.handleClose('confirmDeleteDialog')} color="primary">
@@ -503,6 +504,7 @@ class FirmAdmin extends React.Component {
                         rowsPerPage: this.state.rowsPerPage
                     };
                     this.setState(obj);
+                    return true;
                 })
             }
         });
@@ -535,6 +537,7 @@ class FirmAdmin extends React.Component {
                 rowsPerPage: this.state.rowsPerPage
             };
             this.setState(obj);
+            return true;
         })
     }
 
