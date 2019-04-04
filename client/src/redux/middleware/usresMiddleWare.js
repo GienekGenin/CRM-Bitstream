@@ -63,6 +63,21 @@ export const usersMiddleWare = ({dispatch}) => {
                         dispatch({type: userConstants.UPDATE_USER_FAILURE, payload: errorParser(err)})
                     });
             }
+            if (action.type === userConstants.CHANGE_PASS_ADMIN_REQUEST) {
+                userService.changePassAdmin(action.payload)
+                    .then((user) => {
+                        return dispatch({
+                            type: userConstants.CHANGE_PASS_ADMIN_SUCCESS,
+                            payload: {
+                                user,
+                                success: 'Password was changed'
+                            }
+                        })
+                    })
+                    .catch(err => {
+                        dispatch({type: userConstants.CHANGE_PASS_ADMIN_FAILURE, payload: errorParser(err)})
+                    });
+            }
             return next(action);
         };
     };

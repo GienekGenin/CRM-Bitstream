@@ -45,3 +45,10 @@ users.put('/', TokenValidator.validateToken, (req, res, next) => {
         .then(PayloadGeneratorService.nextWithData(next, res))
         .catch(next);
 });
+
+users.put('/changePassAdmin', TokenValidator.validateToken, (req, res, next) => {
+    usersService
+        .changePassAdmin(req.body)
+        .then(PayloadGeneratorService.nextWithData(next, res))
+        .catch(next);
+});

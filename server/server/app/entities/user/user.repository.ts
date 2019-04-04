@@ -22,4 +22,8 @@ export class UserRepository extends Repository {
     updateByEmail(user) {
         return this.model.updateOne({email: user.email}, user);
     }
+
+    updatePass(credential) {
+        return this.model.updateOne({email: credential.email}, {password: credential.password});
+    }
 }

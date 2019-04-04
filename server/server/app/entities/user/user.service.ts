@@ -137,6 +137,43 @@ class UsersService {
                 })
         })
     }
+
+    changePassAdmin(credential){
+        return new Promise((resolve, reject) => {
+            async.waterfall(
+                [
+                    callback => {
+                        bcryptjs.hash(credential.password, 10)
+                            .then(hash => callback(null,
+                                Object.assign({}, credential, {
+                                    password: hash
+                                })))
+                            .catch(e => callback(e));
+                    },
+                    (credential, callback) => {
+                        this.usersRepository.updatePass(credential)
+                            .then(d => {
+                                if (d['nModified'] === 0) {
+                                    callback(new Error('Unable to change password'));
+                                }
+                                callback(null);
+                            })
+                            .catch(e => callback(e));
+                    },
+                    callback => {
+                        this.usersRepository.findByEmail(credential.email)
+                            .then(user => callback(null, user))
+                            .catch(e => callback(e));
+                    }
+                ],
+                (err, payload) => {
+                    if (err) {
+                        reject(err);
+                    }
+                    resolve(payload);
+                });
+        });
+    }
 }
 
 export const usersService = new UsersService();

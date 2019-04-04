@@ -26,7 +26,13 @@ import TablePagination from "@material-ui/core/TablePagination";
 
 import store from "../../redux/store";
 import {connect} from "react-redux";
-import {usersRequest, addUserRequest, deleteUserRequest, updateUserRequest} from "../../redux/actions";
+import {
+    usersRequest,
+    addUserRequest,
+    deleteUserRequest,
+    updateUserRequest,
+    changePassAdminRequest
+} from "../../redux/actions";
 
 import Checkbox from "@material-ui/core/Checkbox";
 import Button from "@material-ui/core/Button";
@@ -48,6 +54,7 @@ const mapDispatchToProps = (dispatch) => {
         addUserRequest: (user) => dispatch(addUserRequest(user)),
         deleteUserRequest: (email) => dispatch(deleteUserRequest(email)),
         updateUserRequest: (user) => dispatch(updateUserRequest(user)),
+        changePassAdminRequest: (credentials) => dispatch(changePassAdminRequest(credentials)),
     };
 };
 
@@ -59,12 +66,16 @@ const mapStateToProps = state => {
 
 class UserToolBar extends React.Component {
 
+    _isMounted = false;
+
     constructor(props) {
         super(props);
         this.state = {
             editDialog: false,
             addDialog: false,
             confirmDeleteDialog: false,
+            changePassDialog: false,
+            changeEmailDialog: false,
             newUser: {
                 name: '',
                 surname: '',
@@ -86,6 +97,9 @@ class UserToolBar extends React.Component {
         this.setState({[state]: true});
         if (state === 'editDialog') {
             this.setState({newUser: this.props.selected})
+        }
+        if (state === 'changePassDialog') {
+            this.setState({newUser: Object.assign({}, this.props.selected, {password: ''})})
         }
     };
 
@@ -134,6 +148,40 @@ class UserToolBar extends React.Component {
         this.handleClose('editDialog');
     }
 
+    handleChangeUserPassword() {
+        const {email, password} = this.state.newUser;
+        this.props.changePassAdminRequest({email, password});
+        this.handleClose('changePassDialog');
+    }
+
+    passwordValidation() {
+        if (this._isMounted && this.state.changePassDialog) {
+            const passPattern = /^(((?=.*[a-z])(?=.*[A-Z]))|((?=.*[a-z])(?=.*[0-9]))|((?=.*[A-Z])(?=.*[0-9])))/;
+            const pass = this.state.newUser.password;
+            if (!pass) {
+                return 'Password is required'
+            } else {
+                if (!passPattern.test(pass)) {
+                    return 'Should contain 1 letter and 1 number'
+                } else {
+                    if (pass.length < 6) {
+                        return 'Should be at least 6 characters long'
+                    } else {
+                        return '';
+                    }
+                }
+            }
+        }
+    }
+
+    componentDidMount() {
+        this._isMounted = true;
+    }
+
+    componentWillUnmount() {
+        this._isMounted = false;
+    }
+
     handleRefresh() {
     }
 
@@ -142,7 +190,7 @@ class UserToolBar extends React.Component {
         return (
             <div className="device-controls">
                 <div>
-                    <Button disabled={!this.props.selected} variant="contained" color="primary"
+                    <Button disabled={this.props.loading || !this.props.selected} variant="contained" color="primary"
                             onClick={() => this.handleClickOpen('editDialog')}>
                         Edit
                     </Button>
@@ -183,7 +231,7 @@ class UserToolBar extends React.Component {
                                     onChange={(e) => this.updateNewUser(e, 'role_id')}
                                     id='role'
                                 >
-                                    {roles.map((el, i)=><MenuItem key={i} value={el._id}>{el.name}</MenuItem>)}
+                                    {roles.map((el, i) => <MenuItem key={i} value={el._id}>{el.name}</MenuItem>)}
                                 </Select>
                             </FormControl>
                             <TextField
@@ -196,6 +244,7 @@ class UserToolBar extends React.Component {
                                 value={this.state.newUser.email}
                                 onChange={(e) => this.updateNewUser(e, 'email')}
                                 fullWidth
+                                disabled={true}
                             />
                             <TextField
                                 autoFocus
@@ -207,6 +256,7 @@ class UserToolBar extends React.Component {
                                 value={this.state.newUser.password}
                                 onChange={(e) => this.updateNewUser(e, 'password')}
                                 fullWidth
+                                disabled={true}
                             />
                             <TextField
                                 autoFocus
@@ -273,7 +323,7 @@ class UserToolBar extends React.Component {
                                     onChange={(e) => this.updateNewUser(e, 'role_id')}
                                     id='role'
                                 >
-                                    {roles.map((el, i)=><MenuItem key={i} value={el._id}>{el.name}</MenuItem>)}
+                                    {roles.map((el, i) => <MenuItem key={i} value={el._id}>{el.name}</MenuItem>)}
                                 </Select>
                             </FormControl>
                             <TextField
@@ -322,7 +372,7 @@ class UserToolBar extends React.Component {
                     </Dialog>
                 </div>
                 <div>
-                    <Button variant="contained" color="primary" disabled={!this.props.selected}
+                    <Button variant="contained" color="primary" disabled={this.props.loading || !this.props.selected}
                             onClick={() => this.handleClickOpen('confirmDeleteDialog')}>
                         Delete
                     </Button>
@@ -343,6 +393,43 @@ class UserToolBar extends React.Component {
                             <Button disabled={!this.props.selected} variant="contained" color="secondary"
                                     onClick={() => this.handleDeleteUser()}>
                                 Confirm
+                            </Button>
+                        </DialogActions>
+                    </Dialog>
+                </div>
+                <div>
+                    <Button variant="outlined" color="primary" disabled={this.props.loading || !this.props.selected}
+                            onClick={() => this.handleClickOpen('changePassDialog')}>
+                        Change password
+                    </Button>
+                    <Dialog
+                        open={this.state.changePassDialog}
+                        onClose={() => this.handleClose('changePassDialog')}
+                        aria-labelledby="alert-dialog-title"
+                        aria-describedby="alert-dialog-description"
+                    >
+                        <DialogTitle id="alert-dialog-title-">Change password</DialogTitle>
+                        <DialogContent>
+                            <TextField
+                                autoFocus
+                                margin="dense"
+                                id="pass"
+                                label="Password"
+                                type="text"
+                                required={true}
+                                value={this.state.newUser.password}
+                                onChange={(e) => this.updateNewUser(e, 'password')}
+                                fullWidth
+                            />
+                            <div>{this.passwordValidation()}</div>
+                        </DialogContent>
+                        <DialogActions>
+                            <Button variant="outlined" color="primary" disabled={!!(this.passwordValidation())}
+                                    onClick={() => this.handleChangeUserPassword()}>
+                                Submit
+                            </Button>
+                            <Button onClick={() => this.handleClose('changePassDialog')} color="primary">
+                                Close
                             </Button>
                         </DialogActions>
                     </Dialog>
@@ -548,7 +635,7 @@ class UserAdminComponent extends React.Component {
         let data = [];
         let selected = [];
         let selectedUser = null;
-        if(this.props.selectedUser){
+        if (this.props.selectedUser) {
             selected.push(this.props.selectedUser.email);
             selectedUser = this.props.selectedUser;
         }
