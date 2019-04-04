@@ -78,25 +78,17 @@ class FirmDevicesToolBar extends React.Component {
         this.setState({
             [state]: false,
             newFirmDevice: {
-                name: '',
-                address: '',
-                email: '',
-                tel: '',
-                nip: ''
+                name: ''
             }
         });
     };
 
     handleAddFirmDevice = () => {
-        this.props.addFirmRequest(this.state.newFirmDevice);
+        // this.props.addFirmDeviceRequest(this.state.newFirmDevice);
         this.setState({
             addDialog: false,
             newFirmDevice: {
-                name: '',
-                address: '',
-                email: '',
-                tel: '',
-                nip: ''
+                name: ''
             }
         });
     };
@@ -106,13 +98,13 @@ class FirmDevicesToolBar extends React.Component {
     }
 
     handleDeleteFirmDevice() {
-        this.props.deleteFirmRequest(this.props.selected._id);
+        // this.props.deleteFirmDeviceRequest(this.props.selected._id);
         this.props.resetSelected();
         this.handleClose('confirmDeleteDialog');
     }
 
     handleUpdateFirmDevice() {
-        this.props.updateFirmRequest(this.state.newFirmDevice);
+        // this.props.updateFirmDeviceRequest(this.state.newFirmDevice);
         this.props.resetSelected();
         this.handleClose('editDialog');
     }
@@ -126,7 +118,7 @@ class FirmDevicesToolBar extends React.Component {
                 <div>
                     <Button disabled={!this.props.selected} variant="contained" color="primary"
                             onClick={() => this.handleClickOpen('editDialog')}>
-                        editDialog
+                        Edit
                         <EditIcon />
                     </Button>
                     <Dialog
@@ -135,7 +127,7 @@ class FirmDevicesToolBar extends React.Component {
                         aria-labelledby="key-dialog-title"
                         aria-describedby="alert-dialog-description"
                     >
-                        <DialogTitle id="alert-dialog-title">editDialog</DialogTitle>
+                        <DialogTitle id="alert-dialog-title">Edit</DialogTitle>
                         <DialogContent>
                             <TextField
                                 autoFocus
@@ -146,50 +138,6 @@ class FirmDevicesToolBar extends React.Component {
                                 required={true}
                                 value={this.state.newFirmDevice.name}
                                 onChange={(e) => this.updateNewFirmDevice(e, 'name')}
-                                fullWidth
-                            />
-                            <TextField
-                                autoFocus
-                                margin="dense"
-                                id="firm-address"
-                                label="Firms address"
-                                type="text"
-                                required={true}
-                                value={this.state.newFirmDevice.address}
-                                onChange={(e) => this.updateNewFirmDevice(e, 'address')}
-                                fullWidth
-                            />
-                            <TextField
-                                autoFocus
-                                margin="dense"
-                                id="firm-email"
-                                label="Firm email"
-                                type="text"
-                                required={true}
-                                value={this.state.newFirmDevice.email}
-                                onChange={(e) => this.updateNewFirmDevice(e, 'email')}
-                                fullWidth
-                            />
-                            <TextField
-                                autoFocus
-                                margin="dense"
-                                id="firm-tel"
-                                label="Firm contact number"
-                                type="text"
-                                required={true}
-                                value={this.state.newFirmDevice.tel}
-                                onChange={(e) => this.updateNewFirmDevice(e, 'tel')}
-                                fullWidth
-                            />
-                            <TextField
-                                autoFocus
-                                margin="dense"
-                                id="firm-nip"
-                                label="NIP"
-                                type="text"
-                                required={true}
-                                value={this.state.newFirmDevice.nip}
-                                onChange={(e) => this.updateNewFirmDevice(e, 'nip')}
                                 fullWidth
                             />
                         </DialogContent>
@@ -216,61 +164,17 @@ class FirmDevicesToolBar extends React.Component {
                         aria-labelledby="alert-dialog-title"
                         aria-describedby="alert-dialog-description"
                     >
-                        <DialogTitle id="alert-dialog-title-">Add new device</DialogTitle>
+                        <DialogTitle id="alert-dialog-title-">Add device</DialogTitle>
                         <DialogContent>
                             <TextField
                                 autoFocus
                                 margin="dense"
-                                id="firm-name"
-                                label="Firm name"
+                                id="device-name"
+                                label="Device name"
                                 type="text"
                                 required={true}
                                 value={this.state.newFirmDevice.name}
                                 onChange={(e) => this.updateNewFirmDevice(e, 'name')}
-                                fullWidth
-                            />
-                            <TextField
-                                autoFocus
-                                margin="dense"
-                                id="firm-address"
-                                label="Firms address"
-                                type="text"
-                                required={true}
-                                value={this.state.newFirmDevice.address}
-                                onChange={(e) => this.updateNewFirmDevice(e, 'address')}
-                                fullWidth
-                            />
-                            <TextField
-                                autoFocus
-                                margin="dense"
-                                id="firm-email"
-                                label="Firm email"
-                                type="text"
-                                required={true}
-                                value={this.state.newFirmDevice.email}
-                                onChange={(e) => this.updateNewFirmDevice(e, 'email')}
-                                fullWidth
-                            />
-                            <TextField
-                                autoFocus
-                                margin="dense"
-                                id="firm-tel"
-                                label="Firm contact number"
-                                type="text"
-                                required={true}
-                                value={this.state.newFirmDevice.tel}
-                                onChange={(e) => this.updateNewFirmDevice(e, 'tel')}
-                                fullWidth
-                            />
-                            <TextField
-                                autoFocus
-                                margin="dense"
-                                id="firm-nip"
-                                label="NIP"
-                                type="text"
-                                required={true}
-                                value={this.state.newFirmDevice.nip}
-                                onChange={(e) => this.updateNewFirmDevice(e, 'nip')}
                                 fullWidth
                             />
                         </DialogContent>
