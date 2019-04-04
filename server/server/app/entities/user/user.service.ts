@@ -138,7 +138,7 @@ class UsersService {
         })
     }
 
-    changePassAdmin(credential){
+    changePassAdmin(credential) {
         return new Promise((resolve, reject) => {
             async.waterfall(
                 [
@@ -163,6 +163,45 @@ class UsersService {
                     callback => {
                         this.usersRepository.findByEmail(credential.email)
                             .then(user => callback(null, user))
+                            .catch(e => callback(e));
+                    }
+                ],
+                (err, payload) => {
+                    if (err) {
+                        reject(err);
+                    }
+                    resolve(payload);
+                });
+        });
+    }
+
+    changeEmailAdmin(payload) {
+        return new Promise((resolve, reject) => {
+            async.waterfall(
+                [
+                    callback => {
+                        this.usersRepository.findByEmail(payload.newEmail)
+                            .then(user => {
+                                if(user){
+                                    callback('User with such email already exists');
+                                }
+                                callback(null);
+                            })
+                            .catch(e => callback(e));
+                    },
+                    (callback) => {
+                        this.usersRepository.updateEmail(payload)
+                            .then(d => {
+                                if (d['nModified'] === 0) {
+                                    callback(new Error('Unable to update'));
+                                }
+                                callback(null);
+                            })
+                            .catch(e => callback(e));
+                    },
+                    callback => {
+                        this.usersRepository.findByEmail(payload.newEmail)
+                            .then(user => callback(null, {user, oldEmail: payload.email}))
                             .catch(e => callback(e));
                     }
                 ],

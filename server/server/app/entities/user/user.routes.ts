@@ -52,3 +52,10 @@ users.put('/changePassAdmin', TokenValidator.validateToken, (req, res, next) => 
         .then(PayloadGeneratorService.nextWithData(next, res))
         .catch(next);
 });
+
+users.put('/changeEmailAdmin', TokenValidator.validateToken, (req, res, next) => {
+    usersService
+        .changeEmailAdmin(req.body)
+        .then(PayloadGeneratorService.nextWithData(next, res))
+        .catch(next);
+});

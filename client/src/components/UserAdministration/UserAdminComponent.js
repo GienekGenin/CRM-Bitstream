@@ -31,7 +31,8 @@ import {
     addUserRequest,
     deleteUserRequest,
     updateUserRequest,
-    changePassAdminRequest
+    changePassAdminRequest,
+    changeEmailAdminRequest
 } from "../../redux/actions";
 
 import Checkbox from "@material-ui/core/Checkbox";
@@ -55,6 +56,7 @@ const mapDispatchToProps = (dispatch) => {
         deleteUserRequest: (email) => dispatch(deleteUserRequest(email)),
         updateUserRequest: (user) => dispatch(updateUserRequest(user)),
         changePassAdminRequest: (credentials) => dispatch(changePassAdminRequest(credentials)),
+        changeEmailAdminRequest: (email, newEmail) => dispatch(changeEmailAdminRequest(email, newEmail)),
     };
 };
 
@@ -155,7 +157,6 @@ class UserToolBar extends React.Component {
     }
 
     passwordValidation() {
-        if (this._isMounted && this.state.changePassDialog) {
             const passPattern = /^(((?=.*[a-z])(?=.*[A-Z]))|((?=.*[a-z])(?=.*[0-9]))|((?=.*[A-Z])(?=.*[0-9])))/;
             const pass = this.state.newUser.password;
             if (!pass) {
@@ -171,6 +172,24 @@ class UserToolBar extends React.Component {
                     }
                 }
             }
+    }
+
+    handleChangeUserEmail(){
+        const newEmail = this.state.newUser.email;
+        const {email} = this.props.selected;
+        this.props.changeEmailAdminRequest(email, newEmail);
+        this.handleClose('changeEmailDialog');
+    }
+
+    emailValidation(){
+        const emailPattern = /^((([a-z]|\d|[!#$%&'*+\-/=?^_`{|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+(\.([a-z]|\d|[!#$%&'*+\-/=?^_`{|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+)*)|((\x22)((((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(([\x01-\x08\x0b\x0c\x0e-\x1f\x7f]|\x21|[\x23-\x5b]|[\x5d-\x7e]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(\\([\x01-\x09\x0b\x0c\x0d-\x7f]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))))*(((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(\x22)))@((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))$/i;
+        const email = this.state.newUser.email;
+        if (!email) {
+            return 'Email is required'
+        } else {
+            if (!emailPattern.test(email)) {
+                return 'Incorrect email'
+            } else return '';
         }
     }
 
@@ -429,6 +448,43 @@ class UserToolBar extends React.Component {
                                 Submit
                             </Button>
                             <Button onClick={() => this.handleClose('changePassDialog')} color="primary">
+                                Close
+                            </Button>
+                        </DialogActions>
+                    </Dialog>
+                </div>
+                <div>
+                    <Button variant="outlined" color="primary" disabled={this.props.loading || !this.props.selected}
+                            onClick={() => this.handleClickOpen('changeEmailDialog')}>
+                        Change email
+                    </Button>
+                    <Dialog
+                        open={this.state.changeEmailDialog}
+                        onClose={() => this.handleClose('changeEmailDialog')}
+                        aria-labelledby="alert-dialog-title"
+                        aria-describedby="alert-dialog-description"
+                    >
+                        <DialogTitle id="alert-dialog-title-">Change email</DialogTitle>
+                        <DialogContent>
+                            <TextField
+                                autoFocus
+                                margin="dense"
+                                id="email"
+                                label="New email"
+                                type="text"
+                                required={true}
+                                value={this.state.newUser.email}
+                                onChange={(e) => this.updateNewUser(e, 'email')}
+                                fullWidth
+                            />
+                            <div>{this.emailValidation()}</div>
+                        </DialogContent>
+                        <DialogActions>
+                            <Button variant="outlined" color="primary" disabled={!!(this.emailValidation())}
+                                    onClick={() => this.handleChangeUserEmail()}>
+                                Submit
+                            </Button>
+                            <Button onClick={() => this.handleClose('changeEmailDialog')} color="primary">
                                 Close
                             </Button>
                         </DialogActions>

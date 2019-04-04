@@ -27,3 +27,7 @@ export const deleteUserRequest = (email) => {
 export const changePassAdminRequest = (credentials) => {
     return {type: userConstants.CHANGE_PASS_ADMIN_REQUEST, payload: credentials}
 };
+
+export const changeEmailAdminRequest = (email, newEmail) => {
+    return {type: userConstants.CHANGE_EMAIL_ADMIN_REQUEST, payload: {email, newEmail}}
+};

@@ -91,6 +91,25 @@ const changePassAdmin = (credentials) => {
         })
 };
 
+const changeEmailAdmin = (payload) => {
+    const token = localStorage.getItem('token');
+    const requestOptions = {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(payload)
+    };
+
+
+    return fetch(`${apiBase}users/changeEmailAdmin`, requestOptions)
+        .then(handleResponse)
+        .then(user => {
+            return user;
+        })
+};
+
 const handleResponse = (response) => {
     return response.text().then(text => {
         const data = text && JSON.parse(text);
@@ -111,5 +130,6 @@ export const userService = {
     addUser,
     deleteUser,
     updateUser,
-    changePassAdmin
+    changePassAdmin,
+    changeEmailAdmin
 };

@@ -14,7 +14,8 @@ export const userReducer = (state = initialState, action) => {
         case userConstants.ADD_USER_REQUEST:
         case userConstants.UPDATE_USER_REQUEST:
         case userConstants.DELETE_USER_REQUEST:
-        case userConstants.CHANGE_PASS_ADMIN_REQUEST: {
+        case userConstants.CHANGE_PASS_ADMIN_REQUEST:
+        case userConstants.CHANGE_EMAIL_ADMIN_REQUEST: {
             return {
                 ...state,
                 loading: true
@@ -37,6 +38,14 @@ export const userReducer = (state = initialState, action) => {
                 success: action.payload.success
             }
         }
+        case userConstants.CHANGE_EMAIL_ADMIN_SUCCESS: {
+            return {
+                ...state,
+                users: state.users.map(el => (el.email === action.payload.oldEmail) ? action.payload.user : el),
+                loading: false,
+                success: action.payload.success
+            }
+        }
         case userConstants.DELETE_USER_SUCCESS: {
             return {
                 users: state.users.filter(el => el.email !== action.payload),
@@ -55,7 +64,8 @@ export const userReducer = (state = initialState, action) => {
         case userConstants.UPDATE_USER_FAILURE:
         case userConstants.ADD_USER_FAILURE:
         case userConstants.DELETE_USER_FAILURE:
-        case userConstants.CHANGE_PASS_ADMIN_FAILURE: {
+        case userConstants.CHANGE_PASS_ADMIN_FAILURE:
+        case userConstants.CHANGE_EMAIL_ADMIN_FAILURE: {
             return {
                 ...state,
                 loading: false,
