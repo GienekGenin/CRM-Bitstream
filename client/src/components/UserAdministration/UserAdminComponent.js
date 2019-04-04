@@ -47,6 +47,8 @@ import FormControl from "@material-ui/core/FormControl";
 import InputLabel from "@material-ui/core/InputLabel";
 import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
+import AddIcon from '@material-ui/icons/Add';
+import EditIcon from '@material-ui/icons/Edit';
 import {tokenService} from "../../redux/services/token";
 
 const mapDispatchToProps = (dispatch) => {
@@ -153,6 +155,7 @@ class UserToolBar extends React.Component {
     handleChangeUserPassword() {
         const {email, password} = this.state.newUser;
         this.props.changePassAdminRequest({email, password});
+        this.props.resetSelected();
         this.handleClose('changePassDialog');
     }
 
@@ -178,11 +181,12 @@ class UserToolBar extends React.Component {
         const newEmail = this.state.newUser.email;
         const {email} = this.props.selected;
         this.props.changeEmailAdminRequest(email, newEmail);
+        this.props.resetSelected();
         this.handleClose('changeEmailDialog');
     }
 
     emailValidation(){
-        const emailPattern = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/i;
+        const emailPattern = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/i;
         const email = this.state.newUser.email;
         if (!email) {
             return 'Email is required'
@@ -212,6 +216,7 @@ class UserToolBar extends React.Component {
                     <Button disabled={this.props.loading || !this.props.selected} variant="contained" color="primary"
                             onClick={() => this.handleClickOpen('editDialog')}>
                         Edit
+                        <EditIcon />
                     </Button>
                     <Dialog
                         open={this.state.editDialog}
@@ -304,6 +309,7 @@ class UserToolBar extends React.Component {
                     <Button variant="outlined" color="primary" disabled={this.props.loading}
                             onClick={() => this.handleClickOpen('addDialog')}>
                         Add
+                        <AddIcon />
                     </Button>
                     <Dialog
                         open={this.state.addDialog}
@@ -391,9 +397,10 @@ class UserToolBar extends React.Component {
                     </Dialog>
                 </div>
                 <div>
-                    <Button variant="contained" color="primary" disabled={this.props.loading || !this.props.selected}
+                    <Button variant="contained" color="secondary" disabled={this.props.loading || !this.props.selected}
                             onClick={() => this.handleClickOpen('confirmDeleteDialog')}>
                         Delete
+                        <DeleteIcon />
                     </Button>
                     <Dialog
                         open={this.state.confirmDeleteDialog}

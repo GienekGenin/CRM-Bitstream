@@ -36,6 +36,8 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogActions from "@material-ui/core/DialogActions";
 import TextField from "@material-ui/core/TextField";
 import LinearProgress from "@material-ui/core/LinearProgress";
+import AddIcon from '@material-ui/icons/Add';
+import EditIcon from '@material-ui/icons/Edit';
 
 const mapDispatchToProps = (dispatch) => {
     return {
@@ -123,6 +125,7 @@ class FirmToolBar extends React.Component {
                     <Button disabled={!this.props.selected} variant="contained" color="primary"
                             onClick={() => this.handleClickOpen('editDialog')}>
                         Edit
+                        <EditIcon />
                     </Button>
                     <Dialog
                         open={this.state.editDialog}
@@ -203,6 +206,7 @@ class FirmToolBar extends React.Component {
                     <Button variant="outlined" color="primary" disabled={this.props.loading}
                             onClick={() => this.handleClickOpen('addDialog')}>
                         Add
+                        <AddIcon />
                     </Button>
                     <Dialog
                         open={this.state.addDialog}
@@ -280,9 +284,10 @@ class FirmToolBar extends React.Component {
                     </Dialog>
                 </div>
                 <div>
-                    <Button variant="contained" color="primary" disabled={!this.props.selected}
+                    <Button variant="contained" color="secondary" disabled={!this.props.selected}
                             onClick={() => this.handleClickOpen('confirmDeleteDialog')}>
                         Delete
+                        <DeleteIcon />
                     </Button>
                     <Dialog
                         open={this.state.confirmDeleteDialog}
