@@ -92,6 +92,7 @@ class AdminPanel extends React.Component {
         this.resetSelectedDevice = this.resetSelectedDevice.bind(this);
         this.handleSetDevices = this.handleSetDevices.bind(this);
 
+        this.handleUserDeviceSelect = this.handleUserDeviceSelect.bind(this);
         this.resetSelectedUserDevice = this.resetSelectedUserDevice.bind(this);
         this.handleSetUserDevices = this.handleSetUserDevices.bind(this);
     }
@@ -270,7 +271,12 @@ class AdminPanel extends React.Component {
                             /></TabContainer>}
                         {value === 2 && <TabContainer>
                             <DeviceAdminComponent
+                                handleSetUserDevices={this.handleSetUserDevices}
+                                resetSelectedUserDeviceParent={this.resetSelectedUserDevice}
+                                onUserDeviceSelect={this.handleUserDeviceSelect}
+                                selectedUserDevice={selectedUserDevice}
                                 selectedUser={selectedUser}
+                                parentUserDevices={userDevices}
                             />
                         </TabContainer>}
                         {value === 3 && <TabContainer>Visualisation</TabContainer>}
