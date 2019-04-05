@@ -5,6 +5,7 @@ import {UserRepository} from './user.repository';
 import {Types} from 'mongoose';
 import {tokenService} from '../../common/services/request-services/token.service';
 import {firmService} from '../firm/firm.service';
+import {deviceService} from '../devices/devices.service';
 
 class UsersService {
     private usersRepository: UserRepository;
@@ -212,6 +213,10 @@ class UsersService {
                     resolve(payload);
                 });
         });
+    }
+
+    getDevicesByUserId(id){
+        return deviceService.getDevicesByUserId(id);
     }
 }
 

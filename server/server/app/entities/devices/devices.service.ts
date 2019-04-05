@@ -125,6 +125,10 @@ class DeviceService {
                 })
         })
     }
+
+    getDevicesByUserId(id){
+        return this.deviceRepository.getDevicesByUserId(id);
+    }
 }
 
 export const deviceService = new DeviceService();

@@ -4,6 +4,10 @@ export const firmDevicesRequest = (firmId) => {
     return {type: devicesConstants.FIRM_DEVICES_GET_REQUEST, payload: firmId}
 };
 
+export const userDevicesRequest = (userId) => {
+    return {type: devicesConstants.USER_DEVICES_GET_REQUEST, payload: userId}
+};
+
 export const cleanDevicesErrors = () => {
     return {type: devicesConstants.CLEAN_DEVICES_ERRORS}
 };

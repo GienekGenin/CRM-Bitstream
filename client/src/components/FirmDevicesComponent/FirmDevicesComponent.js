@@ -386,7 +386,8 @@ class FirmDevicesComponent extends React.Component {
             page: 0,
             rowsPerPage: 5,
             device: null,
-            loading: false
+            loading: false,
+            selectedFirm: null,
         };
 
         this.resetSelected = this.resetSelected.bind(this);

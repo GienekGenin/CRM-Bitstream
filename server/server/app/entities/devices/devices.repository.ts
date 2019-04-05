@@ -26,4 +26,14 @@ export class DeviceRepository extends Repository{
 	deleteParent(sid){
 		return this.model.deleteOne({sid});
 	}
+
+	getDevicesByUserId(id){
+		return this.model.find({
+			'coid': {
+				'$in': [
+					id
+				]
+			}
+		})
+	}
 }
