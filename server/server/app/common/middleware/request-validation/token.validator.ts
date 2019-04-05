@@ -1,4 +1,4 @@
-import {tokenService} from '../../services/token.service';
+import {tokenService} from '../../services/request-services/token.service';
 
 export class TokenValidator {
 	static validateToken(req, res, next) {

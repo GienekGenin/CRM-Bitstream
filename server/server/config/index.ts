@@ -13,5 +13,10 @@ export const config = {
 
 	server: {
 		port: process.env.PORT
+	},
+
+	iothub: {
+		cs: process.env.IOTHUB_CONNECTION_STRING
 	}
 };
+

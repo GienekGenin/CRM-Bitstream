@@ -22,4 +22,8 @@ export class DeviceRepository extends Repository{
 			}
 		])
 	}
+
+	deleteParent(sid){
+		return this.model.deleteOne({sid});
+	}
 }

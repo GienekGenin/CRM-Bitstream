@@ -28,7 +28,10 @@ const deviceSchema = new mongoose.Schema({
 			message: 'User with such _id does not exist'
 		}
 	}],
-	description: {
+	auto_desc: {
+		type: String
+	},
+	user_desc: {
 		type: String
 	},
 	sn: {
@@ -45,16 +48,12 @@ const deviceSchema = new mongoose.Schema({
 		ref: 'Device',
 		validate: {
 			isAsync: true,
-			validator: (v) => deviceService.findBySid(v),
+			validator: (v) => deviceService.validateBySid(v),
 			message: 'Parent device with such sid does not exist'
-		}
+		},
 	},
 	con_type: {
 		type: String
-	},
-	lvl: {
-		type: mongoose.Schema.Types.Number,
-		required: true
 	}
 }, {versionKey: false, collection: 'devices'});
 

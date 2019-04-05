@@ -1,4 +1,4 @@
-import {PayloadGeneratorService} from '../services/payload-generator.service';
+import {PayloadGeneratorService} from '../services/request-services/payload-generator.service';
 
 export const successOrEmptyPayload = (req, res, next) => {
 	const payload = PayloadGeneratorService.getResponsePayload(res);

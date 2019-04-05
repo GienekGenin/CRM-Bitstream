@@ -1,6 +1,6 @@
 export const users = require('express').Router();
 import {usersService} from './user.service';
-import {PayloadGeneratorService} from '../../common/services/payload-generator.service';
+import {PayloadGeneratorService} from '../../common/services/request-services/payload-generator.service';
 import {UserPayloadValidator} from '../../common/middleware/request-validation/user.validator';
 import {TokenValidator} from '../../common/middleware/request-validation/token.validator';
 

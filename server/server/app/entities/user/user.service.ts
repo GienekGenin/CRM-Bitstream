@@ -3,7 +3,7 @@ import * as bcryptjs from 'bcryptjs';
 import * as _ from 'lodash';
 import {UserRepository} from './user.repository';
 import {Types} from 'mongoose';
-import {tokenService} from '../../common/services/token.service';
+import {tokenService} from '../../common/services/request-services/token.service';
 import {firmService} from '../firm/firm.service';
 
 class UsersService {

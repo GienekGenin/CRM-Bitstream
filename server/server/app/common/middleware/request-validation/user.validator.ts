@@ -1,5 +1,5 @@
 import {userSchemaService} from '../../../entities/user/user.schema';
-import {validate as schemaValidationService} from '../../services/schema-validation.service';
+import {validate as schemaValidationService} from '../../services/request-services/schema-validation.service';
 
 export class UserPayloadValidator {
 	static saveUser(req, res, next) {
