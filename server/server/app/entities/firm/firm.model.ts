@@ -21,6 +21,7 @@ export const firmModel = mongoose.model('Firm', new mongoose.Schema({
 	},
 	nip: {
 		type: String,
+		unique: true,
 		required: true
 	},
 	parent_id: {
