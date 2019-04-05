@@ -10,4 +10,16 @@ export class DeviceRepository extends Repository{
 	findBySid(sid){
 		return this.model.findOne({sid})
 	}
+
+	getDevicesByUsersArray(usersIds){
+		return this.model.aggregate([
+			{
+				'$match': {
+					'coid': {
+						'$in': usersIds
+					}
+				}
+			}
+		])
+	}
 }

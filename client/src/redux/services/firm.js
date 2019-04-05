@@ -83,9 +83,9 @@ const getFirmDevices = (firmId) => {
 
     return fetch(`${apiBase}firms/devices/${firmId}`, requestOptions)
         .then(handleResponse)
-        .then(firms => {
+        .then(devices => {
             // store user details and jwt token in local storage to keep user logged in between page refreshes
-            return firms;
+            return devices;
         })
 };
 

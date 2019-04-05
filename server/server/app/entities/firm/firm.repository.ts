@@ -8,7 +8,7 @@ export class FirmRepository extends Repository{
 		this.model = firmModel;
 	}
 
-	getFirmDevices(firmId){
+	getFirmUsers(firmId){
 		return this.model.aggregate([
 			{
 				'$match': {
@@ -35,17 +35,6 @@ export class FirmRepository extends Repository{
 							'in': '$$el._id'
 						}
 					}
-				}
-			}, {
-				'$lookup': {
-					'from': 'devices',
-					'localField': 'firm_users',
-					'foreignField': 'coid',
-					'as': 'firm_devices'
-				}
-			}, {
-				'$project': {
-					'firm_devices': 1
 				}
 			}
 		])

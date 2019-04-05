@@ -1,6 +1,7 @@
 import {FirmRepository} from './firm.repository';
 import {Types} from 'mongoose';
 import * as async from 'async';
+import {deviceService} from '../devices/devices.service';
 
 class FirmService {
     private firmRepository: FirmRepository;
@@ -61,10 +62,26 @@ class FirmService {
         return this.firmRepository.save(firm);
     }
 
-    getFirmDevices(firmId){
-        return this.firmRepository.getFirmDevices(firmId)
-            .then(d=>d)
-            .catch(e=>e);
+    getFirmDevices(firmId) {
+        return new Promise(((resolve, reject) => {
+            async.waterfall([
+                callback => {
+                    this.firmRepository.getFirmUsers(firmId)
+                        .then(d => callback(null, d[0].firm_users))
+                        .catch(e => callback(e));
+                },
+                (usersIds, callback) => {
+                    deviceService.getDevicesByUsersArray(usersIds)
+                        .then(d => callback(null, d))
+                        .catch(e => callback(e));
+                }
+            ], (err, payload) => {
+                if (err) {
+                    reject(err);
+                }
+                resolve(payload);
+            })
+        }))
     }
 }
 

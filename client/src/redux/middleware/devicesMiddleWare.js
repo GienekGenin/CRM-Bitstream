@@ -15,7 +15,7 @@ export const devicesMiddleWare = ({dispatch}) => {
             if (action.type === devicesConstants.FIRM_DEVICES_GET_REQUEST) {
                 firmService.getFirmDevices(action.payload)
                     .then(devices => {
-                        return dispatch({type: devicesConstants.FIRM_DEVICES_GET_SUCCESS, payload: devices[0].firm_devices})
+                        return dispatch({type: devicesConstants.FIRM_DEVICES_GET_SUCCESS, payload: devices})
                     })
                     .catch(err => {
                         dispatch({type: devicesConstants.FIRM_DEVICES_GET_FAILURE, payload: errorParser(err)})
