@@ -244,6 +244,7 @@ class AdminPanel extends React.Component {
                                 selectedUserDevice={selectedUserDevice}
                                 selectedUser={selectedUser}
                                 parentUserDevices={userDevices}
+                                parentUsers={users}
                             />
                         </TabContainer>}
                         {value === 4 && <TabContainer>Visualisation</TabContainer>}
@@ -277,6 +278,7 @@ class AdminPanel extends React.Component {
                                 selectedUserDevice={selectedUserDevice}
                                 selectedUser={selectedUser}
                                 parentUserDevices={userDevices}
+                                parentUsers={users}
                             />
                         </TabContainer>}
                         {value === 3 && <TabContainer>Visualisation</TabContainer>}

@@ -49,6 +49,8 @@ import './deviceAdmin.scss';
 
 import * as d3 from "d3";
 import * as _ from "lodash";
+import Input from "@material-ui/core/Input";
+import Chip from "@material-ui/core/Chip";
 
 const mapDispatchToProps = (dispatch) => {
     return {
@@ -71,17 +73,20 @@ class FirmDevicesToolBar extends React.Component {
             editDialog: false,
             addDialog: false,
             confirmDeleteDialog: false,
+            configUsersDialog: false,
             newUserDevice: {
                 name: '',
                 type: '',
-                user_desc: ''
+                user_desc: '',
+                coid: []
             }
         };
     }
 
     handleClickOpen = (state) => {
         this.setState({[state]: true});
-        if (state === 'editDialog') {
+        if (state === 'editDialog' || state === 'configUsersDialog') {
+            // todo: take user from parent users into newUserDevice !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             this.setState({newUserDevice: this.props.selected})
         }
     };
@@ -92,7 +97,8 @@ class FirmDevicesToolBar extends React.Component {
             newUserDevice: {
                 name: '',
                 type: '',
-                user_desc: ''
+                user_desc: '',
+                coid: []
             }
         });
     };
@@ -130,22 +136,29 @@ class FirmDevicesToolBar extends React.Component {
     handleRefresh() {
     }
 
+    handleConfigUsersForDevice(){
+        console.log(this.state.newUserDevice);
+        this.props.resetSelected();
+        this.handleClose('configUsersDialog');
+    }
+
     componentDidMount() {
         // get all deviceTypes
-        deviceTypesService.getDeviceTypes().then(d=>{
+        deviceTypesService.getDeviceTypes().then(d => {
             this.setState({deviceTypes: d})
-        }).catch(e=>console.log(e))
+        }).catch(e => console.log(e))
     }
 
     render() {
         const {deviceTypes} = this.state;
+        const {parentUsers} = this.props;
         return (
             <div className="device-controls">
                 <div>
                     <Button disabled={!this.props.selected} variant="contained" color="primary"
                             onClick={() => this.handleClickOpen('editDialog')}>
                         Edit
-                        <EditIcon />
+                        <EditIcon/>
                     </Button>
                     <Dialog
                         open={this.state.editDialog}
@@ -182,7 +195,7 @@ class FirmDevicesToolBar extends React.Component {
                     <Button variant="outlined" color="primary" disabled={this.props.loading}
                             onClick={() => this.handleClickOpen('addDialog')}>
                         Add
-                        <AddIcon />
+                        <AddIcon/>
                     </Button>
                     <Dialog
                         open={this.state.addDialog}
@@ -204,14 +217,14 @@ class FirmDevicesToolBar extends React.Component {
                                 fullWidth
                             />
                             <FormControl fullWidth required={true}>
-                                <InputLabel htmlFor="device-type" >Device type</InputLabel>
+                                <InputLabel htmlFor="device-type">Device type</InputLabel>
                                 <Select
                                     value={this.state.newUserDevice.type}
                                     onChange={(e) => this.updateNewUserDevice(e, 'type')}
                                     id='device-type'
                                 >
-                                    {deviceTypes ? deviceTypes.map((el,i)=>
-                                        <MenuItem value={el._id} key={i}>{el.name}</MenuItem>): ''}
+                                    {deviceTypes ? deviceTypes.map((el, i) =>
+                                        <MenuItem value={el._id} key={i}>{el.name}</MenuItem>) : ''}
                                 </Select>
                             </FormControl>
                             <TextField
@@ -241,7 +254,7 @@ class FirmDevicesToolBar extends React.Component {
                     <Button variant="contained" color="secondary" disabled={!this.props.selected}
                             onClick={() => this.handleClickOpen('confirmDeleteDialog')}>
                         Delete
-                        <DeleteIcon />
+                        <DeleteIcon/>
                     </Button>
                     <Dialog
                         open={this.state.confirmDeleteDialog}
@@ -267,12 +280,66 @@ class FirmDevicesToolBar extends React.Component {
                 <Button variant="contained" disabled={this.props.loading} onClick={() => this.handleRefresh()}>
                     Refresh
                 </Button>
+                <div>
+                    <Button variant="outlined" color="primary" disabled={this.props.loading || !this.props.selected}
+                            onClick={() => this.handleClickOpen('configUsersDialog')}>
+                        Config users
+                        <AddIcon/>
+                    </Button>
+                    <Dialog
+                        open={this.state.configUsersDialog}
+                        onClose={() => this.handleClose('configUsersDialog')}
+                        aria-labelledby="alert-dialog-title"
+                        aria-describedby="alert-dialog-description"
+                    >
+                        <DialogTitle id="alert-dialog-title-">Config users</DialogTitle>
+                        <DialogContent>
+                            <FormControl >
+                                <InputLabel htmlFor="select-multiple-chip">Chip</InputLabel>
+                                <Select
+                                    multiple
+                                    value={this.state.newUserDevice.coid}
+                                    onChange={(e) => this.updateNewUserDevice(e, 'coid')}
+                                    input={<Input id="select-multiple-chip" />}
+                                    renderValue={selected => (
+                                        <div>
+                                            {selected.map(value => (
+                                                <Chip key={value} label={value} />
+                                            ))}
+                                        </div>
+                                    )}
+                                >
+                                    {parentUsers.map(user => (
+                                        <MenuItem key={user._id} value={user.name} >
+                                            {user.name}
+                                        </MenuItem>
+                                    ))}
+                                </Select>
+                            </FormControl>
+                        </DialogContent>
+                        <DialogActions>
+                            <Button variant="outlined" color="primary"
+                                    onClick={() => this.handleConfigUsersForDevice()}>
+                                Submit
+                            </Button>
+                            <Button onClick={() => this.handleClose('configUsersDialog')} color="primary">
+                                Close
+                            </Button>
+                        </DialogActions>
+                    </Dialog>
+                </div>
             </div>
         )
     }
 }
 
-FirmDevicesToolBar.propTypes = {selected: PropTypes.object, selectedUserId: PropTypes.string, resetSelected: PropTypes.func, loading: PropTypes.bool};
+FirmDevicesToolBar.propTypes = {
+    selected: PropTypes.object,
+    selectedUserId: PropTypes.string,
+    resetSelected: PropTypes.func,
+    loading: PropTypes.bool,
+    parentUsers: PropTypes.array
+};
 
 const FirmDevicesToolBarComponent = connect(null, mapDispatchToProps)(FirmDevicesToolBar);
 
@@ -461,10 +528,10 @@ class UserDevicesComponent extends React.Component {
         let data = [];
         let selected = [];
         let device = null;
-        if(this.props.selectedUserDevice){
+        if (this.props.selectedUserDevice) {
             selected.push(this.props.selectedUserDevice._id);
             device = this.props.selectedUserDevice;
-            this.buildChart(Object.assign({},this.props.selectedUserDevice,{parent_id: '0'}), this.props.parentUserDevices)
+            this.buildChart(Object.assign({}, this.props.selectedUserDevice, {parent_id: '0'}), this.props.parentUserDevices)
         }
         if (this.props.parentUserDevices) {
             this.props.parentUserDevices.map(record => {
@@ -495,13 +562,13 @@ class UserDevicesComponent extends React.Component {
                 this.setState({devices});
                 this.props.handleSetUserDevices(devices);
                 let data = [];
-                if(devices.length>0){
+                if (devices.length > 0) {
                     devices.map(record => {
                         let row = [
                             record._id,
                             record.name,
                         ];
-                        if(devices.length > 0){
+                        if (devices.length > 0) {
                             data.push(createData(...row));
                         }
                         const obj = {
@@ -536,7 +603,6 @@ class UserDevicesComponent extends React.Component {
         this._isMounted = false;
         this.unsubscribe();
     }
-
 
 
     handleDeviceSelect(device) {
@@ -595,19 +661,23 @@ class UserDevicesComponent extends React.Component {
 
     buildChart = (parent, stateDevices) => {
 
-        const unflatten = ( array, parent, tree )=>{
+        const unflatten = (array, parent, tree) => {
             tree = typeof tree !== 'undefined' ? tree : [];
-            parent = typeof parent !== 'undefined' ? parent : { sid: '0' };
+            parent = typeof parent !== 'undefined' ? parent : {sid: '0'};
 
-            let children = _.filter( array, function(child){ return child.parent_id === parent.sid; });
+            let children = _.filter(array, function (child) {
+                return child.parent_id === parent.sid;
+            });
 
-            if( !_.isEmpty( children )  ){
-                if( parent.sid === '0' ){
+            if (!_.isEmpty(children)) {
+                if (parent.sid === '0') {
                     tree = children;
-                }else{
+                } else {
                     parent['children'] = children
                 }
-                _.each( children, function( child ){ unflatten( array, child ) } );
+                _.each(children, function (child) {
+                    unflatten(array, child)
+                });
             }
 
             return tree;
@@ -619,16 +689,16 @@ class UserDevicesComponent extends React.Component {
         let Parent = Object.assign({}, parent);
         let devices = [...stateDevices];
         let arr = [];
-        devices.forEach(el=>{
-            if(el.sid.includes(Parent.sid)){
-                if(el.sid === Parent.sid){
+        devices.forEach(el => {
+            if (el.sid.includes(Parent.sid)) {
+                if (el.sid === Parent.sid) {
                     arr.push(Parent);
-                }else arr.push(el);
+                } else arr.push(el);
 
             }
         });
         // todo: not building if arr of 1 element
-        if(arr.length === 0 || arr.length === 1) {
+        if (arr.length === 0 || arr.length === 1) {
             return false
         }
         let treeData = unflatten(arr)[0];
@@ -646,7 +716,7 @@ class UserDevicesComponent extends React.Component {
 // moves the 'group' element to the top left margin
         let svg = d3.select("#tree")
             .append("svg")
-            .attr("width", width )
+            .attr("width", width)
             .attr("height", height + margin.top + margin.bottom)
             .append("g")
             .attr("transform", "translate(" +
@@ -787,11 +857,11 @@ class UserDevicesComponent extends React.Component {
                 .style("fill", function (d) {
                     //console.log("parentID",d.aspid);
                     // console.log(d)
-                    let parentStatus = d.parent ? (d.parent.data.status ? d.parent.data.status: 'OFFLINE') : (d.data.status ? d.data.status : 'OFFLINE');
+                    let parentStatus = d.parent ? (d.parent.data.status ? d.parent.data.status : 'OFFLINE') : (d.data.status ? d.data.status : 'OFFLINE');
                     let childStatus = d.data.status ? d.data.status : 'OFFLINE';
-                    if(d.parent){
-                        if(parentStatus === childStatus){
-                            if(childStatus === 'ONLINE'){
+                    if (d.parent) {
+                        if (parentStatus === childStatus) {
+                            if (childStatus === 'ONLINE') {
                                 return '#00FF00';
                             } else {
                                 return '#000'
@@ -800,7 +870,7 @@ class UserDevicesComponent extends React.Component {
                             return '#000'
                         }
                     } else {
-                        if(parentStatus === 'ONLINE'){
+                        if (parentStatus === 'ONLINE') {
                             return '#00FF00';
                         } else {
                             return '#000'
@@ -918,7 +988,7 @@ class UserDevicesComponent extends React.Component {
                 d3.select('#selected-circle').attr("id", '');
                 nodeUpdate.select('circle.node')
                     .attr('id', function (data) {
-                        if(d.data.name === data.data.name){
+                        if (d.data.name === data.data.name) {
                             selectFromChart(d.data._id)
                             return 'selected'
                         }
@@ -954,6 +1024,7 @@ class UserDevicesComponent extends React.Component {
         }
 
         selectFromChart = selectFromChart.bind(this);
+
         /* Word Wrap */
         function wrap(text, width) {
             text.each(function () {
@@ -1007,7 +1078,7 @@ class UserDevicesComponent extends React.Component {
 
 
     render() {
-        const {classes, selectedUser} = this.props;
+        const {classes, selectedUser, parentUsers} = this.props;
         const {data, order, orderBy, selected, rowsPerPage, page, device, loading} = this.state;
         const emptyRows = rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
         return (
@@ -1015,7 +1086,7 @@ class UserDevicesComponent extends React.Component {
                 <Paper className={classes.root}>
                     <FirmDevicesTableToolbar numSelected={selected.length} firm={device}/>
                     <FirmDevicesToolBarComponent selected={device} selectedUserId={selectedUser._id} loading={loading}
-                                                 resetSelected={() => this.resetSelected()}/>
+                                                 resetSelected={() => this.resetSelected()} parentUsers={parentUsers}/>
                     {loading && <LinearProgress color="secondary"/>}
                     <div className={classes.tableWrapper}>
                         <Table className={classes.table} aria-labelledby="tableTitle">
@@ -1088,7 +1159,8 @@ UserDevicesComponent.propTypes = {
     onUserDeviceSelect: PropTypes.func.isRequired,
     resetSelectedUserDeviceParent: PropTypes.func,
     handleSetUserDevices: PropTypes.func,
-    parentUserDevices: PropTypes.array
+    parentUserDevices: PropTypes.array,
+    parentUsers: PropTypes.array,
 };
 
 const UserDevicesWithProps = connect(mapStateToProps, mapDispatchToProps)(UserDevicesComponent);
