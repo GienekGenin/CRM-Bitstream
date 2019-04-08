@@ -6,4 +6,8 @@ export class DeviceTypesRepository extends Repository {
         super(deviceTypesModel);
         this.model = deviceTypesModel;
     }
+
+    getAllToUI(){
+        return this.model.find().select(['_id', 'name']);
+    }
 }

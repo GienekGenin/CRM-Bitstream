@@ -30,6 +30,27 @@ export const devicesMiddleWare = ({dispatch}) => {
                         dispatch({type: devicesConstants.USER_DEVICES_GET_FAILURE, payload: errorParser(err)})
                     });
             }
+            if (action.type === devicesConstants.ADD_DEVICE_REQUEST) {
+                devicesService.addDevice(action.payload)
+                    .then(device => {
+                        return dispatch({type: devicesConstants.ADD_USER_DEVICE_SUCCESS, payload: {
+                                device,
+                                success: 'Device was successfully created'
+                            }})
+                    })
+                    .catch(err => {
+                        dispatch({type: devicesConstants.ADD_DEVICE_FAILURE, payload: errorParser(err)})
+                    });
+            }
+            if (action.type === devicesConstants.DELETE_DEVICE_REQUEST) {
+                devicesService.deleteDevice(action.payload)
+                    .then(deviceId => {
+                        return dispatch({type: devicesConstants.DELETE_USER_DEVICE_SUCCESS, payload: deviceId})
+                    })
+                    .catch(err => {
+                        dispatch({type: devicesConstants.DELETE_DEVICE_FAILURE, payload: errorParser(err)})
+                    });
+            }
             return next(action);
         };
     };

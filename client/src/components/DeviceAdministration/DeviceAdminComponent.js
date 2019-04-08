@@ -24,7 +24,7 @@ import TablePagination from "@material-ui/core/TablePagination";
 
 import store from "../../redux/store";
 import {connect} from "react-redux";
-import {userDevicesRequest} from "../../redux/actions";
+import {userDevicesRequest, addDeviceRequest, deleteDeviceRequest} from "../../redux/actions";
 
 import Checkbox from "@material-ui/core/Checkbox";
 import Button from "@material-ui/core/Button";
@@ -39,9 +39,17 @@ import {buildChart} from "./charts.service";
 import AddIcon from '@material-ui/icons/Add';
 import EditIcon from '@material-ui/icons/Edit';
 
+import {deviceTypesService} from '../../redux/services/device_types'
+import FormControl from "@material-ui/core/FormControl";
+import InputLabel from "@material-ui/core/InputLabel";
+import Select from "@material-ui/core/Select";
+import MenuItem from "@material-ui/core/MenuItem";
+
 const mapDispatchToProps = (dispatch) => {
     return {
         userDevicesRequest: (payload) => dispatch(userDevicesRequest(payload)),
+        addDeviceRequest: (payload) => dispatch(addDeviceRequest(payload)),
+        deleteDeviceRequest: (payload) => dispatch(deleteDeviceRequest(payload)),
     };
 };
 
@@ -54,15 +62,14 @@ class FirmDevicesToolBar extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            deviceTypes: null,
             editDialog: false,
             addDialog: false,
             confirmDeleteDialog: false,
-            newFirmDevice: {
+            newUserDevice: {
                 name: '',
-                address: '',
-                email: '',
-                tel: '',
-                nip: ''
+                type: '',
+                user_desc: ''
             }
         };
     }
@@ -70,41 +77,47 @@ class FirmDevicesToolBar extends React.Component {
     handleClickOpen = (state) => {
         this.setState({[state]: true});
         if (state === 'editDialog') {
-            this.setState({newFirmDevice: this.props.selected})
+            this.setState({newUserDevice: this.props.selected})
         }
     };
 
     handleClose = (state) => {
         this.setState({
             [state]: false,
-            newFirmDevice: {
-                name: ''
+            newUserDevice: {
+                name: '',
+                type: '',
+                user_desc: ''
             }
         });
     };
 
-    handleAddFirmDevice = () => {
-        // this.props.addFirmDeviceRequest(this.state.newFirmDevice);
+    handleAddUserDevice = () => {
+        const deviceToServer = Object.assign({}, this.state.newUserDevice,
+            {coid: [this.props.selectedUserId]});
+        this.props.addDeviceRequest(deviceToServer);
         this.setState({
             addDialog: false,
-            newFirmDevice: {
-                name: ''
+            newUserDevice: {
+                name: '',
+                type: '',
+                user_desc: ''
             }
         });
     };
 
-    updateNewFirmDevice(e, param) {
-        this.setState({newFirmDevice: Object.assign({}, this.state.newFirmDevice, {[param]: e.target.value})})
+    updateNewUserDevice(e, param) {
+        this.setState({newUserDevice: Object.assign({}, this.state.newUserDevice, {[param]: e.target.value})})
     }
 
     handleDeleteFirmDevice() {
-        // this.props.deleteFirmDeviceRequest(this.props.selected._id);
+        this.props.deleteDeviceRequest(this.props.selected.sid);
         this.props.resetSelected();
         this.handleClose('confirmDeleteDialog');
     }
 
     handleUpdateFirmDevice() {
-        // this.props.updateFirmDeviceRequest(this.state.newFirmDevice);
+        // this.props.updateFirmDeviceRequest(this.state.newUserDevice);
         this.props.resetSelected();
         this.handleClose('editDialog');
     }
@@ -112,7 +125,15 @@ class FirmDevicesToolBar extends React.Component {
     handleRefresh() {
     }
 
+    componentDidMount() {
+        // get all deviceTypes
+        deviceTypesService.getDeviceTypes().then(d=>{
+            this.setState({deviceTypes: d})
+        }).catch(e=>console.log(e))
+    }
+
     render() {
+        const {deviceTypes} = this.state;
         return (
             <div className="device-controls">
                 <div>
@@ -136,8 +157,8 @@ class FirmDevicesToolBar extends React.Component {
                                 label="Firm name"
                                 type="text"
                                 required={true}
-                                value={this.state.newFirmDevice.name}
-                                onChange={(e) => this.updateNewFirmDevice(e, 'name')}
+                                value={this.state.newUserDevice.name}
+                                onChange={(e) => this.updateNewUserDevice(e, 'name')}
                                 fullWidth
                             />
                         </DialogContent>
@@ -173,14 +194,36 @@ class FirmDevicesToolBar extends React.Component {
                                 label="Device name"
                                 type="text"
                                 required={true}
-                                value={this.state.newFirmDevice.name}
-                                onChange={(e) => this.updateNewFirmDevice(e, 'name')}
+                                value={this.state.newUserDevice.name}
+                                onChange={(e) => this.updateNewUserDevice(e, 'name')}
+                                fullWidth
+                            />
+                            <FormControl fullWidth required={true}>
+                                <InputLabel htmlFor="device-type" >Device type</InputLabel>
+                                <Select
+                                    value={this.state.newUserDevice.type}
+                                    onChange={(e) => this.updateNewUserDevice(e, 'type')}
+                                    id='device-type'
+                                >
+                                    {deviceTypes ? deviceTypes.map((el,i)=>
+                                        <MenuItem value={el._id} key={i}>{el.name}</MenuItem>): ''}
+                                </Select>
+                            </FormControl>
+                            <TextField
+                                id="User-desc"
+                                label="Your description"
+                                multiline
+                                rows="4"
+                                margin="normal"
+                                variant="outlined"
+                                value={this.state.newUserDevice.user_desc}
+                                onChange={(e) => this.updateNewUserDevice(e, 'user_desc')}
                                 fullWidth
                             />
                         </DialogContent>
                         <DialogActions>
                             <Button variant="outlined" color="primary"
-                                    onClick={() => this.handleAddFirmDevice()}>
+                                    onClick={() => this.handleAddUserDevice()}>
                                 Add
                             </Button>
                             <Button onClick={() => this.handleClose('addDialog')} color="primary">
@@ -203,7 +246,7 @@ class FirmDevicesToolBar extends React.Component {
                     >
                         <DialogTitle id="alert-dialog-title-">Device properties</DialogTitle>
                         <DialogContent>
-                            Confirm deletion of {this.props.selected ? this.props.selected._id : ''}
+                            Confirm deletion of {this.props.selected ? this.props.selected.name : ''}
                         </DialogContent>
                         <DialogActions>
                             <Button onClick={() => this.handleClose('confirmDeleteDialog')} color="primary">
@@ -224,7 +267,7 @@ class FirmDevicesToolBar extends React.Component {
     }
 }
 
-FirmDevicesToolBar.propTypes = {selected: PropTypes.object, resetSelected: PropTypes.func, loading: PropTypes.bool};
+FirmDevicesToolBar.propTypes = {selected: PropTypes.object, selectedUserId: PropTypes.string, resetSelected: PropTypes.func, loading: PropTypes.bool};
 
 const FirmDevicesToolBarComponent = connect(null, mapDispatchToProps)(FirmDevicesToolBar);
 
@@ -441,28 +484,43 @@ class UserDevicesComponent extends React.Component {
         // todo: new
         this.unsubscribe = store.subscribe(() => {
             this.setState({loading: store.getState().devicesReducer.loading});
-            if (store.getState().devicesReducer.userDevices) {
+            if (!store.getState().devicesReducer.loading) {
                 const devices = store.getState().devicesReducer.userDevices;
                 this.setState({devices});
                 this.props.handleSetUserDevices(devices);
                 let data = [];
-                devices.map(record => {
-                    let row = [
-                        record._id,
-                        record.name,
-                    ];
-                    data.push(createData(...row));
-                    const obj = {
-                        order: this.state.order,
-                        orderBy: this.state.orderBy,
-                        selected: [],
-                        data,
-                        page: this.state.page,
-                        rowsPerPage: this.state.rowsPerPage
-                    };
-                    this.setState(obj);
-                    return true;
-                })
+                if(devices.length>0){
+                    devices.map(record => {
+                        let row = [
+                            record._id,
+                            record.name,
+                        ];
+                        if(devices.length > 0){
+                            data.push(createData(...row));
+                        }
+                        const obj = {
+                            order: this.state.order,
+                            orderBy: this.state.orderBy,
+                            selected: [],
+                            data,
+                            page: this.state.page,
+                            rowsPerPage: this.state.rowsPerPage
+                        };
+                        this.setState(obj);
+                        return true;
+                    })
+                }
+            } else {
+                const obj = {
+                    order: this.state.order,
+                    orderBy: this.state.orderBy,
+                    selected: [],
+                    data,
+                    page: this.state.page,
+                    rowsPerPage: this.state.rowsPerPage
+                };
+                this.setState(obj);
+                return true;
             }
         });
 
@@ -521,14 +579,14 @@ class UserDevicesComponent extends React.Component {
 
 
     render() {
-        const {classes} = this.props;
+        const {classes, selectedUser} = this.props;
         const {data, order, orderBy, selected, rowsPerPage, page, device, loading} = this.state;
         const emptyRows = rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
         return (
             <div>
                 <Paper className={classes.root}>
                     <FirmDevicesTableToolbar numSelected={selected.length} firm={device}/>
-                    <FirmDevicesToolBarComponent selected={device} loading={loading}
+                    <FirmDevicesToolBarComponent selected={device} selectedUserId={selectedUser._id} loading={loading}
                                                  resetSelected={() => this.resetSelected()}/>
                     {loading && <LinearProgress color="secondary"/>}
                     <div className={classes.tableWrapper}>

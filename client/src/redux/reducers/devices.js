@@ -21,10 +21,10 @@ export const devicesReducer = (state = initialState, action) => {
                 loading: true
             }
         }
-        case devicesConstants.ADD_DEVICE_SUCCESS: {
+        case devicesConstants.ADD_USER_DEVICE_SUCCESS: {
             return {
                 ...state,
-                devices: [...state.devices, action.payload.device],
+                userDevices: [...state.userDevices, action.payload.device],
                 loading: false,
                 success: action.payload.success
             }
@@ -37,11 +37,12 @@ export const devicesReducer = (state = initialState, action) => {
                 success: action.payload.success
             }
         }
-        case devicesConstants.DELETE_DEVICE_SUCCESS: {
+        case devicesConstants.DELETE_USER_DEVICE_SUCCESS: {
             return {
-                devices: state.devices.filter(el => el._id !== action.payload),
+                ...state,
+                userDevices: state.userDevices.filter(el => el.sid !== action.payload),
                 loading: false,
-                success: 'Firm was successfully deleted'
+                success: 'Device was successfully deleted'
             }
         }
         case devicesConstants.FIRM_DEVICES_GET_SUCCESS: {

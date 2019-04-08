@@ -36,6 +36,43 @@ const getFirmDevices = (firmId) => {
         })
 };
 
+const addDevice = (device) => {
+    const token = localStorage.getItem('token');
+    const requestOptions = {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(device)
+    };
+
+
+    return fetch(`${apiBase}devices/`, requestOptions)
+        .then(handleResponse)
+        .then(user => {
+            return user;
+        })
+};
+
+const deleteDevice = (deviceId) => {
+    const token = localStorage.getItem('token');
+    const requestOptions = {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({sid: deviceId})
+    };
+    return fetch(`${apiBase}devices`, requestOptions)
+        .then(handleResponse)
+        .then(() => {
+            return deviceId;
+        })
+};
+
+
 const handleResponse = (response) => {
     return response.text().then(text => {
         const data = text && JSON.parse(text);
@@ -53,5 +90,7 @@ const handleResponse = (response) => {
 
 export const devicesService = {
     getUserDevices,
-    getFirmDevices
+    getFirmDevices,
+    addDevice,
+    deleteDevice
 };

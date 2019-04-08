@@ -7,10 +7,13 @@ class DeviceTypesService {
         this.deviceTypesRepository = new DeviceTypesRepository();
     }
 
-    getAll() {
-        return this.deviceTypesRepository.getAll();
+    getAllToUI() {
+        return this.deviceTypesRepository.getAllToUI();
     }
 
+    findById(id){
+        return this.deviceTypesRepository.findById(id);
+    }
 }
 
 export const deviceTypesService = new DeviceTypesService();

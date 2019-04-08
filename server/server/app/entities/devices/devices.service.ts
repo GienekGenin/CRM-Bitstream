@@ -3,6 +3,7 @@ import * as _ from 'lodash';
 import {Types} from 'mongoose';
 import * as async from 'async';
 import {DeviceRegistryService} from '../../common/services/azure-services/device.registry.service';
+import {deviceTypesService} from '../device_types/device_types.service';
 
 class DeviceService {
     private deviceRepository: DeviceRepository;
@@ -31,19 +32,32 @@ class DeviceService {
     }
 
     save(device) {
-        const id = Types.ObjectId();
-        const deviceToDb = Object.assign({}, device, {_id: id, sid: device.base + id, parent_id: '0'});
         return new Promise((resolve, reject) => {
             async.waterfall(
                 [
                     callback => {
-                        DeviceRegistryService.createDevice(deviceToDb.sid)
-                            .then(key => callback(null, key))
+                        deviceTypesService.findById(device.type)
+                            .then(deviceType => {
+                                const id = Types.ObjectId();
+                                const deviceToDb = Object.assign(
+                                    deviceType.params,
+                                    device,
+                                    {
+                                        _id: id,
+                                        sid: deviceType.base + id
+                                    });
+                                callback(null, deviceToDb);
+                            })
                             .catch(e => callback(e));
                     },
-                    (key, callback) => {
-                        this.deviceRepository.save(_.omit(deviceToDb, ['base']))
-                            .then(d => callback(null, Object.assign({}, d['_doc'], {key})))
+                    (deviceToDb, callback) => {
+                        DeviceRegistryService.createDevice(deviceToDb.sid)
+                            .then(() => callback(null, deviceToDb))
+                            .catch(e => callback(e));
+                    },
+                    (deviceToDb, callback) => {
+                        this.deviceRepository.save(deviceToDb)
+                            .then(d => callback(null, d['_doc']))
                             .catch(err => {
                                 DeviceRegistryService.deleteDevice(deviceToDb.sid)
                                     .then(() => callback('Unable to create device, try again later'))
@@ -126,7 +140,7 @@ class DeviceService {
         })
     }
 
-    getDevicesByUserId(id){
+    getDevicesByUserId(id) {
         return this.deviceRepository.getDevicesByUserId(id);
     }
 }

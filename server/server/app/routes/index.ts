@@ -9,5 +9,5 @@ export const initializeAPIRoutes = app => {
 	app.use('/api/roles', rolesRouter);
 	app.use('/api/firms', firmsRouter);
 	app.use('/api/devices', devicesRouter);
-	app.use('/api/deviceTypes', deviceTypesRouter);
+	app.use('/api/device-types', deviceTypesRouter);
 };
