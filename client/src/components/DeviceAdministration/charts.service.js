@@ -1,25 +1,25 @@
 import * as d3 from "d3";
 import * as _ from "lodash";
 
-const unflatten = ( array, parent, tree )=>{
-    tree = typeof tree !== 'undefined' ? tree : [];
-    parent = typeof parent !== 'undefined' ? parent : { sid: '0' };
+const buildChart = (parent, stateDevices) => {
 
-    let children = _.filter( array, function(child){ return child.parent_id === parent.sid; });
+    const unflatten = ( array, parent, tree )=>{
+        tree = typeof tree !== 'undefined' ? tree : [];
+        parent = typeof parent !== 'undefined' ? parent : { sid: '0' };
 
-    if( !_.isEmpty( children )  ){
-        if( parent.sid === '0' ){
-            tree = children;
-        }else{
-            parent['children'] = children
+        let children = _.filter( array, function(child){ return child.parent_id === parent.sid; });
+
+        if( !_.isEmpty( children )  ){
+            if( parent.sid === '0' ){
+                tree = children;
+            }else{
+                parent['children'] = children
+            }
+            _.each( children, function( child ){ unflatten( array, child ) } );
         }
-        _.each( children, function( child ){ unflatten( array, child ) } );
-    }
 
-    return tree;
-};
-
-export const buildChart = (parent, stateDevices) => {
+        return tree;
+    };
 
     d3.select('#tree').remove();
     d3.select('#parent').append('div').attr("id", 'tree');
@@ -141,7 +141,7 @@ export const buildChart = (parent, stateDevices) => {
             .attr('class', 'node')
             .attr('r', 1e-6)
             .style("fill", function (d) {
-                return d._children ? "lightsteelblue" : "#fff";
+                return d._children ? "lightsteelblue" : "#888333";
             });
 
 
@@ -309,7 +309,7 @@ export const buildChart = (parent, stateDevices) => {
 
         // Toggle children on click.
         function click(d) {
-            console.log('dataa---', d.data.parentid);
+            console.log('dataa---', d.data);
             if (d.children) {
                 d._children = d.children;
                 d.children = null;
@@ -318,7 +318,16 @@ export const buildChart = (parent, stateDevices) => {
                 d._children = null;
             }
             update(d);
+            d3.select('#selected').attr("id", '');
+            d3.select('#selected-circle').attr("id", '');
+            nodeUpdate.select('circle.node')
+                .attr('id', function (data) {
+                    if(d.data.name === data.data.name){
+                        return 'selected'
+                    }
+                })
         }
+
 
         // function zoom() {
         //     let scale = d3.event.scale,
