@@ -710,7 +710,8 @@ class UserDevicesComponent extends React.Component {
                     return "translate(" + source.y0 + "," + source.x0 + ")";
                 })
                 // todo: handle click
-                .on('click', click)
+                .on('click', dbClick)
+                .on('dblclick', click)
                 // todo: show info
                 .on("mouseover", function (d) {
                     let g = d3.select(this); // The node
@@ -910,6 +911,9 @@ class UserDevicesComponent extends React.Component {
                     d._children = null;
                 }
                 update(d);
+            }
+
+            function dbClick(d) {
                 d3.select('#selected').attr("id", '');
                 d3.select('#selected-circle').attr("id", '');
                 nodeUpdate.select('circle.node')
