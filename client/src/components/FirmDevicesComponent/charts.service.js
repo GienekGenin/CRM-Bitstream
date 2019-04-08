@@ -5,7 +5,7 @@ const unflatten = ( array, parent, tree )=>{
     tree = typeof tree !== 'undefined' ? tree : [];
     parent = typeof parent !== 'undefined' ? parent : { sid: '0' };
 
-    var children = _.filter( array, function(child){ return child.parent_id === parent.sid; });
+    let children = _.filter( array, function(child){ return child.parent_id === parent.sid; });
 
     if( !_.isEmpty( children )  ){
         if( parent.sid === '0' ){

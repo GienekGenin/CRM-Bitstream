@@ -36,4 +36,16 @@ export class DeviceRepository extends Repository{
 			}
 		})
 	}
+
+	createStructure(structure){
+		return this.model.insertMany(structure);
+	}
+
+	deleteStructure(base){
+		return this.model.deleteMany({      sid: {
+				'$regex': base
+			}
+
+		})
+	}
 }

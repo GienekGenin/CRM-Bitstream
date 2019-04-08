@@ -28,8 +28,22 @@ devices.post('/source', TokenValidator.validateToken, (req, res, next) => {
         .catch(next);
 });
 
+// todo: for tests
+devices.post('/structure', TokenValidator.validateToken, (req, res, next) => {
+    deviceService.createStructure(req.body)
+        .then(PayloadGeneratorService.nextWithData(next, res))
+        .catch(next);
+});
+
 devices.delete('/', TokenValidator.validateToken, (req, res, next) => {
     deviceService.deleteParent(req.body.sid)
+        .then(PayloadGeneratorService.nextWithData(next, res))
+        .catch(next);
+});
+
+devices.delete('/structure', TokenValidator.validateToken, (req, res, next) => {
+    console.log(req.body.base)
+    deviceService.deleteStructure(req.body.base)
         .then(PayloadGeneratorService.nextWithData(next, res))
         .catch(next);
 });

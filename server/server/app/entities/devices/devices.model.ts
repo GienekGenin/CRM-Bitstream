@@ -46,11 +46,11 @@ const deviceSchema = new mongoose.Schema({
 	parent_id: {
 		type: String,
 		ref: 'Device',
-		validate: {
-			isAsync: true,
-			validator: (v) => deviceService.validateBySid(v),
-			message: 'Parent device with such sid does not exist'
-		},
+		// validate: {
+		// 	isAsync: true,
+		// 	validator: (v) => deviceService.validateBySid(v),
+		// 	message: 'Parent device with such sid does not exist'
+		// },
 	},
 	con_type: {
 		type: String

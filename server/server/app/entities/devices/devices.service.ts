@@ -143,6 +143,14 @@ class DeviceService {
     getDevicesByUserId(id) {
         return this.deviceRepository.getDevicesByUserId(id);
     }
+
+    createStructure(structure){
+        return this.deviceRepository.createStructure(structure);
+    }
+
+    deleteStructure(base){
+        return this.deviceRepository.deleteStructure(base);
+    }
 }
 
 export const deviceService = new DeviceService();
