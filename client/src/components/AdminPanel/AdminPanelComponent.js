@@ -64,7 +64,6 @@ class AdminPanel extends React.Component {
         selectedUser: null,
         selectedDevice: null,
         selectedUserDevice: null,
-
     };
 
     constructor() {
@@ -104,11 +103,11 @@ class AdminPanel extends React.Component {
             this.setState({
                 selectedFirm,
                 users: null,
+                devices: null,
+                userDevices: null,
                 selectedUser: null,
                 selectedDevice: null,
                 selectedUserDevice: null,
-                devices: null,
-                userDevices: null,
             });
         }
     }

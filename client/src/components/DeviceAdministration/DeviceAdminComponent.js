@@ -28,7 +28,7 @@ import {
     userDevicesRequest,
     addDeviceRequest,
     deleteDeviceRequest,
-    updateDeviceUsersRequest
+    updateDeviceUsersRequest,
 } from "../../redux/actions";
 
 import Checkbox from "@material-ui/core/Checkbox";
@@ -92,7 +92,6 @@ class FirmDevicesToolBar extends React.Component {
     handleClickOpen = (state) => {
         this.setState({[state]: true});
         if (state === 'editDialog') {
-            // todo: take user from parent users into newUserDevice !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             this.setState({newUserDevice: this.props.selected})
         }
         if (state === 'configUsersDialog') {
@@ -121,6 +120,7 @@ class FirmDevicesToolBar extends React.Component {
     };
 
     handleAddUserDevice = () => {
+        d3.select('#tree').remove();
         const deviceToServer = Object.assign({}, this.state.newUserDevice,
             {coid: [this.props.selectedUserId]});
         this.props.addDeviceRequest(deviceToServer);
@@ -129,7 +129,8 @@ class FirmDevicesToolBar extends React.Component {
             newUserDevice: {
                 name: '',
                 type: '',
-                user_desc: ''
+                user_desc: '',
+                coid: []
             }
         });
     };
@@ -139,23 +140,37 @@ class FirmDevicesToolBar extends React.Component {
     }
 
     handleDeleteFirmDevice() {
+        d3.select('#tree').remove();
         this.props.deleteDeviceRequest(this.props.selected.sid);
         this.props.resetSelected();
         this.handleClose('confirmDeleteDialog');
     }
 
     handleUpdateFirmDevice() {
+        d3.select('#tree').remove();
         // this.props.updateFirmDeviceRequest(this.state.newUserDevice);
         this.props.resetSelected();
         this.handleClose('editDialog');
     }
 
     handleRefresh() {
+        d3.select('#tree').remove();
+        this.props.userDevicesRequest(this.props.selectedUserId);
+        this.props.resetSelected();
+        this.setState({
+            addDialog: false,
+            newUserDevice: {
+                name: '',
+                type: '',
+                user_desc: '',
+                coid: []
+            }
+        });
     }
 
     handleConfigUsersForDevice() {
+        d3.select('#tree').remove();
         const ids = this.state.newUserDevice.coid.map(el => el._id);
-        console.log(this.state.newUserDevice.sid, ids);
         if (ids.length > 0) {
             this.props.updateDeviceUsersRequest(this.state.newUserDevice.sid, ids);
         }
@@ -582,6 +597,7 @@ class UserDevicesComponent extends React.Component {
                 const devices = store.getState().devicesReducer.userDevices;
                 this.setState({devices});
                 this.props.handleSetUserDevices(devices);
+                d3.select('#tree').remove();
                 let data = [];
                 if (devices.length > 0) {
                     devices.map(record => {

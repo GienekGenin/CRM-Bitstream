@@ -59,7 +59,13 @@ export const devicesReducer = (state = initialState, action) => {
                 success: 'User devices loaded successfully'
             });
         }
-        case devicesConstants.FIRM_DEVICES_GET_FAILURE:
+        case devicesConstants.FIRM_DEVICES_GET_FAILURE: {
+            return {
+                devices: null,
+                loading: false,
+                error: action.payload
+            }
+        }
         case devicesConstants.UPDATE_DEVICE_FAILURE:
         case devicesConstants.ADD_DEVICE_FAILURE:
         case devicesConstants.DELETE_DEVICE_FAILURE:

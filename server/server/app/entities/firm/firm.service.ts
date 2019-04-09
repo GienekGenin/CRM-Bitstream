@@ -67,7 +67,13 @@ class FirmService {
             async.waterfall([
                 callback => {
                     this.firmRepository.getFirmUsers(firmId)
-                        .then(d => callback(null, d[0].firm_users))
+                        .then(d => {
+                            if(!(d[0].firm_users)){
+                                callback(new Error('Firm has no users'));
+                            } else {
+                                callback(null, d[0].firm_users)
+                            }
+                        })
                         .catch(e => callback(e));
                 },
                 (usersIds, callback) => {
