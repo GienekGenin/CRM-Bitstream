@@ -1,10 +1,6 @@
 import React from 'react';
-import {connect} from 'react-redux';
-import store from '../../redux/store/index'
-import {loginRequest, changePassRequest} from "../../redux/actions/index";
 
-import './login.scss';
-
+// Material
 import TextField from '@material-ui/core/TextField';
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
@@ -13,6 +9,14 @@ import Button from '@material-ui/core/Button';
 import CardActions from '@material-ui/core/CardActions';
 import Grow from '@material-ui/core/Grow';
 import CircularProgress from '@material-ui/core/CircularProgress';
+
+// Redux
+import {connect} from 'react-redux';
+import store from '../../redux/store/index'
+import {loginRequest, changePassRequest} from "../../redux/actions/index";
+
+// Components
+import './login.scss';
 
 const mapDispatchToProps = (dispatch) => {
     return {

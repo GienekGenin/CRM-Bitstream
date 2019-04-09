@@ -1,10 +1,7 @@
 import React from "react";
 import * as PropTypes from 'prop-types';
 
-import DeleteIcon from '@material-ui/icons/Delete';
-import {connect} from "react-redux";
-import {firmDevicesRequest} from "../../redux/actions";
-
+// Material
 import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
 import DialogTitle from "@material-ui/core/DialogTitle";
@@ -13,6 +10,11 @@ import DialogActions from "@material-ui/core/DialogActions";
 import TextField from "@material-ui/core/TextField";
 import AddIcon from '@material-ui/icons/Add';
 import EditIcon from '@material-ui/icons/Edit';
+import DeleteIcon from '@material-ui/icons/Delete';
+
+// Redux
+import {connect} from "react-redux";
+import {firmDevicesRequest} from "../../redux/actions";
 
 const mapDispatchToProps = (dispatch) => {
     return {

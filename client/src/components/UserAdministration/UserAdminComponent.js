@@ -1,17 +1,18 @@
 import React from "react";
 import * as PropTypes from 'prop-types';
 
-import './userAdmin.scss';
-
-import {withStyles} from '@material-ui/core/styles';
-import TableRow from "@material-ui/core/TableRow";
-import TableCell from "@material-ui/core/TableCell";
-import {createData, stableSort, getSorting} from "./users-table.service";
+// Material
 import Table from "@material-ui/core/Table";
 import Paper from "@material-ui/core/Paper";
 import TableBody from "@material-ui/core/TableBody";
 import TablePagination from "@material-ui/core/TablePagination";
+import {withStyles} from '@material-ui/core/styles';
+import TableRow from "@material-ui/core/TableRow";
+import TableCell from "@material-ui/core/TableCell";
+import Checkbox from "@material-ui/core/Checkbox";
+import LinearProgress from "@material-ui/core/LinearProgress";
 
+// Redux
 import store from "../../redux/store";
 import {connect} from "react-redux";
 import {
@@ -22,14 +23,16 @@ import {
     changePassAdminRequest,
     changeEmailAdminRequest
 } from "../../redux/actions";
-
-import Checkbox from "@material-ui/core/Checkbox";
-import LinearProgress from "@material-ui/core/LinearProgress";
 import {tokenService} from "../../redux/services/token";
 
+// Components
+import './userAdmin.scss';
 import UserToolBarComponent from './UserToolBarComponent';
 import UserTableHead from './UserTableHead'
 import UserTableToolbar from './UserTableToolbar'
+
+// Table service
+import {createData, stableSort, getSorting} from "./users-table.service";
 
 const mapDispatchToProps = (dispatch) => {
     return {

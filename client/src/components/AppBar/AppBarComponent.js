@@ -1,17 +1,21 @@
 import React from "react";
 import PropTypes from 'prop-types';
+
+// Material
 import { withStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
+import Toolbar from '@material-ui/core/Toolbar';
+import Button from "@material-ui/core/Button";
 
+// Components
 import HomeComponent from '../../components/Home/HomeComponent';
 import FirmAdminComponent from '../../components/FirmAdministration/FirmAdminComponent';
 import UserAdminComponent from '../../components/UserAdministration/UserAdminComponent';
 import DeviceAdminComponent from '../../components/DeviceAdministration/DeviceAdminComponent';
-import Toolbar from '@material-ui/core/Toolbar';
-import Button from "@material-ui/core/Button";
+
 
 function TabContainer(props) {
     return (

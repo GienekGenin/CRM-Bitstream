@@ -1,8 +1,7 @@
 import React from "react";
 import * as PropTypes from 'prop-types';
 
-import './firmAdmin.scss';
-
+// Material
 import classNames from 'classnames';
 import {lighten} from '@material-ui/core/styles/colorManipulator';
 import {withStyles} from '@material-ui/core/styles';

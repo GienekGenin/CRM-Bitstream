@@ -1,15 +1,8 @@
+import * as d3 from "d3";
 import React from "react";
 import * as PropTypes from 'prop-types';
 
-import DeleteIcon from '@material-ui/icons/Delete';
-import {connect} from "react-redux";
-import {
-    userDevicesRequest,
-    addDeviceRequest,
-    deleteDeviceRequest,
-    updateDeviceUsersRequest,
-} from "../../redux/actions";
-
+// Material
 import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
 import DialogTitle from "@material-ui/core/DialogTitle";
@@ -18,16 +11,23 @@ import DialogActions from "@material-ui/core/DialogActions";
 import TextField from "@material-ui/core/TextField";
 import AddIcon from '@material-ui/icons/Add';
 import EditIcon from '@material-ui/icons/Edit';
-
-import {deviceTypesService} from '../../redux/services/device_types'
+import DeleteIcon from '@material-ui/icons/Delete';
+import Input from "@material-ui/core/Input";
+import Chip from "@material-ui/core/Chip";
 import FormControl from "@material-ui/core/FormControl";
 import InputLabel from "@material-ui/core/InputLabel";
 import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
 
-import * as d3 from "d3";
-import Input from "@material-ui/core/Input";
-import Chip from "@material-ui/core/Chip";
+// Redux
+import {connect} from "react-redux";
+import {
+    userDevicesRequest,
+    addDeviceRequest,
+    deleteDeviceRequest,
+    updateDeviceUsersRequest,
+} from "../../redux/actions";
+import {deviceTypesService} from '../../redux/services/device_types'
 
 const mapDispatchToProps = (dispatch) => {
     return {
@@ -37,7 +37,6 @@ const mapDispatchToProps = (dispatch) => {
         updateDeviceUsersRequest: (sid, coid) => dispatch(updateDeviceUsersRequest(sid, coid)),
     };
 };
-
 
 class DevicesToolBar extends React.Component {
 

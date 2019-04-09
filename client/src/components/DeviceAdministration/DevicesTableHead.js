@@ -1,12 +1,14 @@
 import React from "react";
 import * as PropTypes from 'prop-types';
 
+// Material
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import TableCell from "@material-ui/core/TableCell";
 import Tooltip from "@material-ui/core/Tooltip";
 import TableSortLabel from "@material-ui/core/TableSortLabel";
 
+// Table service
 import {rows} from "./user_devices_table.service";
 
 export default class DevicesTableHead extends React.Component {

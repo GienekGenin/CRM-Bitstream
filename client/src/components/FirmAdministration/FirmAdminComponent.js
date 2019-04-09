@@ -1,8 +1,7 @@
 import React from "react";
 import * as PropTypes from 'prop-types';
 
-import './firmAdmin.scss';
-
+// Material
 import {withStyles} from '@material-ui/core/styles';
 import TableRow from "@material-ui/core/TableRow";
 import TableCell from "@material-ui/core/TableCell";
@@ -11,17 +10,19 @@ import Table from "@material-ui/core/Table";
 import Paper from "@material-ui/core/Paper";
 import TableBody from "@material-ui/core/TableBody";
 import TablePagination from "@material-ui/core/TablePagination";
+import Checkbox from "@material-ui/core/Checkbox";
+import LinearProgress from "@material-ui/core/LinearProgress";
 
+// Redux
 import {connect} from "react-redux";
 import store from "../../redux/store";
 import {addFirmRequest, deleteFirmRequest, firmDevicesRequest, updateFirmRequest} from "../../redux/actions";
 
-import Checkbox from "@material-ui/core/Checkbox";
-import LinearProgress from "@material-ui/core/LinearProgress";
-
+// Components
 import FirmToolBarComponent from './FirmToolBarComponent';
 import FirmTableHead from './FirmTableHead'
 import FirmTableToolbar from './FirmTableToolbar'
+import './firmAdmin.scss';
 
 const mapDispatchToProps = (dispatch) => {
     return {

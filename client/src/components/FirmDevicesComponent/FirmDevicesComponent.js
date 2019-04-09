@@ -1,28 +1,31 @@
 import React from "react";
 import * as PropTypes from 'prop-types';
 
+// Material
 import {withStyles} from '@material-ui/core/styles';
 import TableRow from "@material-ui/core/TableRow";
 import TableCell from "@material-ui/core/TableCell";
-
-import {createData, stableSort, getSorting} from "./firm_devices_table.service";
 import Table from "@material-ui/core/Table";
 import Paper from "@material-ui/core/Paper";
 import TableBody from "@material-ui/core/TableBody";
 import TablePagination from "@material-ui/core/TablePagination";
+import Checkbox from "@material-ui/core/Checkbox";
+import LinearProgress from "@material-ui/core/LinearProgress";
 
+// Redux
 import store from "../../redux/store";
 import {connect} from "react-redux";
 import {firmDevicesRequest} from "../../redux/actions";
-
-import Checkbox from "@material-ui/core/Checkbox";
-import LinearProgress from "@material-ui/core/LinearProgress";
 import {tokenService} from "../../redux/services/token";
-import {buildChart} from "./charts.service";
 
+// Components
 import FirmDevicesToolBarComponent from './FirmDevicesToolBarComponent'
 import FirmDevicesTableHead from './FirmDevicesTableHead'
 import FirmDevicesTableToolbar from './FirmDevicesTableToolbar'
+
+// Services
+import {buildChart} from "./charts.service";
+import {createData, stableSort, getSorting} from "./firm_devices_table.service";
 
 const mapDispatchToProps = (dispatch) => {
     return {
@@ -33,7 +36,6 @@ const mapDispatchToProps = (dispatch) => {
 const mapStateToProps = state => {
     return {devices: state.devicesReducer.devices};
 };
-
 
 const styles = theme => ({
     root: {

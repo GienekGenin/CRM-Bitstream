@@ -1,23 +1,26 @@
 import React from "react";
 import PropTypes from 'prop-types';
+
+// Material
 import {withStyles} from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
-
-import FirmAdminComponent from '../../components/FirmAdministration/FirmAdminComponent';
-import UserAdminComponent from '../../components/UserAdministration/UserAdminComponent';
-import DeviceAdminComponent from '../../components/DeviceAdministration/DeviceAdminComponent';
 import Toolbar from '@material-ui/core/Toolbar';
 
+// Redux
 import {firmsRequest, usersRequest} from "../../redux/actions/index";
 import {connect} from "react-redux";
 import store from '../../redux/store'
 import {checkAccess} from "../privateRoute";
-import FirmDevicesComponent from "../FirmDevicesComponent/FirmDevicesComponent";
 
+// Components
 import './adminPanel.scss';
+import FirmAdminComponent from '../../components/FirmAdministration/FirmAdminComponent';
+import UserAdminComponent from '../../components/UserAdministration/UserAdminComponent';
+import DeviceAdminComponent from '../../components/DeviceAdministration/DeviceAdminComponent';
+import FirmDevicesComponent from "../FirmDevicesComponent/FirmDevicesComponent";
 
 const mapDispatchToProps = (dispatch) => {
     return {

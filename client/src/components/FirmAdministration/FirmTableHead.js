@@ -1,12 +1,15 @@
 import React from "react";
 import * as PropTypes from 'prop-types';
 
+// Material
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import TableCell from "@material-ui/core/TableCell";
 import Tooltip from "@material-ui/core/Tooltip";
 import TableSortLabel from "@material-ui/core/TableSortLabel";
-import { rows} from "./firms-table.service";
+
+// Table service
+import {rows} from "./firms-table.service";
 
 export default class FirmTableHead extends React.Component {
     createSortHandler = property => event => {
