@@ -817,10 +817,10 @@ class UserDevicesComponent extends React.Component {
                     return "translate(" + source.y0 + "," + source.x0 + ")";
                 })
                 // todo: handle click
-                .on('click', dbClick)
-                .on('dblclick', click)
+                .on('mouseover', dbClick)
+                .on('click', click)
                 // todo: show info
-                .on("mouseover", function (d) {
+                .on("dblclick", function (d) {
                     let g = d3.select(this); // The node
                     // The class is used to remove the additional text later
                     // let info = g.append('text')
