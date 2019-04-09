@@ -72,6 +72,22 @@ const deleteDevice = (deviceId) => {
         })
 };
 
+const updateDeviceUsers = (payload) => {
+    const token = localStorage.getItem('token');
+    const requestOptions = {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(payload)
+    };
+    return fetch(`${apiBase}devices/users`, requestOptions)
+        .then(handleResponse)
+        .then(devices => {
+            return devices;
+        })
+};
 
 const handleResponse = (response) => {
     return response.text().then(text => {
@@ -92,5 +108,6 @@ export const devicesService = {
     getUserDevices,
     getFirmDevices,
     addDevice,
-    deleteDevice
+    deleteDevice,
+    updateDeviceUsers
 };

@@ -42,8 +42,13 @@ devices.delete('/', TokenValidator.validateToken, (req, res, next) => {
 });
 
 devices.delete('/structure', TokenValidator.validateToken, (req, res, next) => {
-    console.log(req.body.base)
     deviceService.deleteStructure(req.body.base)
+        .then(PayloadGeneratorService.nextWithData(next, res))
+        .catch(next);
+});
+
+devices.put('/users', TokenValidator.validateToken, (req, res, next) => {
+    deviceService.updateDeviceUsers(req.body)
         .then(PayloadGeneratorService.nextWithData(next, res))
         .catch(next);
 });

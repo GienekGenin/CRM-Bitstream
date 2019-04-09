@@ -51,6 +51,15 @@ export const devicesMiddleWare = ({dispatch}) => {
                         dispatch({type: devicesConstants.DELETE_DEVICE_FAILURE, payload: errorParser(err)})
                     });
             }
+            if (action.type === devicesConstants.UPDATE_DEVICE_USERS_REQUEST) {
+                devicesService.updateDeviceUsers(action.payload)
+                    .then(devices => {
+                        return dispatch({type: devicesConstants.UPDATE_DEVICE_USERS_SUCCESS, payload: devices})
+                    })
+                    .catch(err => {
+                        dispatch({type: devicesConstants.UPDATE_DEVICE_USERS_FAILURE, payload: errorParser(err)})
+                    });
+            }
             return next(action);
         };
     };

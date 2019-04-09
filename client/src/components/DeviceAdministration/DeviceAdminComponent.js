@@ -24,7 +24,12 @@ import TablePagination from "@material-ui/core/TablePagination";
 
 import store from "../../redux/store";
 import {connect} from "react-redux";
-import {userDevicesRequest, addDeviceRequest, deleteDeviceRequest} from "../../redux/actions";
+import {
+    userDevicesRequest,
+    addDeviceRequest,
+    deleteDeviceRequest,
+    updateDeviceUsersRequest
+} from "../../redux/actions";
 
 import Checkbox from "@material-ui/core/Checkbox";
 import Button from "@material-ui/core/Button";
@@ -57,6 +62,7 @@ const mapDispatchToProps = (dispatch) => {
         userDevicesRequest: (payload) => dispatch(userDevicesRequest(payload)),
         addDeviceRequest: (payload) => dispatch(addDeviceRequest(payload)),
         deleteDeviceRequest: (payload) => dispatch(deleteDeviceRequest(payload)),
+        updateDeviceUsersRequest: (sid, coid) => dispatch(updateDeviceUsersRequest(sid, coid)),
     };
 };
 
@@ -148,10 +154,10 @@ class FirmDevicesToolBar extends React.Component {
     }
 
     handleConfigUsersForDevice() {
-        const ids = this.state.newUserDevice.coid.map(el=> el._id);
-        const reqBody = Object.assign({}, this.state.newUserDevice, {coid: ids});
-        if(ids > 0){
-
+        const ids = this.state.newUserDevice.coid.map(el => el._id);
+        console.log(this.state.newUserDevice.sid, ids);
+        if (ids.length > 0) {
+            this.props.updateDeviceUsersRequest(this.state.newUserDevice.sid, ids);
         }
         this.props.resetSelected();
         this.handleClose('configUsersDialog');
@@ -309,7 +315,7 @@ class FirmDevicesToolBar extends React.Component {
                     >
                         <DialogTitle id="alert-dialog-title-">Config users</DialogTitle>
                         <DialogContent>
-                            <FormControl>
+                            <FormControl fullWidth={true}>
                                 <InputLabel htmlFor="select-multiple-chip">Chip</InputLabel>
                                 <Select
                                     multiple
@@ -333,7 +339,7 @@ class FirmDevicesToolBar extends React.Component {
                             </FormControl>
                         </DialogContent>
                         <DialogActions>
-                            <Button variant="outlined" color="primary"
+                            <Button variant="outlined" color="primary" disabled={this.state.newUserDevice.coid < 1}
                                     onClick={() => this.handleConfigUsersForDevice()}>
                                 Submit
                             </Button>

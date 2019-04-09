@@ -144,12 +144,67 @@ class DeviceService {
         return this.deviceRepository.getDevicesByUserId(id);
     }
 
-    createStructure(structure){
+    createStructure(structure) {
         return this.deviceRepository.createStructure(structure);
     }
 
-    deleteStructure(base){
+    deleteStructure(base) {
         return this.deviceRepository.deleteStructure(base);
+    }
+
+    // updateDeviceUsers(payload){
+    //     return this.deviceRepository.updateDeviceUsers(payload.sid, payload.coid);
+    // }
+
+    updateDeviceUsers(payload) {
+        return new Promise((resolve, reject) => {
+            async.waterfall(
+                [
+                    callback => {
+                        this.deviceRepository.findBySid(payload.sid)
+                            .then(data => callback(null, data._doc))
+                            .catch(e => callback(e));
+                    },
+                    (device, callback) => {
+                        const diff = (A, B) => {
+                            return A.filter(function (a) {
+                                return B.indexOf(a) == -1;
+                            });
+                        };
+                        let diffIds = [];
+                        let currentCoid = device.coid.map(id => id.toString());
+                        if (currentCoid.length === payload.coid.length) {
+                            let diffToAdd, diffToRemove;
+                            diffToAdd = diff(payload.coid, currentCoid);
+                            diffToRemove = diff(currentCoid, payload.coid);
+                            diffToAdd.forEach((el,i,arr)=> arr[i]=Types.ObjectId(el));
+                            diffToRemove.forEach((el,i,arr)=> arr[i]=Types.ObjectId(el));
+                            Promise.all([
+                                this.deviceRepository.updateAddDeviceUsers(payload.sid, diffToAdd),
+                                this.deviceRepository.updateRemoveDeviceUsers(payload.sid, diffToRemove)
+                            ])
+                                .then(d => callback(null, d))
+                                .catch(e => callback(e));
+                        } else if (currentCoid.length < payload.coid.length) {
+                            diffIds = diff(payload.coid, currentCoid);
+                            this.deviceRepository.updateAddDeviceUsers(payload.sid, diffIds)
+                                .then(d => callback(null, d))
+                                .catch(e => callback(e));
+                        } else if (currentCoid.length > payload.coid.length){
+                            diffIds = diff(currentCoid, payload.coid);
+                            this.deviceRepository.updateRemoveDeviceUsers(payload.sid, diffIds)
+                                .then(d => callback(null, d))
+                                .catch(e => callback(e));
+                        }
+                    }
+                ],
+                (err, payload) => {
+                    if (err) {
+                        reject(err);
+                    }
+                    resolve(payload);
+                })
+        })
     }
 }
 
