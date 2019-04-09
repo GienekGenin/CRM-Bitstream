@@ -85,9 +85,20 @@ class FirmDevicesToolBar extends React.Component {
 
     handleClickOpen = (state) => {
         this.setState({[state]: true});
-        if (state === 'editDialog' || state === 'configUsersDialog') {
+        if (state === 'editDialog') {
             // todo: take user from parent users into newUserDevice !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             this.setState({newUserDevice: this.props.selected})
+        }
+        if (state === 'configUsersDialog') {
+            let users = [];
+            this.props.parentUsers.forEach(el => {
+                this.props.selected.coid.forEach(id => {
+                    if (el._id === id) {
+                        users.push(el);
+                    }
+                });
+            });
+            this.setState({newUserDevice: Object.assign({}, this.props.selected, {coid: users})});
         }
     };
 
@@ -136,8 +147,12 @@ class FirmDevicesToolBar extends React.Component {
     handleRefresh() {
     }
 
-    handleConfigUsersForDevice(){
-        console.log(this.state.newUserDevice);
+    handleConfigUsersForDevice() {
+        const ids = this.state.newUserDevice.coid.map(el=> el._id);
+        const reqBody = Object.assign({}, this.state.newUserDevice, {coid: ids});
+        if(ids > 0){
+
+        }
         this.props.resetSelected();
         this.handleClose('configUsersDialog');
     }
@@ -294,23 +309,23 @@ class FirmDevicesToolBar extends React.Component {
                     >
                         <DialogTitle id="alert-dialog-title-">Config users</DialogTitle>
                         <DialogContent>
-                            <FormControl >
+                            <FormControl>
                                 <InputLabel htmlFor="select-multiple-chip">Chip</InputLabel>
                                 <Select
                                     multiple
                                     value={this.state.newUserDevice.coid}
                                     onChange={(e) => this.updateNewUserDevice(e, 'coid')}
-                                    input={<Input id="select-multiple-chip" />}
+                                    input={<Input id="select-multiple-chip"/>}
                                     renderValue={selected => (
                                         <div>
                                             {selected.map(value => (
-                                                <Chip key={value} label={value} />
+                                                <Chip key={value._id} label={value.name}/>
                                             ))}
                                         </div>
                                     )}
                                 >
                                     {parentUsers.map(user => (
-                                        <MenuItem key={user._id} value={user.name} >
+                                        <MenuItem key={user._id} value={user}>
                                             {user.name}
                                         </MenuItem>
                                     ))}
