@@ -24,8 +24,8 @@ import Tooltip from '@material-ui/core/Tooltip';
 import {connect} from "react-redux";
 import {
     userDevicesRequest,
-    addDeviceRequest,
-    deleteDeviceRequest,
+    addUserDeviceRequest,
+    deleteUserDeviceRequest,
     updateUserDevice,
     updateDeviceUsersRequest,
 } from "../../redux/actions";
@@ -34,8 +34,8 @@ import {deviceTypesService} from '../../redux/services/device_types'
 const mapDispatchToProps = (dispatch) => {
     return {
         userDevicesRequest: (payload) => dispatch(userDevicesRequest(payload)),
-        addDeviceRequest: (payload) => dispatch(addDeviceRequest(payload)),
-        deleteDeviceRequest: (payload) => dispatch(deleteDeviceRequest(payload)),
+        addUserDeviceRequest: (payload) => dispatch(addUserDeviceRequest(payload)),
+        deleteUserDeviceRequest: (payload) => dispatch(deleteUserDeviceRequest(payload)),
         updateDeviceUsersRequest: (sid, coid) => dispatch(updateDeviceUsersRequest(sid, coid)),
         updateUserDevice: (payload) => dispatch(updateUserDevice(payload)),
     };
@@ -94,7 +94,7 @@ class DevicesToolBar extends React.Component {
         d3.select('#tree').remove();
         const deviceToServer = Object.assign({}, this.state.newUserDevice,
             {coid: [this.props.selectedUserId]});
-        this.props.addDeviceRequest(deviceToServer);
+        this.props.addUserDeviceRequest(deviceToServer);
         this.setState({
             addDialog: false,
             newUserDevice: {
@@ -112,7 +112,7 @@ class DevicesToolBar extends React.Component {
 
     handleDeleteFirmDevice() {
         d3.select('#tree').remove();
-        this.props.deleteDeviceRequest(this.props.selected.sid);
+        this.props.deleteUserDeviceRequest(this.props.selected.sid);
         this.props.resetSelected();
         this.handleClose('confirmDeleteDialog');
     }

@@ -12,9 +12,11 @@ export const devicesReducer = (state = initialState, action) => {
     switch (action.type) {
 
         case devicesConstants.FIRM_DEVICES_GET_REQUEST:
-        case devicesConstants.ADD_DEVICE_REQUEST:
+        case devicesConstants.ADD_FIRM_DEVICE_REQUEST:
+        case devicesConstants.ADD_USER_DEVICE_REQUEST:
         case devicesConstants.UPDATE_USER_DEVICE_REQUEST:
-        case devicesConstants.DELETE_DEVICE_REQUEST:
+        case devicesConstants.DELETE_USER_DEVICE_REQUEST:
+        case devicesConstants.DELETE_FIRM_DEVICE_REQUEST:
         case devicesConstants.USER_DEVICES_GET_REQUEST: {
             return {
                 ...state,

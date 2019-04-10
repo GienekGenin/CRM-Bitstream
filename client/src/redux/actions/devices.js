@@ -20,12 +20,22 @@ export const updateDeviceUsersRequest = (sid, coid) => {
     return {type: devicesConstants.UPDATE_DEVICE_USERS_REQUEST, payload: {sid, coid}}
 };
 
-export const addDeviceRequest = (payload) => {
-    return {type: devicesConstants.ADD_DEVICE_REQUEST, payload}
+// addDeviceRequest
+export const addUserDeviceRequest = (payload) => {
+    return {type: devicesConstants.ADD_USER_DEVICE_REQUEST, payload}
 };
 
-export const deleteDeviceRequest = (deviceId) => {
-    return {type: devicesConstants.DELETE_DEVICE_REQUEST, payload: deviceId}
+export const addFirmDeviceRequest = (payload) => {
+    return {type: devicesConstants.ADD_FIRM_DEVICE_REQUEST, payload}
+};
+
+
+export const deleteUserDeviceRequest = (deviceId) => {
+    return {type: devicesConstants.DELETE_USER_DEVICE_REQUEST, payload: deviceId}
+};
+
+export const deleteFirmDeviceRequest = (deviceId) => {
+    return {type: devicesConstants.DELETE_FIRM_DEVICE_REQUEST, payload: deviceId}
 };
 
 export const updateUserDevice = (device) => {

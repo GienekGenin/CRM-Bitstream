@@ -20,8 +20,8 @@ import store from "../../redux/store";
 import {connect} from "react-redux";
 import {
     userDevicesRequest,
-    addDeviceRequest,
-    deleteDeviceRequest,
+    addUserDeviceRequest,
+    deleteUserDeviceRequest,
     updateDeviceUsersRequest,
 } from "../../redux/actions";
 import {tokenService} from "../../redux/services/token";
@@ -38,8 +38,8 @@ import {createData, stableSort, getSorting} from "./user_devices_table.service";
 const mapDispatchToProps = (dispatch) => {
     return {
         userDevicesRequest: (payload) => dispatch(userDevicesRequest(payload)),
-        addDeviceRequest: (payload) => dispatch(addDeviceRequest(payload)),
-        deleteDeviceRequest: (payload) => dispatch(deleteDeviceRequest(payload)),
+        addUserDeviceRequest: (payload) => dispatch(addUserDeviceRequest(payload)),
+        deleteUserDeviceRequest: (payload) => dispatch(deleteUserDeviceRequest(payload)),
         updateDeviceUsersRequest: (sid, coid) => dispatch(updateDeviceUsersRequest(sid, coid)),
     };
 };
