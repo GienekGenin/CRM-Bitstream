@@ -190,13 +190,13 @@ class FirmDevicesComponent extends React.Component {
 
     render() {
         const {classes} = this.props;
-        const {data, order, orderBy, selected, rowsPerPage, page, device, loading} = this.state;
+        const {data, order, orderBy, selected, rowsPerPage, page, device, loading, selectedFirm} = this.state;
         const emptyRows = rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
         return (
             <div>
                 <Paper className={classes.root}>
                     <FirmDevicesTableToolbar numSelected={selected.length} firm={device}/>
-                    <FirmDevicesToolBarComponent selected={device} loading={loading}
+                    <FirmDevicesToolBarComponent selected={device} selectedFirmId={selectedFirm ? selectedFirm._id : ''} loading={loading}
                                           resetSelected={() => this.resetSelected()}/>
                     {loading && <LinearProgress color="secondary"/>}
                     <div className={classes.tableWrapper}>

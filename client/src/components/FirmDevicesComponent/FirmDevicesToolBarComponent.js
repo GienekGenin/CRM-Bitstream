@@ -11,10 +11,19 @@ import TextField from "@material-ui/core/TextField";
 import AddIcon from '@material-ui/icons/Add';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
+import LinearProgress from "@material-ui/core/LinearProgress";
+import FormControl from "@material-ui/core/FormControl";
+import InputLabel from "@material-ui/core/InputLabel";
+import Select from "@material-ui/core/Select";
+import MenuItem from "@material-ui/core/MenuItem";
+import Input from "@material-ui/core/Input";
+import Chip from "@material-ui/core/Chip";
 
 // Redux
 import {connect} from "react-redux";
 import {firmDevicesRequest} from "../../redux/actions";
+import {deviceTypesService} from '../../redux/services/device_types';
+import {userService} from '../../redux/services/user';
 
 const mapDispatchToProps = (dispatch) => {
     return {
@@ -27,16 +36,18 @@ class FirmDevicesToolBar extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            deviceTypes: null,
+            firmUsers: null,
             editDialog: false,
             addDialog: false,
             confirmDeleteDialog: false,
             newFirmDevice: {
                 name: '',
-                address: '',
-                email: '',
-                tel: '',
-                nip: ''
-            }
+                type: '',
+                user_desc: '',
+                coid: []
+            },
+            loading: false
         };
     }
 
@@ -45,23 +56,36 @@ class FirmDevicesToolBar extends React.Component {
         if (state === 'editDialog') {
             this.setState({newFirmDevice: this.props.selected})
         }
+        if (state === 'addDialog') {
+            this.setState({loading: true});
+            userService.getAllByFirmId(this.props.selectedFirmId).then(d => {
+                this.setState({firmUsers: d, loading: false})
+            }).catch(e => console.log(e))
+        }
     };
 
     handleClose = (state) => {
         this.setState({
             [state]: false,
             newFirmDevice: {
-                name: ''
+                name: '',
+                type: '',
+                user_desc: '',
+                coid: []
             }
         });
     };
 
     handleAddFirmDevice = () => {
         // this.props.addFirmDeviceRequest(this.state.newFirmDevice);
+        console.log(this.state.newFirmDevice);
         this.setState({
             addDialog: false,
             newFirmDevice: {
-                name: ''
+                name: '',
+                type: '',
+                user_desc: '',
+                coid: []
             }
         });
     };
@@ -85,14 +109,22 @@ class FirmDevicesToolBar extends React.Component {
     handleRefresh() {
     }
 
+    componentDidMount() {
+        this.setState({loading: true});
+        deviceTypesService.getDeviceTypes().then(d => {
+            this.setState({deviceTypes: d, loading: false});
+        }).catch(e => console.log(e))
+    }
+
     render() {
+        let {loading, firmUsers, deviceTypes} = this.state;
         return (
             <div className="device-controls">
                 <div>
                     <Button disabled={!this.props.selected} variant="contained" color="primary"
                             onClick={() => this.handleClickOpen('editDialog')}>
                         Edit
-                        <EditIcon />
+                        <EditIcon/>
                     </Button>
                     <Dialog
                         open={this.state.editDialog}
@@ -129,7 +161,7 @@ class FirmDevicesToolBar extends React.Component {
                     <Button variant="outlined" color="primary" disabled={this.props.loading}
                             onClick={() => this.handleClickOpen('addDialog')}>
                         Add
-                        <AddIcon />
+                        <AddIcon/>
                     </Button>
                     <Dialog
                         open={this.state.addDialog}
@@ -150,6 +182,52 @@ class FirmDevicesToolBar extends React.Component {
                                 onChange={(e) => this.updateNewFirmDevice(e, 'name')}
                                 fullWidth
                             />
+                            <FormControl fullWidth required={true} disabled={loading}>
+                                <InputLabel htmlFor="device-type">Device type</InputLabel>
+                                <Select
+                                    value={this.state.newFirmDevice.type}
+                                    onChange={(e) => this.updateNewFirmDevice(e, 'type')}
+                                    id='device-type'
+                                >
+                                    {deviceTypes && deviceTypes.map((el, i) =>
+                                        <MenuItem value={el._id} key={i}>{el.name}</MenuItem>)}
+                                </Select>
+                                {loading && <LinearProgress color="secondary"/>}
+                            </FormControl>
+                            <FormControl fullWidth disabled={loading}>
+                                <InputLabel htmlFor="select-multiple-chip">Users</InputLabel>
+                                <Select
+                                    multiple
+                                    value={this.state.newFirmDevice.coid}
+                                    onChange={(e) => this.updateNewFirmDevice(e, 'coid')}
+                                    input={<Input id="select-multiple-chip"/>}
+                                    renderValue={selected => (
+                                        <div>
+                                            {selected.map(value => (
+                                                <Chip key={value._id} label={value.name}/>
+                                            ))}
+                                        </div>
+                                    )}
+                                >
+                                    {firmUsers && firmUsers.map(user => (
+                                        <MenuItem key={user._id} value={user}>
+                                            {user.name}
+                                        </MenuItem>
+                                    ))}
+                                </Select>
+                                {loading && <LinearProgress color="secondary"/>}
+                            </FormControl>
+                            <TextField
+                                id="User-desc"
+                                label="Your description"
+                                multiline
+                                rows="4"
+                                margin="normal"
+                                variant="outlined"
+                                value={this.state.newFirmDevice.user_desc}
+                                onChange={(e) => this.updateNewFirmDevice(e, 'user_desc')}
+                                fullWidth
+                            />
                         </DialogContent>
                         <DialogActions>
                             <Button variant="outlined" color="primary"
@@ -166,7 +244,7 @@ class FirmDevicesToolBar extends React.Component {
                     <Button variant="contained" color="secondary" disabled={!this.props.selected}
                             onClick={() => this.handleClickOpen('confirmDeleteDialog')}>
                         Delete
-                        <DeleteIcon />
+                        <DeleteIcon/>
                     </Button>
                     <Dialog
                         open={this.state.confirmDeleteDialog}
@@ -197,6 +275,11 @@ class FirmDevicesToolBar extends React.Component {
     }
 }
 
-FirmDevicesToolBar.propTypes = {selected: PropTypes.object, resetSelected: PropTypes.func, loading: PropTypes.bool};
+FirmDevicesToolBar.propTypes = {
+    selected: PropTypes.object,
+    resetSelected: PropTypes.func,
+    selectedFirmId: PropTypes.string,
+    loading: PropTypes.bool
+};
 
 export default connect(null, mapDispatchToProps)(FirmDevicesToolBar);
