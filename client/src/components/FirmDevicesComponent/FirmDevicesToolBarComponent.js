@@ -21,13 +21,16 @@ import Chip from "@material-ui/core/Chip";
 
 // Redux
 import {connect} from "react-redux";
-import {firmDevicesRequest} from "../../redux/actions";
+import {firmDevicesRequest, addDeviceRequest, deleteDeviceRequest} from "../../redux/actions";
 import {deviceTypesService} from '../../redux/services/device_types';
 import {userService} from '../../redux/services/user';
+import * as d3 from "d3";
 
 const mapDispatchToProps = (dispatch) => {
     return {
         firmDevicesRequest: (payload) => dispatch(firmDevicesRequest(payload)),
+        addDeviceRequest: (payload) => dispatch(addDeviceRequest(payload)),
+        deleteDeviceRequest: (payload) => dispatch(deleteDeviceRequest(payload)),
     };
 };
 
@@ -77,8 +80,7 @@ class FirmDevicesToolBar extends React.Component {
     };
 
     handleAddFirmDevice = () => {
-        // this.props.addFirmDeviceRequest(this.state.newFirmDevice);
-        console.log(this.state.newFirmDevice);
+        this.props.addDeviceRequest(this.state.newFirmDevice);
         this.setState({
             addDialog: false,
             newFirmDevice: {
@@ -95,7 +97,8 @@ class FirmDevicesToolBar extends React.Component {
     }
 
     handleDeleteFirmDevice() {
-        // this.props.deleteFirmDeviceRequest(this.props.selected._id);
+        d3.select('#tree').remove();
+        this.props.deleteDeviceRequest(this.props.selected.sid);
         this.props.resetSelected();
         this.handleClose('confirmDeleteDialog');
     }
@@ -107,6 +110,18 @@ class FirmDevicesToolBar extends React.Component {
     }
 
     handleRefresh() {
+        d3.select('#tree').remove();
+        this.props.firmDevicesRequest(this.props.selectedFirmId);
+        this.props.resetSelected();
+        this.setState({
+            addDialog: false,
+            newFirmDevice: {
+                name: '',
+                type: '',
+                user_desc: '',
+                coid: []
+            }
+        });
     }
 
     componentDidMount() {
