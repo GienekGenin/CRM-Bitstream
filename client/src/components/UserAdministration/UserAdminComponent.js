@@ -11,6 +11,7 @@ import TableRow from "@material-ui/core/TableRow";
 import TableCell from "@material-ui/core/TableCell";
 import Checkbox from "@material-ui/core/Checkbox";
 import LinearProgress from "@material-ui/core/LinearProgress";
+import {styles} from '../material/table-styles';
 
 // Redux
 import store from "../../redux/store";
@@ -50,22 +51,6 @@ const mapStateToProps = state => {
         users: state.userReducer.users,
     };
 };
-
-const styles = theme => ({
-    root: {
-        width: '100%',
-        marginTop: theme.spacing.unit * 3,
-    },
-    table: {
-        minWidth: 1020,
-    },
-    tableWrapper: {
-        overflowX: 'auto',
-        position: 'relative',
-        top: 0,
-        left: 0
-    },
-});
 
 class UserAdminComponent extends React.Component {
 

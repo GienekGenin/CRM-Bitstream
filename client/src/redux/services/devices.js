@@ -89,6 +89,23 @@ const updateDeviceUsers = (payload) => {
         })
 };
 
+const updateUserDevice = (payload) => {
+    const token = localStorage.getItem('token');
+    const requestOptions = {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(payload)
+    };
+    return fetch(`${apiBase}devices`, requestOptions)
+        .then(handleResponse)
+        .then(device => {
+            return device;
+        })
+};
+
 const handleResponse = (response) => {
     return response.text().then(text => {
         const data = text && JSON.parse(text);
@@ -109,5 +126,6 @@ export const devicesService = {
     getFirmDevices,
     addDevice,
     deleteDevice,
-    updateDeviceUsers
+    updateDeviceUsers,
+    updateUserDevice
 };

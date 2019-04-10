@@ -27,3 +27,7 @@ export const addDeviceRequest = (payload) => {
 export const deleteDeviceRequest = (deviceId) => {
     return {type: devicesConstants.DELETE_DEVICE_REQUEST, payload: deviceId}
 };
+
+export const updateUserDevice = (device) => {
+    return {type: devicesConstants.UPDATE_USER_DEVICE_REQUEST, payload: device}
+};

@@ -11,6 +11,7 @@ import TableBody from "@material-ui/core/TableBody";
 import TablePagination from "@material-ui/core/TablePagination";
 import Checkbox from "@material-ui/core/Checkbox";
 import LinearProgress from "@material-ui/core/LinearProgress";
+import {styles} from '../material/table-styles';
 
 // Redux
 import store from "../../redux/store";
@@ -36,22 +37,6 @@ const mapDispatchToProps = (dispatch) => {
 const mapStateToProps = state => {
     return {devices: state.devicesReducer.devices};
 };
-
-const styles = theme => ({
-    root: {
-        width: '100%',
-        marginTop: theme.spacing.unit * 3,
-    },
-    table: {
-        minWidth: 1020,
-    },
-    tableWrapper: {
-        overflowX: 'auto',
-        position: 'relative',
-        top: 0,
-        left: 0
-    },
-});
 
 class FirmDevicesComponent extends React.Component {
 

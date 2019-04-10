@@ -13,6 +13,7 @@ import TableBody from "@material-ui/core/TableBody";
 import TablePagination from "@material-ui/core/TablePagination";
 import Checkbox from "@material-ui/core/Checkbox";
 import LinearProgress from "@material-ui/core/LinearProgress";
+import {styles} from '../material/table-styles';
 
 // Redux
 import store from "../../redux/store";
@@ -46,22 +47,6 @@ const mapDispatchToProps = (dispatch) => {
 const mapStateToProps = state => {
     return {devices: state.devicesReducer.devices};
 };
-
-const styles = theme => ({
-    root: {
-        width: '100%',
-        marginTop: theme.spacing.unit * 3,
-    },
-    table: {
-        minWidth: 1020,
-    },
-    tableWrapper: {
-        overflowX: 'auto',
-        position: 'relative',
-        top: 0,
-        left: 0
-    },
-});
 
 class UserDevicesComponent extends React.Component {
 
@@ -319,7 +304,7 @@ class UserDevicesComponent extends React.Component {
 // Collapse after the second level
         root.children.forEach(collapse);
 
-        update(root);
+
 
 // Collapse the node and all it's children
         function collapse(d) {
@@ -330,7 +315,7 @@ class UserDevicesComponent extends React.Component {
             }
         }
 
-        function update(source) {
+        const update = (source) => {
 
             // Assigns the x and y position for the nodes
             let treeData = treemap(root);
@@ -351,6 +336,31 @@ class UserDevicesComponent extends React.Component {
                 .data(nodes, function (d) {
                     return d.id || (d.id = ++i);
                 });
+
+            // Toggle children on click.
+            function click(d) {
+                // console.log('dataa---', d.data._id);
+                if (d.children) {
+                    d._children = d.children;
+                    d.children = null;
+                } else {
+                    d.children = d._children;
+                    d._children = null;
+                }
+                update(d);
+            }
+
+            const dbClick = (d) => {
+                d3.select('#selected').attr("id", '');
+                d3.select('#selected-circle').attr("id", '');
+                nodeUpdate.select('circle.node')
+                    .attr('id',  (data) => {
+                        if (d.data.name === data.data.name) {
+                            this.handleClickNoBuild(null, d.data._id);
+                            return 'selected'
+                        }
+                    })
+            };
 
             // Enter any new modes at the parent's previous position.
             let nodeEnter = node.enter().append('g')
@@ -549,30 +559,7 @@ class UserDevicesComponent extends React.Component {
             //         .style("opacity", 1e-6);
             // }
 
-            // Toggle children on click.
-            function click(d) {
-                console.log('dataa---', d.data._id);
-                if (d.children) {
-                    d._children = d.children;
-                    d.children = null;
-                } else {
-                    d.children = d._children;
-                    d._children = null;
-                }
-                update(d);
-            }
 
-            function dbClick(d) {
-                d3.select('#selected').attr("id", '');
-                d3.select('#selected-circle').attr("id", '');
-                nodeUpdate.select('circle.node')
-                    .attr('id', function (data) {
-                        if (d.data.name === data.data.name) {
-                            selectFromChart(d.data._id)
-                            return 'selected'
-                        }
-                    })
-            }
 
 
             // function zoom() {
@@ -598,11 +585,7 @@ class UserDevicesComponent extends React.Component {
             // }
         }
 
-        function selectFromChart(id) {
-            this.handleClickNoBuild(null, id);
-        }
-
-        selectFromChart = selectFromChart.bind(this);
+        update(root);
 
         /* Word Wrap */
         function wrap(text, width) {

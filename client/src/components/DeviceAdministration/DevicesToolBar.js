@@ -18,6 +18,7 @@ import FormControl from "@material-ui/core/FormControl";
 import InputLabel from "@material-ui/core/InputLabel";
 import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
+import Tooltip from '@material-ui/core/Tooltip';
 
 // Redux
 import {connect} from "react-redux";
@@ -25,6 +26,7 @@ import {
     userDevicesRequest,
     addDeviceRequest,
     deleteDeviceRequest,
+    updateUserDevice,
     updateDeviceUsersRequest,
 } from "../../redux/actions";
 import {deviceTypesService} from '../../redux/services/device_types'
@@ -35,6 +37,7 @@ const mapDispatchToProps = (dispatch) => {
         addDeviceRequest: (payload) => dispatch(addDeviceRequest(payload)),
         deleteDeviceRequest: (payload) => dispatch(deleteDeviceRequest(payload)),
         updateDeviceUsersRequest: (sid, coid) => dispatch(updateDeviceUsersRequest(sid, coid)),
+        updateUserDevice: (payload) => dispatch(updateUserDevice(payload)),
     };
 };
 
@@ -114,9 +117,8 @@ class DevicesToolBar extends React.Component {
         this.handleClose('confirmDeleteDialog');
     }
 
-    handleUpdateFirmDevice() {
-        d3.select('#tree').remove();
-        // this.props.updateFirmDeviceRequest(this.state.newUserDevice);
+    handleUpdateUserDevice() {
+        this.props.updateUserDevice(this.state.newUserDevice);
         this.props.resetSelected();
         this.handleClose('editDialog');
     }
@@ -175,18 +177,29 @@ class DevicesToolBar extends React.Component {
                             <TextField
                                 autoFocus
                                 margin="dense"
-                                id="firm-name"
-                                label="Firm name"
+                                id="device-name"
+                                label="Device name"
                                 type="text"
                                 required={true}
                                 value={this.state.newUserDevice.name}
                                 onChange={(e) => this.updateNewUserDevice(e, 'name')}
                                 fullWidth
                             />
+                            <TextField
+                                id="User-desc"
+                                label="Your description"
+                                multiline
+                                rows="4"
+                                margin="normal"
+                                variant="outlined"
+                                value={this.state.newUserDevice.user_desc}
+                                onChange={(e) => this.updateNewUserDevice(e, 'user_desc')}
+                                fullWidth
+                            />
                         </DialogContent>
                         <DialogActions>
                             <Button variant="outlined" color="primary"
-                                    onClick={() => this.handleUpdateFirmDevice()}>
+                                    onClick={() => this.handleUpdateUserDevice()}>
                                 Update
                             </Button>
                             <Button onClick={() => this.handleClose('editDialog')} color="primary">
@@ -196,11 +209,22 @@ class DevicesToolBar extends React.Component {
                     </Dialog>
                 </div>
                 <div>
-                    <Button variant="outlined" color="primary" disabled={this.props.loading}
-                            onClick={() => this.handleClickOpen('addDialog')}>
-                        Add
-                        <AddIcon/>
-                    </Button>
+                    <Tooltip
+                        title={
+                            <React.Fragment>
+                                <em>{"Add"}</em>{' '}
+                                {"new gateway for selected user"}
+                            </React.Fragment>
+                        }
+                    >
+                        <div>
+                            <Button variant="outlined" color="primary" disabled={this.props.loading}
+                                    onClick={() => this.handleClickOpen('addDialog')}>
+                                Add
+                                <AddIcon/>
+                            </Button>
+                        </div>
+                    </Tooltip>
                     <Dialog
                         open={this.state.addDialog}
                         onClose={() => this.handleClose('addDialog')}
@@ -285,11 +309,22 @@ class DevicesToolBar extends React.Component {
                     Refresh
                 </Button>
                 <div>
-                    <Button variant="outlined" color="primary" disabled={this.props.loading || !this.props.selected}
-                            onClick={() => this.handleClickOpen('configUsersDialog')}>
-                        Config users
-                        <AddIcon/>
-                    </Button>
+                    <Tooltip
+                        title={
+                            <React.Fragment>
+                                <em>{"Add"}</em> <b>{'or'}</b> <em>{'delete'}</em>{' '}
+                                {"users from device"}
+                            </React.Fragment>
+                        }
+                    >
+                        <div>
+                            <Button variant="outlined" color="primary"
+                                    disabled={this.props.loading || !this.props.selected}
+                                    onClick={() => this.handleClickOpen('configUsersDialog')}>
+                                Config users
+                            </Button>
+                        </div>
+                    </Tooltip>
                     <Dialog
                         open={this.state.configUsersDialog}
                         onClose={() => this.handleClose('configUsersDialog')}

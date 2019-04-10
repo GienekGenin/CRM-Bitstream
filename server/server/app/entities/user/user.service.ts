@@ -50,7 +50,7 @@ class UsersService {
                         this.usersRepository.updateByEmail(user)
                             .then(d => {
                                 if (d['nModified'] === 0) {
-                                    callback(new Error('Unable to update'));
+                                    callback(new Error('Unable to update user'));
                                 }
                                 callback(null);
                             })

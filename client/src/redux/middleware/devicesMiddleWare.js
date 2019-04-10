@@ -60,6 +60,15 @@ export const devicesMiddleWare = ({dispatch}) => {
                         dispatch({type: devicesConstants.UPDATE_DEVICE_USERS_FAILURE, payload: errorParser(err)})
                     });
             }
+            if (action.type === devicesConstants.UPDATE_USER_DEVICE_REQUEST) {
+                devicesService.updateUserDevice(action.payload)
+                    .then(device => {
+                        return dispatch({type: devicesConstants.UPDATE_USER_DEVICE_SUCCESS, payload: device})
+                    })
+                    .catch(err => {
+                        dispatch({type: devicesConstants.UPDATE_USER_DEVICE_FAILURE, payload: errorParser(err)})
+                    });
+            }
             return next(action);
         };
     };

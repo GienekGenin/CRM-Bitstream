@@ -13,7 +13,7 @@ export const devicesReducer = (state = initialState, action) => {
 
         case devicesConstants.FIRM_DEVICES_GET_REQUEST:
         case devicesConstants.ADD_DEVICE_REQUEST:
-        case devicesConstants.UPDATE_DEVICE_REQUEST:
+        case devicesConstants.UPDATE_USER_DEVICE_REQUEST:
         case devicesConstants.DELETE_DEVICE_REQUEST:
         case devicesConstants.USER_DEVICES_GET_REQUEST: {
             return {
@@ -29,10 +29,10 @@ export const devicesReducer = (state = initialState, action) => {
                 success: action.payload.success
             }
         }
-        case devicesConstants.UPDATE_DEVICE_SUCCESS: {
+        case devicesConstants.UPDATE_USER_DEVICE_SUCCESS: {
             return {
                 ...state,
-                devices: state.devices.map(el => (el._id === action.payload.device._id) ? action.payload.device : el),
+                userDevices: state.userDevices.map(el => (el._id === action.payload._id) ? action.payload : el),
                 loading: false,
                 success: action.payload.success
             }
@@ -66,7 +66,7 @@ export const devicesReducer = (state = initialState, action) => {
                 error: action.payload
             }
         }
-        case devicesConstants.UPDATE_DEVICE_FAILURE:
+        case devicesConstants.UPDATE_USER_DEVICE_FAILURE:
         case devicesConstants.ADD_DEVICE_FAILURE:
         case devicesConstants.DELETE_DEVICE_FAILURE:
         case devicesConstants.USER_DEVICES_GET_FAILURE: {

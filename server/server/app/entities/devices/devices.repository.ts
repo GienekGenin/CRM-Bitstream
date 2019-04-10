@@ -69,4 +69,8 @@ export class DeviceRepository extends Repository {
 
             }, {$addToSet: {coid}});
     }
+
+    updateDevice(device){
+        return this.model.updateOne({_id: device._id}, device);
+    }
 }
