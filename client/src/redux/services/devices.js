@@ -89,7 +89,7 @@ const updateDeviceUsers = (payload) => {
         })
 };
 
-const updateUserDevice = (payload) => {
+const updateDevice = (payload) => {
     const token = localStorage.getItem('token');
     const requestOptions = {
         method: 'PUT',
@@ -127,5 +127,5 @@ export const devicesService = {
     addDevice,
     deleteDevice,
     updateDeviceUsers,
-    updateUserDevice
+    updateDevice
 };

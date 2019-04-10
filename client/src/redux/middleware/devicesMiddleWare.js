@@ -82,12 +82,21 @@ export const devicesMiddleWare = ({dispatch}) => {
                     });
             }
             if (action.type === devicesConstants.UPDATE_USER_DEVICE_REQUEST) {
-                devicesService.updateUserDevice(action.payload)
+                devicesService.updateDevice(action.payload)
                     .then(device => {
                         return dispatch({type: devicesConstants.UPDATE_USER_DEVICE_SUCCESS, payload: device})
                     })
                     .catch(err => {
                         dispatch({type: devicesConstants.UPDATE_USER_DEVICE_FAILURE, payload: errorParser(err)})
+                    });
+            }
+            if (action.type === devicesConstants.UPDATE_FIRM_DEVICE_REQUEST) {
+                devicesService.updateDevice(action.payload)
+                    .then(device => {
+                        return dispatch({type: devicesConstants.UPDATE_FIRM_DEVICE_SUCCESS, payload: device})
+                    })
+                    .catch(err => {
+                        dispatch({type: devicesConstants.UPDATE_FIRM_DEVICE_FAILURE, payload: errorParser(err)})
                     });
             }
             return next(action);

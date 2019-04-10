@@ -41,3 +41,7 @@ export const deleteFirmDeviceRequest = (deviceId) => {
 export const updateUserDevice = (device) => {
     return {type: devicesConstants.UPDATE_USER_DEVICE_REQUEST, payload: device}
 };
+
+export const updateFirmDevice = (device) => {
+    return {type: devicesConstants.UPDATE_FIRM_DEVICE_REQUEST, payload: device}
+};

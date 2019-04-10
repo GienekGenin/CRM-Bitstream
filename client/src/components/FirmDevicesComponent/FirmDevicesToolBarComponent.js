@@ -21,7 +21,7 @@ import Chip from "@material-ui/core/Chip";
 
 // Redux
 import {connect} from "react-redux";
-import {firmDevicesRequest, addFirmDeviceRequest, deleteFirmDeviceRequest} from "../../redux/actions";
+import {firmDevicesRequest, addFirmDeviceRequest, deleteFirmDeviceRequest, updateFirmDevice} from "../../redux/actions";
 import {deviceTypesService} from '../../redux/services/device_types';
 import {userService} from '../../redux/services/user';
 import * as d3 from "d3";
@@ -31,6 +31,7 @@ const mapDispatchToProps = (dispatch) => {
         firmDevicesRequest: (payload) => dispatch(firmDevicesRequest(payload)),
         addFirmDeviceRequest: (payload) => dispatch(addFirmDeviceRequest(payload)),
         deleteFirmDeviceRequest: (payload) => dispatch(deleteFirmDeviceRequest(payload)),
+        updateFirmDevice: (payload) => dispatch(updateFirmDevice(payload)),
     };
 };
 
@@ -104,7 +105,7 @@ class FirmDevicesToolBar extends React.Component {
     }
 
     handleUpdateFirmDevice() {
-        // this.props.updateFirmDeviceRequest(this.state.newFirmDevice);
+        this.props.updateFirmDevice(this.state.newFirmDevice);
         this.props.resetSelected();
         this.handleClose('editDialog');
     }
@@ -149,17 +150,30 @@ class FirmDevicesToolBar extends React.Component {
                     >
                         <DialogTitle id="alert-dialog-title">Edit</DialogTitle>
                         <DialogContent>
-                            <TextField
-                                autoFocus
-                                margin="dense"
-                                id="firm-name"
-                                label="Firm name"
-                                type="text"
-                                required={true}
-                                value={this.state.newFirmDevice.name}
-                                onChange={(e) => this.updateNewFirmDevice(e, 'name')}
-                                fullWidth
-                            />
+                            <DialogContent>
+                                <TextField
+                                    autoFocus
+                                    margin="dense"
+                                    id="device-name"
+                                    label="Device name"
+                                    type="text"
+                                    required={true}
+                                    value={this.state.newFirmDevice.name}
+                                    onChange={(e) => this.updateNewFirmDevice(e, 'name')}
+                                    fullWidth
+                                />
+                                <TextField
+                                    id="User-desc"
+                                    label="Your description"
+                                    multiline
+                                    rows="4"
+                                    margin="normal"
+                                    variant="outlined"
+                                    value={this.state.newFirmDevice.user_desc}
+                                    onChange={(e) => this.updateNewFirmDevice(e, 'user_desc')}
+                                    fullWidth
+                                />
+                            </DialogContent>
                         </DialogContent>
                         <DialogActions>
                             <Button variant="outlined" color="primary"
