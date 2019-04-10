@@ -218,7 +218,7 @@ class UserToolBar extends React.Component {
                                 onChange={(e) => this.updateNewUser(e, 'surname')}
                                 fullWidth
                             />
-                            <FormControl>
+                            <FormControl fullWidth>
                                 <InputLabel htmlFor="role">Role</InputLabel>
                                 <Select
                                     value={this.state.newUser.role_id}
@@ -311,7 +311,7 @@ class UserToolBar extends React.Component {
                                 onChange={(e) => this.updateNewUser(e, 'surname')}
                                 fullWidth
                             />
-                            <FormControl>
+                            <FormControl fullWidth>
                                 <InputLabel htmlFor="role">Role</InputLabel>
                                 <Select
                                     value={this.state.newUser.role_id}
