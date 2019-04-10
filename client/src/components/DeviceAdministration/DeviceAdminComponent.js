@@ -117,48 +117,30 @@ class UserDevicesComponent extends React.Component {
             })
         }
 
-        // todo: new
         this.unsubscribe = store.subscribe(() => {
+            d3.select('#tree').remove();
             this.setState({loading: store.getState().devicesReducer.loading});
-            if (!store.getState().devicesReducer.loading) {
+            let data = [];
+            const obj = {
+                order: this.state.order,
+                orderBy: this.state.orderBy,
+                selected: [],
+                page: this.state.page,
+                rowsPerPage: this.state.rowsPerPage
+            };
+            if (store.getState().devicesReducer.userDevices) {
                 const devices = store.getState().devicesReducer.userDevices;
                 this.setState({devices});
                 this.props.handleSetUserDevices(devices);
-                d3.select('#tree').remove();
-                let data = [];
-                if (devices.length > 0) {
-                    devices.map(record => {
-                        let row = [
-                            record._id,
-                            record.name,
-                        ];
-                        if (devices.length > 0) {
-                            data.push(createData(...row));
-                        }
-                        const obj = {
-                            order: this.state.order,
-                            orderBy: this.state.orderBy,
-                            selected: [],
-                            data,
-                            page: this.state.page,
-                            rowsPerPage: this.state.rowsPerPage
-                        };
-                        this.setState(obj);
-                        return true;
-                    })
-                }
-            } else {
-                const obj = {
-                    order: this.state.order,
-                    orderBy: this.state.orderBy,
-                    selected: [],
-                    data,
-                    page: this.state.page,
-                    rowsPerPage: this.state.rowsPerPage
-                };
-                this.setState(obj);
-                return true;
+                devices.map(record => {
+                    let row = [
+                        record._id,
+                        record.name,
+                    ];
+                    data.push(createData(...row));
+                })
             }
+            this.setState(Object.assign({}, obj, {data}));
         });
 
     }
