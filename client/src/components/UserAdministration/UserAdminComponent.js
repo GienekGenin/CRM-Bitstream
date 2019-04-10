@@ -138,7 +138,7 @@ class UserAdminComponent extends React.Component {
                         record.email,
                         record.name,
                     ];
-                    data.push(createData(...row));
+                    return data.push(createData(...row));
                 })
             }
             this.setState(Object.assign({}, obj, {data}));

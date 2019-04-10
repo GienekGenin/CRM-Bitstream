@@ -125,7 +125,7 @@ class FirmDevicesComponent extends React.Component {
                         record._id,
                         record.name,
                     ];
-                    data.push(createData(...row));
+                    return data.push(createData(...row));
                 })
             }
             this.setState(Object.assign({}, obj, {data}));
