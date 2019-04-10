@@ -106,32 +106,29 @@ class FirmDevicesComponent extends React.Component {
             })
         }
 
-        // todo: new
         this.unsubscribe = store.subscribe(() => {
             this.setState({loading: store.getState().devicesReducer.loading});
+            let data = [];
+            let obj = {
+                order: this.state.order,
+                orderBy: this.state.orderBy,
+                selected: [],
+                page: this.state.page,
+                rowsPerPage: this.state.rowsPerPage
+            };
             if (store.getState().devicesReducer.devices) {
                 const devices = store.getState().devicesReducer.devices;
                 this.setState({devices});
                 this.props.handleSetDevices(devices);
-                let data = [];
                 devices.map(record => {
                     let row = [
                         record._id,
                         record.name,
                     ];
                     data.push(createData(...row));
-                    const obj = {
-                        order: this.state.order,
-                        orderBy: this.state.orderBy,
-                        selected: [],
-                        data,
-                        page: this.state.page,
-                        rowsPerPage: this.state.rowsPerPage
-                    };
-                    this.setState(obj);
-                    return true;
                 })
             }
+            this.setState(Object.assign({}, obj, {data}));
         });
 
     }
