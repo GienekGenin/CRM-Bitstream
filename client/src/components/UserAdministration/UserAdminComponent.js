@@ -121,30 +121,28 @@ class UserAdminComponent extends React.Component {
 
         this.unsubscribe = store.subscribe(() => {
             this.setState({loading: store.getState().userReducer.loading});
+            let data = [];
+            const obj = {
+                order: this.state.order,
+                orderBy: this.state.orderBy,
+                selected: [],
+                page: this.state.page,
+                rowsPerPage: this.state.rowsPerPage
+            };
             if (store.getState().userReducer.users) {
                 const users = store.getState().userReducer.users;
                 this.setState({users});
                 this.props.handleSetUsers(users);
-                let data = [];
-                const reduxUsers = store.getState().userReducer.users;
-                reduxUsers.map(record => {
+                users.map(record => {
                     let row = [
                         record.email,
                         record.name,
                     ];
                     data.push(createData(...row));
-                    const obj = {
-                        order: this.state.order,
-                        orderBy: this.state.orderBy,
-                        selected: [],
-                        data,
-                        page: this.state.page,
-                        rowsPerPage: this.state.rowsPerPage
-                    };
-                    this.setState(obj);
-                    return true;
                 })
             }
+            this.setState(Object.assign({}, obj, {data}));
+            return true;
         });
     }
 

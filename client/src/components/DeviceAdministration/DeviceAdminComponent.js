@@ -141,6 +141,7 @@ class UserDevicesComponent extends React.Component {
                 })
             }
             this.setState(Object.assign({}, obj, {data}));
+            return true;
         });
 
     }
