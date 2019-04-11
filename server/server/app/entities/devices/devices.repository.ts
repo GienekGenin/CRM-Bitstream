@@ -73,4 +73,8 @@ export class DeviceRepository extends Repository {
     updateDevice(device){
         return this.model.updateOne({_id: device._id}, device);
     }
+
+    replaceUserForDevices(parentId, adminId){
+        return this.model.updateMany({coid: parentId}, {$set: {'coid.$': adminId}});
+    }
 }

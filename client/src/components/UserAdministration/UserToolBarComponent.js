@@ -31,7 +31,7 @@ const mapDispatchToProps = (dispatch) => {
     return {
         usersRequest: (firmId) => dispatch(usersRequest(firmId)),
         addUserRequest: (user) => dispatch(addUserRequest(user)),
-        deleteUserRequest: (email) => dispatch(deleteUserRequest(email)),
+        deleteUserRequest: (id) => dispatch(deleteUserRequest(id)),
         updateUserRequest: (user) => dispatch(updateUserRequest(user)),
         changePassAdminRequest: (credentials) => dispatch(changePassAdminRequest(credentials)),
         changeEmailAdminRequest: (email, newEmail) => dispatch(changeEmailAdminRequest(email, newEmail)),
@@ -111,7 +111,7 @@ class UserToolBar extends React.Component {
     }
 
     handleDeleteUser() {
-        this.props.deleteUserRequest(this.props.selected.email);
+        this.props.deleteUserRequest(this.props.selected._id);
         this.props.resetSelected();
         this.handleClose('confirmDeleteDialog');
     }

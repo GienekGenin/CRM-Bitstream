@@ -48,7 +48,7 @@ export const userReducer = (state = initialState, action) => {
         }
         case userConstants.DELETE_USER_SUCCESS: {
             return {
-                users: state.users.filter(el => el.email !== action.payload),
+                users: state.users.filter(el => el._id !== action.payload),
                 loading: false,
                 success: 'User was successfully deleted'
             }

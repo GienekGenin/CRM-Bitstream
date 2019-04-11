@@ -38,10 +38,10 @@ export const usersMiddleWare = ({dispatch}) => {
             }
             if (action.type === userConstants.DELETE_USER_REQUEST) {
                 userService.deleteUser(action.payload)
-                    .then((email) => {
+                    .then((id) => {
                         return dispatch({
                             type: userConstants.DELETE_USER_SUCCESS,
-                            payload: email
+                            payload: id
                         })
                     })
                     .catch(err => {

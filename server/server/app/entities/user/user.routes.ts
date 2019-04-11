@@ -41,7 +41,7 @@ users.get('/:id', TokenValidator.validateToken, (req, res, next) => {
 
 users.delete('/', TokenValidator.validateToken, (req, res, next) => {
     usersService
-        .deleteByEmail(req.body.email)
+        .deleteById(req.body)
         .then(PayloadGeneratorService.nextWithData(next, res))
         .catch(next);
 });

@@ -30,16 +30,34 @@ class UsersService {
         return this.usersRepository.findByFirmId(id);
     }
 
-    deleteByEmail(email) {
+    /**
+     * @param payload.id, payload.adminId
+     */
+    deleteById(payload) {
         return new Promise(((resolve, reject) => {
-            this.usersRepository.deleteByEmail(email)
-                .then(d => {
-                    if (d['deletedCount'] === 0) {
-                        reject(new Error('Unable to delete'));
+            async.waterfall([
+                    callback => {
+                        deviceService.replaceUserForDevices(payload.id, payload.adminId)
+                            .then(() => callback(null))
+                            .catch(e => callback(e));
+                    },
+                    callback => {
+                        this.usersRepository.deleteById(payload.id)
+                            .then(d => {
+                                if (d['nModified'] === 0) {
+                                    callback(new Error('Unable to delete user'));
+                                }
+                                callback(null);
+                            })
+                            .catch(e => callback(e));
                     }
-                    resolve(d);
+                ],
+                (err, payload) => {
+                    if (err) {
+                        reject(err);
+                    }
+                    resolve(payload);
                 })
-                .catch(e => reject(e));
         }));
     }
 
@@ -106,7 +124,7 @@ class UsersService {
                             .then(user => {
                                 if (user === null) {
                                     callback(new Error('User did not exist'));
-                                } else if(user._doc.deleted){
+                                } else if (user._doc.deleted) {
                                     callback(new Error('User did not exist'));
                                 } else {
                                     callback(null, user._doc);
@@ -187,7 +205,7 @@ class UsersService {
                     callback => {
                         this.usersRepository.findByEmail(payload.newEmail)
                             .then(user => {
-                                if(user){
+                                if (user) {
                                     callback('User with such email already exists');
                                 }
                                 callback(null);
@@ -219,7 +237,7 @@ class UsersService {
         });
     }
 
-    getDevicesByUserId(id){
+    getDevicesByUserId(id) {
         return deviceService.getDevicesByUserId(id);
     }
 }

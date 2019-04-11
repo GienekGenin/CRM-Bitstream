@@ -1,3 +1,5 @@
+import {tokenService} from "./token";
+
 const apiBase = 'http://localhost:5000/api/';
 
 const getAllByFirmId = (firmId) => {
@@ -37,20 +39,21 @@ const addUser = (user) => {
         })
 };
 
-const deleteUser = (email) => {
+const deleteUser = (id) => {
     const token = localStorage.getItem('token');
+    const adminId = tokenService.verifyToken().user._id;
     const requestOptions = {
         method: 'DELETE',
         headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify({email})
+        body: JSON.stringify({adminId, id})
     };
     return fetch(`${apiBase}users`, requestOptions)
         .then(handleResponse)
         .then(() => {
-            return email;
+            return id;
         })
 };
 

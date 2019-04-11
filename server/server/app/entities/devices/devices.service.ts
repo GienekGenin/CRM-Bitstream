@@ -235,6 +235,9 @@ class DeviceService {
         }))
     }
 
+    replaceUserForDevices(parentId, adminId){
+        return this.deviceRepository.replaceUserForDevices(parentId, adminId);
+    }
 }
 
 export const deviceService = new DeviceService();

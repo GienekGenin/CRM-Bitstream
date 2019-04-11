@@ -19,6 +19,10 @@ export class UserRepository extends Repository {
         return this.model.updateOne({email}, {deleted: true});
     }
 
+    deleteById(id) {
+        return this.model.updateOne({_id: id}, {deleted: true});
+    }
+
     updateByEmail(user) {
         return this.model.updateOne({email: user.email}, user);
     }
