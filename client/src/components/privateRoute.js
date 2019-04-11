@@ -17,7 +17,10 @@ export const checkAccess = (path) => {
         localStorage.removeItem('token');
         return false;
     }
-    const user = tokenService.verifyToken().user;
+    const user = jwt.user;
+    if(user.deleted) {
+        return false;
+    }
     const roles = JSON.parse(localStorage.getItem('roles'));
     if (!user || !roles) return false;
     const key = user.role_id;

@@ -41,6 +41,10 @@ const userSchema = new mongoose.Schema({
 			validator: (v) =>  rolesService.findById(v),
 			message: 'Role with such _id does not exist'
 		},
+	},
+	deleted: {
+		type: Boolean,
+		required: true
 	}
 }, {versionKey: false, collection: 'users'});
 

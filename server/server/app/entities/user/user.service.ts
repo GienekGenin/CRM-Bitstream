@@ -78,7 +78,8 @@ class UsersService {
                         bcryptjs.hash(user.password, 10)
                             .then(hash => callback(null,
                                 Object.assign({}, user, {
-                                    password: hash
+                                    password: hash,
+                                    deleted: false
                                 })))
                             .catch(e => callback(e));
                     },
@@ -104,9 +105,12 @@ class UsersService {
                         this.usersRepository.findByEmail(userCredentials.email)
                             .then(user => {
                                 if (user === null) {
-                                    throw new Error('User did not exist');
+                                    callback(new Error('User did not exist'));
+                                } else if(user._doc.deleted){
+                                    callback(new Error('User did not exist'));
+                                } else {
+                                    callback(null, user._doc);
                                 }
-                                callback(null, user._doc);
                             })
                             .catch(err => {
                                 callback(err);
