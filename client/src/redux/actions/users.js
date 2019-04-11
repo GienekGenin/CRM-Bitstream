@@ -20,8 +20,8 @@ export const addUserRequest = (payload) => {
     return {type: userConstants.ADD_USER_REQUEST, payload}
 };
 
-export const deleteUserRequest = (id) => {
-    return {type: userConstants.DELETE_USER_REQUEST, payload: id}
+export const deleteUserRequest = (id, nextOwnerId) => {
+    return {type: userConstants.DELETE_USER_REQUEST, payload: {id, adminId: nextOwnerId}}
 };
 
 export const changePassAdminRequest = (credentials) => {

@@ -341,7 +341,7 @@ class DevicesToolBar extends React.Component {
                         <DialogTitle id="alert-dialog-title-">Config users</DialogTitle>
                         <DialogContent>
                             <FormControl fullWidth={true}>
-                                <InputLabel htmlFor="select-multiple-chip">Chip</InputLabel>
+                                <InputLabel htmlFor="select-multiple-chip">Choose owners</InputLabel>
                                 <Select
                                     multiple
                                     value={this.state.newUserDevice.coid}

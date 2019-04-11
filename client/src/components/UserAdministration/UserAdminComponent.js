@@ -198,7 +198,7 @@ class UserAdminComponent extends React.Component {
 
     render() {
         const {classes} = this.props;
-        const {data, order, orderBy, selected, rowsPerPage, page, selectedUser, loading, selectedFirm} = this.state;
+        const {data, order, orderBy, selected, rowsPerPage, page, selectedUser, loading, selectedFirm, users} = this.state;
         const emptyRows = rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
         return (
             <Paper className={classes.root}>
@@ -208,6 +208,7 @@ class UserAdminComponent extends React.Component {
                     loading={loading}
                     resetSelected={() => this.resetSelected()}
                     selectedFirmId={selectedFirm ? selectedFirm._id : ''}
+                    users={users}
                 />
                 {loading && <LinearProgress color="secondary"/>}
                 <div className={classes.tableWrapper}>

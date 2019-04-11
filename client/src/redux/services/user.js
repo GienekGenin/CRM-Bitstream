@@ -39,21 +39,21 @@ const addUser = (user) => {
         })
 };
 
-const deleteUser = (id) => {
+//     const adminId = tokenService.verifyToken().user._id;
+const deleteUser = (payload) => {
     const token = localStorage.getItem('token');
-    const adminId = tokenService.verifyToken().user._id;
     const requestOptions = {
         method: 'DELETE',
         headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify({adminId, id})
+        body: JSON.stringify(payload)
     };
     return fetch(`${apiBase}users`, requestOptions)
         .then(handleResponse)
         .then(() => {
-            return id;
+            return payload.id;
         })
 };
 

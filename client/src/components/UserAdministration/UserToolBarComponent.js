@@ -31,7 +31,7 @@ const mapDispatchToProps = (dispatch) => {
     return {
         usersRequest: (firmId) => dispatch(usersRequest(firmId)),
         addUserRequest: (user) => dispatch(addUserRequest(user)),
-        deleteUserRequest: (id) => dispatch(deleteUserRequest(id)),
+        deleteUserRequest: (id, nextOwnerId) => dispatch(deleteUserRequest(id, nextOwnerId)),
         updateUserRequest: (user) => dispatch(updateUserRequest(user)),
         changePassAdminRequest: (credentials) => dispatch(changePassAdminRequest(credentials)),
         changeEmailAdminRequest: (email, newEmail) => dispatch(changeEmailAdminRequest(email, newEmail)),
@@ -50,6 +50,7 @@ class UserToolBar extends React.Component {
             confirmDeleteDialog: false,
             changePassDialog: false,
             changeEmailDialog: false,
+            nextOwner: '',
             newUser: {
                 name: '',
                 surname: '',
@@ -80,6 +81,7 @@ class UserToolBar extends React.Component {
     handleClose = (state) => {
         this.setState({
             [state]: false,
+            nextOwner: '',
             newUser: {
                 name: '',
                 surname: '',
@@ -106,12 +108,16 @@ class UserToolBar extends React.Component {
         });
     };
 
+    updateNextOwner(e){
+        this.setState({nextOwner: e.target.value})
+    }
+
     updateNewUser(e, param) {
         this.setState({newUser: Object.assign({}, this.state.newUser, {[param]: e.target.value})})
     }
 
     handleDeleteUser() {
-        this.props.deleteUserRequest(this.props.selected._id);
+        this.props.deleteUserRequest(this.props.selected._id, this.state.nextOwner._id);
         this.props.resetSelected();
         this.handleClose('confirmDeleteDialog');
     }
@@ -397,14 +403,27 @@ class UserToolBar extends React.Component {
                         aria-describedby="alert-dialog-description"
                     >
                         <DialogTitle id="alert-dialog-title-">Delete</DialogTitle>
-                        <DialogContent>
-                            Confirm deletion of {this.props.selected ? this.props.selected.email : ''}
-                        </DialogContent>
+                        {this.props.selected && <DialogContent>
+                            Confirm deletion of {this.props.selected.email}
+                            <FormControl fullWidth>
+                                <InputLabel htmlFor="nextOwner">Next owner</InputLabel>
+                                <Select
+                                    value={this.state.nextOwner}
+                                    onChange={(e) => this.updateNextOwner(e)}
+                                    id='nextOwner'
+                                >
+                                    {this.props.users && this.props.users.map((user) =>
+                                        (user.email !== this.props.selected.email) && <MenuItem key={user._id} value={user}>
+                                        {user.name}
+                                    </MenuItem>)}
+                                </Select>
+                            </FormControl>
+                        </DialogContent>}
                         <DialogActions>
                             <Button onClick={() => this.handleClose('confirmDeleteDialog')} color="primary">
                                 Close
                             </Button>
-                            <Button disabled={!this.props.selected} variant="contained" color="secondary"
+                            <Button disabled={!this.state.nextOwner} variant="contained" color="secondary"
                                     onClick={() => this.handleDeleteUser()}>
                                 Confirm
                             </Button>
@@ -497,7 +516,8 @@ UserToolBar.propTypes = {
     selected: PropTypes.object,
     resetSelected: PropTypes.func,
     selectedFirmId: PropTypes.string,
-    loading: PropTypes.bool
+    loading: PropTypes.bool,
+    users: PropTypes.array
 };
 
 export default connect(null, mapDispatchToProps)(UserToolBar);

@@ -25,8 +25,16 @@ export const devicesReducer = (state = initialState, action) => {
             }
         }
         case devicesConstants.ADD_USER_DEVICE_SUCCESS: {
+            if(state.devices &&  state.devices.length> 0){
+                return {
+                    devices: [...state.devices, action.payload.device],
+                    userDevices: [...state.userDevices, action.payload.device],
+                    loading: false,
+                    success: action.payload.success
+                }
+            }
             return {
-                devices: [...state.devices, action.payload.device],
+                ...state,
                 userDevices: [...state.userDevices, action.payload.device],
                 loading: false,
                 success: action.payload.success
