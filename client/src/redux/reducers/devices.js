@@ -26,7 +26,7 @@ export const devicesReducer = (state = initialState, action) => {
         }
         case devicesConstants.ADD_USER_DEVICE_SUCCESS: {
             return {
-                ...state,
+                devices: [...state.devices, action.payload.device],
                 userDevices: [...state.userDevices, action.payload.device],
                 loading: false,
                 success: action.payload.success
@@ -42,7 +42,7 @@ export const devicesReducer = (state = initialState, action) => {
         }
         case devicesConstants.UPDATE_USER_DEVICE_SUCCESS: {
             return {
-                ...state,
+                devices: state.devices.map(el => (el._id === action.payload._id) ? action.payload : el),
                 userDevices: state.userDevices.map(el => (el._id === action.payload._id) ? action.payload : el),
                 loading: false,
                 success: action.payload.success
@@ -50,7 +50,7 @@ export const devicesReducer = (state = initialState, action) => {
         }
         case devicesConstants.UPDATE_FIRM_DEVICE_SUCCESS: {
             return {
-                ...state,
+                userDevices: state.userDevices.map(el => (el._id === action.payload._id) ? action.payload : el),
                 devices: state.devices.map(el => (el._id === action.payload._id) ? action.payload : el),
                 loading: false,
                 success: action.payload.success
@@ -58,7 +58,7 @@ export const devicesReducer = (state = initialState, action) => {
         }
         case devicesConstants.DELETE_USER_DEVICE_SUCCESS: {
             return {
-                ...state,
+                devices: state.devices.filter(el => !el.sid.includes(action.payload)),
                 userDevices: state.userDevices.filter(el => !el.sid.includes(action.payload)),
                 loading: false,
                 success: 'Device was successfully deleted'
@@ -66,7 +66,7 @@ export const devicesReducer = (state = initialState, action) => {
         }
         case devicesConstants.DELETE_FIRM_DEVICE_SUCCESS: {
             return {
-                ...state,
+                userDevices: state.userDevices.filter(el => !el.sid.includes(action.payload)),
                 devices: state.devices.filter(el => !el.sid.includes(action.payload)),
                 loading: false,
                 success: 'Device was successfully deleted'

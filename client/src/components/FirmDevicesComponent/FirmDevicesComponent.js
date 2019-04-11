@@ -23,6 +23,7 @@ import {tokenService} from "../../redux/services/token";
 import FirmDevicesToolBarComponent from './FirmDevicesToolBarComponent'
 import FirmDevicesTableHead from './FirmDevicesTableHead'
 import FirmDevicesTableToolbar from './FirmDevicesTableToolbar'
+import './firmDevices.scss';
 
 // Services
 import {buildChart} from "./charts.service";
@@ -124,6 +125,7 @@ class FirmDevicesComponent extends React.Component {
                     let row = [
                         record._id,
                         record.name,
+                        record.parent_id
                     ];
                     return data.push(createData(...row));
                 })
@@ -219,6 +221,7 @@ class FirmDevicesComponent extends React.Component {
                                                 aria-checked={isSelected}
                                                 tabIndex={-1}
                                                 key={n._id}
+                                                className={n.parent_id==='0' ? 'parent' : 'child'}
                                                 selected={isSelected}
                                             >
                                                 <TableCell padding="checkbox">

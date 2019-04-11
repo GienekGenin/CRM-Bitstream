@@ -18,10 +18,11 @@ import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
 import Input from "@material-ui/core/Input";
 import Chip from "@material-ui/core/Chip";
+import Tooltip from '@material-ui/core/Tooltip';
 
 // Redux
 import {connect} from "react-redux";
-import {firmDevicesRequest, addFirmDeviceRequest, deleteFirmDeviceRequest, updateFirmDevice} from "../../redux/actions";
+import {firmDevicesRequest, addFirmDeviceRequest, deleteFirmDeviceRequest, updateFirmDevice, updateDeviceUsersRequest} from "../../redux/actions";
 import {deviceTypesService} from '../../redux/services/device_types';
 import {userService} from '../../redux/services/user';
 import * as d3 from "d3";
@@ -32,6 +33,7 @@ const mapDispatchToProps = (dispatch) => {
         addFirmDeviceRequest: (payload) => dispatch(addFirmDeviceRequest(payload)),
         deleteFirmDeviceRequest: (payload) => dispatch(deleteFirmDeviceRequest(payload)),
         updateFirmDevice: (payload) => dispatch(updateFirmDevice(payload)),
+        updateDeviceUsersRequest: (sid, coid) => dispatch(updateDeviceUsersRequest(sid, coid)),
     };
 };
 
@@ -45,6 +47,7 @@ class FirmDevicesToolBar extends React.Component {
             editDialog: false,
             addDialog: false,
             confirmDeleteDialog: false,
+            configUsersDialog: false,
             newFirmDevice: {
                 name: '',
                 type: '',
@@ -60,7 +63,7 @@ class FirmDevicesToolBar extends React.Component {
         if (state === 'editDialog') {
             this.setState({newFirmDevice: this.props.selected})
         }
-        if (state === 'addDialog') {
+        if (state === 'addDialog' || state === 'configUsersDialog') {
             this.setState({loading: true});
             userService.getAllByFirmId(this.props.selectedFirmId).then(d => {
                 this.setState({firmUsers: d, loading: false})
@@ -123,6 +126,16 @@ class FirmDevicesToolBar extends React.Component {
                 coid: []
             }
         });
+    }
+
+    handleConfigUsersForDevice() {
+        d3.select('#tree').remove();
+        const ids = this.state.newFirmDevice.coid.map(el => el._id);
+        if (ids.length > 0) {
+            this.props.updateDeviceUsersRequest(this.state.newFirmDevice.sid, ids);
+        }
+        this.props.resetSelected();
+        this.handleClose('configUsersDialog');
     }
 
     componentDidMount() {
@@ -299,6 +312,65 @@ class FirmDevicesToolBar extends React.Component {
                 <Button variant="contained" disabled={this.props.loading} onClick={() => this.handleRefresh()}>
                     Refresh
                 </Button>
+                <div>
+                    <Tooltip
+                        title={
+                            <React.Fragment>
+                                <em>{"Add"}</em> <b>{'or'}</b> <em>{'delete'}</em>{' '}
+                                {"users from device"}
+                            </React.Fragment>
+                        }
+                    >
+                        <div>
+                            <Button variant="outlined" color="primary"
+                                    disabled={this.props.loading || !this.props.selected}
+                                    onClick={() => this.handleClickOpen('configUsersDialog')}>
+                                Config users
+                            </Button>
+                        </div>
+                    </Tooltip>
+                    <Dialog
+                        open={this.state.configUsersDialog}
+                        onClose={() => this.handleClose('configUsersDialog')}
+                        aria-labelledby="alert-dialog-title"
+                        aria-describedby="alert-dialog-description"
+                    >
+                        <DialogTitle id="alert-dialog-title-">Config users</DialogTitle>
+                        <DialogContent>
+                            <FormControl fullWidth={true}>
+                                <InputLabel htmlFor="select-multiple-chip">Firm users</InputLabel>
+                                <Select
+                                    multiple
+                                    value={this.state.newFirmDevice.coid}
+                                    onChange={(e) => this.updateNewFirmDevice(e, 'coid')}
+                                    input={<Input id="select-multiple-chip"/>}
+                                    renderValue={selected => (
+                                        <div>
+                                            {selected.map(value => (
+                                                <Chip key={value._id} label={value.name}/>
+                                            ))}
+                                        </div>
+                                    )}
+                                >
+                                    {firmUsers && firmUsers.map(user => (
+                                        <MenuItem key={user._id} value={user}>
+                                            {user.name}
+                                        </MenuItem>
+                                    ))}
+                                </Select>
+                            </FormControl>
+                        </DialogContent>
+                        <DialogActions>
+                            <Button variant="outlined" color="primary" disabled={this.state.newFirmDevice.coid < 1}
+                                    onClick={() => this.handleConfigUsersForDevice()}>
+                                Submit
+                            </Button>
+                            <Button onClick={() => this.handleClose('configUsersDialog')} color="primary">
+                                Close
+                            </Button>
+                        </DialogActions>
+                    </Dialog>
+                </div>
             </div>
         )
     }

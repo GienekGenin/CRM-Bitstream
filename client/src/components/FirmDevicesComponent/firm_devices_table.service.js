@@ -1,5 +1,5 @@
-export const createData = (_id, name) => {
-    return {_id, name};
+export const createData = (_id, name, parent_id) => {
+    return {_id, name, parent_id};
 };
 
 export const desc = (a, b, orderBy) => {
