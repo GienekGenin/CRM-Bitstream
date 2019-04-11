@@ -14,14 +14,14 @@ import DeleteIcon from '@material-ui/icons/Delete';
 
 // Redux
 import {connect} from "react-redux";
-import {addFirmRequest, deleteFirmRequest, firmDevicesRequest, updateFirmRequest} from "../../redux/actions";
+import {addFirmRequest, deleteFirmRequest, firmsRequest, updateFirmRequest} from "../../redux/actions";
 
 const mapDispatchToProps = (dispatch) => {
     return {
         addFirmRequest: (payload) => dispatch(addFirmRequest(payload)),
         deleteFirmRequest: (payload) => dispatch(deleteFirmRequest(payload)),
         updateFirmRequest: (payload) => dispatch(updateFirmRequest(payload)),
-        firmDevicesRequest: (payload) => dispatch(firmDevicesRequest(payload)),
+        firmRequest: () => dispatch(firmsRequest()),
     };
 };
 
@@ -94,6 +94,8 @@ class FirmToolBar extends React.Component {
     }
 
     handleRefresh() {
+        this.props.firmRequest();
+        this.props.resetSelected();
     }
 
     render() {

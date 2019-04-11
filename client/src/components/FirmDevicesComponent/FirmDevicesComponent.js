@@ -65,17 +65,18 @@ class FirmDevicesComponent extends React.Component {
 
     componentDidMount() {
         this._isMounted = true;
+        this.setState({loading: true});
         if (this.props.selectedFirm) {
             this.setState({selectedFirm: this.props.selectedFirm});
             if (!this.props.parentDevices) {
                 this.props.firmDevicesRequest(this.props.selectedFirm._id);
-            } else this.setState({devices: this.props.parentDevices});
+            } else this.setState({devices: this.props.parentDevices, loading: false});
         } else {
             let selectedFirm = tokenService.verifyToken().firm;
             this.setState({selectedFirm});
             if (!this.props.parentDevices) {
                 this.props.firmDevicesRequest(selectedFirm._id);
-            } else this.setState({devices: this.props.parentDevices});
+            } else this.setState({devices: this.props.parentDevices, loading: false});
         }
 
         let data = [];

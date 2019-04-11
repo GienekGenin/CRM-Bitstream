@@ -64,7 +64,7 @@ class FirmAdmin extends React.Component {
             if (store.getState().firmReducer.firms) {
                 let data = [];
                 const reduxFirms = store.getState().firmReducer.firms;
-                const selected = [this.props.selectedFirm ? this.props.selectedFirm._id : null];
+                const selected = [];
                 reduxFirms.map(record => {
                     let row = [
                         record._id,

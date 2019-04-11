@@ -176,6 +176,8 @@ class UserToolBar extends React.Component {
     }
 
     handleRefresh() {
+        this.props.usersRequest(this.props.selectedFirmId);
+        this.props.resetSelected();
     }
 
     render() {

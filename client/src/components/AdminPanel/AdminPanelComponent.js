@@ -76,12 +76,20 @@ class AdminPanel extends React.Component {
             if (store.getState().firmReducer.firms) {
                 const reduxFirms = store.getState().firmReducer.firms;
                 if (reduxFirms !== this.state.firms && this._isMounted) {
-                    this.setState({firms: reduxFirms})
+                    this.setState({
+                        firms: reduxFirms,
+                        users: null,
+                        devices: null,
+                        userDevices: null,
+                        selectedFirm: null,
+                        selectedUser: null,
+                        selectedDevice: null,
+                        selectedUserDevice: null,})
                 }
             }
             if(store.getState().devicesReducer.devices){
                 const reduxDevices = store.getState().devicesReducer.devices;
-                this.setState({devices: reduxDevices});
+                this.setState({devices: reduxDevices, selectedDevice: null});
             }
         });
 
@@ -153,19 +161,19 @@ class AdminPanel extends React.Component {
 
     handleSetUsers(users) {
         if (this._isMounted) {
-            this.setState({users});
+            this.setState({users, selectedUser: null, selectedUserDevice: null, userDevices:null});
         }
     }
 
     handleSetDevices(devices) {
         if (this._isMounted) {
-            this.setState({devices});
+            this.setState({devices, selectedDevice: null,});
         }
     }
 
     handleSetUserDevices(userDevices) {
         if (this._isMounted) {
-            this.setState({userDevices});
+            this.setState({userDevices, selectedUserDevice: null,});
         }
     }
 
