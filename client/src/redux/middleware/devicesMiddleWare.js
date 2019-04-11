@@ -75,6 +75,9 @@ export const devicesMiddleWare = ({dispatch}) => {
             if (action.type === devicesConstants.UPDATE_DEVICE_USERS_REQUEST) {
                 devicesService.updateDeviceUsers(action.payload)
                     .then(devices => {
+                        if(action.payload.selectedUserId){
+                            dispatch({type: devicesConstants.USER_DEVICES_GET_REQUEST, payload: action.payload.selectedUserId})
+                        }
                         return dispatch({type: devicesConstants.UPDATE_DEVICE_USERS_SUCCESS, payload: devices})
                     })
                     .catch(err => {

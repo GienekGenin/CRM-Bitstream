@@ -36,7 +36,7 @@ const mapDispatchToProps = (dispatch) => {
         userDevicesRequest: (payload) => dispatch(userDevicesRequest(payload)),
         addUserDeviceRequest: (payload) => dispatch(addUserDeviceRequest(payload)),
         deleteUserDeviceRequest: (payload) => dispatch(deleteUserDeviceRequest(payload)),
-        updateDeviceUsersRequest: (sid, coid) => dispatch(updateDeviceUsersRequest(sid, coid)),
+        updateDeviceUsersRequest: (sid, coid, selectedUserId) => dispatch(updateDeviceUsersRequest(sid, coid, selectedUserId)),
         updateUserDevice: (payload) => dispatch(updateUserDevice(payload)),
     };
 };
@@ -142,7 +142,7 @@ class DevicesToolBar extends React.Component {
         d3.select('#tree').remove();
         const ids = this.state.newUserDevice.coid.map(el => el._id);
         if (ids.length > 0) {
-            this.props.updateDeviceUsersRequest(this.state.newUserDevice.sid, ids);
+            this.props.updateDeviceUsersRequest(this.state.newUserDevice.sid, ids, this.props.selectedUserId);
         }
         this.props.resetSelected();
         this.handleClose('configUsersDialog');

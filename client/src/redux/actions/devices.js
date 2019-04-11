@@ -16,8 +16,15 @@ export const cleanDevicesSuccess = () => {
     return {type: devicesConstants.CLEAN_DEVICES_SUCCESS}
 };
 
-export const updateDeviceUsersRequest = (sid, coid) => {
-    return {type: devicesConstants.UPDATE_DEVICE_USERS_REQUEST, payload: {sid, coid}}
+/**
+ *
+ * @param sid
+ * @param coid
+ * @param selectedUserId - optional
+ * @returns {{payload: {coid: *, sid: *}, type: string}}
+ */
+export const updateDeviceUsersRequest = (sid, coid, selectedUserId) => {
+    return {type: devicesConstants.UPDATE_DEVICE_USERS_REQUEST, payload: {sid, coid, selectedUserId}}
 };
 
 // addDeviceRequest
