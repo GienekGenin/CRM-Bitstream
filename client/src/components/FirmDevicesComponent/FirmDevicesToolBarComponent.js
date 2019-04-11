@@ -65,8 +65,18 @@ class FirmDevicesToolBar extends React.Component {
         }
         if (state === 'addDialog' || state === 'configUsersDialog') {
             this.setState({loading: true});
-            userService.getAllByFirmId(this.props.selectedFirmId).then(d => {
-                this.setState({firmUsers: d, loading: false})
+            let users = [];
+            userService.getAllByFirmId(this.props.selectedFirmId).then(dbUsers => {
+                dbUsers.forEach(el=>{
+                    this.props.selected.coid.forEach(id => {
+                        if (el._id === id) {
+                            users.push(el);
+                        }
+                    });
+                });
+                this.setState({
+                    newFirmDevice: Object.assign({}, this.props.selected, {coid: users}),
+                    firmUsers: dbUsers});
             }).catch(e => console.log(e))
         }
     };
@@ -161,7 +171,7 @@ class FirmDevicesToolBar extends React.Component {
                         aria-labelledby="key-dialog-title"
                         aria-describedby="alert-dialog-description"
                     >
-                        <DialogTitle id="alert-dialog-title">Edit</DialogTitle>
+                        <DialogTitle id="alert-dialog-title">Edit firm device</DialogTitle>
                         <DialogContent>
                             <DialogContent>
                                 <TextField
