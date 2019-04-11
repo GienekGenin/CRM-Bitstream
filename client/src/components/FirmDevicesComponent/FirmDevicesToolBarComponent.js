@@ -65,6 +65,13 @@ class FirmDevicesToolBar extends React.Component {
         }
         if (state === 'addDialog' || state === 'configUsersDialog') {
             this.setState({loading: true});
+            userService.getAllByFirmId(this.props.selectedFirmId).then(dbUsers => {
+                this.setState({
+                    firmUsers: dbUsers, loading: false});
+            }).catch(e => console.log(e))
+        }
+        if(state === 'configUsersDialog'){
+            this.setState({loading: true});
             let users = [];
             userService.getAllByFirmId(this.props.selectedFirmId).then(dbUsers => {
                 dbUsers.forEach(el=>{
@@ -76,7 +83,7 @@ class FirmDevicesToolBar extends React.Component {
                 });
                 this.setState({
                     newFirmDevice: Object.assign({}, this.props.selected, {coid: users}),
-                    firmUsers: dbUsers});
+                    firmUsers: dbUsers, loading: false});
             }).catch(e => console.log(e))
         }
     };
@@ -199,7 +206,7 @@ class FirmDevicesToolBar extends React.Component {
                             </DialogContent>
                         </DialogContent>
                         <DialogActions>
-                            <Button variant="outlined" color="primary"
+                            <Button variant="outlined" color="primary" disabled={!this.state.newFirmDevice.name}
                                     onClick={() => this.handleUpdateFirmDevice()}>
                                 Update
                             </Button>
@@ -283,6 +290,11 @@ class FirmDevicesToolBar extends React.Component {
                         </DialogContent>
                         <DialogActions>
                             <Button variant="outlined" color="primary"
+                                    disabled={
+                                        !this.state.newFirmDevice.name ||
+                                        !this.state.newFirmDevice.coid.length ||
+                                        !this.state.newFirmDevice.type
+                                    }
                                     onClick={() => this.handleAddFirmDevice()}>
                                 Add
                             </Button>
@@ -368,6 +380,7 @@ class FirmDevicesToolBar extends React.Component {
                                         </MenuItem>
                                     ))}
                                 </Select>
+                                {loading && <LinearProgress color="secondary"/>}
                             </FormControl>
                         </DialogContent>
                         <DialogActions>

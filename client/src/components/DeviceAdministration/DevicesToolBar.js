@@ -199,6 +199,9 @@ class DevicesToolBar extends React.Component {
                         </DialogContent>
                         <DialogActions>
                             <Button variant="outlined" color="primary"
+                                    disabled={
+                                        !this.state.newUserDevice.name
+                                    }
                                     onClick={() => this.handleUpdateUserDevice()}>
                                 Update
                             </Button>
@@ -269,6 +272,10 @@ class DevicesToolBar extends React.Component {
                         </DialogContent>
                         <DialogActions>
                             <Button variant="outlined" color="primary"
+                                    disabled={
+                                        !this.state.newUserDevice.name ||
+                                        !this.state.newUserDevice.type
+                                    }
                                     onClick={() => this.handleAddUserDevice()}>
                                 Add
                             </Button>

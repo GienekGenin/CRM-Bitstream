@@ -268,6 +268,14 @@ class UserToolBar extends React.Component {
                         </DialogContent>
                         <DialogActions>
                             <Button variant="outlined" color="primary"
+                                    disabled={
+                                        !this.state.newUser.name ||
+                                        !this.state.newUser.surname ||
+                                        !this.state.newUser.role_id ||
+                                        !this.state.newUser.email ||
+                                        !this.state.newUser.password ||
+                                        !this.state.newUser.tel
+                                    }
                                     onClick={() => this.handleUpdateUser()}>
                                 Update
                             </Button>
@@ -359,6 +367,14 @@ class UserToolBar extends React.Component {
                         </DialogContent>
                         <DialogActions>
                             <Button variant="outlined" color="primary"
+                                    disabled={
+                                        !this.state.newUser.name ||
+                                        !this.state.newUser.surname ||
+                                        !this.state.newUser.role_id ||
+                                        !this.state.newUser.email ||
+                                        !this.state.newUser.password ||
+                                        !this.state.newUser.tel
+                                    }
                                     onClick={() => this.handleAddUser()}>
                                 Add
                             </Button>

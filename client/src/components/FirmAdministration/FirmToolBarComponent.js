@@ -173,6 +173,13 @@ class FirmToolBar extends React.Component {
                         </DialogContent>
                         <DialogActions>
                             <Button variant="outlined" color="primary"
+                                    disabled={
+                                        !this.state.newFirm.name ||
+                                        !this.state.newFirm.address ||
+                                        !this.state.newFirm.email ||
+                                        !this.state.newFirm.tel ||
+                                        !this.state.newFirm.nip
+                                    }
                                     onClick={() => this.handleUpdateFirm()}>
                                 Update
                             </Button>
@@ -254,6 +261,13 @@ class FirmToolBar extends React.Component {
                         </DialogContent>
                         <DialogActions>
                             <Button variant="outlined" color="primary"
+                                    disabled={
+                                        !this.state.newFirm.name ||
+                                        !this.state.newFirm.address ||
+                                        !this.state.newFirm.email ||
+                                        !this.state.newFirm.tel ||
+                                        !this.state.newFirm.nip
+                                    }
                                     onClick={() => this.handleAddDevice()}>
                                 Add
                             </Button>
