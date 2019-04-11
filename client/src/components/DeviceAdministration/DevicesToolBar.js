@@ -279,7 +279,7 @@ class DevicesToolBar extends React.Component {
                     </Dialog>
                 </div>
                 <div>
-                    <Button variant="contained" color="secondary" disabled={!this.props.selected}
+                    <Button variant="contained" color="secondary" disabled={this.props.selected ? !(this.props.selected.parent_id === '0') : true}
                             onClick={() => this.handleClickOpen('confirmDeleteDialog')}>
                         Delete
                         <DeleteIcon/>

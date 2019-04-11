@@ -54,7 +54,7 @@ let DevicesTableToolbar = props => {
                     </Typography>
                 ) : (
                     <Typography variant="h6" id="tableTitle">
-                        Firms
+                        User devices
                     </Typography>
                 )}
             </div>

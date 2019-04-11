@@ -111,6 +111,7 @@ class DeviceService {
         return this.deviceRepository.getDevicesByUsersArray(usersIds);
     }
 
+    // todo: true delete from db and azure
     deleteParent(sid) {
         return new Promise((resolve, reject) => {
             async.waterfall(
@@ -138,6 +139,20 @@ class DeviceService {
                     resolve(payload);
                 })
         })
+    }
+
+    fakeDeleteStructure(sid){
+        return new Promise(((resolve, reject) => {
+            this.deviceRepository.fakeDeleteStructure(sid)
+                .then(d => {
+                    console.log(d);
+                    if (d['nModified'] === 0) {
+                        reject(new Error('Unable to delete devices'));
+                    }
+                    resolve(null);
+                })
+                .catch(e => reject(e));
+        }))
     }
 
     getDevicesByUserId(id) {

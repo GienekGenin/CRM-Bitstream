@@ -17,7 +17,8 @@ export class DeviceRepository extends Repository {
                 '$match': {
                     'coid': {
                         '$in': usersIds
-                    }
+                    },
+                    deleted: {$ne: true}
                 }
             }
         ])
@@ -33,7 +34,8 @@ export class DeviceRepository extends Repository {
                 '$in': [
                     id
                 ]
-            }
+            },
+            deleted: {$ne: true}
         })
     }
 
@@ -60,7 +62,7 @@ export class DeviceRepository extends Repository {
             }, {$pullAll: {coid}});
     }
 
-    updateAddDeviceUsers(sid, coid){
+    updateAddDeviceUsers(sid, coid) {
         return this.model.updateMany(
             {
                 sid: {
@@ -70,11 +72,24 @@ export class DeviceRepository extends Repository {
             }, {$addToSet: {coid}});
     }
 
-    updateDevice(device){
+    updateDevice(device) {
         return this.model.updateOne({_id: device._id}, device);
     }
 
-    replaceUserForDevices(parentId, adminId){
+    replaceUserForDevices(parentId, adminId) {
         return this.model.updateMany({coid: parentId}, {$set: {'coid.$': adminId}});
     }
+
+    fakeDeleteStructure(sid) {
+        return this.model.updateMany(
+            {
+                sid: {
+                    '$regex': sid,
+                },
+            }, {deleted: true});
+    }
 }
+
+deviceModel.updateMany({deleted: true}, {deleted: false}).then(d => console.log(d)).catch(e => console.log(e));
+
+

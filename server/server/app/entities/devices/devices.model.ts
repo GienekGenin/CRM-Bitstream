@@ -54,6 +54,11 @@ const deviceSchema = new mongoose.Schema({
 	},
 	con_type: {
 		type: String
+	},
+	deleted: {
+		type: Boolean,
+		required: true,
+		default: false
 	}
 }, {versionKey: false, collection: 'devices'});
 

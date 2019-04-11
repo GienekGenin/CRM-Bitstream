@@ -59,7 +59,7 @@ export const devicesReducer = (state = initialState, action) => {
         case devicesConstants.DELETE_USER_DEVICE_SUCCESS: {
             return {
                 ...state,
-                userDevices: state.userDevices.filter(el => el.sid !== action.payload),
+                userDevices: state.userDevices.filter(el => !el.sid.includes(action.payload)),
                 loading: false,
                 success: 'Device was successfully deleted'
             }
@@ -67,7 +67,7 @@ export const devicesReducer = (state = initialState, action) => {
         case devicesConstants.DELETE_FIRM_DEVICE_SUCCESS: {
             return {
                 ...state,
-                devices: state.devices.filter(el => el.sid !== action.payload),
+                devices: state.devices.filter(el => !el.sid.includes(action.payload)),
                 loading: false,
                 success: 'Device was successfully deleted'
             }

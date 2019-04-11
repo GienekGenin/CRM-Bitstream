@@ -262,7 +262,7 @@ class FirmToolBar extends React.Component {
                     </Dialog>
                 </div>
                 <div>
-                    <Button variant="contained" color="secondary" disabled={!this.props.selected}
+                    <Button variant="contained" color="secondary" disabled={!this.props.selected || true}
                             onClick={() => this.handleClickOpen('confirmDeleteDialog')}>
                         Delete
                         <DeleteIcon />
