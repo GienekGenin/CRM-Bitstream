@@ -12,8 +12,6 @@ const setUpExpress = () => {
 
 	const server = http.createServer(app);
 
-	socketService(server);
-
 	/**
 	 * Event listener for HTTP server "error" event.
 	 */
@@ -57,6 +55,8 @@ const setUpExpress = () => {
 	server.listen(port);
 	server.on('error', onError);
 	server.on('listening', onListening);
+
+	socketService(server);
 
 	function normalizePort(val) {
 		const port = parseInt(val, 10);

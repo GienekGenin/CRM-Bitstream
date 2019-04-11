@@ -11,8 +11,6 @@ import {dbConnectionService} from '../db/connect';
 
 export const app = express();
 
-
-
 dbConnectionService.connect();
 
 app.use(logger('dev'));
@@ -29,10 +27,6 @@ app.use(successOrEmptyPayload);
 
 // error handler
 app.use(errorPayload);
-
-app.get('/', (req, res) => {
-	res.send('Hello World');
-});
 
 app.get('/express_backend', (req, res) => {
 	res.send({express: 'EXPRESS BACKEND IS CONNECTED TO REACT'});

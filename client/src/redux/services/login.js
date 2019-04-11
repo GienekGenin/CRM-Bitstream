@@ -1,6 +1,6 @@
 import {history} from "./history";
 
-const apiBase = 'http://localhost:5000/api/';
+const apiBase = process.env.REACT_APP_API_BASE;
 
 const login = (email, password) => {
     const requestOptions = {

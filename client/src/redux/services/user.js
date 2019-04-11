@@ -1,6 +1,4 @@
-import {tokenService} from "./token";
-
-const apiBase = 'http://localhost:5000/api/';
+const apiBase = process.env.REACT_APP_API_BASE;
 
 const getAllByFirmId = (firmId) => {
     const token = localStorage.getItem('token');

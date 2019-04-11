@@ -1,4 +1,4 @@
-const apiBase = 'http://10.0.0.118:5000/api/';
+const apiBase = process.env.REACT_APP_API_BASE;
 
 const getAll = () => {
     const token = localStorage.getItem('token');
