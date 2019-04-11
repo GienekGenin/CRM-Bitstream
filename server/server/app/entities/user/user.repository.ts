@@ -12,11 +12,11 @@ export class UserRepository extends Repository {
     }
 
     findByFirmId(firmId) {
-        return this.model.find({firm_id: firmId});
+        return this.model.find({firm_id: firmId, deleted: {$ne: true}});
     }
 
     deleteByEmail(email) {
-        return this.model.deleteOne({email});
+        return this.model.updateOne({email}, {deleted: true});
     }
 
     updateByEmail(user) {
