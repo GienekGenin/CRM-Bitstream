@@ -20,18 +20,13 @@ const mapDispatchToProps = (dispatch) => {
     };
 };
 
-let direction = 'ltr';
-// direction = 'rtl';
 const theme = createMuiTheme({
-    direction: direction,
     palette: {
         type: 'light'
     }
 });
 
 class Test extends Component {
-
-    tableRef = React.createRef();
 
     constructor(props) {
         super(props);
@@ -50,6 +45,8 @@ class Test extends Component {
         this.resetSelected = this.resetSelected.bind(this);
 
         this.handleFirmSelect = this.handleFirmSelect.bind(this);
+
+        this.testFun = this.testFun.bind(this)
     }
 
     resetSelected = () => {
@@ -122,15 +119,20 @@ class Test extends Component {
         }
     }
 
+    testFun =(event)=>{
+        console.log(event)
+    }
+
     render() {
         let {firms} = this.props;
         let test = true;
         return (
             <MuiThemeProvider theme={theme}>
-                <div style={{ maxWidth: '100%', direction }}>
+                <div style={{ maxWidth: '100%' }}>
                     <Grid container>
                         <Grid item xs={12}>
                             <MaterialTable
+                                onChangePage={this.testFun}
                                 data={firms}
                                 columns={[
                                     {
