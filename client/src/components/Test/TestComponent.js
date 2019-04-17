@@ -6,7 +6,7 @@ export default class TestComponent extends React.Component {
 
         return (
             <div className='tree'>
-
+                Hi
             </div>
         )
     }

@@ -82,22 +82,22 @@ class AppComponent extends Component {
                                         alt=""/>
                                 </div>
                                 <Typography variant="h6" color="inherit">
-                                    <Button color="inherit"><Link to={'/'}>Home</Link></Button>
+                                    <Link to={'/'}><Button color="inherit">Home</Button></Link>
                                 </Typography>
                                 <Typography variant="h6" color="inherit">
-                                    <Button color="inherit"><Link to={'/test'}>Test</Link></Button>
+                                    <Link to={'/test'}><Button color="inherit">Test</Button></Link>
                                 </Typography>
                                 {checkAccess('/dashboard') && <Typography variant="h6" color="inherit">
-                                    <Button color="inherit"> <Link to={'/dashboard'}> Dashboard </Link></Button>
+                                    <Link to={'/dashboard'}><Button color="inherit"> Dashboard </Button></Link>
                                 </Typography>} {checkAccess('/admin_panel') && <Typography variant="h6" color="inherit">
-                                <Button color="inherit"> <Link to={'/admin_panel'}> Admin Panel </Link></Button>
+                                <Link to={'/admin_panel'}><Button color="inherit"> Admin Panel </Button></Link>
                             </Typography>}
                                 {checkAccess('/devices') && <Typography variant="h6" color="inherit">
-                                    <Button color="inherit"> <Link to={'/devices'}> devices </Link></Button>
+                                    <Link to={'/devices'}><Button color="inherit"> devices </Button></Link>
                                 </Typography>}
                                 {user ? <Button color="inherit" onClick={this.props.logoutRequest}><Link
                                         to={'/login'}>Logout</Link></Button> :
-                                    <Button color="inherit"><Link to={'/login'}>Login</Link></Button>}
+                                    <Link to={'/login'}><Button color="inherit">Login</Button></Link>}
                             </Toolbar>
                         </AppBar>
                         <Switch history={history}>

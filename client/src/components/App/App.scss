@@ -3,6 +3,10 @@ a {
   color: white;
 }
 
+#root > div > header > div > a {
+  margin-left: auto;
+}
+
 #root > div > header > div > button {
   margin-left: auto;
 }

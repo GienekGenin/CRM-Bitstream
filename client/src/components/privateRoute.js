@@ -18,7 +18,7 @@ export const checkAccess = (path) => {
         return false;
     }
     const user = jwt.user;
-    if(user.deleted) {
+    if(user && user.deleted) {
         return false;
     }
     const roles = JSON.parse(localStorage.getItem('roles'));
