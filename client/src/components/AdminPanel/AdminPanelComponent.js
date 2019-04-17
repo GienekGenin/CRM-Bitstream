@@ -21,6 +21,7 @@ import FirmAdminComponent from '../../components/FirmAdministration/FirmAdminCom
 import UserAdminComponent from '../../components/UserAdministration/UserAdminComponent';
 import DeviceAdminComponent from '../../components/DeviceAdministration/DeviceAdminComponent';
 import FirmDevicesComponent from "../FirmDevicesComponent/FirmDevicesComponent";
+import TestComponent from "../Test/TestComponent";
 
 const mapDispatchToProps = (dispatch) => {
     return {
@@ -219,8 +220,15 @@ class AdminPanel extends React.Component {
                 </AppBar>
                 {checkAccess('/editFirms') ?
                     <div>
+                        {/*{value === 0 && firms && <TabContainer>*/}
+                            {/*<FirmAdminComponent*/}
+                                {/*firms={firms}*/}
+                                {/*onFirmSelect={this.handleFirmSelect}*/}
+                                {/*selectedFirm={selectedFirm}*/}
+                            {/*/>*/}
+                        {/*</TabContainer>}*/}
                         {value === 0 && firms && <TabContainer>
-                            <FirmAdminComponent
+                            <TestComponent
                                 firms={firms}
                                 onFirmSelect={this.handleFirmSelect}
                                 selectedFirm={selectedFirm}
