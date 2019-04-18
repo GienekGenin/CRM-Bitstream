@@ -1,4 +1,4 @@
-import {Grid, MuiThemeProvider, InputAdornment} from '@material-ui/core';
+import {Grid, MuiThemeProvider} from '@material-ui/core';
 import {createMuiTheme} from '@material-ui/core/styles';
 import React, {Component} from 'react';
 import * as PropTypes from "prop-types";
@@ -10,11 +10,7 @@ import './test.scss'
 import {connect} from "react-redux";
 import store from "../../redux/store";
 import {addFirmRequest, deleteFirmRequest, firmDevicesRequest, updateFirmRequest} from "../../redux/actions";
-import {createData} from "../FirmAdministration/firms-table.service";
 import Checkbox from "@material-ui/core/Checkbox";
-import AddIcon from '@material-ui/icons/Add';
-import EditIcon from '@material-ui/icons/Edit';
-import Button from '@material-ui/core/Button';
 
 import TestComponentToolBar from './TestComponentToolBar';
 
@@ -62,9 +58,8 @@ class Test extends Component {
         this.unsubscribe = store.subscribe(() => {
             this.setState({loading: store.getState().firmReducer.loading});
             if (store.getState().firmReducer.firms) {
-                let data = [];
-                const reduxFirms = store.getState().firmReducer.firms;
-
+                const firms = store.getState().firmReducer.firms;
+                this.setState({firms});
             }
         });
     }
@@ -75,30 +70,11 @@ class Test extends Component {
     }
 
     componentWillMount() {
-        let selected = [];
         if (this.props.selectedFirm) {
-            this.setState({firm: this.props.selectedFirm});
-            selected.push(this.props.selectedFirm._id);
+            this.setState({selectedFirm: this.props.selectedFirm, selectedFirmId: this.props.selectedFirm._id});
         }
         if (this.props.firms) {
-            let data = [];
-            this.props.firms.map(record => {
-                let row = [
-                    record._id,
-                    record.name,
-                ];
-                data.push(createData(...row));
-                const obj = {
-                    order: this.state.order,
-                    orderBy: this.state.orderBy,
-                    selected,
-                    data,
-                    page: this.state.page,
-                    rowsPerPage: this.state.rowsPerPage
-                };
-                this.setState(obj);
-                return true;
-            })
+            this.setState({firms: this.props.firms})
         }
     }
 
@@ -113,9 +89,16 @@ class Test extends Component {
         }
     };
 
+    onChangePage = (page) => {
+        this.setState({page});
+    };
+
+    onChangeRowsPerPage = (rowsPerPage) =>{
+        this.setState({rowsPerPage});
+    };
+
     render() {
-        let {loading, selectedFirm, selectedFirmId} = this.state;
-        let {firms} = this.props;
+        let {page, firms, rowsPerPage, loading, selectedFirm, selectedFirmId} = this.state;
         firms.map((el, i, arr) => arr[i] = Object.assign(el, {
             action: (
                 <div>
@@ -163,11 +146,13 @@ class Test extends Component {
                                     filtering: true,
                                     columnsButton: false,
                                     header: true,
-                                    initialPage: 0,
+                                    initialPage: page,
+                                    pageSize: rowsPerPage,
                                     search: false,
                                     toolbar: true
                                 }}
-                                onSelectionChange={this.onSelectionChange}
+                                onChangePage={(props, e) => this.onChangePage(props, e)}
+                                onChangeRowsPerPage={(props, e) => this.onChangeRowsPerPage(props, e)}
                             />
                         </Grid>
                     </Grid>

@@ -12,11 +12,12 @@ import AddIcon from '@material-ui/icons/Add';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import RefreshIcon from '@material-ui/icons/Refresh';
+import IconButton from "@material-ui/core/IconButton";
 
 // Redux
 import {connect} from "react-redux";
 import {addFirmRequest, deleteFirmRequest, firmsRequest, updateFirmRequest} from "../../redux/actions";
-import IconButton from "@material-ui/core/IconButton";
+
 
 const mapDispatchToProps = (dispatch) => {
     return {
@@ -102,7 +103,12 @@ class TestToolBar extends React.Component {
 
     render() {
         return (
-            <div className="device-controls">
+            <div className="firm-controls">
+                <div>
+                    {this.props.selected ? <h3>
+                        Selected {this.props.selected.name}
+                    </h3> : <h3>Firms</h3>}
+                </div>
                 <div>
                     <IconButton disabled={!this.props.selected} variant="contained" color="primary"
                             onClick={() => this.handleClickOpen('editDialog')}>

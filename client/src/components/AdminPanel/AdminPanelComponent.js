@@ -17,7 +17,6 @@ import {checkAccess} from "../privateRoute";
 
 // Components
 import './adminPanel.scss';
-import FirmAdminComponent from '../../components/FirmAdministration/FirmAdminComponent';
 import UserAdminComponent from '../../components/UserAdministration/UserAdminComponent';
 import DeviceAdminComponent from '../../components/DeviceAdministration/DeviceAdminComponent';
 import FirmDevicesComponent from "../FirmDevicesComponent/FirmDevicesComponent";
@@ -220,13 +219,6 @@ class AdminPanel extends React.Component {
                 </AppBar>
                 {checkAccess('/editFirms') ?
                     <div>
-                        {/*{value === 0 && firms && <TabContainer>*/}
-                            {/*<FirmAdminComponent*/}
-                                {/*firms={firms}*/}
-                                {/*onFirmSelect={this.handleFirmSelect}*/}
-                                {/*selectedFirm={selectedFirm}*/}
-                            {/*/>*/}
-                        {/*</TabContainer>}*/}
                         {value === 0 && firms && <TabContainer>
                             <TestComponent
                                 firms={firms}
