@@ -50,7 +50,6 @@ export class MTableToolbar extends React.Component {
     if (this.props.search) {
       return (
         <TextField
-          className={this.props.searchFieldAlignment === 'left' && this.props.showTitle === false ? null : this.props.classes.searchField}
           value={this.props.searchText}
           onChange={event => this.props.onSearchChanged(event.target.value)}
           color="inherit"
@@ -162,10 +161,9 @@ export class MTableToolbar extends React.Component {
   }
 
   renderActions() {
-    const { classes } = this.props;
 
     return (
-      <div className={classes.actions}>
+      <div >
         <div>
           {this.props.selectedRows && this.props.selectedRows.length > 0
             ? this.renderSelectedActions()
@@ -177,17 +175,16 @@ export class MTableToolbar extends React.Component {
   }
 
   render() {
-    const { classes } = this.props;
     const localization = { ...MTableToolbar.defaultProps.localization, ...this.props.localization };
     const title = this.props.selectedRows && this.props.selectedRows.length > 0 ? localization.nRowsSelected.replace('{0}', this.props.selectedRows.length) : this.props.showTitle ? this.props.title : null;
     return (
-      <Toolbar className={classNames(classes.root, { [classes.highlight]: this.props.selectedRows && this.props.selectedRows.length > 0 })}>
-        {title && <div className={classes.title}>
+      <Toolbar >
+        {title && <div >
           <Typography variant="h6">{title}</Typography>
         </div>}
         {this.props.searchFieldAlignment === 'left' && this.renderSearch()}
         {this.props.toolbarButtonAlignment === 'left' && this.renderActions()}
-        <div className={classes.spacer} />
+        <div  />
         {this.props.searchFieldAlignment === 'right' && this.renderSearch()}
         {this.props.toolbarButtonAlignment === 'right' && this.renderActions()}
       </Toolbar >
