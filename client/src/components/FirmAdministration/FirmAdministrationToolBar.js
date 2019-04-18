@@ -373,7 +373,7 @@ class TestToolBar extends React.Component {
                                     },
                                 }}
                             >
-                                <List id={'column-list'}>
+                                <List id={'column-list'} >
                                     {columns && columns.map(el => (
                                         <div>
                                             <Divider dark/>
