@@ -379,7 +379,7 @@ class TestToolBar extends React.Component {
                                             <Divider dark={'true'}/>
                                             <ListItem key={el.title} dense button
                                                       onClick={() => this.handleColumnsChange(el.title)}>
-                                                <Checkbox checked={el.hidden}/>
+                                                <Checkbox checked={!el.hidden}/>
                                                 <ListItemText primary={el.title}/>
                                             </ListItem>
                                         </div>

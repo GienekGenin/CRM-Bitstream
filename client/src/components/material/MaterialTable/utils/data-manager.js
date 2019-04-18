@@ -5,7 +5,7 @@ export default class DataManager {
   applyFilters = false;
   applySearch = false;
   currentPage = 0;
-  detailPanelType = 'multiple'
+  detailPanelType = 'multiple';
   filterSelectionChecked = false;
   lastDetailPanelRow = undefined;
   lastEditingRow = undefined;
@@ -37,9 +37,6 @@ export default class DataManager {
   treefied = false;
   sorted = false;
   paged = false;
-
-  constructor() {
-  }
 
   setData(data) {
     this.selectedCount = 0;
@@ -141,7 +138,7 @@ export default class DataManager {
       rowData.tableData.showDetailPanel = render;
     }
 
-    if (this.detailPanelType === 'single' && this.lastDetailPanelRow && this.lastDetailPanelRow != rowData) {
+    if (this.detailPanelType === 'single' && this.lastDetailPanelRow && this.lastDetailPanelRow !== rowData) {
       this.lastDetailPanelRow.tableData.showDetailPanel = undefined;
     }
 
@@ -162,7 +159,7 @@ export default class DataManager {
     if (rowData) {
       rowData.tableData.editing = mode;
 
-      if (this.lastEditingRow && this.lastEditingRow != rowData) {
+      if (this.lastEditingRow && this.lastEditingRow !== rowData) {
         this.lastEditingRow.tableData.editing = undefined;
       }
 
@@ -270,11 +267,11 @@ export default class DataManager {
       }
     }
     else if (result.destination.droppableId === "groups" && result.source.droppableId === "headers") {
-      const newGroup = this.columns.find(c => c.tableData.id == result.draggableId);
+      const newGroup = this.columns.find(c => c.tableData.id === result.draggableId);
       groups.splice(result.destination.index, 0, newGroup);
     }
     else if (result.destination.droppableId === "headers" && result.source.droppableId === "groups") {
-      const removeGroup = this.columns.find(c => c.tableData.id == result.draggableId);
+      const removeGroup = this.columns.find(c => c.tableData.id === result.draggableId);
       removeGroup.tableData.groupOrder = undefined;
       groups.splice(result.source.index, 1);
     }
@@ -316,7 +313,7 @@ export default class DataManager {
       }, data);
       return node;
     }
-  }
+  };
 
   findGroupByGroupPath(renderData, path) {
     const data = { groups: renderData };
@@ -339,7 +336,7 @@ export default class DataManager {
     }
 
     return value;
-  }
+  };
 
   isDataType(type) {
     let dataType = "normal";
@@ -429,7 +426,7 @@ export default class DataManager {
       treefiedDataLength: this.treefiedDataLength,
       treeDataMaxLevel: this.treeDataMaxLevel
     };
-  }
+  };
 
   // =====================================================================================================
   // DATA MANUPULATIONS
@@ -520,7 +517,7 @@ export default class DataManager {
     }
 
     this.filtered = true;
-  }
+  };
 
   searchData = () => {
     this.grouped = this.treefied = this.sorted = this.paged = false;
@@ -541,12 +538,13 @@ export default class DataManager {
                 return value.toString().toUpperCase().includes(this.searchText.toUpperCase());
               }
             }
+            return true;
           });
       });
     }
 
     this.searched = true;
-  }
+  };
 
   groupData() {
     this.sorted = this.paged = false;
@@ -672,7 +670,7 @@ export default class DataManager {
     }
     else if (this.isDataType("tree")) {
       this.sortedData = [...this.treefiedData];
-      if (this.orderBy != -1) {
+      if (this.orderBy !== -1) {
         this.sortedData = this.sortList(this.sortedData);
 
         const sortTree = (list) => {
@@ -689,7 +687,7 @@ export default class DataManager {
     }
     else if (this.isDataType("normal")) {
       this.sortedData = [...this.searchedData];
-      if (this.orderBy != -1) {
+      if (this.orderBy !== -1) {
         this.sortedData = this.sortList(this.sortedData);
       }
     }
