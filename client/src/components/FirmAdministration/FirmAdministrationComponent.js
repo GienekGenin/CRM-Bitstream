@@ -39,19 +39,41 @@ class FirmAdministrationComponent extends Component {
             selectedFirmId: '',
             page: 0,
             rowsPerPage: 5,
-            loading: false
+            loading: false,
+            columns: [
+                {
+                    title: 'Select',
+                    field: 'action',
+                    filtering: false,
+                    sorting: false,
+                    hidden: false,
+                },
+                {
+                    title: 'Name',
+                    field: 'name',
+                    hidden: false,
+                },
+                {title: 'Address', field: 'address', hidden: false,},
+                {title: 'Email', field: 'email', hidden: false,},
+                {title: 'tel', field: 'tel', hidden: false,},
+                {title: 'nip', field: 'nip', hidden: false,},
+            ]
         };
 
         this.resetSelected = this.resetSelected.bind(this);
 
-        this.onFirmSelect = this.onFirmSelect.bind(this)
+        this.onFirmSelect = this.onFirmSelect.bind(this);
+
+        this.addRemoveColumn = this.addRemoveColumn.bind(this);
     }
 
     resetSelected = () => {
         this.setState({selectedFirm: null, selectedFirmId: ''});
     };
 
-
+    addRemoveColumn = (columns) => {
+        this.setState({columns});
+    };
 
     componentDidMount() {
         this._isMounted = true;
@@ -93,12 +115,12 @@ class FirmAdministrationComponent extends Component {
         this.setState({page});
     };
 
-    onChangeRowsPerPage = (rowsPerPage) =>{
+    onChangeRowsPerPage = (rowsPerPage) => {
         this.setState({rowsPerPage});
     };
 
     render() {
-        let {page, firms, rowsPerPage, loading, selectedFirm, selectedFirmId} = this.state;
+        let {page, firms, rowsPerPage, loading, selectedFirm, selectedFirmId, columns} = this.state;
         firms.map((el, i, arr) => arr[i] = Object.assign(el, {
             action: (
                 <div>
@@ -119,28 +141,15 @@ class FirmAdministrationComponent extends Component {
                                                 selected={selectedFirm}
                                                 resetSelected={this.resetSelected}
                                                 loading={loading}
+                                                addRemoveColumn={this.addRemoveColumn}
+                                                columns={columns}
                                             />
                                         </div>
                                     ),
                                 }}
                                 isLoading={loading}
                                 data={firms}
-                                columns={[
-                                    {
-                                        title: 'Select',
-                                        field: 'action',
-                                        filtering: false,
-                                        sorting: false
-                                    },
-                                    {
-                                        title: 'Name',
-                                        field: 'name',
-                                    },
-                                    {title: 'Address', field: 'address'},
-                                    {title: 'Email', field: 'email'},
-                                    {title: 'tel', field: 'tel'},
-                                    {title: 'nip', field: 'nip'},
-                                ]}
+                                columns={columns}
                                 title="Firms"
                                 options={{
                                     filtering: true,

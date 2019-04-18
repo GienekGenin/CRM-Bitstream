@@ -13,11 +13,20 @@ import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import IconButton from "@material-ui/core/IconButton";
+import ViewColumnIcon from '@material-ui/icons/ViewColumn';
 
 // Redux
 import {connect} from "react-redux";
 import {addFirmRequest, deleteFirmRequest, firmsRequest, updateFirmRequest} from "../../redux/actions";
+import Tooltip from "@material-ui/core/Tooltip";
+import Menu from "@material-ui/core/Menu";
+import Checkbox from "@material-ui/core/Checkbox";
+import List from "@material-ui/core/List";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemText from "@material-ui/core/ListItemText";
 
+import './firmToolBar.scss'
+import Divider from "@material-ui/core/Divider";
 
 const mapDispatchToProps = (dispatch) => {
     return {
@@ -36,6 +45,9 @@ class TestToolBar extends React.Component {
             editDialog: false,
             addDialog: false,
             confirmDeleteDialog: false,
+            anchorEl: null,
+            columns: null,
+            columnsDialog: false,
             newFirm: {
                 name: '',
                 address: '',
@@ -45,6 +57,16 @@ class TestToolBar extends React.Component {
             }
         };
     }
+
+    handleClickMenu = event => {
+        this.setState({anchorEl: event.currentTarget, columnsDialog: true, columns: this.props.columns});
+    };
+
+    handleCloseMenu = () => {
+        const columns = this.state.columns;
+        this.props.addRemoveColumn(columns);
+        this.setState({anchorEl: null, columnsDialog: false, columns});
+    };
 
     handleClickOpen = (state) => {
         this.setState({[state]: true});
@@ -101,7 +123,14 @@ class TestToolBar extends React.Component {
         this.props.resetSelected();
     }
 
+    handleColumnsChange = (title) => {
+        let columns = this.state.columns.map((el, i, arr) => el.title === title ? arr[i] = Object.assign(el, {hidden: !el.hidden}) : el);
+        this.setState({columns});
+    };
+
     render() {
+        let {columns} = this.state;
+        const {anchorEl, columnsDialog} = this.state;
         return (
             <div className="firm-toolbar">
                 <div className={'title'}>
@@ -111,10 +140,14 @@ class TestToolBar extends React.Component {
                 </div>
                 <div className={'firm-controls'}>
                     <div>
-                        <IconButton disabled={!this.props.selected} variant="contained" color="primary"
-                                    onClick={() => this.handleClickOpen('editDialog')}>
-                            <EditIcon />
-                        </IconButton>
+                        <Tooltip title={'Edit selected firm'}>
+                            <div>
+                                <IconButton disabled={!this.props.selected} variant="contained" color="primary"
+                                            onClick={() => this.handleClickOpen('editDialog')}>
+                                    <EditIcon/>
+                                </IconButton>
+                            </div>
+                        </Tooltip>
                         <Dialog
                             open={this.state.editDialog}
                             onClose={() => this.handleClose('editDialog')}
@@ -198,10 +231,14 @@ class TestToolBar extends React.Component {
                         </Dialog>
                     </div>
                     <div>
-                        <IconButton variant="outlined" color="primary" disabled={this.props.loading}
-                                    onClick={() => this.handleClickOpen('addDialog')}>
-                            <AddIcon />
-                        </IconButton>
+                        <Tooltip title={'Add new firm'}>
+                            <div>
+                                <IconButton variant="outlined" color="primary" disabled={this.props.loading}
+                                            onClick={() => this.handleClickOpen('addDialog')}>
+                                    <AddIcon/>
+                                </IconButton>
+                            </div>
+                        </Tooltip>
                         <Dialog
                             open={this.state.addDialog}
                             onClose={() => this.handleClose('addDialog')}
@@ -287,7 +324,7 @@ class TestToolBar extends React.Component {
                     <div>
                         <IconButton variant="contained" color="secondary" disabled={!this.props.selected || true}
                                     onClick={() => this.handleClickOpen('confirmDeleteDialog')}>
-                            <DeleteIcon />
+                            <DeleteIcon/>
                         </IconButton>
                         <Dialog
                             open={this.state.confirmDeleteDialog}
@@ -310,15 +347,62 @@ class TestToolBar extends React.Component {
                             </DialogActions>
                         </Dialog>
                     </div>
-                    <IconButton variant="outlined" color="primary" disabled={this.props.loading} onClick={() => this.handleRefresh()}>
-                        <RefreshIcon />
-                    </IconButton>
+                    <Tooltip title={'Refresh firm list'}>
+                        <div>
+                            <IconButton variant="outlined" color="primary" disabled={this.props.loading}
+                                        onClick={() => this.handleRefresh()}>
+                                <RefreshIcon/>
+                            </IconButton>
+                        </div>
+                    </Tooltip>
+                    <Tooltip title={'Show columns'}>
+                        <div>
+                            <IconButton variant="outlined" color="primary" disabled={this.props.loading}
+                                        onClick={this.handleClickMenu}>
+                                <ViewColumnIcon/>
+                            </IconButton>
+                            <Menu
+                                id="long-menu"
+                                open={columnsDialog}
+                                anchorEl={anchorEl}
+                                onClose={this.handleCloseMenu}
+                                PaperProps={{
+                                    style: {
+                                        maxHeight: 45 * 4.5,
+                                        width: 250,
+                                    },
+                                }}
+                            >
+                                <List id={'column-list'}>
+                                    {columns && columns.map(el => (
+                                        <div>
+                                            <Divider dark/>
+                                            <ListItem key={el.title} dense button
+                                                      onClick={() => this.handleColumnsChange(el.title)}>
+                                                <Checkbox checked={el.hidden}/>
+                                                <ListItemText primary={el.title}/>
+                                            </ListItem>
+                                        </div>
+                                    ))}
+                                    <Button fullWidth={true} onClick={this.handleCloseMenu} className={'submit-button'}>
+                                        Submit
+                                    </Button>
+                                </List>
+                            </Menu>
+                        </div>
+                    </Tooltip>
                 </div>
             </div>
         )
     }
 }
 
-TestToolBar.propTypes = {selected: PropTypes.object, resetSelected: PropTypes.func, loading: PropTypes.bool};
+TestToolBar.propTypes = {
+    selected: PropTypes.object,
+    resetSelected: PropTypes.func,
+    loading: PropTypes.bool,
+    addRemoveColumn: PropTypes.func,
+    columns: PropTypes.array
+};
 
 export default connect(null, mapDispatchToProps)(TestToolBar);
