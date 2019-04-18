@@ -1,0 +1,16 @@
+.custom-toolbar{
+  display: flex; 
+}
+
+.firm-toolbar{
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  & .title{
+    padding-left: 20px;
+  }
+}
+
+.firm-controls{
+  display: flex;
+}

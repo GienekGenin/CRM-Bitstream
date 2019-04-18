@@ -22,7 +22,6 @@ import './App.scss';
 import LoginForm from '../Login/LoginForm';
 import HomeComponent from "../Home/HomeComponent";
 import AdminPanelComponent from "../AdminPanel/AdminPanelComponent";
-import TestComponent from "../Test/TestComponent";
 import DashboardComponent from '../../components/Dashboard/DashboardComponent';
 import {PopupComponent} from "../material/PopupComponent/PopupComponent";
 import {SnackbarProvider} from "notistack";
@@ -84,9 +83,6 @@ class AppComponent extends Component {
                                 <Typography variant="h6" color="inherit">
                                     <Link to={'/'}><Button color="inherit">Home</Button></Link>
                                 </Typography>
-                                <Typography variant="h6" color="inherit">
-                                    <Link to={'/test'}><Button color="inherit">Test</Button></Link>
-                                </Typography>
                                 {checkAccess('/dashboard') && <Typography variant="h6" color="inherit">
                                     <Link to={'/dashboard'}><Button color="inherit"> Dashboard </Button></Link>
                                 </Typography>} {checkAccess('/admin_panel') && <Typography variant="h6" color="inherit">
@@ -102,7 +98,6 @@ class AppComponent extends Component {
                         </AppBar>
                         <Switch history={history}>
                             <Route exact path='/' component={HomeComponent}/>
-                            <Route exact path='/test' component={TestComponent}/>
                             <PrivateRoute exact path='/admin_panel' component={AdminPanelComponent}/>
                             <PrivateRoute exact path='/dashboard' component={DashboardComponent}/>
                             <PrivateRoute exact path='/devices' component={DeviceAdminComponent}/>

@@ -4,7 +4,7 @@ import React, {Component} from 'react';
 import * as PropTypes from "prop-types";
 import MaterialTable from '../material/MaterialTable/material-table';
 import _ from 'lodash';
-import './test.scss'
+import './firmAdministration.scss'
 
 // Redux
 import {connect} from "react-redux";
@@ -12,7 +12,7 @@ import store from "../../redux/store";
 import {addFirmRequest, deleteFirmRequest, firmDevicesRequest, updateFirmRequest} from "../../redux/actions";
 import Checkbox from "@material-ui/core/Checkbox";
 
-import TestComponentToolBar from './TestComponentToolBar';
+import FirmAdministrationToolBar from './FirmAdministrationToolBar';
 
 const mapDispatchToProps = (dispatch) => {
     return {
@@ -29,7 +29,7 @@ const theme = createMuiTheme({
     }
 });
 
-class Test extends Component {
+class FirmAdministrationComponent extends Component {
 
     constructor(props) {
         super(props);
@@ -115,7 +115,7 @@ class Test extends Component {
                                 components={{
                                     Toolbar: props => (
                                         <div className={'custom-toolbar'}>
-                                            <TestComponentToolBar
+                                            <FirmAdministrationToolBar
                                                 selected={selectedFirm}
                                                 resetSelected={this.resetSelected}
                                                 loading={loading}
@@ -162,10 +162,10 @@ class Test extends Component {
     }
 }
 
-Test.propTypes = {
+FirmAdministrationComponent.propTypes = {
     firms: PropTypes.array,
     onFirmSelect: PropTypes.func.isRequired,
     selectedFirm: PropTypes.object
 };
 
-export default connect(null, mapDispatchToProps)(Test);
+export default connect(null, mapDispatchToProps)(FirmAdministrationComponent);

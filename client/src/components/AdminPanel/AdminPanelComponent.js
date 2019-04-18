@@ -20,7 +20,7 @@ import './adminPanel.scss';
 import UserAdminComponent from '../../components/UserAdministration/UserAdminComponent';
 import DeviceAdminComponent from '../../components/DeviceAdministration/DeviceAdminComponent';
 import FirmDevicesComponent from "../FirmDevicesComponent/FirmDevicesComponent";
-import TestComponent from "../Test/TestComponent";
+import FirmAdministrationComponent from "../FirmAdministration/FirmAdministrationComponent";
 
 const mapDispatchToProps = (dispatch) => {
     return {
@@ -220,7 +220,7 @@ class AdminPanel extends React.Component {
                 {checkAccess('/editFirms') ?
                     <div>
                         {value === 0 && firms && <TabContainer>
-                            <TestComponent
+                            <FirmAdministrationComponent
                                 firms={firms}
                                 onFirmSelect={this.handleFirmSelect}
                                 selectedFirm={selectedFirm}
