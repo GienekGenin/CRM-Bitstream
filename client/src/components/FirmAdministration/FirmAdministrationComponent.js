@@ -62,8 +62,6 @@ class FirmAdministrationComponent extends Component {
 
         this.resetSelected = this.resetSelected.bind(this);
 
-        this.onFirmSelect = this.onFirmSelect.bind(this);
-
         this.addRemoveColumn = this.addRemoveColumn.bind(this);
     }
 
@@ -100,8 +98,16 @@ class FirmAdministrationComponent extends Component {
         }
     }
 
-    onFirmSelect = (e) => {
-        let selectedFirm = _.omit(this.props.firms.filter(el => (el._id === e.target.value) ? el : null)[0], 'action');
+    onChangePage = (page) => {
+        this.setState({page});
+    };
+
+    onChangeRowsPerPage = (rowsPerPage) => {
+        this.setState({rowsPerPage});
+    };
+
+    onRowClick = (e, rowData) => {
+        let selectedFirm = _.omit(this.props.firms.filter(el => (el._id === rowData._id) ? el : null)[0], 'action');
         if (this.state.selectedFirm && this.state.selectedFirm._id === selectedFirm._id) {
             this.setState({selectedFirm: null, selectedFirmId: ''});
             this.props.onFirmSelect(null);
@@ -111,20 +117,12 @@ class FirmAdministrationComponent extends Component {
         }
     };
 
-    onChangePage = (page) => {
-        this.setState({page});
-    };
-
-    onChangeRowsPerPage = (rowsPerPage) => {
-        this.setState({rowsPerPage});
-    };
-
     render() {
         let {page, firms, rowsPerPage, loading, selectedFirm, selectedFirmId, columns} = this.state;
         firms.map((el, i, arr) => arr[i] = Object.assign(el, {
             action: (
                 <div>
-                    <Checkbox value={el._id} checked={selectedFirmId === el._id} onChange={this.onFirmSelect}/>
+                    <Checkbox value={el._id} checked={selectedFirmId === el._id} />
                 </div>
             )
         }));
@@ -162,6 +160,7 @@ class FirmAdministrationComponent extends Component {
                                 }}
                                 onChangePage={(props, e) => this.onChangePage(props, e)}
                                 onChangeRowsPerPage={(props, e) => this.onChangeRowsPerPage(props, e)}
+                                onRowClick={this.onRowClick}
                             />
                         </Grid>
                     </Grid>
