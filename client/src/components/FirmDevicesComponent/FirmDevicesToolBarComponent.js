@@ -1,5 +1,6 @@
 import React from "react";
 import * as PropTypes from 'prop-types';
+import * as _ from "lodash";
 
 // Material
 import Button from "@material-ui/core/Button";
@@ -128,7 +129,8 @@ class FirmDevicesToolBar extends React.Component {
     }
 
     handleUpdateFirmDevice() {
-        this.props.updateFirmDevice(this.state.newFirmDevice);
+        let deviceToUpdate = _.omit(this.state.newFirmDevice, 'tableData');
+        this.props.updateFirmDevice(deviceToUpdate);
         this.props.resetSelected();
         this.handleClose('editDialog');
     }

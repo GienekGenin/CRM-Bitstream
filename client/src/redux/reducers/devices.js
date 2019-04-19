@@ -57,8 +57,12 @@ export const devicesReducer = (state = initialState, action) => {
             }
         }
         case devicesConstants.UPDATE_FIRM_DEVICE_SUCCESS: {
+            let userDevices = null;
+            if(state.userDevices){
+                userDevices = state.userDevices.map(el => (el._id === action.payload._id) ? action.payload : el)
+            }
             return {
-                userDevices: state.userDevices.map(el => (el._id === action.payload._id) ? action.payload : el),
+                userDevices: userDevices,
                 devices: state.devices.map(el => (el._id === action.payload._id) ? action.payload : el),
                 loading: false,
                 success: action.payload.success
