@@ -143,11 +143,17 @@ class FirmDevicesComponent extends React.Component {
             this.setState({selectedDevice, selectedDeviceId: selectedDevice._id});
             this.props.onDeviceSelect(selectedDevice);
         }
+        this.handleDeviceSelect(selectedDevice);
     };
 
     addRemoveColumn = (columns) => {
         this.setState({columns});
     };
+
+    handleDeviceSelect(device) {
+        buildChart(Object.assign({}, device, {parent_id: '0'}), this.state.devices);
+        this.props.onDeviceSelect(device);
+    }
 
     render() {
         const {loading, devices, selectedDevice, selectedDeviceId, selectedFirm, columns, rowsPerPage, page} = this.state;
