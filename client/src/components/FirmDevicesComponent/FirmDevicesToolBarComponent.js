@@ -19,6 +19,8 @@ import MenuItem from "@material-ui/core/MenuItem";
 import Input from "@material-ui/core/Input";
 import Chip from "@material-ui/core/Chip";
 import Tooltip from '@material-ui/core/Tooltip';
+import IconButton from "@material-ui/core/IconButton";
+import RefreshIcon from '@material-ui/icons/Refresh';
 
 // Redux
 import {connect} from "react-redux";
@@ -26,6 +28,7 @@ import {firmDevicesRequest, addFirmDeviceRequest, deleteFirmDeviceRequest, updat
 import {deviceTypesService} from '../../redux/services/device_types';
 import {userService} from '../../redux/services/user';
 import * as d3 from "d3";
+
 
 const mapDispatchToProps = (dispatch) => {
     return {
@@ -165,21 +168,82 @@ class FirmDevicesToolBar extends React.Component {
     render() {
         let {loading, firmUsers, deviceTypes} = this.state;
         return (
-            <div className="device-controls">
-                <div>
-                    <Button disabled={!this.props.selected} variant="contained" color="primary"
-                            onClick={() => this.handleClickOpen('editDialog')}>
-                        Edit
-                        <EditIcon/>
-                    </Button>
-                    <Dialog
-                        open={this.state.editDialog}
-                        onClose={() => this.handleClose('editDialog')}
-                        aria-labelledby="key-dialog-title"
-                        aria-describedby="alert-dialog-description"
-                    >
-                        <DialogTitle id="alert-dialog-title">Edit firm device</DialogTitle>
-                        <DialogContent>
+            <div className="device-toolbar">
+                <div className={'title'}>
+                    {this.props.selected ? <h3>
+                        Selected {this.props.selected.name}
+                    </h3> : <h3>Firm devices</h3>}
+                </div>
+                <div className={'device-controls'}>
+                    <div>
+                        <Tooltip title={'Edit selected device'}>
+                            <div>
+                                <IconButton disabled={!this.props.selected} variant="contained" color="primary"
+                                            onClick={() => this.handleClickOpen('editDialog')}>
+                                    <EditIcon/>
+                                </IconButton>
+                            </div>
+                        </Tooltip>
+                        <Dialog
+                            open={this.state.editDialog}
+                            onClose={() => this.handleClose('editDialog')}
+                            aria-labelledby="key-dialog-title"
+                            aria-describedby="alert-dialog-description"
+                        >
+                            <DialogTitle id="alert-dialog-title">Edit firm device</DialogTitle>
+                            <DialogContent>
+                                <DialogContent>
+                                    <TextField
+                                        autoFocus
+                                        margin="dense"
+                                        id="device-name"
+                                        label="Device name"
+                                        type="text"
+                                        required={true}
+                                        value={this.state.newFirmDevice.name}
+                                        onChange={(e) => this.updateNewFirmDevice(e, 'name')}
+                                        fullWidth
+                                    />
+                                    <TextField
+                                        id="User-desc"
+                                        label="Your description"
+                                        multiline
+                                        rows="4"
+                                        margin="normal"
+                                        variant="outlined"
+                                        value={this.state.newFirmDevice.user_desc}
+                                        onChange={(e) => this.updateNewFirmDevice(e, 'user_desc')}
+                                        fullWidth
+                                    />
+                                </DialogContent>
+                            </DialogContent>
+                            <DialogActions>
+                                <Button variant="outlined" color="primary" disabled={!this.state.newFirmDevice.name}
+                                        onClick={() => this.handleUpdateFirmDevice()}>
+                                    Update
+                                </Button>
+                                <Button onClick={() => this.handleClose('editDialog')} color="primary">
+                                    Close
+                                </Button>
+                            </DialogActions>
+                        </Dialog>
+                    </div>
+                    <div>
+                        <Tooltip title={'Add new device'}>
+                            <div>
+                                <IconButton variant="outlined" color="primary" disabled={this.props.loading}
+                                            onClick={() => this.handleClickOpen('addDialog')}>
+                                    <AddIcon/>
+                                </IconButton>
+                            </div>
+                        </Tooltip>
+                        <Dialog
+                            open={this.state.addDialog}
+                            onClose={() => this.handleClose('addDialog')}
+                            aria-labelledby="alert-dialog-title"
+                            aria-describedby="alert-dialog-description"
+                        >
+                            <DialogTitle id="alert-dialog-title-">Add device</DialogTitle>
                             <DialogContent>
                                 <TextField
                                     autoFocus
@@ -192,6 +256,41 @@ class FirmDevicesToolBar extends React.Component {
                                     onChange={(e) => this.updateNewFirmDevice(e, 'name')}
                                     fullWidth
                                 />
+                                <FormControl fullWidth required={true} disabled={loading}>
+                                    <InputLabel htmlFor="device-type">Device type</InputLabel>
+                                    <Select
+                                        value={this.state.newFirmDevice.type}
+                                        onChange={(e) => this.updateNewFirmDevice(e, 'type')}
+                                        id='device-type'
+                                    >
+                                        {deviceTypes && deviceTypes.map((el, i) =>
+                                            <MenuItem value={el._id} key={i}>{el.name}</MenuItem>)}
+                                    </Select>
+                                    {loading && <LinearProgress color="secondary"/>}
+                                </FormControl>
+                                <FormControl fullWidth disabled={loading}>
+                                    <InputLabel htmlFor="select-multiple-chip">Users</InputLabel>
+                                    <Select
+                                        multiple
+                                        value={this.state.newFirmDevice.coid}
+                                        onChange={(e) => this.updateNewFirmDevice(e, 'coid')}
+                                        input={<Input id="select-multiple-chip"/>}
+                                        renderValue={selected => (
+                                            <div>
+                                                {selected.map(value => (
+                                                    <Chip key={value._id} label={value.name}/>
+                                                ))}
+                                            </div>
+                                        )}
+                                    >
+                                        {firmUsers && firmUsers.map(user => (
+                                            <MenuItem key={user._id} value={user}>
+                                                {user.name}
+                                            </MenuItem>
+                                        ))}
+                                    </Select>
+                                    {loading && <LinearProgress color="secondary"/>}
+                                </FormControl>
                                 <TextField
                                     id="User-desc"
                                     label="Your description"
@@ -204,195 +303,120 @@ class FirmDevicesToolBar extends React.Component {
                                     fullWidth
                                 />
                             </DialogContent>
-                        </DialogContent>
-                        <DialogActions>
-                            <Button variant="outlined" color="primary" disabled={!this.state.newFirmDevice.name}
-                                    onClick={() => this.handleUpdateFirmDevice()}>
-                                Update
-                            </Button>
-                            <Button onClick={() => this.handleClose('editDialog')} color="primary">
-                                Close
-                            </Button>
-                        </DialogActions>
-                    </Dialog>
-                </div>
-                <div>
-                    <Button variant="outlined" color="primary" disabled={this.props.loading}
-                            onClick={() => this.handleClickOpen('addDialog')}>
-                        Add
-                        <AddIcon/>
-                    </Button>
-                    <Dialog
-                        open={this.state.addDialog}
-                        onClose={() => this.handleClose('addDialog')}
-                        aria-labelledby="alert-dialog-title"
-                        aria-describedby="alert-dialog-description"
-                    >
-                        <DialogTitle id="alert-dialog-title-">Add device</DialogTitle>
-                        <DialogContent>
-                            <TextField
-                                autoFocus
-                                margin="dense"
-                                id="device-name"
-                                label="Device name"
-                                type="text"
-                                required={true}
-                                value={this.state.newFirmDevice.name}
-                                onChange={(e) => this.updateNewFirmDevice(e, 'name')}
-                                fullWidth
-                            />
-                            <FormControl fullWidth required={true} disabled={loading}>
-                                <InputLabel htmlFor="device-type">Device type</InputLabel>
-                                <Select
-                                    value={this.state.newFirmDevice.type}
-                                    onChange={(e) => this.updateNewFirmDevice(e, 'type')}
-                                    id='device-type'
-                                >
-                                    {deviceTypes && deviceTypes.map((el, i) =>
-                                        <MenuItem value={el._id} key={i}>{el.name}</MenuItem>)}
-                                </Select>
-                                {loading && <LinearProgress color="secondary"/>}
-                            </FormControl>
-                            <FormControl fullWidth disabled={loading}>
-                                <InputLabel htmlFor="select-multiple-chip">Users</InputLabel>
-                                <Select
-                                    multiple
-                                    value={this.state.newFirmDevice.coid}
-                                    onChange={(e) => this.updateNewFirmDevice(e, 'coid')}
-                                    input={<Input id="select-multiple-chip"/>}
-                                    renderValue={selected => (
-                                        <div>
-                                            {selected.map(value => (
-                                                <Chip key={value._id} label={value.name}/>
-                                            ))}
-                                        </div>
-                                    )}
-                                >
-                                    {firmUsers && firmUsers.map(user => (
-                                        <MenuItem key={user._id} value={user}>
-                                            {user.name}
-                                        </MenuItem>
-                                    ))}
-                                </Select>
-                                {loading && <LinearProgress color="secondary"/>}
-                            </FormControl>
-                            <TextField
-                                id="User-desc"
-                                label="Your description"
-                                multiline
-                                rows="4"
-                                margin="normal"
-                                variant="outlined"
-                                value={this.state.newFirmDevice.user_desc}
-                                onChange={(e) => this.updateNewFirmDevice(e, 'user_desc')}
-                                fullWidth
-                            />
-                        </DialogContent>
-                        <DialogActions>
-                            <Button variant="outlined" color="primary"
-                                    disabled={
-                                        !this.state.newFirmDevice.name ||
-                                        !this.state.newFirmDevice.coid.length ||
-                                        !this.state.newFirmDevice.type
-                                    }
-                                    onClick={() => this.handleAddFirmDevice()}>
-                                Add
-                            </Button>
-                            <Button onClick={() => this.handleClose('addDialog')} color="primary">
-                                Close
-                            </Button>
-                        </DialogActions>
-                    </Dialog>
-                </div>
-                <div>
-                    <Button variant="contained" color="secondary" disabled={this.props.selected ? !(this.props.selected.parent_id === '0') : true}
-                            onClick={() => this.handleClickOpen('confirmDeleteDialog')}>
-                        Delete
-                        <DeleteIcon/>
-                    </Button>
-                    <Dialog
-                        open={this.state.confirmDeleteDialog}
-                        onClose={() => this.handleClose('confirmDeleteDialog')}
-                        aria-labelledby="alert-dialog-title"
-                        aria-describedby="alert-dialog-description"
-                    >
-                        <DialogTitle id="alert-dialog-title-">Device properties</DialogTitle>
-                        <DialogContent>
-                            Confirm deletion of {this.props.selected ? this.props.selected._id : ''}
-                        </DialogContent>
-                        <DialogActions>
-                            <Button onClick={() => this.handleClose('confirmDeleteDialog')} color="primary">
-                                Close
-                            </Button>
-                            <Button disabled={!this.props.selected} variant="contained" color="secondary"
-                                    onClick={() => this.handleDeleteFirmDevice()}>
-                                Confirm
-                            </Button>
-                        </DialogActions>
-                    </Dialog>
-                </div>
-                <Button variant="contained" disabled={this.props.loading} onClick={() => this.handleRefresh()}>
-                    Refresh
-                </Button>
-                <div>
-                    <Tooltip
-                        title={
-                            <React.Fragment>
-                                <em>{"Add"}</em> <b>{'or'}</b> <em>{'delete'}</em>{' '}
-                                {"users from device"}
-                            </React.Fragment>
-                        }
-                    >
+                            <DialogActions>
+                                <Button variant="outlined" color="primary"
+                                        disabled={
+                                            !this.state.newFirmDevice.name ||
+                                            !this.state.newFirmDevice.coid.length ||
+                                            !this.state.newFirmDevice.type
+                                        }
+                                        onClick={() => this.handleAddFirmDevice()}>
+                                    Add
+                                </Button>
+                                <Button onClick={() => this.handleClose('addDialog')} color="primary">
+                                    Close
+                                </Button>
+                            </DialogActions>
+                        </Dialog>
+                    </div>
+                    <div>
+                        <Tooltip title={'Delete device'}>
+                            <div>
+                                <IconButton variant="outlined" color="primary" disabled={this.props.selected ? !(this.props.selected.parent_id === '0') : true}
+                                            onClick={() => this.handleClickOpen('confirmDeleteDialog')}>
+                                    <DeleteIcon/>
+                                </IconButton>
+                            </div>
+                        </Tooltip>
+                        <Dialog
+                            open={this.state.confirmDeleteDialog}
+                            onClose={() => this.handleClose('confirmDeleteDialog')}
+                            aria-labelledby="alert-dialog-title"
+                            aria-describedby="alert-dialog-description"
+                        >
+                            <DialogTitle id="alert-dialog-title-">Device properties</DialogTitle>
+                            <DialogContent>
+                                Confirm deletion of {this.props.selected ? this.props.selected._id : ''}
+                            </DialogContent>
+                            <DialogActions>
+                                <Button onClick={() => this.handleClose('confirmDeleteDialog')} color="primary">
+                                    Close
+                                </Button>
+                                <Button disabled={!this.props.selected} variant="contained" color="secondary"
+                                        onClick={() => this.handleDeleteFirmDevice()}>
+                                    Confirm
+                                </Button>
+                            </DialogActions>
+                        </Dialog>
+                    </div>
+                    <Tooltip title={'Refresh firm list'}>
                         <div>
-                            <Button variant="outlined" color="primary"
-                                    disabled={this.props.loading || !this.props.selected}
-                                    onClick={() => this.handleClickOpen('configUsersDialog')}>
-                                Config users
-                            </Button>
+                            <IconButton variant="outlined" color="primary" disabled={this.props.loading}
+                                        onClick={() => this.handleRefresh()}>
+                                <RefreshIcon/>
+                            </IconButton>
                         </div>
                     </Tooltip>
-                    <Dialog
-                        open={this.state.configUsersDialog}
-                        onClose={() => this.handleClose('configUsersDialog')}
-                        aria-labelledby="alert-dialog-title"
-                        aria-describedby="alert-dialog-description"
-                    >
-                        <DialogTitle id="alert-dialog-title-">Config users</DialogTitle>
-                        <DialogContent>
-                            <FormControl fullWidth={true}>
-                                <InputLabel htmlFor="select-multiple-chip">Firm users</InputLabel>
-                                <Select
-                                    multiple
-                                    value={this.state.newFirmDevice.coid}
-                                    onChange={(e) => this.updateNewFirmDevice(e, 'coid')}
-                                    input={<Input id="select-multiple-chip"/>}
-                                    renderValue={selected => (
-                                        <div>
-                                            {selected.map(value => (
-                                                <Chip key={value._id} label={value.name}/>
-                                            ))}
-                                        </div>
-                                    )}
-                                >
-                                    {firmUsers && firmUsers.map(user => (
-                                        <MenuItem key={user._id} value={user}>
-                                            {user.name}
-                                        </MenuItem>
-                                    ))}
-                                </Select>
-                                {loading && <LinearProgress color="secondary"/>}
-                            </FormControl>
-                        </DialogContent>
-                        <DialogActions>
-                            <Button variant="outlined" color="primary" disabled={this.state.newFirmDevice.coid < 1}
-                                    onClick={() => this.handleConfigUsersForDevice()}>
-                                Submit
-                            </Button>
-                            <Button onClick={() => this.handleClose('configUsersDialog')} color="primary">
-                                Close
-                            </Button>
-                        </DialogActions>
-                    </Dialog>
+                    <div>
+                        <Tooltip
+                            title={
+                                <React.Fragment>
+                                    <em>{"Add"}</em> <b>{'or'}</b> <em>{'delete'}</em>{' '}
+                                    {"users from device"}
+                                </React.Fragment>
+                            }
+                        >
+                            <div>
+                                <Button variant="outlined" color="primary"
+                                        disabled={this.props.loading || !this.props.selected}
+                                        onClick={() => this.handleClickOpen('configUsersDialog')}>
+                                    Config users
+                                </Button>
+                            </div>
+                        </Tooltip>
+                        <Dialog
+                            open={this.state.configUsersDialog}
+                            onClose={() => this.handleClose('configUsersDialog')}
+                            aria-labelledby="alert-dialog-title"
+                            aria-describedby="alert-dialog-description"
+                        >
+                            <DialogTitle id="alert-dialog-title-">Config users</DialogTitle>
+                            <DialogContent>
+                                <FormControl fullWidth={true}>
+                                    <InputLabel htmlFor="select-multiple-chip">Firm users</InputLabel>
+                                    <Select
+                                        multiple
+                                        value={this.state.newFirmDevice.coid}
+                                        onChange={(e) => this.updateNewFirmDevice(e, 'coid')}
+                                        input={<Input id="select-multiple-chip"/>}
+                                        renderValue={selected => (
+                                            <div>
+                                                {selected.map(value => (
+                                                    <Chip key={value._id} label={value.name}/>
+                                                ))}
+                                            </div>
+                                        )}
+                                    >
+                                        {firmUsers && firmUsers.map(user => (
+                                            <MenuItem key={user._id} value={user}>
+                                                {user.name}
+                                            </MenuItem>
+                                        ))}
+                                    </Select>
+                                    {loading && <LinearProgress color="secondary"/>}
+                                </FormControl>
+                            </DialogContent>
+                            <DialogActions>
+                                <Button variant="outlined" color="primary" disabled={this.state.newFirmDevice.coid < 1}
+                                        onClick={() => this.handleConfigUsersForDevice()}>
+                                    Submit
+                                </Button>
+                                <Button onClick={() => this.handleClose('configUsersDialog')} color="primary">
+                                    Close
+                                </Button>
+                            </DialogActions>
+                        </Dialog>
+                    </div>
                 </div>
             </div>
         )

@@ -1,14 +1,19 @@
-
-#column-list{
-  padding-top: 0 !important;
-  padding-bottom: 0 !important;
+.custom-toolbar{
+  display: flex;
+  padding-top: 10px;
 }
 
-#long-menu > div > ul{
-  padding-top: 0 !important;
-  padding-bottom: 0 !important;
+.device-toolbar{
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  & .title{
+    padding-left: 20px;
+  }
 }
 
-.submit-button{
-  height: 60px;
+.device-controls{
+  display: flex;
+  padding-right: 20px;
 }
+

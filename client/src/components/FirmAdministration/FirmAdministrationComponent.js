@@ -1,17 +1,20 @@
-import {Grid, MuiThemeProvider} from '@material-ui/core';
-import {createMuiTheme} from '@material-ui/core/styles';
 import React, {Component} from 'react';
 import * as PropTypes from "prop-types";
-import MaterialTable from '../material/MaterialTable/material-table';
 import _ from 'lodash';
-import './firmAdministration.scss'
+
+// Material
+import Checkbox from "@material-ui/core/Checkbox";
+import {Grid, MuiThemeProvider} from '@material-ui/core';
+import {createMuiTheme} from '@material-ui/core/styles';
 
 // Redux
 import {connect} from "react-redux";
 import store from "../../redux/store";
 import {addFirmRequest, deleteFirmRequest, firmDevicesRequest, updateFirmRequest} from "../../redux/actions";
-import Checkbox from "@material-ui/core/Checkbox";
 
+// Components
+import './firmAdministration.scss'
+import MaterialTable from '../material/MaterialTable/material-table';
 import FirmAdministrationToolBar from './FirmAdministrationToolBar';
 
 const mapDispatchToProps = (dispatch) => {
