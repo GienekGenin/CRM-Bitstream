@@ -1,5 +1,6 @@
 import React from "react";
 import * as PropTypes from 'prop-types';
+import _ from "lodash";
 
 // Material
 import {withStyles} from '@material-ui/core/styles';
@@ -15,14 +16,12 @@ import {firmDevicesRequest} from "../../redux/actions";
 import {tokenService} from "../../redux/services/token";
 
 // Components
+import FirmDevicesToolBarComponent from "./FirmDevicesToolBarComponent";
 import MaterialTable from '../material/MaterialTable/material-table';
 import './firmDevices.scss';
 
 // Services
 import {buildChart} from "./charts.service";
-import _ from "lodash";
-import FirmAdministrationToolBar from "../FirmAdministration/FirmAdministrationComponent";
-import FirmDevicesToolBarComponent from "./FirmDevicesToolBarComponent";
 
 const mapDispatchToProps = (dispatch) => {
     return {
@@ -134,8 +133,8 @@ class FirmDevicesComponent extends React.Component {
         this.setState({rowsPerPage});
     };
 
-    onRowClick = (e, rowData) => {
-        let selectedDevice = _.omit(this.state.devices.filter(el => (el._id === rowData._id) ? el : null)[0], 'action');
+    onRowClick = (e) => {
+        let selectedDevice = _.omit(this.state.devices.filter(el => (el._id === e.target.value) ? el : null)[0], 'action');
         if (this.state.selectedDevice && this.state.selectedDevice._id === selectedDevice._id) {
             this.setState({selectedDevice: null, selectedDeviceId: ''});
             this.props.onDeviceSelect(null);
@@ -155,12 +154,13 @@ class FirmDevicesComponent extends React.Component {
         this.props.onDeviceSelect(device);
     }
 
+
     render() {
         const {loading, devices, selectedDevice, selectedDeviceId, selectedFirm, columns, rowsPerPage, page} = this.state;
         devices && devices.map((el, i, arr) => arr[i] = Object.assign(el, {
             action: (
                 <div>
-                    <Checkbox value={el._id} checked={selectedDeviceId === el._id} />
+                    <Checkbox value={el._id} checked={selectedDeviceId === el._id}  onChange={this.onRowClick}/>
                 </div>
             )
         }));
@@ -201,14 +201,12 @@ class FirmDevicesComponent extends React.Component {
                                     parentChildData={(row,rows)=> rows.find(a=>a.sid === row.parent_id)}
                                     onChangePage={(props, e) => this.onChangePage(props, e)}
                                     onChangeRowsPerPage={(props, e) => this.onChangeRowsPerPage(props, e)}
-                                    onRowClick={this.onRowClick}
                                 />
                             </Grid>
                         </Grid>
                     </div>
                 </MuiThemeProvider>
                 <div id='parent'>
-
                 </div>
             </div>
         )
