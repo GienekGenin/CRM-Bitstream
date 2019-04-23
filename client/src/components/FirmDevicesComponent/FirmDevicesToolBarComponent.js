@@ -22,6 +22,7 @@ import Chip from "@material-ui/core/Chip";
 import Tooltip from '@material-ui/core/Tooltip';
 import IconButton from "@material-ui/core/IconButton";
 import RefreshIcon from '@material-ui/icons/Refresh';
+import AssignmentIndIcon from '@material-ui/icons/AssignmentInd';
 
 // Redux
 import {connect} from "react-redux";
@@ -369,11 +370,10 @@ class FirmDevicesToolBar extends React.Component {
                             }
                         >
                             <div>
-                                <Button variant="outlined" color="primary"
-                                        disabled={this.props.loading || !this.props.selected}
-                                        onClick={() => this.handleClickOpen('configUsersDialog')}>
-                                    Config users
-                                </Button>
+                                <IconButton variant="outlined" color="primary" disabled={this.props.loading || !this.props.selected}
+                                            onClick={() => this.handleClickOpen('configUsersDialog')}>
+                                    <AssignmentIndIcon/>
+                                </IconButton>
                             </div>
                         </Tooltip>
                         <Dialog
