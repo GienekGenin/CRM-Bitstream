@@ -36,6 +36,8 @@ import ListItem from "@material-ui/core/ListItem";
 import Checkbox from "@material-ui/core/Checkbox";
 import ListItemText from "@material-ui/core/ListItemText";
 import Menu from "@material-ui/core/Menu";
+import EmailIcon from '@material-ui/icons/Email';
+import LockIcon from '@material-ui/icons/Lock';
 
 const mapDispatchToProps = (dispatch) => {
     return {
@@ -470,10 +472,14 @@ class UserToolBar extends React.Component {
                         </Dialog>
                     </div>
                     <div>
-                        <Button variant="outlined" color="primary" disabled={this.props.loading || !this.props.selected}
-                                onClick={() => this.handleClickOpen('changePassDialog')}>
-                            Change password
-                        </Button>
+                        <Tooltip title={'Change password'}>
+                            <div>
+                                <IconButton variant="outlined" color="primary" disabled={this.props.loading || !this.props.selected}
+                                            onClick={() => this.handleClickOpen('changePassDialog')}>
+                                    <LockIcon/>
+                                </IconButton>
+                            </div>
+                        </Tooltip>
                         <Dialog
                             open={this.state.changePassDialog}
                             onClose={() => this.handleClose('changePassDialog')}
@@ -507,10 +513,14 @@ class UserToolBar extends React.Component {
                         </Dialog>
                     </div>
                     <div>
-                        <Button variant="outlined" color="primary" disabled={this.props.loading || !this.props.selected}
-                                onClick={() => this.handleClickOpen('changeEmailDialog')}>
-                            Change email
-                        </Button>
+                        <Tooltip title={'Change email'}>
+                            <div>
+                                <IconButton variant="outlined" color="primary" disabled={this.props.loading || !this.props.selected}
+                                            onClick={() => this.handleClickOpen('changeEmailDialog')}>
+                                    <EmailIcon/>
+                                </IconButton>
+                            </div>
+                        </Tooltip>
                         <Dialog
                             open={this.state.changeEmailDialog}
                             onClose={() => this.handleClose('changeEmailDialog')}
