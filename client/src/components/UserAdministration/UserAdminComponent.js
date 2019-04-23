@@ -2,15 +2,8 @@ import React from "react";
 import * as PropTypes from 'prop-types';
 
 // Material
-import Table from "@material-ui/core/Table";
-import Paper from "@material-ui/core/Paper";
-import TableBody from "@material-ui/core/TableBody";
-import TablePagination from "@material-ui/core/TablePagination";
-import {withStyles} from '@material-ui/core/styles';
-import TableRow from "@material-ui/core/TableRow";
-import TableCell from "@material-ui/core/TableCell";
+import {createMuiTheme, MuiThemeProvider, withStyles} from '@material-ui/core/styles';
 import Checkbox from "@material-ui/core/Checkbox";
-import LinearProgress from "@material-ui/core/LinearProgress";
 import {styles} from '../material/table-styles';
 
 // Redux
@@ -28,12 +21,16 @@ import {tokenService} from "../../redux/services/token";
 
 // Components
 import './userAdmin.scss';
+import {Grid} from "@material-ui/core";
+import MaterialTable from '../material/MaterialTable/material-table';
 import UserToolBarComponent from './UserToolBarComponent';
-import UserTableHead from './UserTableHead'
-import UserTableToolbar from './UserTableToolbar'
+import _ from "lodash";
 
-// Table service
-import {createData, stableSort, getSorting} from "./users-table.service";
+const theme = createMuiTheme({
+    palette: {
+        type: 'light'
+    }
+});
 
 const mapDispatchToProps = (dispatch) => {
     return {
@@ -60,19 +57,34 @@ class UserAdminComponent extends React.Component {
         super(props);
 
         this.state = {
-            order: 'asc',
-            orderBy: 'id',
-            selected: [],
-            data: [],
             page: 0,
             rowsPerPage: 5,
             selectedUser: null,
+            selectedUserId: '',
             loading: false,
             selectedFirm: null,
+            columns: [
+                {
+                    title: 'Select',
+                    field: 'action',
+                    filtering: false,
+                    sorting: false,
+                    hidden: false,
+                },
+                {
+                    title: 'Name',
+                    field: 'name',
+                    hidden: false,
+                },
+                {title: 'Surname', field: 'surname', hidden: false,},
+                {title: 'Email', field: 'email', hidden: false,},
+                {title: 'tel', field: 'tel', hidden: false,},
+            ]
         };
 
         this.handleUserSelect = this.handleUserSelect.bind(this);
         this.resetSelected = this.resetSelected.bind(this);
+        this.addRemoveColumn = this.addRemoveColumn.bind(this);
     }
 
 
@@ -92,57 +104,21 @@ class UserAdminComponent extends React.Component {
             } else this.setState({users: this.props.parentUsers, loading: false});
         }
 
-        let data = [];
-        let selected = [];
-        let selectedUser = null;
+
         if (this.props.selectedUser) {
-            selected.push(this.props.selectedUser.email);
-            selectedUser = this.props.selectedUser;
+            this.setState({selectedUser: this.props.selectedUser});
         }
         if (this.props.parentUsers) {
-            this.props.parentUsers.map(record => {
-                let row = [
-                    record.email,
-                    record.name,
-                ];
-                data.push(createData(...row));
-                const obj = {
-                    order: this.state.order,
-                    orderBy: this.state.orderBy,
-                    selected,
-                    selectedUser,
-                    data,
-                    page: this.state.page,
-                    rowsPerPage: this.state.rowsPerPage
-                };
-                this.setState(obj);
-                return true;
-            })
+            this.setState({users: this.props.parentUsers});
         }
 
         this.unsubscribe = store.subscribe(() => {
             this.setState({loading: store.getState().userReducer.loading});
-            let data = [];
-            const obj = {
-                order: this.state.order,
-                orderBy: this.state.orderBy,
-                selected: [],
-                page: this.state.page,
-                rowsPerPage: this.state.rowsPerPage
-            };
             if (store.getState().userReducer.users) {
                 const users = store.getState().userReducer.users;
                 this.setState({users});
                 this.props.handleSetUsers(users);
-                users.map(record => {
-                    let row = [
-                        record.email,
-                        record.name,
-                    ];
-                    return data.push(createData(...row));
-                })
             }
-            this.setState(Object.assign({}, obj, {data}));
             return true;
         });
     }
@@ -156,117 +132,74 @@ class UserAdminComponent extends React.Component {
         this.props.onUserSelect(user);
     }
 
-    handleRequestSort = (event, property) => {
-        const orderBy = property;
-        let order = 'desc';
-
-        if (this.state.orderBy === property && this.state.order === 'desc') {
-            order = 'asc';
-        }
-
-        this.setState({order, orderBy});
-    };
-
     resetSelected = () => {
         this.setState({selected: [], selectedUser: null});
     };
 
-    handleClick = (event, email) => {
-        const {selected} = this.state;
-        const selectedIndex = selected.indexOf(email);
-        let newSelected = [];
-        let selectedUser = null;
-        if (selectedIndex === -1) {
-            newSelected.push(email);
-            selectedUser = this.state.users.filter(el => el.email === email ? el : null)[0];
-        } else if (selectedIndex === 0) {
-            newSelected = newSelected.concat(selected.slice(1));
+    onRowClick = (e, rowData) => {
+        let selectedUser = _.omit(this.props.users.filter(el => (el._id === rowData._id) ? el : null)[0], 'action');
+        if (this.state.selectedUser && this.state.selectedUser._id === selectedUser._id) {
+            this.setState({selectedUser: null, selectedUserId: ''});
+            this.props.onUserSelect(null);
+        } else {
+            this.setState({selectedUser, selectedUserId: selectedUser._id});
+            this.props.onUserSelect(selectedUser);
         }
-        this.setState({selected: newSelected, selectedUser});
-        this.handleUserSelect(selectedUser);
     };
 
-    handleChangePage = (event, page) => {
-        this.setState({page});
+    addRemoveColumn = (columns) => {
+        this.setState({columns});
     };
-
-    handleChangeRowsPerPage = event => {
-        this.setState({rowsPerPage: event.target.value});
-    };
-
-    isSelected = id => this.state.selected.indexOf(id) !== -1;
 
     render() {
-        const {classes} = this.props;
-        const {data, order, orderBy, selected, rowsPerPage, page, selectedUser, loading, selectedFirm, users} = this.state;
-        const emptyRows = rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
-        return (
-            <Paper className={classes.root}>
-                <UserTableToolbar numSelected={selected.length} selectedUser={selectedUser}/>
-                <UserToolBarComponent
-                    selected={selectedUser}
-                    loading={loading}
-                    resetSelected={() => this.resetSelected()}
-                    selectedFirmId={selectedFirm ? selectedFirm._id : ''}
-                    users={users}
-                />
-                {loading && <LinearProgress color="secondary"/>}
-                <div className={classes.tableWrapper}>
-                    <Table className={classes.table} aria-labelledby="tableTitle">
-                        <UserTableHead
-                            numSelected={selected.length}
-                            order={order}
-                            orderBy={orderBy}
-                            onRequestSort={this.handleRequestSort}
-                            rowCount={data.length}
-                        />
-                        <TableBody>
-                            {stableSort(data, getSorting(order, orderBy))
-                                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                                .map(n => {
-                                    const isSelected = this.isSelected(n.email);
-                                    return (
-                                        <TableRow
-                                            hover
-                                            onClick={event => this.handleClick(event, n.email)}
-                                            role="checkbox"
-                                            aria-checked={isSelected}
-                                            tabIndex={-1}
-                                            key={n.email}
-                                            selected={isSelected}
-                                        >
-                                            <TableCell padding="checkbox">
-                                                <Checkbox checked={isSelected}/>
-                                            </TableCell>
-                                            <TableCell align="right" key={n.email}>{n.email}</TableCell>
-                                            <TableCell align="right" key={n.name}>{n.name}</TableCell>
-                                        </TableRow>
-                                    );
-                                })}
-                            {emptyRows > 0 && (
-                                <TableRow style={{height: 49 * emptyRows}}>
-                                    <TableCell colSpan={6}/>
-                                </TableRow>
-                            )}
-                        </TableBody>
-                    </Table>
+        const {rowsPerPage, page, selectedUser, selectedUserId, loading, selectedFirm, users, columns} = this.state;
+        users && users.map((el, i, arr) => arr[i] = Object.assign(el, {
+            action: (
+                <div>
+                    <Checkbox value={el._id} checked={selectedUserId === el._id} />
                 </div>
-                <TablePagination
-                    rowsPerPageOptions={[5, 10, 25]}
-                    component="div"
-                    count={data.length}
-                    rowsPerPage={rowsPerPage}
-                    page={page}
-                    backIconButtonProps={{
-                        'aria-label': 'Previous Page',
-                    }}
-                    nextIconButtonProps={{
-                        'aria-label': 'Next Page',
-                    }}
-                    onChangePage={this.handleChangePage}
-                    onChangeRowsPerPage={this.handleChangeRowsPerPage}
-                />
-            </Paper>
+            )
+        }));
+        return (
+            <MuiThemeProvider theme={theme}>
+                <div style={{maxWidth: '100%'}}>
+                    <Grid container>
+                        <Grid item xs={12}>
+                            <MaterialTable
+                                components={{
+                                    Toolbar: props => (
+                                        <div className={'custom-toolbar'}>
+                                            <UserToolBarComponent
+                                                selected={selectedUser}
+                                                resetSelected={this.resetSelected}
+                                                loading={loading}
+                                                selectedFirmId={selectedFirm ? selectedFirm._id : ''}
+                                                users={users}
+                                                addRemoveColumn={this.addRemoveColumn}
+                                                columns={columns}
+                                            />
+                                        </div>
+                                    ),
+                                }}
+                                isLoading={loading}
+                                data={users}
+                                columns={columns}
+                                title="Firms"
+                                options={{
+                                    filtering: true,
+                                    columnsButton: false,
+                                    header: true,
+                                    initialPage: page,
+                                    pageSize: rowsPerPage,
+                                    search: false,
+                                    toolbar: true
+                                }}
+                                onRowClick={this.onRowClick}
+                            />
+                        </Grid>
+                    </Grid>
+                </div>
+            </MuiThemeProvider>
         )
     }
 }

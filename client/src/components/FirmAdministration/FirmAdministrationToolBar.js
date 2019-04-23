@@ -129,8 +129,7 @@ class TestToolBar extends React.Component {
     };
 
     render() {
-        let {columns} = this.state;
-        const {anchorEl, columnsDialog} = this.state;
+        let {columns, anchorEl, columnsDialog} = this.state;
         return (
             <div className="firm-toolbar">
                 <div className={'title'}>
