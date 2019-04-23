@@ -1,6 +1,7 @@
 import React from "react";
 import * as PropTypes from 'prop-types';
 import * as _ from "lodash";
+import * as d3 from "d3";
 
 // Material
 import Button from "@material-ui/core/Button";
@@ -23,14 +24,19 @@ import Tooltip from '@material-ui/core/Tooltip';
 import IconButton from "@material-ui/core/IconButton";
 import RefreshIcon from '@material-ui/icons/Refresh';
 import AssignmentIndIcon from '@material-ui/icons/AssignmentInd';
+import ViewColumnIcon from '@material-ui/icons/ViewColumn';
+import Menu from "@material-ui/core/Menu";
+import List from "@material-ui/core/List";
+import Divider from "@material-ui/core/Divider";
+import ListItem from "@material-ui/core/ListItem";
+import Checkbox from "@material-ui/core/Checkbox";
+import ListItemText from "@material-ui/core/ListItemText";
 
 // Redux
 import {connect} from "react-redux";
 import {firmDevicesRequest, addFirmDeviceRequest, deleteFirmDeviceRequest, updateFirmDevice, updateDeviceUsersRequest} from "../../redux/actions";
 import {deviceTypesService} from '../../redux/services/device_types';
 import {userService} from '../../redux/services/user';
-import * as d3 from "d3";
-
 
 const mapDispatchToProps = (dispatch) => {
     return {
@@ -53,6 +59,9 @@ class FirmDevicesToolBar extends React.Component {
             addDialog: false,
             confirmDeleteDialog: false,
             configUsersDialog: false,
+            anchorEl: null,
+            columns: null,
+            columnsDialog: false,
             newFirmDevice: {
                 name: '',
                 type: '',
@@ -103,6 +112,16 @@ class FirmDevicesToolBar extends React.Component {
                 coid: []
             }
         });
+    };
+
+    handleClickMenu = event => {
+        this.setState({anchorEl: event.currentTarget, columnsDialog: true, columns: this.props.columns});
+    };
+
+    handleCloseMenu = () => {
+        const columns = this.state.columns;
+        this.props.addRemoveColumn(columns);
+        this.setState({anchorEl: null, columnsDialog: false, columns});
     };
 
     handleAddFirmDevice = () => {
@@ -161,6 +180,11 @@ class FirmDevicesToolBar extends React.Component {
         this.handleClose('configUsersDialog');
     }
 
+    handleColumnsChange = (title) => {
+        let columns = this.state.columns.map((el, i, arr) => el.title === title ? arr[i] = Object.assign(el, {hidden: !el.hidden}) : el);
+        this.setState({columns});
+    };
+
     componentDidMount() {
         this.setState({loading: true});
         deviceTypesService.getDeviceTypes().then(d => {
@@ -169,7 +193,7 @@ class FirmDevicesToolBar extends React.Component {
     }
 
     render() {
-        let {loading, firmUsers, deviceTypes} = this.state;
+        let {loading, firmUsers, deviceTypes, anchorEl, columnsDialog, columns} = this.state;
         return (
             <div className="device-toolbar">
                 <div className={'title'}>
@@ -325,7 +349,7 @@ class FirmDevicesToolBar extends React.Component {
                     <div>
                         <Tooltip title={'Delete device'}>
                             <div>
-                                <IconButton variant="outlined" color="primary" disabled={this.props.selected ? !(this.props.selected.parent_id === '0') : true}
+                                <IconButton variant="contained" color="secondary" disabled={this.props.selected ? !(this.props.selected.parent_id === '0') : true}
                                             onClick={() => this.handleClickOpen('confirmDeleteDialog')}>
                                     <DeleteIcon/>
                                 </IconButton>
@@ -352,7 +376,7 @@ class FirmDevicesToolBar extends React.Component {
                             </DialogActions>
                         </Dialog>
                     </div>
-                    <Tooltip title={'Refresh firm list'}>
+                    <Tooltip title={'Refresh device list'}>
                         <div>
                             <IconButton variant="outlined" color="primary" disabled={this.props.loading}
                                         onClick={() => this.handleRefresh()}>
@@ -419,6 +443,42 @@ class FirmDevicesToolBar extends React.Component {
                             </DialogActions>
                         </Dialog>
                     </div>
+                    <Tooltip title={'Show columns'}>
+                        <div>
+                            <IconButton variant="outlined" color="primary" disabled={this.props.loading}
+                                        onClick={this.handleClickMenu}>
+                                <ViewColumnIcon/>
+                            </IconButton>
+                            <Menu
+                                id="long-menu"
+                                open={columnsDialog}
+                                anchorEl={anchorEl}
+                                onClose={this.handleCloseMenu}
+                                PaperProps={{
+                                    style: {
+                                        maxHeight: 45 * 4.5,
+                                        width: 250,
+                                    },
+                                }}
+                            >
+                                <List id={'column-list'} >
+                                    {columns && columns.map(el => (
+                                        <div key={el.title}>
+                                            <Divider dark={'true'}/>
+                                            <ListItem key={el.title} dense button
+                                                      onClick={() => this.handleColumnsChange(el.title)}>
+                                                <Checkbox checked={!el.hidden}/>
+                                                <ListItemText primary={el.title}/>
+                                            </ListItem>
+                                        </div>
+                                    ))}
+                                    <Button fullWidth={true} onClick={this.handleCloseMenu} className={'submit-button'}>
+                                        Submit
+                                    </Button>
+                                </List>
+                            </Menu>
+                        </div>
+                    </Tooltip>
                 </div>
             </div>
         )
@@ -429,7 +489,9 @@ FirmDevicesToolBar.propTypes = {
     selected: PropTypes.object,
     resetSelected: PropTypes.func,
     selectedFirmId: PropTypes.string,
-    loading: PropTypes.bool
+    loading: PropTypes.bool,
+    columns: PropTypes.array,
+    addRemoveColumn: PropTypes.func
 };
 
 export default connect(null, mapDispatchToProps)(FirmDevicesToolBar);

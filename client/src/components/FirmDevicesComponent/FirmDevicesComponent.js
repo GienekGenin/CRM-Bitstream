@@ -102,7 +102,7 @@ class FirmDevicesComponent extends React.Component {
         if(this.props.selectedDevice){
             device = this.props.selectedDevice;
             this.buildChart(Object.assign({},this.props.selectedDevice,{parent_id: '0'}), this.props.parentDevices);
-            this.setState({device});
+            this.setState({selectedDevice: device, selectedDeviceId: device._id});
         }
 
         this.unsubscribe = store.subscribe(() => {
@@ -124,7 +124,7 @@ class FirmDevicesComponent extends React.Component {
     }
 
     resetSelected = () => {
-        this.setState({selected: [], device: null});
+        this.setState({selectedDeviceId: null, selectedDevice: null});
     };
 
     onChangePage = (page) => {

@@ -1,18 +1,7 @@
 import React from "react";
 import * as PropTypes from 'prop-types';
 
-import './usersToolBar.scss';
-
-import {connect} from "react-redux";
-import {
-    usersRequest,
-    addUserRequest,
-    deleteUserRequest,
-    updateUserRequest,
-    changePassAdminRequest,
-    changeEmailAdminRequest
-} from "../../redux/actions";
-
+// Material
 import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
 import DialogTitle from "@material-ui/core/DialogTitle";
@@ -38,6 +27,21 @@ import ListItemText from "@material-ui/core/ListItemText";
 import Menu from "@material-ui/core/Menu";
 import EmailIcon from '@material-ui/icons/Email';
 import LockIcon from '@material-ui/icons/Lock';
+
+// Redux
+import {connect} from "react-redux";
+import {
+    usersRequest,
+    addUserRequest,
+    deleteUserRequest,
+    updateUserRequest,
+    changePassAdminRequest,
+    changeEmailAdminRequest
+} from "../../redux/actions";
+
+// Components
+import './usersToolBar.scss';
+
 
 const mapDispatchToProps = (dispatch) => {
     return {

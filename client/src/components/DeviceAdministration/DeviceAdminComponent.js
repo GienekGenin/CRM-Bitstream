@@ -4,16 +4,9 @@ import React from "react";
 import * as PropTypes from 'prop-types';
 
 // Material
-import {withStyles} from '@material-ui/core/styles';
-import TableRow from "@material-ui/core/TableRow";
-import TableCell from "@material-ui/core/TableCell";
-import Table from "@material-ui/core/Table";
-import Paper from "@material-ui/core/Paper";
-import TableBody from "@material-ui/core/TableBody";
-import TablePagination from "@material-ui/core/TablePagination";
-import Checkbox from "@material-ui/core/Checkbox";
-import LinearProgress from "@material-ui/core/LinearProgress";
+import {createMuiTheme, MuiThemeProvider, withStyles} from '@material-ui/core/styles';
 import {styles} from '../material/table-styles';
+import Checkbox from "@material-ui/core/Checkbox";
 
 // Redux
 import store from "../../redux/store";
@@ -28,12 +21,19 @@ import {tokenService} from "../../redux/services/token";
 
 // Components
 import './deviceAdmin.scss';
+import {Grid} from "@material-ui/core";
+import MaterialTable from '../material/MaterialTable/material-table';
 import DevicesToolBarComponent from './DevicesToolBar';
-import DevicesTableHead from './DevicesTableHead'
-import DevicesTableToolbar from './DevicesTableToolbar'
 
-// Table service
-import {createData, stableSort, getSorting} from "./user_devices_table.service";
+
+const theme = createMuiTheme({
+    palette: {
+        type: 'light'
+    },
+    typography: {
+        useNextVariants: true,
+    },
+});
 
 const mapDispatchToProps = (dispatch) => {
     return {
@@ -57,90 +57,73 @@ class UserDevicesComponent extends React.Component {
         super(props);
 
         this.state = {
-            order: 'asc',
-            orderBy: 'id',
-            selected: [],
-            data: [],
             page: 0,
             rowsPerPage: 5,
-            device: null,
             loading: false,
+            selectedDevice: null,
+            selectedDeviceId: '',
             selectedUser: null,
+            columns: [
+                {
+                    title: 'Select',
+                    field: 'action',
+                    filtering: false,
+                    sorting: false,
+                    hidden: false,
+                },
+                {
+                    title: 'Name',
+                    field: 'name',
+                    hidden: false,
+                },
+                {title: 'phyid', field: 'phyid', hidden: false,},
+                {title: 'sn', field: 'sn', hidden: false,},
+                {title: 'soft', field: 'soft', hidden: false,},
+                {title: 'status', field: 'status', hidden: false,},
+                {title: 'description', field: 'description', hidden: false,},
+            ]
         };
 
         this.resetSelected = this.resetSelected.bind(this);
         this.buildChart = this.buildChart.bind(this);
+        this.addRemoveColumn = this.addRemoveColumn.bind(this);
     }
 
 
     componentDidMount() {
         this._isMounted = true;
+        this.setState({loading: true});
         if (this.props.selectedUser) {
             this.setState({selectedUser: this.props.selectedUser});
             if (!this.props.parentUserDevices) {
                 this.props.userDevicesRequest(this.props.selectedUser._id);
-            } else this.setState({devices: this.props.parentUserDevices});
+            } else this.setState({devices: this.props.parentUserDevices, loading: false});
         } else {
             let selectedUser = tokenService.verifyToken().user;
             this.setState({selectedUser});
             if (!this.props.parentUserDevices) {
                 this.props.userDevicesRequest(selectedUser._id);
-            } else this.setState({devices: this.props.parentUserDevices});
+            } else this.setState({devices: this.props.parentUserDevices, loading: false});
         }
 
-        let data = [];
-        let selected = [];
-        let device = null;
+        let selectedDevice = null;
         if (this.props.selectedUserDevice) {
-            selected.push(this.props.selectedUserDevice._id);
-            device = this.props.selectedUserDevice;
-            this.buildChart(Object.assign({}, this.props.selectedUserDevice, {parent_id: '0'}), this.props.parentUserDevices)
+            selectedDevice = this.props.selectedUserDevice;
+            this.buildChart(Object.assign({}, this.props.selectedUserDevice, {parent_id: '0'}), this.props.parentUserDevices);
+            this.setState({selectedDevice, selectedDeviceId: selectedDevice._id});
         }
         if (this.props.parentUserDevices) {
-            this.props.parentUserDevices.map(record => {
-                let row = [
-                    record._id,
-                    record.name,
-                ];
-                data.push(createData(...row));
-                const obj = {
-                    order: this.state.order,
-                    orderBy: this.state.orderBy,
-                    selected,
-                    device,
-                    data,
-                    page: this.state.page,
-                    rowsPerPage: this.state.rowsPerPage
-                };
-                this.setState(obj);
-                return true;
-            })
+            this.setState({devices: this.props.parentUserDevices});
         }
 
         this.unsubscribe = store.subscribe(() => {
             d3.select('#tree').remove();
             this.setState({loading: store.getState().devicesReducer.loading});
-            let data = [];
-            const obj = {
-                order: this.state.order,
-                orderBy: this.state.orderBy,
-                selected: [],
-                page: this.state.page,
-                rowsPerPage: this.state.rowsPerPage
-            };
             if (store.getState().devicesReducer.userDevices) {
                 const devices = store.getState().devicesReducer.userDevices;
                 this.setState({devices});
                 this.props.handleSetUserDevices(devices);
-                devices.map(record => {
-                    let row = [
-                        record._id,
-                        record.name,
-                    ];
-                    return data.push(createData(...row));
-                })
             }
-            this.setState(Object.assign({}, obj, {data}));
             return true;
         });
 
@@ -151,61 +134,31 @@ class UserDevicesComponent extends React.Component {
         this.unsubscribe();
     }
 
+    addRemoveColumn = (columns) => {
+        this.setState({columns});
+    };
 
     handleDeviceSelect(device) {
         this.buildChart(Object.assign({}, device, {parent_id: '0'}), this.state.devices);
         this.props.onUserDeviceSelect(device);
     }
 
+    resetSelected = () => {
+        this.setState({selectedDevice: null, selectedDeviceId: null});
+    };
+
+    // todo: possible bugs
     handleDeviceSelectNoBuild(device) {
         this.props.onUserDeviceSelect(device);
     }
-
-    handleRequestSort = (event, property) => {
-        const orderBy = property;
-        let order = 'desc';
-
-        if (this.state.orderBy === property && this.state.order === 'desc') {
-            order = 'asc';
-        }
-
-        this.setState({order, orderBy});
-    };
-
-    resetSelected = () => {
-        this.setState({selected: [], device: null});
-    };
-
-    handleClick = (event, id) => {
-        const {selected} = this.state;
-        const selectedIndex = selected.indexOf(id);
-        let newSelected = [];
-        let device = null;
-        if (selectedIndex === -1) {
-            newSelected.push(id);
-            device = this.state.devices.filter(el => el._id === id ? el : null)[0];
-        } else if (selectedIndex === 0) {
-            newSelected = newSelected.concat(selected.slice(1));
-        }
-        this.setState({selected: newSelected, device});
-        this.handleDeviceSelect(device);
-    };
-
+    // todo: possible bugs
     handleClickNoBuild = (event, id) => {
-        const {selected} = this.state;
-        const selectedIndex = selected.indexOf(id);
-        console.log(selected, selectedIndex)
-        let newSelected = [];
-        let device = null;
-        if (selectedIndex === -1) {
-            newSelected.push(id);
-            device = this.state.devices.filter(el => el._id === id ? el : null)[0];
-        } else if (selectedIndex === 0) {
-            newSelected = newSelected.concat(selected.slice(1));
-        }
-        this.setState({selected: newSelected, device});
+        const {devices} = this.state;
+        let device = devices.filter(el => el._id === id ? el : null)[0];
+        this.setState({selectedDeviceId: id, selectedDevice: device});
         this.handleDeviceSelectNoBuild(device);
     };
+
 
     buildChart = (parent, stateDevices) => {
 
@@ -289,7 +242,6 @@ class UserDevicesComponent extends React.Component {
         root.children.forEach(collapse);
 
 
-
 // Collapse the node and all it's children
         function collapse(d) {
             if (d.children) {
@@ -338,7 +290,7 @@ class UserDevicesComponent extends React.Component {
                 d3.select('#selected').attr("id", '');
                 d3.select('#selected-circle').attr("id", '');
                 nodeUpdate.select('circle.node')
-                    .attr('id',  (data) => {
+                    .attr('id', (data) => {
                         if (d.data.name === data.data.name) {
                             this.handleClickNoBuild(null, d.data._id);
                             return 'selected'
@@ -544,8 +496,6 @@ class UserDevicesComponent extends React.Component {
             // }
 
 
-
-
             // function zoom() {
             //     let scale = d3.event.scale,
             //         translation = d3.event.translate,
@@ -612,84 +562,70 @@ class UserDevicesComponent extends React.Component {
 
     };
 
-    handleChangePage = (event, page) => {
-        this.setState({page});
+    onRowClick = (e, rowData) => {
+        let selectedDevice = _.omit(this.state.devices.filter(el => (el._id === rowData._id) ? el : null)[0], 'action');
+        if (this.state.selectedDevice && this.state.selectedDevice._id === selectedDevice._id) {
+            this.setState({selectedDevice: null, selectedDeviceId: ''});
+            this.props.onUserDeviceSelect(null);
+        } else {
+            this.setState({selectedDevice, selectedDeviceId: selectedDevice._id});
+            this.props.onUserDeviceSelect(selectedDevice);
+        }
+        this.handleDeviceSelect(selectedDevice);
     };
-
-    handleChangeRowsPerPage = event => {
-        this.setState({rowsPerPage: event.target.value});
-    };
-
-    isSelected = id => this.state.selected.indexOf(id) !== -1;
-
 
     render() {
-        const {classes, selectedUser, parentUsers} = this.props;
-        const {data, order, orderBy, selected, rowsPerPage, page, device, loading} = this.state;
-        const emptyRows = rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
+        const {selectedUser, parentUsers} = this.props;
+        const {devices, columns, selectedDevice, selectedDeviceId, rowsPerPage, page, loading} = this.state;
+        devices && devices.map((el, i, arr) => arr[i] = Object.assign(el, {
+            action: (
+                <div>
+                    <Checkbox value={el._id} checked={selectedDeviceId === el._id} />
+                </div>
+            )
+        }));
         return (
             <div>
-                <Paper className={classes.root}>
-                    <DevicesTableToolbar numSelected={selected.length} firm={device}/>
-                    <DevicesToolBarComponent selected={device} selectedUserId={selectedUser._id} loading={loading}
-                                                 resetSelected={() => this.resetSelected()} parentUsers={parentUsers}/>
-                    {loading && <LinearProgress color="secondary"/>}
-                    <div className={classes.tableWrapper}>
-                        <Table className={classes.table} aria-labelledby="tableTitle">
-                            <DevicesTableHead
-                                numSelected={selected.length}
-                                order={order}
-                                orderBy={orderBy}
-                                onRequestSort={this.handleRequestSort}
-                                rowCount={data.length}
-                            />
-                            <TableBody>
-                                {stableSort(data, getSorting(order, orderBy))
-                                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                                    .map(n => {
-                                        const isSelected = this.isSelected(n._id);
-                                        return (
-                                            <TableRow
-                                                hover
-                                                onClick={event => this.handleClick(event, n._id)}
-                                                role="checkbox"
-                                                aria-checked={isSelected}
-                                                tabIndex={-1}
-                                                key={n._id}
-                                                selected={isSelected}
-                                            >
-                                                <TableCell padding="checkbox">
-                                                    <Checkbox checked={isSelected}/>
-                                                </TableCell>
-                                                <TableCell align="right" key={n._id}>{n._id}</TableCell>
-                                                <TableCell align="right" key={n.name}>{n.name}</TableCell>
-                                            </TableRow>
-                                        );
-                                    })}
-                                {emptyRows > 0 && (
-                                    <TableRow style={{height: 49 * emptyRows}}>
-                                        <TableCell colSpan={6}/>
-                                    </TableRow>
-                                )}
-                            </TableBody>
-                        </Table>
+                <MuiThemeProvider theme={theme}>
+                    <div style={{maxWidth: '100%'}}>
+                        <Grid container>
+                            <Grid item xs={12}>
+                                <MaterialTable
+                                    components={{
+                                        Toolbar: props => (
+                                            <div className={'custom-toolbar'}>
+                                                <DevicesToolBarComponent
+                                                    selected={selectedDevice}
+                                                    selectedUserId={selectedUser._id}
+                                                    loading={loading}
+                                                    resetSelected={() => this.resetSelected()}
+                                                    parentUsers={parentUsers}
+                                                    addRemoveColumn={this.addRemoveColumn}
+                                                    columns={columns}
+                                                />
+                                            </div>
+                                        ),
+                                    }}
+                                    isLoading={loading}
+                                    data={devices}
+                                    columns={columns}
+                                    title="User devices"
+                                    options={{
+                                        filtering: true,
+                                        columnsButton: false,
+                                        header: true,
+                                        initialPage: page,
+                                        pageSize: rowsPerPage,
+                                        search: false,
+                                        toolbar: true
+                                    }}
+                                    parentChildData={(row,rows)=> rows.find(a=>a.sid === row.parent_id)}
+                                    onRowClick={this.onRowClick}
+                                />
+                            </Grid>
+                        </Grid>
                     </div>
-                    <TablePagination
-                        rowsPerPageOptions={[5, 10, 25]}
-                        component="div"
-                        count={data.length}
-                        rowsPerPage={rowsPerPage}
-                        page={page}
-                        backIconButtonProps={{
-                            'aria-label': 'Previous Page',
-                        }}
-                        nextIconButtonProps={{
-                            'aria-label': 'Next Page',
-                        }}
-                        onChangePage={this.handleChangePage}
-                        onChangeRowsPerPage={this.handleChangeRowsPerPage}
-                    />
-                </Paper>
+                </MuiThemeProvider>
                 <div id='parent'>
 
                 </div>

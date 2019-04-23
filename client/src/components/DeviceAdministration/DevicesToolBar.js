@@ -19,6 +19,9 @@ import InputLabel from "@material-ui/core/InputLabel";
 import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
 import Tooltip from '@material-ui/core/Tooltip';
+import IconButton from "@material-ui/core/IconButton";
+import RefreshIcon from '@material-ui/icons/Refresh';
+import AssignmentIndIcon from '@material-ui/icons/AssignmentInd';
 
 // Redux
 import {connect} from "react-redux";
@@ -159,221 +162,238 @@ class DevicesToolBar extends React.Component {
         const {deviceTypes} = this.state;
         const {parentUsers} = this.props;
         return (
-            <div className="device-controls">
-                <div>
-                    <Button disabled={!this.props.selected} variant="contained" color="primary"
-                            onClick={() => this.handleClickOpen('editDialog')}>
-                        Edit
-                        <EditIcon/>
-                    </Button>
-                    <Dialog
-                        open={this.state.editDialog}
-                        onClose={() => this.handleClose('editDialog')}
-                        aria-labelledby="key-dialog-title"
-                        aria-describedby="alert-dialog-description"
-                    >
-                        <DialogTitle id="alert-dialog-title">Edit</DialogTitle>
-                        <DialogContent>
-                            <TextField
-                                autoFocus
-                                margin="dense"
-                                id="device-name"
-                                label="Device name"
-                                type="text"
-                                required={true}
-                                value={this.state.newUserDevice.name}
-                                onChange={(e) => this.updateNewUserDevice(e, 'name')}
-                                fullWidth
-                            />
-                            <TextField
-                                id="User-desc"
-                                label="Your description"
-                                multiline
-                                rows="4"
-                                margin="normal"
-                                variant="outlined"
-                                value={this.state.newUserDevice.user_desc}
-                                onChange={(e) => this.updateNewUserDevice(e, 'user_desc')}
-                                fullWidth
-                            />
-                        </DialogContent>
-                        <DialogActions>
-                            <Button variant="outlined" color="primary"
-                                    disabled={
-                                        !this.state.newUserDevice.name
-                                    }
-                                    onClick={() => this.handleUpdateUserDevice()}>
-                                Update
-                            </Button>
-                            <Button onClick={() => this.handleClose('editDialog')} color="primary">
-                                Close
-                            </Button>
-                        </DialogActions>
-                    </Dialog>
+            <div className="device-toolbar">
+                <div className={'title'}>
+                    {this.props.selected ? <h3>
+                        Selected {this.props.selected.name}
+                    </h3> : <h3>User devices</h3>}
                 </div>
-                <div>
-                    <Tooltip
-                        title={
-                            <React.Fragment>
-                                <em>{"Add"}</em>{' '}
-                                {"new gateway for selected user"}
-                            </React.Fragment>
-                        }
-                    >
+                <div className={'device-controls'}>
+                    <div>
+                        <Tooltip title={'Edit selected device'}>
+                            <div>
+                                <IconButton disabled={!this.props.selected} variant="contained" color="primary"
+                                            onClick={() => this.handleClickOpen('editDialog')}>
+                                    <EditIcon/>
+                                </IconButton>
+                            </div>
+                        </Tooltip>
+                        <Dialog
+                            open={this.state.editDialog}
+                            onClose={() => this.handleClose('editDialog')}
+                            aria-labelledby="key-dialog-title"
+                            aria-describedby="alert-dialog-description"
+                        >
+                            <DialogTitle id="alert-dialog-title">Edit</DialogTitle>
+                            <DialogContent>
+                                <TextField
+                                    autoFocus
+                                    margin="dense"
+                                    id="device-name"
+                                    label="Device name"
+                                    type="text"
+                                    required={true}
+                                    value={this.state.newUserDevice.name}
+                                    onChange={(e) => this.updateNewUserDevice(e, 'name')}
+                                    fullWidth
+                                />
+                                <TextField
+                                    id="User-desc"
+                                    label="Your description"
+                                    multiline
+                                    rows="4"
+                                    margin="normal"
+                                    variant="outlined"
+                                    value={this.state.newUserDevice.user_desc}
+                                    onChange={(e) => this.updateNewUserDevice(e, 'user_desc')}
+                                    fullWidth
+                                />
+                            </DialogContent>
+                            <DialogActions>
+                                <Button variant="outlined" color="primary"
+                                        disabled={
+                                            !this.state.newUserDevice.name
+                                        }
+                                        onClick={() => this.handleUpdateUserDevice()}>
+                                    Update
+                                </Button>
+                                <Button onClick={() => this.handleClose('editDialog')} color="primary">
+                                    Close
+                                </Button>
+                            </DialogActions>
+                        </Dialog>
+                    </div>
+                    <div>
+                        <Tooltip
+                            title={
+                                <React.Fragment>
+                                    <em>{"Add"}</em>{' '}
+                                    {"new gateway for selected user"}
+                                </React.Fragment>
+                            }
+                        >
+                            <div>
+                                <IconButton variant="outlined" color="primary" disabled={this.props.loading}
+                                            onClick={() => this.handleClickOpen('addDialog')}>
+                                    <AddIcon/>
+                                </IconButton>
+                            </div>
+                        </Tooltip>
+                        <Dialog
+                            open={this.state.addDialog}
+                            onClose={() => this.handleClose('addDialog')}
+                            aria-labelledby="alert-dialog-title"
+                            aria-describedby="alert-dialog-description"
+                        >
+                            <DialogTitle id="alert-dialog-title-">Add device</DialogTitle>
+                            <DialogContent>
+                                <TextField
+                                    autoFocus
+                                    margin="dense"
+                                    id="device-name"
+                                    label="Device name"
+                                    type="text"
+                                    required={true}
+                                    value={this.state.newUserDevice.name}
+                                    onChange={(e) => this.updateNewUserDevice(e, 'name')}
+                                    fullWidth
+                                />
+                                <FormControl fullWidth required={true}>
+                                    <InputLabel htmlFor="device-type">Device type</InputLabel>
+                                    <Select
+                                        value={this.state.newUserDevice.type}
+                                        onChange={(e) => this.updateNewUserDevice(e, 'type')}
+                                        id='device-type'
+                                    >
+                                        {deviceTypes ? deviceTypes.map((el, i) =>
+                                            <MenuItem value={el._id} key={i}>{el.name}</MenuItem>) : ''}
+                                    </Select>
+                                </FormControl>
+                                <TextField
+                                    id="User-desc"
+                                    label="Your description"
+                                    multiline
+                                    rows="4"
+                                    margin="normal"
+                                    variant="outlined"
+                                    value={this.state.newUserDevice.user_desc}
+                                    onChange={(e) => this.updateNewUserDevice(e, 'user_desc')}
+                                    fullWidth
+                                />
+                            </DialogContent>
+                            <DialogActions>
+                                <Button variant="outlined" color="primary"
+                                        disabled={
+                                            !this.state.newUserDevice.name ||
+                                            !this.state.newUserDevice.type
+                                        }
+                                        onClick={() => this.handleAddUserDevice()}>
+                                    Add
+                                </Button>
+                                <Button onClick={() => this.handleClose('addDialog')} color="primary">
+                                    Close
+                                </Button>
+                            </DialogActions>
+                        </Dialog>
+                    </div>
+                    <div>
+                        <Tooltip title={'Delete device'}>
+                            <div>
+                                <IconButton variant="outlined" color="secondary" disabled={this.props.selected ? !(this.props.selected.parent_id === '0') : true}
+                                            onClick={() => this.handleClickOpen('confirmDeleteDialog')}>
+                                    <DeleteIcon/>
+                                </IconButton>
+                            </div>
+                        </Tooltip>
+                        <Dialog
+                            open={this.state.confirmDeleteDialog}
+                            onClose={() => this.handleClose('confirmDeleteDialog')}
+                            aria-labelledby="alert-dialog-title"
+                            aria-describedby="alert-dialog-description"
+                        >
+                            <DialogTitle id="alert-dialog-title-">Device properties</DialogTitle>
+                            <DialogContent>
+                                Confirm deletion of {this.props.selected ? this.props.selected.name : ''}
+                            </DialogContent>
+                            <DialogActions>
+                                <Button onClick={() => this.handleClose('confirmDeleteDialog')} color="primary">
+                                    Close
+                                </Button>
+                                <Button disabled={!this.props.selected} variant="contained" color="secondary"
+                                        onClick={() => this.handleDeleteFirmDevice()}>
+                                    Confirm
+                                </Button>
+                            </DialogActions>
+                        </Dialog>
+                    </div>
+                    <Tooltip title={'Refresh device list'}>
                         <div>
-                            <Button variant="outlined" color="primary" disabled={this.props.loading}
-                                    onClick={() => this.handleClickOpen('addDialog')}>
-                                Add
-                                <AddIcon/>
-                            </Button>
+                            <IconButton variant="outlined" color="primary" disabled={this.props.loading}
+                                        onClick={() => this.handleRefresh()}>
+                                <RefreshIcon/>
+                            </IconButton>
                         </div>
                     </Tooltip>
-                    <Dialog
-                        open={this.state.addDialog}
-                        onClose={() => this.handleClose('addDialog')}
-                        aria-labelledby="alert-dialog-title"
-                        aria-describedby="alert-dialog-description"
-                    >
-                        <DialogTitle id="alert-dialog-title-">Add device</DialogTitle>
-                        <DialogContent>
-                            <TextField
-                                autoFocus
-                                margin="dense"
-                                id="device-name"
-                                label="Device name"
-                                type="text"
-                                required={true}
-                                value={this.state.newUserDevice.name}
-                                onChange={(e) => this.updateNewUserDevice(e, 'name')}
-                                fullWidth
-                            />
-                            <FormControl fullWidth required={true}>
-                                <InputLabel htmlFor="device-type">Device type</InputLabel>
-                                <Select
-                                    value={this.state.newUserDevice.type}
-                                    onChange={(e) => this.updateNewUserDevice(e, 'type')}
-                                    id='device-type'
-                                >
-                                    {deviceTypes ? deviceTypes.map((el, i) =>
-                                        <MenuItem value={el._id} key={i}>{el.name}</MenuItem>) : ''}
-                                </Select>
-                            </FormControl>
-                            <TextField
-                                id="User-desc"
-                                label="Your description"
-                                multiline
-                                rows="4"
-                                margin="normal"
-                                variant="outlined"
-                                value={this.state.newUserDevice.user_desc}
-                                onChange={(e) => this.updateNewUserDevice(e, 'user_desc')}
-                                fullWidth
-                            />
-                        </DialogContent>
-                        <DialogActions>
-                            <Button variant="outlined" color="primary"
-                                    disabled={
-                                        !this.state.newUserDevice.name ||
-                                        !this.state.newUserDevice.type
-                                    }
-                                    onClick={() => this.handleAddUserDevice()}>
-                                Add
-                            </Button>
-                            <Button onClick={() => this.handleClose('addDialog')} color="primary">
-                                Close
-                            </Button>
-                        </DialogActions>
-                    </Dialog>
+                    <div>
+                        <Tooltip
+                            title={
+                                <React.Fragment>
+                                    <em>{"Add"}</em> <b>{'or'}</b> <em>{'delete'}</em>{' '}
+                                    {"users from device"}
+                                </React.Fragment>
+                            }
+                        >
+                            <div>
+                                <IconButton variant="outlined" color="primary" disabled={this.props.loading || !this.props.selected}
+                                            onClick={() => this.handleClickOpen('configUsersDialog')}>
+                                    <AssignmentIndIcon/>
+                                </IconButton>
+                            </div>
+                        </Tooltip>
+                        <Dialog
+                            open={this.state.configUsersDialog}
+                            onClose={() => this.handleClose('configUsersDialog')}
+                            aria-labelledby="alert-dialog-title"
+                            aria-describedby="alert-dialog-description"
+                        >
+                            <DialogTitle id="alert-dialog-title-">Config users</DialogTitle>
+                            <DialogContent>
+                                <FormControl fullWidth={true}>
+                                    <InputLabel htmlFor="select-multiple-chip">Choose owners</InputLabel>
+                                    <Select
+                                        multiple
+                                        value={this.state.newUserDevice.coid}
+                                        onChange={(e) => this.updateNewUserDevice(e, 'coid')}
+                                        input={<Input id="select-multiple-chip"/>}
+                                        renderValue={selected => (
+                                            <div>
+                                                {selected.map(value => (
+                                                    <Chip key={value._id} label={value.name}/>
+                                                ))}
+                                            </div>
+                                        )}
+                                    >
+                                        {parentUsers.map(user => (
+                                            <MenuItem key={user._id} value={user}>
+                                                {user.name}
+                                            </MenuItem>
+                                        ))}
+                                    </Select>
+                                </FormControl>
+                            </DialogContent>
+                            <DialogActions>
+                                <Button variant="outlined" color="primary" disabled={this.state.newUserDevice.coid < 1}
+                                        onClick={() => this.handleConfigUsersForDevice()}>
+                                    Submit
+                                </Button>
+                                <Button onClick={() => this.handleClose('configUsersDialog')} color="primary">
+                                    Close
+                                </Button>
+                            </DialogActions>
+                        </Dialog>
+                    </div>
                 </div>
-                <div>
-                    <Button variant="contained" color="secondary" disabled={this.props.selected ? !(this.props.selected.parent_id === '0') : true}
-                            onClick={() => this.handleClickOpen('confirmDeleteDialog')}>
-                        Delete
-                        <DeleteIcon/>
-                    </Button>
-                    <Dialog
-                        open={this.state.confirmDeleteDialog}
-                        onClose={() => this.handleClose('confirmDeleteDialog')}
-                        aria-labelledby="alert-dialog-title"
-                        aria-describedby="alert-dialog-description"
-                    >
-                        <DialogTitle id="alert-dialog-title-">Device properties</DialogTitle>
-                        <DialogContent>
-                            Confirm deletion of {this.props.selected ? this.props.selected.name : ''}
-                        </DialogContent>
-                        <DialogActions>
-                            <Button onClick={() => this.handleClose('confirmDeleteDialog')} color="primary">
-                                Close
-                            </Button>
-                            <Button disabled={!this.props.selected} variant="contained" color="secondary"
-                                    onClick={() => this.handleDeleteFirmDevice()}>
-                                Confirm
-                            </Button>
-                        </DialogActions>
-                    </Dialog>
-                </div>
-                <Button variant="contained" disabled={this.props.loading} onClick={() => this.handleRefresh()}>
-                    Refresh
-                </Button>
-                <div>
-                    <Tooltip
-                        title={
-                            <React.Fragment>
-                                <em>{"Add"}</em> <b>{'or'}</b> <em>{'delete'}</em>{' '}
-                                {"users from device"}
-                            </React.Fragment>
-                        }
-                    >
-                        <div>
-                            <Button variant="outlined" color="primary"
-                                    disabled={this.props.loading || !this.props.selected}
-                                    onClick={() => this.handleClickOpen('configUsersDialog')}>
-                                Config users
-                            </Button>
-                        </div>
-                    </Tooltip>
-                    <Dialog
-                        open={this.state.configUsersDialog}
-                        onClose={() => this.handleClose('configUsersDialog')}
-                        aria-labelledby="alert-dialog-title"
-                        aria-describedby="alert-dialog-description"
-                    >
-                        <DialogTitle id="alert-dialog-title-">Config users</DialogTitle>
-                        <DialogContent>
-                            <FormControl fullWidth={true}>
-                                <InputLabel htmlFor="select-multiple-chip">Choose owners</InputLabel>
-                                <Select
-                                    multiple
-                                    value={this.state.newUserDevice.coid}
-                                    onChange={(e) => this.updateNewUserDevice(e, 'coid')}
-                                    input={<Input id="select-multiple-chip"/>}
-                                    renderValue={selected => (
-                                        <div>
-                                            {selected.map(value => (
-                                                <Chip key={value._id} label={value.name}/>
-                                            ))}
-                                        </div>
-                                    )}
-                                >
-                                    {parentUsers.map(user => (
-                                        <MenuItem key={user._id} value={user}>
-                                            {user.name}
-                                        </MenuItem>
-                                    ))}
-                                </Select>
-                            </FormControl>
-                        </DialogContent>
-                        <DialogActions>
-                            <Button variant="outlined" color="primary" disabled={this.state.newUserDevice.coid < 1}
-                                    onClick={() => this.handleConfigUsersForDevice()}>
-                                Submit
-                            </Button>
-                            <Button onClick={() => this.handleClose('configUsersDialog')} color="primary">
-                                Close
-                            </Button>
-                        </DialogActions>
-                    </Dialog>
-                </div>
+
             </div>
         )
     }
@@ -384,7 +404,9 @@ DevicesToolBar.propTypes = {
     selectedUserId: PropTypes.string,
     resetSelected: PropTypes.func,
     loading: PropTypes.bool,
-    parentUsers: PropTypes.array
+    parentUsers: PropTypes.array,
+    columns: PropTypes.array,
+    addRemoveColumn: PropTypes.func
 };
 
 export default connect(null, mapDispatchToProps)(DevicesToolBar);
