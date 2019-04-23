@@ -231,7 +231,7 @@ class UserToolBar extends React.Component {
                 </div>
                 <div className={'users-controls'}>
                     <div>
-                        <Tooltip title={'Edit selected firm'}>
+                        <Tooltip title={'Edit selected user'}>
                             <div>
                                 <IconButton disabled={this.props.loading || !this.props.selected} variant="contained" color="primary"
                                             onClick={() => this.handleClickOpen('editDialog')}>
@@ -335,7 +335,7 @@ class UserToolBar extends React.Component {
                         </Dialog>
                     </div>
                     <div>
-                        <Tooltip title={'Add new firm'}>
+                        <Tooltip title={'Add new user'}>
                             <div>
                                 <IconButton variant="outlined" color="primary" disabled={this.props.loading}
                                             onClick={() => this.handleClickOpen('addDialog')}>
@@ -437,10 +437,14 @@ class UserToolBar extends React.Component {
                         </Dialog>
                     </div>
                     <div>
-                        <IconButton variant="contained" color="secondary" disabled={this.props.loading || !this.props.selected}
-                                    onClick={() => this.handleClickOpen('confirmDeleteDialog')}>
-                            <DeleteIcon/>
-                        </IconButton>
+                        <Tooltip title={'Delete user'}>
+                            <div>
+                                <IconButton variant="outlined" color="secondary" disabled={this.props.loading || !this.props.selected}
+                                            onClick={() => this.handleClickOpen('confirmDeleteDialog')}>
+                                    <DeleteIcon/>
+                                </IconButton>
+                            </div>
+                        </Tooltip>
                         <Dialog
                             open={this.state.confirmDeleteDialog}
                             onClose={() => this.handleClose('confirmDeleteDialog')}
