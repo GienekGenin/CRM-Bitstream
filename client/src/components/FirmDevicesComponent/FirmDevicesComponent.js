@@ -34,7 +34,10 @@ const mapStateToProps = state => {
 const theme = createMuiTheme({
     palette: {
         type: 'light'
-    }
+    },
+    typography: {
+        useNextVariants: true,
+    },
 });
 
 class FirmDevicesComponent extends React.Component {

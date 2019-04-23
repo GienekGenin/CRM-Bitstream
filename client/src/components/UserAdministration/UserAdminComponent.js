@@ -29,7 +29,10 @@ import _ from "lodash";
 const theme = createMuiTheme({
     palette: {
         type: 'light'
-    }
+    },
+    typography: {
+        useNextVariants: true,
+    },
 });
 
 const mapDispatchToProps = (dispatch) => {

@@ -29,7 +29,10 @@ const mapDispatchToProps = (dispatch) => {
 const theme = createMuiTheme({
     palette: {
         type: 'light'
-    }
+    },
+    typography: {
+        useNextVariants: true,
+    },
 });
 
 class FirmAdministrationComponent extends Component {

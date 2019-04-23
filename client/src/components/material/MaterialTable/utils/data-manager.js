@@ -291,17 +291,17 @@ export default class DataManager {
 
   findDataByPath = (renderData, path) => {
     if (this.isDataType("tree")) {
-      const node = path.reduce((result, current) => {
-        if(result.tableData.childRows)
-        return result.tableData.childRows[current];
+      return path.reduce((result, current) => {
+        if(result.tableData.childRows){
+          return result.tableData.childRows[current];
+        }
+        return null;
       }, { tableData: { childRows: renderData } });
-
-      return node;
     }
     else {
       const data = { groups: renderData };
 
-      const node = path.reduce((result, current) => {
+      return path.reduce((result, current) => {
         if (result.groups.length > 0) {
           return result.groups[current];
         }
@@ -312,7 +312,6 @@ export default class DataManager {
           return undefined;
         }
       }, data);
-      return node;
     }
   };
 
