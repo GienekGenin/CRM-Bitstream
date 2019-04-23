@@ -79,13 +79,10 @@ class AppComponent extends Component {
                         <AppBar position="static" color="primary">
                             <Toolbar>
                                 <div className="logo">
-                                    <img
+                                    <Link to={'/'}><img
                                         src="http://bitstream.pl/wp-content/uploads/2018/03/Logo-Bitstream-4-01.png"
-                                        alt=""/>
+                                        alt=""/></Link>
                                 </div>
-                                <Typography variant="h6" color="inherit">
-                                    <Link to={'/'}><Button color="inherit">Home</Button></Link>
-                                </Typography>
                                 {checkAccess('/dashboard') && <Typography variant="h6" color="inherit">
                                     <Link to={'/dashboard'}><Button color="inherit"> Dashboard </Button></Link>
                                 </Typography>} {checkAccess('/admin_panel') && <Typography variant="h6" color="inherit">

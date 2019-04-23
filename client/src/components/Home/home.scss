@@ -1,0 +1,62 @@
+iframe {
+  top: 0;
+  left: 0;
+  display: initial;
+  height: 100%;
+  width: 100%;
+  z-index: -1;
+}
+
+#masthead > div.sticky-wrapper > div {
+  margin-top: 50px;
+}
+
+canvas {
+  //background: linear-gradient(-45deg, #009FFF, #ec2F4B);
+  background-size: 400% 400%;
+  -webkit-animation: Gradient 15s ease infinite;
+  -moz-animation: Gradient 15s ease infinite;
+  animation: Gradient 15s ease infinite;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: -2;
+  width: 100%;
+  height: 100%;
+}
+
+@-webkit-keyframes Gradient {
+  0% {
+    background-position: 0% 50%
+  }
+  50% {
+    background-position: 100% 50%
+  }
+  100% {
+    background-position: 0% 50%
+  }
+}
+
+@-moz-keyframes Gradient {
+  0% {
+    background-position: 0% 50%
+  }
+  50% {
+    background-position: 100% 50%
+  }
+  100% {
+    background-position: 0% 50%
+  }
+}
+
+@keyframes Gradient {
+  0% {
+    background-position: 0% 50%
+  }
+  50% {
+    background-position: 100% 50%
+  }
+  100% {
+    background-position: 0% 50%
+  }
+}

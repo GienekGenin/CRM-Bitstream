@@ -17,6 +17,7 @@ import {loginRequest, changePassRequest} from "../../redux/actions/index";
 
 // Components
 import './login.scss';
+import {animate} from "../Home/landingAnimation";
 
 const mapDispatchToProps = (dispatch) => {
     return {
@@ -43,7 +44,7 @@ class LoginPage extends React.Component {
     _isMounted = false;
 
     componentDidMount() {
-
+        animate();
         this._isMounted = true;
 
         this.unsubscribe = store.subscribe(() => {
@@ -140,6 +141,7 @@ class LoginPage extends React.Component {
                         </form>
                     </Grow>
                 </div>
+                <canvas id="canvas"></canvas>
             </div>
         );
     }
