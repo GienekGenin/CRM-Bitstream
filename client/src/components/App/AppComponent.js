@@ -4,7 +4,6 @@ import {PrivateRoute} from "../privateRoute";
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 // Material
-import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
@@ -12,17 +11,12 @@ import {MuiThemeProvider, createMuiTheme} from '@material-ui/core/styles';
 import red from '@material-ui/core/colors/red';
 import Drawer from '@material-ui/core/Drawer';
 import List from '@material-ui/core/List';
-import CssBaseline from '@material-ui/core/CssBaseline';
 import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import InboxIcon from '@material-ui/icons/MoveToInbox';
-import MailIcon from '@material-ui/icons/Mail';
 
 // Redux
 import {history} from '../../redux/services/history';
@@ -93,14 +87,18 @@ const styles = theme => ({
         width: drawerWidth,
         flexShrink: 0,
         whiteSpace: 'nowrap',
-        backgroundImage: `url('../../../public/static/image.png')`
+        background: `url('https://pp.userapi.com/c852024/v852024335/10bfc4/Tj8lq3nMO-U.jpg') no-repeat right top`,
+        backgroundSize: '300px 1100px',
     },
     drawerOpen: {
         width: drawerWidth,
         transition: theme.transitions.create('width', {
             easing: theme.transitions.easing.sharp,
             duration: 1000,
-        }),backgroundImage: `url('../../../public/static/image.png')`
+        }),
+        background: `url('https://pp.userapi.com/c852024/v852024335/10bfc4/Tj8lq3nMO-U.jpg') no-repeat right top`,
+        backgroundSize: '300px 1100px'
+
     },
     drawerClose: {
         transition: theme.transitions.create('width', {
@@ -111,7 +109,10 @@ const styles = theme => ({
         width: theme.spacing.unit * 7 + 1,
         [theme.breakpoints.up('sm')]: {
             width: theme.spacing.unit * 9 + 1,
-        },backgroundImage: `url('../../../public/static/image.png')`
+        },
+        background: `url('https://pp.userapi.com/c852024/v852024335/10bfc4/Tj8lq3nMO-U.jpg') no-repeat right top`,
+        backgroundSize: '300px 1100px'
+
     },
     toolbar: {
         display: 'flex',
@@ -165,7 +166,7 @@ class AppComponent extends Component {
         return (
             <Router history={history}>
                 <div className={'root'}>
-                    <div id={'tests'}>
+                    <div>
                         <Drawer
                             variant="permanent"
                             className={classNames(classes.drawer, {
@@ -181,6 +182,9 @@ class AppComponent extends Component {
                             open={this.state.open}
                         >
                             {this.state.open && <div className={classes.toolbar}>
+                                <div className={'logo'}>
+                                    <img src="https://bitstream.pl/wp-content/uploads/2019/04/Logo-Bitstream-4-01.png" alt=""/>
+                                </div>
                                 <IconButton onClick={this.handleDrawerClose}>
                                     {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
                                 </IconButton>
