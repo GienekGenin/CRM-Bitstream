@@ -13,4 +13,23 @@ a {
 
 .logo {
   display: inherit;
+  width:  215px;
+}
+
+.root{
+  display: flex;
+  width: 100%;
+  height: 100%;
+}
+
+.drawerOpen{
+  background-color: red;
+}
+
+.drawerClosed{
+  background-color: red;
+}
+
+.drawer{
+  background-color: red;
 }
