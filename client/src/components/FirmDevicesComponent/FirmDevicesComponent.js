@@ -1,6 +1,7 @@
 import React from "react";
 import * as PropTypes from 'prop-types';
 import _ from "lodash";
+import * as d3 from "d3";
 
 // Material
 import {withStyles} from '@material-ui/core/styles';
@@ -19,10 +20,6 @@ import {tokenService} from "../../redux/services/token";
 import FirmDevicesToolBarComponent from "./FirmDevicesToolBarComponent";
 import MaterialTable from '../material/MaterialTable/material-table';
 import './firmDevices.scss';
-
-// Services
-// import {buildChart} from "./charts.service";
-import * as d3 from "d3";
 
 const mapDispatchToProps = (dispatch) => {
     return {
