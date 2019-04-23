@@ -69,7 +69,7 @@ class UserDevicesComponent extends React.Component {
         };
 
         this.resetSelected = this.resetSelected.bind(this);
-        this.buildChart = this.buildChart.bind(this)
+        this.buildChart = this.buildChart.bind(this);
     }
 
 
@@ -194,6 +194,7 @@ class UserDevicesComponent extends React.Component {
     handleClickNoBuild = (event, id) => {
         const {selected} = this.state;
         const selectedIndex = selected.indexOf(id);
+        console.log(selected, selectedIndex)
         let newSelected = [];
         let device = null;
         if (selectedIndex === -1) {

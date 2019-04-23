@@ -6,5 +6,13 @@
   fill: none;
   stroke: #97a6ff;
   stroke-width: 2px;
-  -webkit-text-stroke-color: #1F2127;
+}
+
+#selected{
+  stroke: blueviolet !important;
+  stroke-width: 2px;
+}
+
+#selected-circle{
+  fill: greenyellow !important;
 }
