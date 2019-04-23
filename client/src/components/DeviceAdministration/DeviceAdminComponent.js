@@ -23,7 +23,7 @@ import {tokenService} from "../../redux/services/token";
 import './deviceAdmin.scss';
 import {Grid} from "@material-ui/core";
 import MaterialTable from '../material/MaterialTable/material-table';
-import DevicesToolBarComponent from './DevicesToolBar';
+import DevicesToolBarComponent from './DevicesToolBarComponent';
 
 
 const theme = createMuiTheme({

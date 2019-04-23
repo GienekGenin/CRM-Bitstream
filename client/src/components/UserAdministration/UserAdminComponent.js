@@ -109,7 +109,8 @@ class UserAdminComponent extends React.Component {
 
 
         if (this.props.selectedUser) {
-            this.setState({selectedUser: this.props.selectedUser});
+            const selectedUser = this.props.selectedUser;
+            this.setState({selectedUser, selectedUserId: selectedUser._id});
         }
         if (this.props.parentUsers) {
             this.setState({users: this.props.parentUsers});
@@ -136,7 +137,7 @@ class UserAdminComponent extends React.Component {
     }
 
     resetSelected = () => {
-        this.setState({selected: [], selectedUser: null});
+        this.setState({selectedUser: null, selectedUserId: null});
     };
 
     onRowClick = (e, rowData) => {

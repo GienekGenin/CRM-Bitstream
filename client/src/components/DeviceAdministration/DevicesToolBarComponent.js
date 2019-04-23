@@ -44,7 +44,7 @@ const mapDispatchToProps = (dispatch) => {
     };
 };
 
-class DevicesToolBar extends React.Component {
+class DevicesToolBarComponent extends React.Component {
 
     constructor(props) {
         super(props);
@@ -399,7 +399,7 @@ class DevicesToolBar extends React.Component {
     }
 }
 
-DevicesToolBar.propTypes = {
+DevicesToolBarComponent.propTypes = {
     selected: PropTypes.object,
     selectedUserId: PropTypes.string,
     resetSelected: PropTypes.func,
@@ -409,4 +409,4 @@ DevicesToolBar.propTypes = {
     addRemoveColumn: PropTypes.func
 };
 
-export default connect(null, mapDispatchToProps)(DevicesToolBar);
+export default connect(null, mapDispatchToProps)(DevicesToolBarComponent);
