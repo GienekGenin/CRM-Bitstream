@@ -122,7 +122,9 @@ const styles = theme => ({
         justifyContent: 'flex-end',
         padding: '0 8px',
         ...theme.mixins.toolbar,
-        background: `url('https://bitstream.pl/wp-content/uploads/2019/04/Logo-Bitstream-4-01.png') no-repeat right top`
+        background: `url('https://bitstream.pl/wp-content/uploads/2019/04/Logo-Bitstream-4-01.png') no-repeat`,
+        backgroundPosition: 'center center',
+        backgroundSize: '160px 30px'
     },
     content: {
         flexGrow: 1,
