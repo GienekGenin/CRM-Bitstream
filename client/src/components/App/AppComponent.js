@@ -17,6 +17,9 @@ import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import ListItem from '@material-ui/core/ListItem';
+import HomeIcon from '@material-ui/icons/Home';
+import DashboardIcon from '@material-ui/icons/Dashboard';
+import AccountIcon from '@material-ui/icons/AccountCircle';
 
 // Redux
 import {history} from '../../redux/services/history';
@@ -97,7 +100,8 @@ const styles = theme => ({
             duration: 1000,
         }),
         background: `url('https://pp.userapi.com/c852024/v852024335/10bfc4/Tj8lq3nMO-U.jpg') no-repeat right top`,
-        backgroundSize: '300px 1100px'
+        backgroundSize: '300px 1100px',
+        overflowX: 'hidden'
 
     },
     drawerClose: {
@@ -123,7 +127,6 @@ const styles = theme => ({
     },
     content: {
         flexGrow: 1,
-        overflow: 'scroll'
         // padding: theme.spacing.unit * 3,
     },
 });
@@ -146,11 +149,11 @@ class AppComponent extends Component {
     };
 
     handleDrawerOpen = () => {
-        this.setState({ open: true });
+        this.setState({open: true});
     };
 
     handleDrawerClose = () => {
-        this.setState({ open: false });
+        this.setState({open: false});
     };
 
     componentWillMount() {
@@ -161,7 +164,7 @@ class AppComponent extends Component {
     }
 
     render() {
-        const { classes, theme } = this.props;
+        const {classes, theme} = this.props;
         const {user} = this.props;
         return (
             <Router history={history}>
@@ -182,11 +185,11 @@ class AppComponent extends Component {
                             open={this.state.open}
                         >
                             {this.state.open && <div className={classes.toolbar}>
-                                <div className={'logo'}>
-                                    <img src="https://bitstream.pl/wp-content/uploads/2019/04/Logo-Bitstream-4-01.png" alt=""/>
-                                </div>
+                                {/*<div className={'logo'}>*/}
+                                {/*<img src="https://bitstream.pl/wp-content/uploads/2019/04/Logo-Bitstream-4-01.png" alt=""/>*/}
+                                {/*</div>*/}
                                 <IconButton onClick={this.handleDrawerClose}>
-                                    {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
+                                    {theme.direction === 'rtl' ? <ChevronRightIcon/> : <ChevronLeftIcon/>}
                                 </IconButton>
                             </div>}
                             {!this.state.open && <Toolbar disableGutters={!this.state.open}>
@@ -198,56 +201,57 @@ class AppComponent extends Component {
                                         [classes.hide]: this.state.open,
                                     })}
                                 >
-                                    <MenuIcon />
+                                    <MenuIcon/>
                                 </IconButton>
                             </Toolbar>}
-                            <Divider />
+                            <Divider/>
                             <List>
-                                <ListItem >
+                                <Link to={'/'}><ListItem button>
+                                        <HomeIcon/>
                                     <Typography variant="h6" color="inherit">
-                                        <Link to={'/'}><Button color="inherit"> Home </Button></Link>
+                                         Home
                                     </Typography>
-                                </ListItem>
-                                <ListItem>
-                                    {checkAccess('/dashboard') && <Typography variant="h6" color="inherit">
-                                        <Link to={'/dashboard'}><Button color="inherit"> Dashboard </Button></Link>
-                                    </Typography>}
-                                </ListItem>
-                                <ListItem>
-                                    {checkAccess('/dashboard') && <Typography variant="h6" color="inherit">
-                                        <Link to={'/dashboard'}><Button color="inherit"> Dashboard </Button></Link>
-                                    </Typography>}
-                                </ListItem>
-                                <ListItem>
-                                    {checkAccess('/admin_panel') && <Typography variant="h6" color="inherit">
-                                        <Link to={'/admin_panel'}><Button color="inherit"> Admin Panel </Button></Link>
-                                    </Typography>}
-                                </ListItem>
-                                <ListItem>
-                                    {checkAccess('/devices') && <Typography variant="h6" color="inherit">
-                                        <Link to={'/devices'}><Button color="inherit"> devices </Button></Link>
-                                    </Typography>}
-                                </ListItem>
-                                <ListItem>
-                                    {user ? <Button color="inherit" onClick={this.props.logoutRequest}><Link
-                                            to={'/login'}>Logout</Link></Button> :
-                                        <Link to={'/login'}><Button color="inherit">Login</Button></Link>}
-                                </ListItem>
+                                </ListItem></Link>
+                                {checkAccess('/dashboard') && <Link to={'/dashboard'}><ListItem button>
+                                        <DashboardIcon/>
+                                    <Typography variant="h6" color="inherit">
+                                         Dashboard
+                                    </Typography>
+                                </ListItem></Link>}
+                                {checkAccess('/admin_panel') && <Link to={'/admin_panel'}><ListItem button>
+                                        <DashboardIcon/>
+                                    <Typography variant="h6" color="inherit">
+                                         Admin Panel
+                                    </Typography>
+                                </ListItem></Link>}
+                                {checkAccess('/devices') && <Link to={'/devices'}><ListItem button>
+                                    <Typography variant="h6" color="inherit">
+                                        Devices
+                                    </Typography>
+                                </ListItem></Link>}
+                                {user ?
+                                    <Link to={'/login'}><ListItem button onClick={this.props.logoutRequest}>
+                                        <AccountIcon/><Typography variant="h6" color="inherit">
+                                         Logout </Typography>
+                                </ListItem></Link> :
+                                    <Link to={'/login'}><ListItem button>
+                                        <AccountIcon/><Typography variant="h6" color="inherit"> Login</Typography>
+                                    </ListItem></Link>}
                             </List>
                         </Drawer>
                     </div>
                     <main className={classes.content}>
                         <MuiThemeProvider theme={theme}>
-                                <Switch history={history}>
-                                    <Route exact path='/' component={HomeComponent}/>
-                                    <PrivateRoute exact path='/admin_panel' component={AdminPanelComponent}/>
-                                    <PrivateRoute exact path='/dashboard' component={DashboardComponent}/>
-                                    <PrivateRoute exact path='/devices' component={DeviceAdminComponent}/>
-                                    <Route exact path='/login' component={LoginForm}/>
-                                </Switch>
-                                <SnackbarProvider maxSnack={5}>
-                                    <PopupComponent/>
-                                </SnackbarProvider>
+                            <Switch history={history}>
+                                <Route exact path='/' component={HomeComponent}/>
+                                <PrivateRoute exact path='/admin_panel' component={AdminPanelComponent}/>
+                                <PrivateRoute exact path='/dashboard' component={DashboardComponent}/>
+                                <PrivateRoute exact path='/devices' component={DeviceAdminComponent}/>
+                                <Route exact path='/login' component={LoginForm}/>
+                            </Switch>
+                            <SnackbarProvider maxSnack={5}>
+                                <PopupComponent/>
+                            </SnackbarProvider>
                         </MuiThemeProvider>
 
                     </main>
@@ -263,4 +267,4 @@ AppComponent.propTypes = {
 
 const App = connect(mapStateToProps, mapDispatchToProps)(AppComponent);
 
-export default withStyles(styles, { withTheme: true })(App);
+export default withStyles(styles, {withTheme: true})(App);
