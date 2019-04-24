@@ -1,5 +1,10 @@
-.parent {
-  background-color: #ffb6c1;
+#parent{
+  margin-top: 40px;
+}
+
+#tree > svg{
+  display: block;
+  margin: 0 auto;
 }
 
 .link {
@@ -18,9 +23,12 @@
 }
 
 .chart-container{
+  width: 300px;
   height: 100%;
 }
 
 #device-types-chart{
-  height: 100%;
+  width: 300px;
+  height: 500px;
+  min-width: 300px;
 }

@@ -70,11 +70,11 @@ class FirmDevicesComponent extends React.Component {
                     field: 'name',
                     hidden: false,
                 },
-                {title: 'phyid', field: 'phyid', hidden: false,},
-                {title: 'sn', field: 'sn', hidden: false,},
-                {title: 'soft', field: 'soft', hidden: false,},
+                {title: 'phyid', field: 'phyid', hidden: true,},
+                {title: 'sn', field: 'sn', hidden: true,},
+                {title: 'soft', field: 'soft', hidden: true,},
                 {title: 'status', field: 'status', hidden: false,},
-                {title: 'description', field: 'description', hidden: false,},
+                {title: 'description', field: 'description', hidden: true,},
             ]
         };
 
@@ -207,13 +207,13 @@ class FirmDevicesComponent extends React.Component {
         }
         let treeData = unflatten(arr)[0];
         let margin = {
-                top: 300,
+                top: 60,
                 right: 90,
                 bottom: 30,
                 left: 90
             },
-            width = 960 - margin.left - margin.right,
-            height = 500 - margin.top - margin.bottom;
+            width = 560 ,
+            height = 10;
 
 // append the svg object to the body of the page
 // appends a 'group' element to 'svg'
@@ -593,8 +593,17 @@ class FirmDevicesComponent extends React.Component {
             <div>
                 <MuiThemeProvider theme={theme}>
                     <div style={{maxWidth: '100%'}}>
-                        <Grid container>
-                            <Grid item xs={6}>
+                        <Grid
+                            container
+                            spacing={40}
+                        >
+                            <Grid item xs={3} md={3} lg={3}>
+                                <Paper className={'chart-container'}>
+                                    <div id={'device-types-chart'}>
+                                    </div>
+                                </Paper>
+                            </Grid>
+                            <Grid item xs={9} md={9} lg={9}>
                                 <MaterialTable
                                     components={{
                                         Toolbar: props => (
@@ -629,17 +638,13 @@ class FirmDevicesComponent extends React.Component {
                                     onRowClick={this.onRowClick}
                                 />
                             </Grid>
-                            <Grid item xs={6}>
-                                <Paper className={'chart-container'}>
-                                    <div id={'device-types-chart'}>
-                                    </div>
-                                </Paper>
-                            </Grid>
                         </Grid>
                     </div>
                 </MuiThemeProvider>
-                <div id='parent'>
-                </div>
+                <Paper>
+                    <div id='parent'>
+                    </div>
+                </Paper>
             </div>
         )
     }
