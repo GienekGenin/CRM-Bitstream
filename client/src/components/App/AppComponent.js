@@ -6,8 +6,7 @@ import classNames from 'classnames';
 // Material
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
-import Button from '@material-ui/core/Button';
-import {MuiThemeProvider, createMuiTheme} from '@material-ui/core/styles';
+import {MuiThemeProvider} from '@material-ui/core/styles';
 import red from '@material-ui/core/colors/red';
 import Drawer from '@material-ui/core/Drawer';
 import List from '@material-ui/core/List';
@@ -39,31 +38,28 @@ import {SnackbarProvider} from "notistack";
 import DeviceAdminComponent from "../DeviceAdministration/DeviceAdminComponent";
 import {withStyles} from "@material-ui/core";
 
-
-const theme = createMuiTheme({
-    palette: {
-        primary: {
-            light: '#757ce8',
-            main: '#212121',
-            dark: '#002884',
-            contrastText: '#fff',
-        },
-        secondary: red,
-        error: red,
-        // Used by `getContrastText()` to maximize the contrast between the background and
-        // the text.
-        contrastThreshold: 3,
-        // Used to shift a color's luminance by approximately
-        // two indexes within its tonal palette.
-        // E.g., shift from Red 500 to Red 300 or Red 700.
-        tonalOffset: 0.2,
-    },
-    typography: {
-        useNextVariants: true,
-    },
-});
 const drawerWidth = 260;
 const styles = theme => ({
+        palette: {
+            primary: {
+                light: '#757ce8',
+                main: '#212121',
+                dark: '#002884',
+                contrastText: '#fff',
+            },
+            secondary: '#e3f2fd',
+            error: red,
+            // Used by `getContrastText()` to maximize the contrast between the background and
+            // the text.
+            contrastThreshold: 3,
+            // Used to shift a color's luminance by approximately
+            // two indexes within its tonal palette.
+            // E.g., shift from Red 500 to Red 300 or Red 700.
+            tonalOffset: 0.2,
+        },
+        typography: {
+            useNextVariants: true,
+        },
     appBar: {
         zIndex: theme.zIndex.drawer + 1,
         transition: theme.transitions.create(['width', 'margin'], {
@@ -124,6 +120,7 @@ const styles = theme => ({
         justifyContent: 'flex-end',
         padding: '0 8px',
         ...theme.mixins.toolbar,
+        background: `url('https://bitstream.pl/wp-content/uploads/2019/04/Logo-Bitstream-4-01.png') no-repeat right top`
     },
     content: {
         flexGrow: 1,
@@ -168,6 +165,7 @@ class AppComponent extends Component {
         const {user} = this.props;
         return (
             <Router history={history}>
+                <MuiThemeProvider theme={theme}>
                 <div className={'root'}>
                     <div>
                         <Drawer
@@ -189,7 +187,7 @@ class AppComponent extends Component {
                                 {/*<img src="https://bitstream.pl/wp-content/uploads/2019/04/Logo-Bitstream-4-01.png" alt=""/>*/}
                                 {/*</div>*/}
                                 <IconButton onClick={this.handleDrawerClose}>
-                                    {theme.direction === 'rtl' ? <ChevronRightIcon/> : <ChevronLeftIcon/>}
+                                    {theme.direction === 'rtl' ? <ChevronRightIcon color='primary'/> : <ChevronLeftIcon color='primary'/>}
                                 </IconButton>
                             </div>}
                             {!this.state.open && <Toolbar disableGutters={!this.state.open}>
@@ -241,7 +239,7 @@ class AppComponent extends Component {
                         </Drawer>
                     </div>
                     <main className={classes.content}>
-                        <MuiThemeProvider theme={theme}>
+
                             <Switch history={history}>
                                 <Route exact path='/' component={HomeComponent}/>
                                 <PrivateRoute exact path='/admin_panel' component={AdminPanelComponent}/>
@@ -252,10 +250,9 @@ class AppComponent extends Component {
                             <SnackbarProvider maxSnack={5}>
                                 <PopupComponent/>
                             </SnackbarProvider>
-                        </MuiThemeProvider>
-
                     </main>
                 </div>
+                </MuiThemeProvider>
             </Router>)
     }
 }
