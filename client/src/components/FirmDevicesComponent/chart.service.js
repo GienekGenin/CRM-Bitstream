@@ -56,8 +56,14 @@ export const createPie = (data) => {
 
         const hoverState = pieSeries.slices.template.states.getKey("hover");
         const hoverShadow = hoverState.filters.push(new am4core.DropShadowFilter);
+        // const activeState =
         hoverShadow.opacity = 0.7;
         hoverShadow.blur = 5;
+
+        // todo: change table filters onHit
+        pieSeries.slices.template.events.on("hit", function(ev) {
+            console.log("clicked on ", ev.target);
+        }, this);
 
         chart.legend = new am4charts.Legend();
         chart.data = chartdata;
