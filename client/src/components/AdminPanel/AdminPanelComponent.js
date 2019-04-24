@@ -196,7 +196,7 @@ class AdminPanel extends React.Component {
     render() {
         const {value, firms, selectedFirm, selectedUser, selectedDevice, selectedUserDevice, userDevices, users, devices} = this.state;
         return (
-            <div >
+            <div className={'admin-panel'}>
                 <AppBar position="static" color="default">
                     <Toolbar>
                         <Tabs
