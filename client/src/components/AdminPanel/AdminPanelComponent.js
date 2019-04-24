@@ -22,6 +22,7 @@ import DeviceAdminComponent from '../../components/DeviceAdministration/DeviceAd
 import FirmDevicesComponent from "../FirmDevicesComponent/FirmDevicesComponent";
 import FirmAdministrationComponent from "../FirmAdministration/FirmAdministrationComponent";
 
+
 const mapDispatchToProps = (dispatch) => {
     return {
         firmRequest: () => dispatch(firmsRequest()),

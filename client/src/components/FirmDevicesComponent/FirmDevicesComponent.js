@@ -9,6 +9,7 @@ import Checkbox from "@material-ui/core/Checkbox";
 import {styles} from '../material/table-styles';
 import {Grid, MuiThemeProvider} from '@material-ui/core';
 import {createMuiTheme} from '@material-ui/core/styles';
+import Paper from '@material-ui/core/Paper';
 
 // Redux
 import store from "../../redux/store";
@@ -20,6 +21,7 @@ import {tokenService} from "../../redux/services/token";
 import FirmDevicesToolBarComponent from "./FirmDevicesToolBarComponent";
 import MaterialTable from '../material/MaterialTable/material-table';
 import './firmDevices.scss';
+import {createPie} from "./chart.service";
 
 const mapDispatchToProps = (dispatch) => {
     return {
@@ -89,7 +91,10 @@ class FirmDevicesComponent extends React.Component {
             this.setState({selectedFirm: this.props.selectedFirm});
             if (!this.props.parentDevices) {
                 this.props.firmDevicesRequest(this.props.selectedFirm._id);
-            } else this.setState({devices: this.props.parentDevices, loading: false});
+            } else {
+                createPie(this.props.parentDevices);
+                this.setState({devices: this.props.parentDevices, loading: false});
+            }
         } else {
             let selectedFirm = tokenService.verifyToken().firm;
             this.setState({selectedFirm});
@@ -109,6 +114,7 @@ class FirmDevicesComponent extends React.Component {
             this.setState({loading: store.getState().devicesReducer.loading});
             if (store.getState().devicesReducer.devices) {
                 const devices = store.getState().devicesReducer.devices;
+                createPie(devices);
                 this.setState({devices});
                 this.props.handleSetDevices(devices);
 
@@ -588,7 +594,7 @@ class FirmDevicesComponent extends React.Component {
                 <MuiThemeProvider theme={theme}>
                     <div style={{maxWidth: '100%'}}>
                         <Grid container>
-                            <Grid item xs={12}>
+                            <Grid item xs={6}>
                                 <MaterialTable
                                     components={{
                                         Toolbar: props => (
@@ -622,6 +628,12 @@ class FirmDevicesComponent extends React.Component {
                                     onChangeRowsPerPage={(props, e) => this.onChangeRowsPerPage(props, e)}
                                     onRowClick={this.onRowClick}
                                 />
+                            </Grid>
+                            <Grid item xs={6}>
+                                <Paper className={'chart-container'}>
+                                    <div id={'device-types-chart'}>
+                                    </div>
+                                </Paper>
                             </Grid>
                         </Grid>
                     </div>
