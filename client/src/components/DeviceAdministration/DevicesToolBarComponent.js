@@ -22,6 +22,13 @@ import Tooltip from '@material-ui/core/Tooltip';
 import IconButton from "@material-ui/core/IconButton";
 import RefreshIcon from '@material-ui/icons/Refresh';
 import AssignmentIndIcon from '@material-ui/icons/AssignmentInd';
+import ViewColumnIcon from '@material-ui/icons/ViewColumn';
+import List from "@material-ui/core/List";
+import Divider from "@material-ui/core/Divider";
+import ListItem from "@material-ui/core/ListItem";
+import Checkbox from "@material-ui/core/Checkbox";
+import ListItemText from "@material-ui/core/ListItemText";
+import Menu from "@material-ui/core/Menu";
 
 // Redux
 import {connect} from "react-redux";
@@ -33,6 +40,7 @@ import {
     updateDeviceUsersRequest,
 } from "../../redux/actions";
 import {deviceTypesService} from '../../redux/services/device_types'
+
 
 const mapDispatchToProps = (dispatch) => {
     return {
@@ -54,6 +62,9 @@ class DevicesToolBarComponent extends React.Component {
             addDialog: false,
             confirmDeleteDialog: false,
             configUsersDialog: false,
+            anchorEl: null,
+            columns: null,
+            columnsDialog: false,
             newUserDevice: {
                 name: '',
                 type: '',
@@ -62,6 +73,21 @@ class DevicesToolBarComponent extends React.Component {
             }
         };
     }
+
+    handleClickMenu = event => {
+        this.setState({anchorEl: event.currentTarget, columnsDialog: true, columns: this.props.columns});
+    };
+
+    handleCloseMenu = () => {
+        const columns = this.state.columns;
+        this.props.addRemoveColumn(columns);
+        this.setState({anchorEl: null, columnsDialog: false, columns});
+    };
+
+    handleColumnsChange = (title) => {
+        let columns = this.state.columns.map((el, i, arr) => el.title === title ? arr[i] = Object.assign(el, {hidden: !el.hidden}) : el);
+        this.setState({columns});
+    };
 
     handleClickOpen = (state) => {
         this.setState({[state]: true});
@@ -159,7 +185,7 @@ class DevicesToolBarComponent extends React.Component {
     }
 
     render() {
-        const {deviceTypes} = this.state;
+        const {deviceTypes, columns, anchorEl, columnsDialog} = this.state;
         const {parentUsers} = this.props;
         return (
             <div className="device-toolbar">
@@ -392,6 +418,42 @@ class DevicesToolBarComponent extends React.Component {
                             </DialogActions>
                         </Dialog>
                     </div>
+                    <Tooltip title={'Show columns'}>
+                        <div>
+                            <IconButton variant="outlined" color="primary" disabled={this.props.loading}
+                                        onClick={this.handleClickMenu}>
+                                <ViewColumnIcon/>
+                            </IconButton>
+                            <Menu
+                                id="long-menu"
+                                open={columnsDialog}
+                                anchorEl={anchorEl}
+                                onClose={this.handleCloseMenu}
+                                PaperProps={{
+                                    style: {
+                                        maxHeight: 45 * 4.5,
+                                        width: 250,
+                                    },
+                                }}
+                            >
+                                <List id={'column-list'} >
+                                    {columns && columns.map(el => (
+                                        <div key={el.title}>
+                                            <Divider dark={'true'}/>
+                                            <ListItem key={el.title} dense button
+                                                      onClick={() => this.handleColumnsChange(el.title)}>
+                                                <Checkbox checked={!el.hidden}/>
+                                                <ListItemText primary={el.title}/>
+                                            </ListItem>
+                                        </div>
+                                    ))}
+                                    <Button fullWidth={true} onClick={this.handleCloseMenu} className={'submit-button'}>
+                                        Submit
+                                    </Button>
+                                </List>
+                            </Menu>
+                        </div>
+                    </Tooltip>
                 </div>
 
             </div>

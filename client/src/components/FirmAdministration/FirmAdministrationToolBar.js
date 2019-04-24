@@ -68,6 +68,11 @@ class TestToolBar extends React.Component {
         this.setState({anchorEl: null, columnsDialog: false, columns});
     };
 
+    handleColumnsChange = (title) => {
+        let columns = this.state.columns.map((el, i, arr) => el.title === title ? arr[i] = Object.assign(el, {hidden: !el.hidden}) : el);
+        this.setState({columns});
+    };
+
     handleClickOpen = (state) => {
         this.setState({[state]: true});
         if (state === 'editDialog') {
@@ -122,11 +127,6 @@ class TestToolBar extends React.Component {
         this.props.firmRequest();
         this.props.resetSelected();
     }
-
-    handleColumnsChange = (title) => {
-        let columns = this.state.columns.map((el, i, arr) => el.title === title ? arr[i] = Object.assign(el, {hidden: !el.hidden}) : el);
-        this.setState({columns});
-    };
 
     render() {
         let {columns, anchorEl, columnsDialog} = this.state;

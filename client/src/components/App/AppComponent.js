@@ -84,6 +84,7 @@ const styles = theme => ({
     },
     drawer: {
         width: drawerWidth,
+        minWidth: 75,
         flexShrink: 0,
         whiteSpace: 'nowrap',
         background: `url('https://pp.userapi.com/c852024/v852024335/10bfc4/Tj8lq3nMO-U.jpg') no-repeat right top`,
@@ -110,6 +111,7 @@ const styles = theme => ({
         [theme.breakpoints.up('sm')]: {
             width: theme.spacing.unit * 9 + 1,
         },
+        minWidth: 75,
         background: `url('https://pp.userapi.com/c852024/v852024335/10bfc4/Tj8lq3nMO-U.jpg') no-repeat right top`,
         backgroundSize: '300px 1100px'
 
@@ -202,7 +204,7 @@ class AppComponent extends Component {
                                     <MenuIcon/>
                                 </IconButton>
                             </Toolbar>}
-                            <Divider/>
+                            <Divider light/>
                             <List>
                                 <Link to={'/'}><ListItem button>
                                         <HomeIcon/>
