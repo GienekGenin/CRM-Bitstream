@@ -120,7 +120,7 @@ class FirmDevicesComponent extends React.Component {
             if (store.getState().devicesReducer.devices) {
                 const devices = store.getState().devicesReducer.devices;
                 this.createPie(devices);
-                this.setState({devices});
+                this.setState({devices, selectedTypes: []});
                 this.props.handleSetDevices(devices);
 
             }

@@ -29,13 +29,17 @@
   }
 }
 
-#root > div > main > div > header > div > div > div{
-  min-height: 64px;
-  &> div > div{
-    min-height: 64px;
+#root > div > main{
+  overflow-y: hidden;
+  & > div > header > div{
+    margin: 0 auto;
+    width: 100%;
   }
-}
-
-#root > div > main > div > header > div{
-  margin: 0 auto;
+  & > div > header > div > div > div{
+    min-height: 64px;
+    padding-right: 20px;
+    & > div > div{
+      min-height: 64px;
+    }
+  }
 }

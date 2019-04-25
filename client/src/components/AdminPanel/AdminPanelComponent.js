@@ -206,7 +206,7 @@ class AdminPanel extends React.Component {
                             indicatorColor="primary"
                             textColor="primary"
                             variant="scrollable"
-                            scrollButtons="auto"
+                            scrollButtons="on"
                         >
                             {checkAccess('/editFirms') && <Tab label="Firms"/>}
                             <Tab label="Firm devices" disabled={!selectedFirm && checkAccess('/editFirms')}/>

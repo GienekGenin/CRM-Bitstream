@@ -243,7 +243,6 @@ class AppComponent extends Component {
                         </Drawer>
                     </div>
                     <main className={classes.content}>
-
                             <Switch history={history}>
                                 <Route exact path='/' component={HomeComponent}/>
                                 <PrivateRoute exact path='/admin_panel' component={AdminPanelComponent}/>
@@ -251,11 +250,11 @@ class AppComponent extends Component {
                                 <PrivateRoute exact path='/devices' component={DeviceAdminComponent}/>
                                 <Route exact path='/login' component={LoginForm}/>
                             </Switch>
-                            <SnackbarProvider maxSnack={5}>
-                                <PopupComponent/>
-                            </SnackbarProvider>
                     </main>
                 </div>
+                    <SnackbarProvider maxSnack={5}>
+                        <PopupComponent/>
+                    </SnackbarProvider>
                 </MuiThemeProvider>
             </Router>)
     }
