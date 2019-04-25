@@ -4,7 +4,7 @@ import am4themes_animated from "@amcharts/amcharts4/themes/animated";
 import {deviceTypesService} from '../../redux/services/device_types';
 
 
-export const createPie = (data) => {
+const createPie = (data) => {
     deviceTypesService.getDeviceTypes().then(types=>{
         let parsedData = [];
         let chartdata = [];
@@ -62,7 +62,7 @@ export const createPie = (data) => {
 
         // todo: change table filters onHit
         pieSeries.slices.template.events.on("hit", function(ev) {
-            console.log("clicked on ", ev.target);
+            console.log(ev.target.dataItem.dataContext.type);
         }, this);
 
         chart.legend = new am4charts.Legend();

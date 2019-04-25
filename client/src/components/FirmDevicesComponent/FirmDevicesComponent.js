@@ -2,6 +2,10 @@ import React from "react";
 import * as PropTypes from 'prop-types';
 import _ from "lodash";
 import * as d3 from "d3";
+import * as am4core from "@amcharts/amcharts4/core";
+import * as am4charts from "@amcharts/amcharts4/charts";
+import am4themes_animated from "@amcharts/amcharts4/themes/animated";
+import {deviceTypesService} from '../../redux/services/device_types';
 
 // Material
 import {withStyles} from '@material-ui/core/styles';
@@ -21,7 +25,7 @@ import {tokenService} from "../../redux/services/token";
 import FirmDevicesToolBarComponent from "./FirmDevicesToolBarComponent";
 import MaterialTable from '../material/MaterialTable/material-table';
 import './firmDevices.scss';
-import {createPie} from "./chart.service";
+// import {createPie} from "./chart.service";
 
 const mapDispatchToProps = (dispatch) => {
     return {
@@ -75,7 +79,8 @@ class FirmDevicesComponent extends React.Component {
                 {title: 'soft', field: 'soft', hidden: true,},
                 {title: 'status', field: 'status', hidden: false,},
                 {title: 'description', field: 'description', hidden: true,},
-            ]
+            ],
+            selectedTypes: []
         };
 
         this.resetSelected = this.resetSelected.bind(this);
@@ -92,7 +97,7 @@ class FirmDevicesComponent extends React.Component {
             if (!this.props.parentDevices) {
                 this.props.firmDevicesRequest(this.props.selectedFirm._id);
             } else {
-                createPie(this.props.parentDevices);
+                this.createPie(this.props.parentDevices);
                 this.setState({devices: this.props.parentDevices, loading: false});
             }
         } else {
@@ -114,7 +119,7 @@ class FirmDevicesComponent extends React.Component {
             this.setState({loading: store.getState().devicesReducer.loading});
             if (store.getState().devicesReducer.devices) {
                 const devices = store.getState().devicesReducer.devices;
-                createPie(devices);
+                this.createPie(devices);
                 this.setState({devices});
                 this.props.handleSetDevices(devices);
 
@@ -578,6 +583,105 @@ class FirmDevicesComponent extends React.Component {
         let device = devices.filter(el => el._id === id ? el : null)[0];
         this.setState({selectedDeviceId: id, selectedDevice: device});
         this.handleDeviceSelectNoBuild(device);
+    };
+
+    createPie = (data) => {
+        deviceTypesService.getDeviceTypes().then(types=>{
+            let parsedData = [];
+            let chartdata = [];
+            types.forEach(el=>{
+                parsedData[el.name] = 0;
+                data.forEach(device=>{
+                    if(device.type === el._id){
+                        parsedData[el.name]++;
+                    }
+                })
+            });
+            for(let key in parsedData){
+                let objToChart = {
+                    type: key,
+                    count: parsedData[key]
+                };
+                if(objToChart.count > 0)
+                    chartdata.push(objToChart);
+            }
+            am4core.useTheme(am4themes_animated);
+            const chart = am4core.create("device-types-chart", am4charts.PieChart);
+            const pieSeries = chart.series.push(new am4charts.PieSeries());
+            pieSeries.dataFields.value = "count";
+            pieSeries.dataFields.category = "type";
+
+            chart.innerRadius = am4core.percent(30);
+
+            // Put a thick white border around each Slice
+            pieSeries.slices.template.stroke = am4core.color("#fff");
+            pieSeries.slices.template.strokeWidth = 2;
+            pieSeries.slices.template.strokeOpacity = 1;
+            pieSeries.slices.template
+                // change the cursor on hover to make it apparent the object can be interacted with
+                .cursorOverStyle = [
+                {
+                    "property": "cursor",
+                    "value": "pointer"
+                }
+            ];
+
+            pieSeries.alignLabels = false;
+            pieSeries.labels.template.bent = true;
+            pieSeries.labels.template.radius = 3;
+            pieSeries.labels.template.padding(0, 0, 0, 0);
+
+            pieSeries.ticks.template.disabled = true;
+            const shadow = pieSeries.slices.template.filters.push(new am4core.DropShadowFilter());
+            shadow.opacity = 0;
+
+            const hoverState = pieSeries.slices.template.states.getKey("hover");
+            const hoverShadow = hoverState.filters.push(new am4core.DropShadowFilter());
+            // const activeState =
+            hoverShadow.opacity = 0.7;
+            hoverShadow.blur = 5;
+
+            // todo: change table filters onHit
+            pieSeries.slices.template.events.on("hit", (ev) => {
+                let selectedTypes = this.state.selectedTypes;
+                let typeClicked = types.filter(el=> el.name === ev.target.dataItem.dataContext.type)[0]._id;
+                if(selectedTypes && selectedTypes.includes(typeClicked)){
+                    selectedTypes = selectedTypes.filter(el => el !== typeClicked);
+                } else selectedTypes.push(typeClicked);
+                this.setState({selectedTypes});
+                this.onTypeSelect();
+            }, this);
+
+            chart.legend = new am4charts.Legend();
+            chart.data = chartdata;
+        });
+    };
+
+    onTypeSelect = () => {
+        let devices = store.getState().devicesReducer.devices;
+        let filteredDevicesParents = [];
+        if(!this.state.selectedTypes.length){
+            return this.setState({devices});
+        }
+        this.state.selectedTypes.forEach(typeId=>{
+           devices.forEach(device=>{
+               if(device.type === typeId){
+                   filteredDevicesParents.push(device);
+               }
+           })
+        });
+        let children = [];
+        filteredDevicesParents.forEach(parent=>{
+            devices.forEach(device=>{
+                if(device.parent_id && device.parent_id.includes(parent.sid)){
+                    children.push(device);
+                }
+            })
+        });
+        filteredDevicesParents = filteredDevicesParents.concat(children);
+        this.setState({devices: filteredDevicesParents});
+        this.resetSelected();
+        this.props.resetSelectedDeviceParent();
     };
 
     render() {
