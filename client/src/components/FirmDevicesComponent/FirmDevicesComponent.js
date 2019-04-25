@@ -700,10 +700,10 @@ class FirmDevicesComponent extends React.Component {
                         >
                             <Grid item xs={12} sm={12} md={12} lg={3}>
                                 <Paper className={'chart-container'}>
-                                    <div className={'chart-title'}>
-                                        <span>
+                                    <div className={'chart-toolbar'}>
+                                        <h3>
                                             Click to select devices
-                                        </span>
+                                        </h3>
                                     </div>
                                     <div id={'device-types-chart'}>
                                     </div>

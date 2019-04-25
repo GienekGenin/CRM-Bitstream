@@ -1,5 +1,6 @@
 #parent{
   margin-top: 40px;
+  margin-bottom: 60px;
 }
 
 #tree > svg{
@@ -29,7 +30,7 @@ circle{
 .chart-container{
   width: 300px;
   height: 100%;
-  min-height: 540px;
+  min-height: 565px;
 }
 
 #device-types-chart{
@@ -45,9 +46,9 @@ circle{
 }
 
 .table-container{
-  height: 540px;
+  min-height: 565px;
   & > div{
-    min-height: 540px;
+    min-height: 565px;
   }
 }
 
@@ -57,5 +58,12 @@ circle{
 }
 
 #root > div.root > main > div > div > div > div > div > div > div > div > div > table{
-  margin-top: 15px;
+  margin-top: 25px;
+}
+
+.chart-toolbar{
+  display: flex;
+  padding-top: 10px;
+  height: 53px;
+  justify-content: center;
 }
