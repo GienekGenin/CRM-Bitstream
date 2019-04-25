@@ -12,9 +12,8 @@ import {withStyles} from '@material-ui/core/styles';
 import Checkbox from "@material-ui/core/Checkbox";
 import {styles} from '../material/table-styles';
 import {Grid, MuiThemeProvider} from '@material-ui/core';
-import {createMuiTheme} from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
-
+import Chip from '@material-ui/core/Chip';
 // Redux
 import store from "../../redux/store";
 import {connect} from "react-redux";
@@ -25,7 +24,8 @@ import {tokenService} from "../../redux/services/token";
 import FirmDevicesToolBarComponent from "./FirmDevicesToolBarComponent";
 import MaterialTable from '../material/MaterialTable/material-table';
 import './firmDevices.scss';
-// import {createPie} from "./chart.service";
+import {theme} from "../material.theme";
+import Typography from '@material-ui/core/Typography';
 
 const mapDispatchToProps = (dispatch) => {
     return {
@@ -36,15 +36,6 @@ const mapDispatchToProps = (dispatch) => {
 const mapStateToProps = state => {
     return {devices: state.devicesReducer.devices};
 };
-
-const theme = createMuiTheme({
-    palette: {
-        type: 'light'
-    },
-    typography: {
-        useNextVariants: true,
-    },
-});
 
 class FirmDevicesComponent extends React.Component {
 
@@ -109,9 +100,9 @@ class FirmDevicesComponent extends React.Component {
         }
 
         let device = null;
-        if(this.props.selectedDevice){
+        if (this.props.selectedDevice) {
             device = this.props.selectedDevice;
-            this.buildChart(Object.assign({},this.props.selectedDevice,{parent_id: '0'}), this.props.parentDevices);
+            this.buildChart(Object.assign({}, this.props.selectedDevice, {parent_id: '0'}), this.props.parentDevices);
             this.setState({selectedDevice: device, selectedDeviceId: device._id});
         }
 
@@ -217,7 +208,7 @@ class FirmDevicesComponent extends React.Component {
                 bottom: 30,
                 left: 90
             },
-            width = 560 ,
+            width = 560,
             height = 10;
 
 // append the svg object to the body of the page
@@ -250,7 +241,6 @@ class FirmDevicesComponent extends React.Component {
         root.children.forEach(collapse);
 
 
-
 // Collapse the node and all it's children
         function collapse(d) {
             if (d.children) {
@@ -270,6 +260,7 @@ class FirmDevicesComponent extends React.Component {
                 links = treeData.descendants().slice(1);
 
             // Normalize for fixed-depth.
+            // todo: distance between nodes
             nodes.forEach(function (d) {
                 d.y = d.depth * 100
             });
@@ -299,7 +290,7 @@ class FirmDevicesComponent extends React.Component {
                 d3.select('#selected').attr("id", '');
                 d3.select('#selected-circle').attr("id", '');
                 nodeUpdate.select('circle.node')
-                    .attr('id',  (data) => {
+                    .attr('id', (data) => {
                         if (d.data.name === data.data.name) {
                             this.handleClickNoBuild(null, d.data._id);
                             return 'selected'
@@ -358,7 +349,8 @@ class FirmDevicesComponent extends React.Component {
                 .style("fill", function (d) {
                     return d.type;
                 })
-                .call(wrap, 30);
+                // todo: label width
+                .call(wrap, 50);
 
             // todo: text inside node
             // nodeEnter.append('text')
@@ -396,18 +388,18 @@ class FirmDevicesComponent extends React.Component {
                     if (d.parent) {
                         if (parentStatus === childStatus) {
                             if (childStatus === 'ONLINE') {
-                                return '#00FF00';
+                                return '#76ff03';
                             } else {
-                                return '#000'
+                                return '#616161'
                             }
                         } else {
-                            return '#000'
+                            return '#616161'
                         }
                     } else {
                         if (parentStatus === 'ONLINE') {
-                            return '#00FF00';
+                            return '#76ff03';
                         } else {
-                            return '#000'
+                            return '#76ff03'
                         }
                     }
                     // '#000' '#00FF00'
@@ -505,8 +497,6 @@ class FirmDevicesComponent extends React.Component {
             // }
 
 
-
-
             // function zoom() {
             //     let scale = d3.event.scale,
             //         translation = d3.event.translate,
@@ -528,7 +518,7 @@ class FirmDevicesComponent extends React.Component {
             //     svg.attr("transform", "translate(" + translation + ")" +
             //         " scale(" + scale + ")");
             // }
-        }
+        };
 
         update(root);
 
@@ -577,6 +567,7 @@ class FirmDevicesComponent extends React.Component {
     handleDeviceSelectNoBuild(device) {
         this.props.onDeviceSelect(device);
     }
+
     // todo: possible bugs
     handleClickNoBuild = (event, id) => {
         const {devices} = this.state;
@@ -586,23 +577,23 @@ class FirmDevicesComponent extends React.Component {
     };
 
     createPie = (data) => {
-        deviceTypesService.getDeviceTypes().then(types=>{
+        deviceTypesService.getDeviceTypes().then(types => {
             let parsedData = [];
             let chartdata = [];
-            types.forEach(el=>{
+            types.forEach(el => {
                 parsedData[el.name] = 0;
-                data.forEach(device=>{
-                    if(device.type === el._id){
+                data.forEach(device => {
+                    if (device.type === el._id) {
                         parsedData[el.name]++;
                     }
                 })
             });
-            for(let key in parsedData){
+            for (let key in parsedData) {
                 let objToChart = {
                     type: key,
                     count: parsedData[key]
                 };
-                if(objToChart.count > 0)
+                if (objToChart.count > 0)
                     chartdata.push(objToChart);
             }
             am4core.useTheme(am4themes_animated);
@@ -644,8 +635,8 @@ class FirmDevicesComponent extends React.Component {
             // todo: change table filters onHit
             pieSeries.slices.template.events.on("hit", (ev) => {
                 let selectedTypes = this.state.selectedTypes;
-                let typeClicked = types.filter(el=> el.name === ev.target.dataItem.dataContext.type)[0]._id;
-                if(selectedTypes && selectedTypes.includes(typeClicked)){
+                let typeClicked = types.filter(el => el.name === ev.target.dataItem.dataContext.type)[0]._id;
+                if (selectedTypes && selectedTypes.includes(typeClicked)) {
                     selectedTypes = selectedTypes.filter(el => el !== typeClicked);
                 } else selectedTypes.push(typeClicked);
                 this.setState({selectedTypes});
@@ -660,20 +651,20 @@ class FirmDevicesComponent extends React.Component {
     onTypeSelect = () => {
         let devices = store.getState().devicesReducer.devices;
         let filteredDevicesParents = [];
-        if(!this.state.selectedTypes.length){
+        if (!this.state.selectedTypes.length) {
             return this.setState({devices});
         }
-        this.state.selectedTypes.forEach(typeId=>{
-           devices.forEach(device=>{
-               if(device.type === typeId){
-                   filteredDevicesParents.push(device);
-               }
-           })
+        this.state.selectedTypes.forEach(typeId => {
+            devices.forEach(device => {
+                if (device.type === typeId) {
+                    filteredDevicesParents.push(device);
+                }
+            })
         });
         let children = [];
-        filteredDevicesParents.forEach(parent=>{
-            devices.forEach(device=>{
-                if(device.parent_id && device.parent_id.includes(parent.sid)){
+        filteredDevicesParents.forEach(parent => {
+            devices.forEach(device => {
+                if (device.parent_id && device.parent_id.includes(parent.sid)) {
                     children.push(device);
                 }
             })
@@ -687,9 +678,14 @@ class FirmDevicesComponent extends React.Component {
     render() {
         const {loading, devices, selectedDevice, selectedDeviceId, selectedFirm, columns, rowsPerPage, page} = this.state;
         devices && devices.map((el, i, arr) => arr[i] = Object.assign(el, {
+            // status: el.status ? (
+            //     <Chip
+            //         label={el.status}
+            //     />
+            // ) : '',
             action: (
                 <div>
-                    <Checkbox value={el._id} checked={selectedDeviceId === el._id} />
+                    <Checkbox value={el._id} checked={selectedDeviceId === el._id}/>
                 </div>
             )
         }));
@@ -700,47 +696,55 @@ class FirmDevicesComponent extends React.Component {
                         <Grid
                             container
                             spacing={40}
+
                         >
-                            <Grid item xs={3} md={3} lg={3}>
+                            <Grid item xs={12} sm={12} md={12} lg={3}>
                                 <Paper className={'chart-container'}>
+                                    <div className={'chart-title'}>
+                                        <span>
+                                            Click to select devices
+                                        </span>
+                                    </div>
                                     <div id={'device-types-chart'}>
                                     </div>
                                 </Paper>
                             </Grid>
-                            <Grid item xs={9} md={9} lg={9}>
-                                <MaterialTable
-                                    components={{
-                                        Toolbar: props => (
-                                            <div className={'custom-toolbar'}>
-                                                <FirmDevicesToolBarComponent
-                                                    selected={selectedDevice}
-                                                    resetSelected={this.resetSelected}
-                                                    loading={loading}
-                                                    addRemoveColumn={this.addRemoveColumn}
-                                                    columns={columns}
-                                                    selectedFirmId={selectedFirm ? selectedFirm._id : ''}
-                                                />
-                                            </div>
-                                        ),
-                                    }}
-                                    isLoading={loading}
-                                    data={devices}
-                                    columns={columns}
-                                    title="Firm devices"
-                                    options={{
-                                        filtering: true,
-                                        columnsButton: false,
-                                        header: true,
-                                        initialPage: page,
-                                        pageSize: rowsPerPage,
-                                        search: false,
-                                        toolbar: true
-                                    }}
-                                    parentChildData={(row,rows)=> rows.find(a=>a.sid === row.parent_id)}
-                                    onChangePage={(props, e) => this.onChangePage(props, e)}
-                                    onChangeRowsPerPage={(props, e) => this.onChangeRowsPerPage(props, e)}
-                                    onRowClick={this.onRowClick}
-                                />
+                            <Grid item xs={12} sm={12} md={12} lg={9}>
+                                <div className={'table-container'}>
+                                    <MaterialTable
+                                        components={{
+                                            Toolbar: props => (
+                                                <div className={'custom-toolbar'}>
+                                                    <FirmDevicesToolBarComponent
+                                                        selected={selectedDevice}
+                                                        resetSelected={this.resetSelected}
+                                                        loading={loading}
+                                                        addRemoveColumn={this.addRemoveColumn}
+                                                        columns={columns}
+                                                        selectedFirmId={selectedFirm ? selectedFirm._id : ''}
+                                                    />
+                                                </div>
+                                            ),
+                                        }}
+                                        isLoading={loading}
+                                        data={devices}
+                                        columns={columns}
+                                        title="Firm devices"
+                                        options={{
+                                            filtering: true,
+                                            columnsButton: false,
+                                            header: true,
+                                            initialPage: page,
+                                            pageSize: rowsPerPage,
+                                            search: false,
+                                            toolbar: true
+                                        }}
+                                        parentChildData={(row, rows) => rows.find(a => a.sid === row.parent_id)}
+                                        onChangePage={(props, e) => this.onChangePage(props, e)}
+                                        onChangeRowsPerPage={(props, e) => this.onChangeRowsPerPage(props, e)}
+                                        onRowClick={this.onRowClick}
+                                    />
+                                </div>
                             </Grid>
                         </Grid>
                     </div>

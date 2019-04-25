@@ -13,8 +13,12 @@
   stroke-width: 2px;
 }
 
+circle{
+  stroke: #3F51B5 !important;
+  stroke-width: 2px;
+}
 #selected{
-  stroke: blueviolet !important;
+  stroke: #d81b60 !important;
   stroke-width: 2px;
 }
 
@@ -25,10 +29,33 @@
 .chart-container{
   width: 300px;
   height: 100%;
+  min-height: 540px;
 }
 
 #device-types-chart{
   width: 300px;
   height: 500px;
   min-width: 300px;
+}
+
+.chart-title{
+  text-align: center;
+  font-size: large;
+  padding: 10px;
+}
+
+.table-container{
+  height: 540px;
+  & > div{
+    min-height: 540px;
+  }
+}
+
+// bad boy styles
+#root > div.root > main > div > div > div > div > div > div > div > div > div > div > div > div > table > tbody > tr:nth-child(1){
+  height: 52px !important;
+}
+
+#root > div.root > main > div > div > div > div > div > div > div > div > div > table{
+  margin-top: 15px;
 }
