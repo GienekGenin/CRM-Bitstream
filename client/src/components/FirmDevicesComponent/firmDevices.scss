@@ -28,13 +28,17 @@ circle{
 }
 
 .chart-container{
-  width: 500px;
+  width: 100%;
+  min-width: 300px;
   height: 100%;
   min-height: 565px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
 }
 
 #device-types-chart, #pie-phyid {
-  width: 500px;
+  width: 400px;
   height: 500px;
   min-width: 300px;
 }
@@ -67,4 +71,9 @@ circle{
   padding-top: 10px;
   height: 53px;
   justify-content: center;
+  width: 100%;
+}
+
+#tree > svg{
+  width: 100%;
 }

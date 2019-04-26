@@ -699,7 +699,7 @@ class FirmDevicesComponent extends React.Component {
                             spacing={40}
 
                         >
-                            <Grid item xs={12} sm={12} md={6} lg={6}>
+                            <Grid item xs={12} sm={12} md={12} lg={6}>
                                 <Paper className={'chart-container'}>
                                     <div className={'chart-toolbar'}>
                                         <h3>
@@ -710,11 +710,11 @@ class FirmDevicesComponent extends React.Component {
                                     </div>
                                 </Paper>
                             </Grid>
-                            <Grid item xs={12} sm={12} md={6} lg={6}>
+                            <Grid item xs={12} sm={12} md={12} lg={6}>
                                 <Paper className={'chart-container'}>
                                     <div className={'chart-toolbar'}>
                                         <h3>
-                                            Device types
+                                            Device phyid types
                                         </h3>
                                     </div>
                                     <div id='pie-phyid'>
