@@ -11,11 +11,11 @@ export default class HomeComponent extends React.Component {
     render() {
         return (
             <div className={'home'}>
-                <Iframe url="http://bitstream.pl/en/about-us/"
+                <Iframe url="https://bitstream.pl/en/about-us/technical-support/"
                         width="100%"
                         height="100%"
                         id="myId"
-                        className="myClassname"
+                        className="resp-iframe"
                         allowFullScreen/>
                 <canvas id="canvas"></canvas>
             </div>
