@@ -13,7 +13,6 @@ import Checkbox from "@material-ui/core/Checkbox";
 import {styles} from '../material/table-styles';
 import {Grid, MuiThemeProvider} from '@material-ui/core';
 import Paper from '@material-ui/core/Paper';
-import Chip from '@material-ui/core/Chip';
 // Redux
 import store from "../../redux/store";
 import {connect} from "react-redux";
@@ -25,7 +24,7 @@ import FirmDevicesToolBarComponent from "./FirmDevicesToolBarComponent";
 import MaterialTable from '../material/MaterialTable/material-table';
 import './firmDevices.scss';
 import {theme} from "../material.theme";
-import Typography from '@material-ui/core/Typography';
+import {createPiePhyid} from "./chart.service";
 
 const mapDispatchToProps = (dispatch) => {
     return {
@@ -89,6 +88,7 @@ class FirmDevicesComponent extends React.Component {
                 this.props.firmDevicesRequest(this.props.selectedFirm._id);
             } else {
                 this.createPie(this.props.parentDevices);
+                createPiePhyid(this.props.parentDevices);
                 this.setState({devices: this.props.parentDevices, loading: false});
             }
         } else {
@@ -111,6 +111,7 @@ class FirmDevicesComponent extends React.Component {
             if (store.getState().devicesReducer.devices) {
                 const devices = store.getState().devicesReducer.devices;
                 this.createPie(devices);
+                createPiePhyid(devices);
                 this.setState({devices, selectedTypes: []});
                 this.props.handleSetDevices(devices);
 
@@ -698,7 +699,7 @@ class FirmDevicesComponent extends React.Component {
                             spacing={40}
 
                         >
-                            <Grid item xs={12} sm={12} md={12} lg={3}>
+                            <Grid item xs={12} sm={12} md={6} lg={6}>
                                 <Paper className={'chart-container'}>
                                     <div className={'chart-toolbar'}>
                                         <h3>
@@ -709,7 +710,18 @@ class FirmDevicesComponent extends React.Component {
                                     </div>
                                 </Paper>
                             </Grid>
-                            <Grid item xs={12} sm={12} md={12} lg={9}>
+                            <Grid item xs={12} sm={12} md={6} lg={6}>
+                                <Paper className={'chart-container'}>
+                                    <div className={'chart-toolbar'}>
+                                        <h3>
+                                            Device types
+                                        </h3>
+                                    </div>
+                                    <div id='pie-phyid'>
+                                    </div>
+                                </Paper>
+                            </Grid>
+                            <Grid item xs={12} sm={12} md={12} lg={12}>
                                 <div className={'table-container'}>
                                     <MaterialTable
                                         components={{

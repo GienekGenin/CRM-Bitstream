@@ -292,7 +292,7 @@ export default class DataManager {
   findDataByPath = (renderData, path) => {
     if (this.isDataType("tree")) {
       return path.reduce((result, current) => {
-        if(result.tableData.childRows){
+        if(result && result.tableData.childRows){
           return result.tableData.childRows[current];
         }
         return null;

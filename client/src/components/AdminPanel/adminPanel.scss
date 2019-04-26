@@ -3,13 +3,20 @@
   height: 5px;
 }
 
+main {
+  min-width: 580px;
+}
+
 .admin-panel{
   overflow-y: scroll;
-  height: 1000px;
+  //overflow-x: hidden;
+  min-width: 580px;
+  height: 100%;
   background: #F5F5F5;
   &::-webkit-scrollbar {
     width: 10px;
     background-color: #F5F5F5;
+    z-index: 9999;
   }
   &::-webkit-scrollbar-track {
     border-radius: 10px;
@@ -30,7 +37,10 @@
 }
 
 #root > div > main{
-  overflow-y: hidden;
+  //overflow-y: hidden;
+  & > div > div{
+    //margin-top: 80px;
+  }
   & > div > header > div{
     margin: 0 auto;
     width: 100%;
@@ -42,4 +52,14 @@
       min-height: 64px;
     }
   }
+}
+
+#root > div > main > div > header > div{
+  padding-right: 0;
+  padding-left: 0;
+  z-index: 1000;
+}
+
+header{
+  position: fixed;
 }
