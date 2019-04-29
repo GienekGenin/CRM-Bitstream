@@ -21,7 +21,7 @@ import UserAdminComponent from '../../components/UserAdministration/UserAdminCom
 import DeviceAdminComponent from '../../components/DeviceAdministration/DeviceAdminComponent';
 import FirmDevicesComponent from "../FirmDevicesComponent/FirmDevicesComponent";
 import FirmAdministrationComponent from "../FirmAdministration/FirmAdministrationComponent";
-
+import {deviceTypesService} from "../../redux/services/device_types";
 
 const mapDispatchToProps = (dispatch) => {
     return {
@@ -85,10 +85,11 @@ class AdminPanel extends React.Component {
                         selectedFirm: null,
                         selectedUser: null,
                         selectedDevice: null,
-                        selectedUserDevice: null,})
+                        selectedUserDevice: null,
+                    })
                 }
             }
-            if(store.getState().devicesReducer.devices){
+            if (store.getState().devicesReducer.devices) {
                 const reduxDevices = store.getState().devicesReducer.devices;
                 this.setState({devices: reduxDevices, selectedDevice: null});
             }
@@ -126,7 +127,7 @@ class AdminPanel extends React.Component {
 
     handleUserSelect(selectedUser) {
         if (this._isMounted) {
-            this.setState({selectedUser, selectedUserDevice: null, userDevices:null})
+            this.setState({selectedUser, selectedUserDevice: null, userDevices: null})
         }
     }
 
@@ -144,7 +145,7 @@ class AdminPanel extends React.Component {
 
     resetSelectedUser() {
         if (this._isMounted) {
-            this.setState({selectedUser: null, selectedUserDevice: null, userDevices:null })
+            this.setState({selectedUser: null, selectedUserDevice: null, userDevices: null})
         }
     }
 
@@ -162,7 +163,7 @@ class AdminPanel extends React.Component {
 
     handleSetUsers(users) {
         if (this._isMounted) {
-            this.setState({users, selectedUser: null, selectedUserDevice: null, userDevices:null});
+            this.setState({users, selectedUser: null, selectedUserDevice: null, userDevices: null});
         }
     }
 
@@ -183,6 +184,9 @@ class AdminPanel extends React.Component {
         if (checkAccess('/editFirms')) {
             this.props.firmRequest();
         }
+        deviceTypesService.getDeviceTypes().then(deviceTypes => {
+            this.setState({deviceTypes});
+        }).catch(e => console.log(e))
     }
 
     componentWillUnmount() {
@@ -195,7 +199,8 @@ class AdminPanel extends React.Component {
     };
 
     render() {
-        const {value, firms, selectedFirm, selectedUser, selectedDevice, selectedUserDevice, userDevices, users, devices} = this.state;
+        const {value, firms, selectedFirm, selectedUser, selectedDevice,
+            selectedUserDevice, userDevices, users, devices, deviceTypes} = this.state;
         return (
             <div className={'admin-panel'}>
                 <AppBar position="static" color="default">
@@ -234,6 +239,7 @@ class AdminPanel extends React.Component {
                                 selectedFirm={selectedFirm}
                                 parentDevices={devices}
                                 selectedDevice={selectedDevice}
+                                deviceTypes={deviceTypes}
                             />
                         </TabContainer>}
                         {value === 2 && <TabContainer>

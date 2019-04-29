@@ -187,9 +187,13 @@ class FirmDevicesToolBar extends React.Component {
 
     componentDidMount() {
         this.setState({loading: true});
-        deviceTypesService.getDeviceTypes().then(d => {
-            this.setState({deviceTypes: d, loading: false});
-        }).catch(e => console.log(e))
+        if(this.props.deviceTypes){
+            this.setState({deviceTypes: this.props.deviceTypes, loading: false});
+        } else {
+            deviceTypesService.getDeviceTypes().then(deviceTypes => {
+                this.setState({deviceTypes, loading: false});
+            }).catch(e => console.log(e))
+        }
     }
 
     render() {
@@ -491,7 +495,8 @@ FirmDevicesToolBar.propTypes = {
     selectedFirmId: PropTypes.string,
     loading: PropTypes.bool,
     columns: PropTypes.array,
-    addRemoveColumn: PropTypes.func
+    addRemoveColumn: PropTypes.func,
+    deviceTypes: PropTypes.array
 };
 
 export default connect(null, mapDispatchToProps)(FirmDevicesToolBar);
