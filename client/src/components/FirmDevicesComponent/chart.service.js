@@ -3,7 +3,7 @@ import * as am4charts from "@amcharts/amcharts4/charts";
 import am4themes_animated from "@amcharts/amcharts4/themes/animated";
 
 
-export const createPiePhyid = (data) => {
+const createPiePhyid = (data) => {
     let parsedData = [];
     let chartdata  = [];
     let phyidSet = new Set();

@@ -25,13 +25,19 @@ class Visualisation extends React.Component {
     constructor(props) {
         super(props);
 
-        this.state = {};
+        this.state = {
+            selectedPhyids: new Set(),
+            devicesToVis: null
+        };
 
         this.createPhyidPie = this.createPhyidPie.bind(this);
     }
 
     componentDidMount() {
-        this.createPhyidPie();
+        const {selectedDevice} = this.props;
+        const devices = store.getState().devicesReducer.devices;
+        const devicesToShow = devices.filter(el => el.parent_id.includes(selectedDevice.sid) || el.sid === selectedDevice.sid);
+        this.createPhyidPie(devicesToShow);
     }
 
     componentWillMount() {
@@ -42,11 +48,9 @@ class Visualisation extends React.Component {
 
     }
 
-    createPhyidPie = () => {
-        const {selectedDevice} = this.props;
-        const devices = store.getState().devicesReducer.devices;
-        if (devices && selectedDevice) {
-            const devicesToShow = devices.filter(el => el.parent_id.includes(selectedDevice.sid) || el.sid === selectedDevice.sid);
+    createPhyidPie = (devicesToShow) => {
+        let {selectedPhyids, devicesToVis} = this.state;
+        if (devicesToShow) {
             let parsedData = [];
             let data = [];
             data.push({
@@ -195,9 +199,9 @@ class Visualisation extends React.Component {
                     slice2 = targetSlice;
                 }
 
-
                 dataItem1 = slice1.dataItem;
                 dataItem2 = slice2.dataItem;
+                const toggledType = dataItem2.dataContext.type;
 
                 const series1Center = am4core.utils.spritePointToSvg({x: 0, y: 0}, series1.slicesContainer);
                 const series2Center = am4core.utils.spritePointToSvg({x: 0, y: 0}, series2.slicesContainer);
@@ -229,6 +233,7 @@ class Visualisation extends React.Component {
                         slice2.y = 0;
 
                         dataItem2.show();
+                        selectedPhyids.add(toggledType);
                     } else {
                         slice1.animate([{property: "x", to: 0}, {property: "y", to: 0}], 400);
                     }
@@ -239,6 +244,7 @@ class Visualisation extends React.Component {
                         // const value = dataItem2.value;
 
                         dataItem2.hide();
+                        selectedPhyids.delete(toggledType);
 
                         const animation = slice2.animate([{property: "x", to: series1CenterConverted.x}, {
                             property: "y",
@@ -255,6 +261,18 @@ class Visualisation extends React.Component {
                         slice2.animate([{property: "x", to: 0}, {property: "y", to: 0}], 400);
                     }
                 }
+
+                // get all devices with matching phyids
+                let devicesToVis = [];
+                selectedPhyids.forEach(phyid=>{
+                    devicesToShow.forEach(device =>{
+                        if(device.phyid === phyid){
+                            devicesToVis.push(device);
+                        }
+                   });
+                });
+
+                this.setState({selectedPhyids, devicesToVis});
 
                 toggleDummySlice(series1);
                 toggleDummySlice(series2);
@@ -297,6 +315,7 @@ class Visualisation extends React.Component {
                 dummyDataItem.slice.draggable = false;
                 dummyDataItem.slice.tooltipText = undefined;
             });
+
         }
     };
 
