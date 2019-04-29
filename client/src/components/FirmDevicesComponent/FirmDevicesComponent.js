@@ -12,6 +12,7 @@ import Checkbox from "@material-ui/core/Checkbox";
 import {styles} from '../material/table-styles';
 import {Grid, MuiThemeProvider} from '@material-ui/core';
 import Paper from '@material-ui/core/Paper';
+
 // Redux
 import store from "../../redux/store";
 import {connect} from "react-redux";

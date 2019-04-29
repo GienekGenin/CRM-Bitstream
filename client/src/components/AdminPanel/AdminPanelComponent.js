@@ -21,6 +21,7 @@ import UserAdminComponent from '../../components/UserAdministration/UserAdminCom
 import DeviceAdminComponent from '../../components/DeviceAdministration/DeviceAdminComponent';
 import FirmDevicesComponent from "../FirmDevicesComponent/FirmDevicesComponent";
 import FirmAdministrationComponent from "../FirmAdministration/FirmAdministrationComponent";
+import VisualisationComponent from '../Visualisation/VisualisationComponent';
 import {deviceTypesService} from "../../redux/services/device_types";
 
 const mapDispatchToProps = (dispatch) => {
@@ -199,8 +200,10 @@ class AdminPanel extends React.Component {
     };
 
     render() {
-        const {value, firms, selectedFirm, selectedUser, selectedDevice,
-            selectedUserDevice, userDevices, users, devices, deviceTypes} = this.state;
+        const {
+            value, firms, selectedFirm, selectedUser, selectedDevice,
+            selectedUserDevice, userDevices, users, devices, deviceTypes
+        } = this.state;
         return (
             <div className={'admin-panel'}>
                 <AppBar position="static" color="default">
@@ -217,7 +220,7 @@ class AdminPanel extends React.Component {
                             <Tab label="Firm devices" disabled={!selectedFirm && checkAccess('/editFirms')}/>
                             <Tab label="Users" disabled={!selectedFirm && checkAccess('/editFirms')}/>
                             <Tab label="Devices" disabled={!selectedUser}/>
-                            <Tab label="Visualisation"/>
+                            <Tab label="Visualisation" disabled={!selectedDevice}/>
                             <Tab label="Optional"/>
                         </Tabs>
                     </Toolbar>
@@ -263,7 +266,11 @@ class AdminPanel extends React.Component {
                                 parentUsers={users}
                             />
                         </TabContainer>}
-                        {value === 4 && <TabContainer>Visualisation</TabContainer>}
+                        {value === 4 && <TabContainer>
+                            <VisualisationComponent
+                                selectedDevice={selectedDevice}
+                            />
+                        </TabContainer>}
                         {value === 5 && <TabContainer>Optional</TabContainer>}
                     </div> :
                     <div>
@@ -297,7 +304,11 @@ class AdminPanel extends React.Component {
                                 parentUsers={users}
                             />
                         </TabContainer>}
-                        {value === 3 && <TabContainer>Visualisation</TabContainer>}
+                        {value === 3 && <TabContainer>
+                            <VisualisationComponent
+                                selectedDevice={selectedDevice}
+                            />
+                        </TabContainer>}
                         {value === 4 && <TabContainer>Optional</TabContainer>}
                     </div>}
 
