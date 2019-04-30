@@ -62,17 +62,8 @@ class Visualisation extends React.Component {
     }
 
     componentDidMount() {
-        const {selectedDevice, selectedUserDevice, parentDevices, parentUserDevices} = this.props;
-        let devicesToVis = [];
-        if(selectedDevice && parentDevices){
-            devicesToVis = parentDevices.filter(el => el.parent_id.includes(selectedDevice.sid) || el.sid === selectedDevice.sid);
-        }
-        if(selectedUserDevice){
-            devicesToVis = parentUserDevices.filter(el => el.parent_id.includes(selectedUserDevice.sid) || el.sid === selectedUserDevice.sid);
-        }
-        if(devicesToVis) {
-            this.createPhyidPie(devicesToVis);
-        }
+        const {selectedDevices} = this.props;
+        this.createPhyidPie(selectedDevices);
     }
 
     componentWillMount() {
@@ -411,10 +402,7 @@ class Visualisation extends React.Component {
 }
 
 Visualisation.propTypes = {
-    selectedDevice: PropTypes.object,
-    parentDevices:PropTypes.array,
-    selectedUserDevice:PropTypes.object,
-    parentUserDevices: PropTypes.array
+    selectedDevices: PropTypes.array,
 };
 
 const VisualisationComponent = connect(mapStateToProps, mapDispatchToProps)(Visualisation);

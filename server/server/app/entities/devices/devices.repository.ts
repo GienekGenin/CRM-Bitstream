@@ -11,6 +11,15 @@ export class DeviceRepository extends Repository {
         return this.model.findOne({sid})
     }
 
+    findAllBySid(sid){
+        return this.model.find({
+            sid: {
+                '$regex': sid,
+            },
+
+        })
+    }
+
     getDevicesByUsersArray(usersIds) {
         return this.model.aggregate([
             {

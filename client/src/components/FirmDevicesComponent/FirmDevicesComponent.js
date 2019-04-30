@@ -87,9 +87,10 @@ class FirmDevicesComponent extends React.Component {
         this.setState({loading: true});
         const {selectedFirm, selectedUsers, parentDevices, selectedDevices} = this.props;
         if (selectedUsers) {
-            this.setState({selectedFirm, selectedUsers});
+            const selectedUserIds = selectedUsers.map(user => user._id);
+            this.setState({selectedFirm, selectedUsers, selectedUserIds});
             if (!parentDevices) {
-                const selectedUserIds = selectedUsers.map(user => user._id);
+                this.setState({selectedUserIds});
                 this.props.userDevicesRequest(selectedUserIds);
             } else {
                 this.createPie(parentDevices);
@@ -856,7 +857,7 @@ class FirmDevicesComponent extends React.Component {
     }
 
     render() {
-        const {loading, devices, selectedDevices, selectedDeviceIds, selectedFirm, columns, rowsPerPage, page} = this.state;
+        const {loading, devices, selectedDevices, selectedDeviceIds, selectedUserIds, selectedFirm, columns, rowsPerPage, page} = this.state;
         const {deviceTypes} = this.props;
         devices && devices.map((el, i, arr) => arr[i] = Object.assign(el, {
             // status: el.status ? (
@@ -915,6 +916,7 @@ class FirmDevicesComponent extends React.Component {
                                                         addRemoveColumn={this.addRemoveColumn}
                                                         columns={columns}
                                                         selectedFirmId={selectedFirm ? selectedFirm._id : ''}
+                                                        selectedUserIds={selectedUserIds}
                                                         deviceTypes={deviceTypes}
                                                     />
                                                 </div>

@@ -18,7 +18,6 @@ import {checkAccess} from "../privateRoute";
 // Components
 import './adminPanel.scss';
 import UserAdminComponent from '../../components/UserAdministration/UserAdminComponent';
-import DeviceAdminComponent from '../../components/DeviceAdministration/DeviceAdminComponent';
 import FirmDevicesComponent from "../FirmDevicesComponent/FirmDevicesComponent";
 import FirmAdministrationComponent from "../FirmAdministration/FirmAdministrationComponent";
 import VisualisationComponent from '../Visualisation/VisualisationComponent';
@@ -235,7 +234,7 @@ class AdminPanel extends React.Component {
                         </TabContainer>}
                         {value === 3 && <TabContainer>
                             <VisualisationComponent
-                                selectedDevice={selectedDevices}
+                                selectedDevices={selectedDevices}
                                 parentDevices={devices}
                             />
                         </TabContainer>}

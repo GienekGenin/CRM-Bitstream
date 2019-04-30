@@ -35,7 +35,6 @@ import AdminPanelComponent from "../AdminPanel/AdminPanelComponent";
 import DashboardComponent from '../../components/Dashboard/DashboardComponent';
 import {PopupComponent} from "../material/PopupComponent/PopupComponent";
 import {SnackbarProvider} from "notistack";
-import DeviceAdminComponent from "../DeviceAdministration/DeviceAdminComponent";
 import {withStyles} from "@material-ui/core";
 
 const drawerWidth = 260;
@@ -247,7 +246,6 @@ class AppComponent extends Component {
                                 <Route exact path='/' component={HomeComponent}/>
                                 <PrivateRoute exact path='/admin_panel' component={AdminPanelComponent}/>
                                 <PrivateRoute exact path='/dashboard' component={DashboardComponent}/>
-                                <PrivateRoute exact path='/devices' component={DeviceAdminComponent}/>
                                 <Route exact path='/login' component={LoginForm}/>
                             </Switch>
                     </main>

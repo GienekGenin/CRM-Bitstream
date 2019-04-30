@@ -1,9 +1,5 @@
 import {devicesConstants} from "../constants/index";
 
-export const firmDevicesRequest = (firmId) => {
-    return {type: devicesConstants.FIRM_DEVICES_GET_REQUEST, payload: firmId}
-};
-
 export const userDevicesRequest = (userId) => {
     return {type: devicesConstants.USER_DEVICES_GET_REQUEST, payload: userId}
 };
@@ -20,34 +16,20 @@ export const cleanDevicesSuccess = () => {
  *
  * @param sid
  * @param coid
- * @param selectedUserId - optional
  * @returns {{payload: {coid: *, sid: *}, type: string}}
  */
-export const updateDeviceUsersRequest = (sid, coid, selectedUserId) => {
-    return {type: devicesConstants.UPDATE_DEVICE_USERS_REQUEST, payload: {sid, coid, selectedUserId}}
-};
-
-// addDeviceRequest
-export const addUserDeviceRequest = (payload) => {
-    return {type: devicesConstants.ADD_USER_DEVICE_REQUEST, payload}
+export const updateDeviceUsersRequest = (sid, coid) => {
+    return {type: devicesConstants.UPDATE_DEVICE_USERS_REQUEST, payload: {sid, coid}}
 };
 
 export const addFirmDeviceRequest = (payload) => {
     return {type: devicesConstants.ADD_FIRM_DEVICE_REQUEST, payload}
 };
 
-
-export const deleteUserDeviceRequest = (deviceId) => {
-    return {type: devicesConstants.DELETE_USER_DEVICE_REQUEST, payload: deviceId}
-};
-
 export const deleteFirmDeviceRequest = (deviceId) => {
     return {type: devicesConstants.DELETE_FIRM_DEVICE_REQUEST, payload: deviceId}
 };
 
-export const updateUserDevice = (device) => {
-    return {type: devicesConstants.UPDATE_USER_DEVICE_REQUEST, payload: device}
-};
 
 export const updateFirmDevice = (device) => {
     return {type: devicesConstants.UPDATE_FIRM_DEVICE_REQUEST, payload: device}

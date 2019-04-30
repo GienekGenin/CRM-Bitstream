@@ -141,7 +141,7 @@ class DeviceService {
         })
     }
 
-    fakeDeleteStructure(sid){
+    fakeDeleteStructure(sid) {
         return new Promise(((resolve, reject) => {
             this.deviceRepository.fakeDeleteStructure(sid)
                 .then(d => {
@@ -203,14 +203,19 @@ class DeviceService {
                         } else if (currentCoid.length < payload.coid.length) {
                             diffIds = diff(payload.coid, currentCoid);
                             this.deviceRepository.updateAddDeviceUsers(payload.sid, diffIds)
-                                .then(d => callback(null, d))
+                                .then(d => callback(null, payload.sid))
                                 .catch(e => callback(e));
                         } else if (currentCoid.length > payload.coid.length) {
                             diffIds = diff(currentCoid, payload.coid);
                             this.deviceRepository.updateRemoveDeviceUsers(payload.sid, diffIds)
-                                .then(d => callback(null, d))
+                                .then(d => callback(null, payload.sid))
                                 .catch(e => callback(e));
                         }
+                    },
+                    (sid, callback) => {
+                        this.deviceRepository.findAllBySid(sid)
+                            .then(d => callback(null, d))
+                            .catch(e => callback(e));
                     }
                 ],
                 (err, payload) => {
@@ -250,7 +255,7 @@ class DeviceService {
         }))
     }
 
-    replaceUserForDevices(parentId, adminId){
+    replaceUserForDevices(parentId, adminId) {
         return this.deviceRepository.replaceUserForDevices(parentId, adminId);
     }
 }

@@ -18,24 +18,6 @@ const getUserDevices = (userIds) => {
         })
 };
 
-const getFirmDevices = (firmId) => {
-    const token = localStorage.getItem('token');
-    const requestOptions = {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-        }
-    };
-
-    return fetch(`${apiBase}firms/devices/${firmId}`, requestOptions)
-        .then(handleResponse)
-        .then(devices => {
-            // store user details and jwt token in local storage to keep user logged in between page refreshes
-            return devices;
-        })
-};
-
 const addDevice = (device) => {
     const token = localStorage.getItem('token');
     const requestOptions = {
@@ -123,7 +105,6 @@ const handleResponse = (response) => {
 
 export const devicesService = {
     getUserDevices,
-    getFirmDevices,
     addDevice,
     deleteDevice,
     updateDeviceUsers,

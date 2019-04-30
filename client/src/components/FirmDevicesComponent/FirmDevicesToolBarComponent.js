@@ -34,16 +34,18 @@ import ListItemText from "@material-ui/core/ListItemText";
 
 // Redux
 import {connect} from "react-redux";
-import {firmDevicesRequest, addFirmDeviceRequest, deleteFirmDeviceRequest, updateFirmDevice, updateDeviceUsersRequest} from "../../redux/actions";
+import {addFirmDeviceRequest, deleteFirmDeviceRequest,
+    updateFirmDevice, updateDeviceUsersRequest,
+    userDevicesRequest} from "../../redux/actions";
 import {deviceTypesService} from '../../redux/services/device_types';
 import {userService} from '../../redux/services/user';
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        firmDevicesRequest: (payload) => dispatch(firmDevicesRequest(payload)),
         addFirmDeviceRequest: (payload) => dispatch(addFirmDeviceRequest(payload)),
         deleteFirmDeviceRequest: (payload) => dispatch(deleteFirmDeviceRequest(payload)),
         updateFirmDevice: (payload) => dispatch(updateFirmDevice(payload)),
+        userDevicesRequest: (coid) => dispatch(userDevicesRequest(coid)),
         updateDeviceUsersRequest: (sid, coid) => dispatch(updateDeviceUsersRequest(sid, coid)),
     };
 };
@@ -157,7 +159,7 @@ class FirmDevicesToolBar extends React.Component {
 
     handleRefresh() {
         d3.select('#tree').remove();
-        this.props.firmDevicesRequest(this.props.selectedFirmId);
+        this.props.userDevicesRequest(this.props.selectedUserIds);
         this.props.resetSelected();
         this.setState({
             addDialog: false,
@@ -496,7 +498,8 @@ FirmDevicesToolBar.propTypes = {
     loading: PropTypes.bool,
     columns: PropTypes.array,
     addRemoveColumn: PropTypes.func,
-    deviceTypes: PropTypes.array
+    deviceTypes: PropTypes.array,
+    selectedUserIds: PropTypes.array
 };
 
 export default connect(null, mapDispatchToProps)(FirmDevicesToolBar);

@@ -10,7 +10,7 @@ import {createMuiTheme} from '@material-ui/core/styles';
 // Redux
 import {connect} from "react-redux";
 import store from "../../redux/store";
-import {addFirmRequest, deleteFirmRequest, firmDevicesRequest, updateFirmRequest} from "../../redux/actions";
+import {addFirmRequest, deleteFirmRequest, updateFirmRequest} from "../../redux/actions";
 
 // Components
 import './firmAdministration.scss'
@@ -22,7 +22,6 @@ const mapDispatchToProps = (dispatch) => {
         addFirmRequest: (payload) => dispatch(addFirmRequest(payload)),
         deleteFirmRequest: (payload) => dispatch(deleteFirmRequest(payload)),
         updateFirmRequest: (payload) => dispatch(updateFirmRequest(payload)),
-        firmDevicesRequest: (payload) => dispatch(firmDevicesRequest(payload)),
     };
 };
 
