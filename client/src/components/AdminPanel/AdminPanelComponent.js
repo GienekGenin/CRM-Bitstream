@@ -197,7 +197,7 @@ class AdminPanel extends React.Component {
                         >
                             {checkAccess('/editFirms') && <Tab label="Firms"/>}
                             <Tab label="Users" disabled={!selectedFirm && checkAccess('/editFirms')}/>
-                            <Tab label="Firm devices" disabled={!selectedFirm && checkAccess('/editFirms')}/>
+                            <Tab label="Firm devices" disabled={!selectedUsers && checkAccess('/editFirms')}/>
                             <Tab label="Visualisation 1" disabled={!selectedDevices}/>
                         </Tabs>
                     </Toolbar>
@@ -214,7 +214,7 @@ class AdminPanel extends React.Component {
                         {value === 1 && <TabContainer>
                             <UserAdminComponent
                                 handleSetUsers={this.handleSetUsers}
-                                resetSelectedUserParent={this.resetSelectedUsers}
+                                resetSelectedUsers={this.resetSelectedUsers}
                                 onUsersSelect={this.handleUsersSelect}
                                 selectedFirm={selectedFirm}
                                 selectedUsers={selectedUsers}
@@ -227,6 +227,7 @@ class AdminPanel extends React.Component {
                                 resetSelectedDeviceParent={this.resetSelectedDevices}
                                 onDeviceSelect={this.handleDevicesSelect}
                                 selectedFirm={selectedFirm}
+                                selectedUsers={selectedUsers}
                                 parentDevices={devices}
                                 selectedDevice={selectedDevices}
                                 deviceTypes={deviceTypes}

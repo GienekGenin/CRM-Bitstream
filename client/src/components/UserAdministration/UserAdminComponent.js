@@ -137,7 +137,8 @@ class UserAdminComponent extends React.Component {
     }
 
     resetSelected = () => {
-        this.setState({selectedUsers: [], selectedUserIds: []});
+        this.props.resetSelectedUsers();
+        this.setState({selectedUsers: [], selectedUserIds: [], checked: false});
     };
 
     onRowClick = (e, rowData) => {
@@ -161,10 +162,11 @@ class UserAdminComponent extends React.Component {
     selectAllUsers(){
         const {users, selectedUsers} = this.state;
         if(users.length === selectedUsers.length){
-            this.setState({selectedUsers: [], selectedUserIds: [], checked: false});
+            this.resetSelected();
         } else {
             const selectedUserIds = users.map(user=>user._id);
             this.setState({selectedUsers: users, selectedUserIds, checked: true});
+            this.handleUsersSelect([users]);
         }
     }
 
@@ -234,7 +236,7 @@ UserAdminComponent.propTypes = {
     selectedFirm: PropTypes.object,
     onUsersSelect: PropTypes.func.isRequired,
     classes: PropTypes.object.isRequired,
-    resetSelectedUserParent: PropTypes.func,
+    resetSelectedUsers: PropTypes.func,
     handleSetUsers: PropTypes.func,
     parentUsers: PropTypes.array,
     selectedUsers: PropTypes.array,
