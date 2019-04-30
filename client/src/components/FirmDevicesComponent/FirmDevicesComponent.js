@@ -82,7 +82,7 @@ class FirmDevicesComponent extends React.Component {
     componentDidMount() {
         this._isMounted = true;
         this.setState({loading: true});
-        console.log(this.props.selectedUsers);
+        // console.log(this.props.selectedUsers);
         if (this.props.selectedFirm) {
             this.setState({selectedFirm: this.props.selectedFirm});
             if (!this.props.parentDevices) {

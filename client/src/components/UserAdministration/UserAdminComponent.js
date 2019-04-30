@@ -111,9 +111,13 @@ class UserAdminComponent extends React.Component {
         }
 
         if (this.props.selectedUsers) {
-            const selectedUsers = this.props.selectedUsers;
+            const {selectedUsers, parentUsers} = this.props;
+            let checked = false;
+            if(parentUsers.length === selectedUsers.length){
+                checked = true;
+            }
             const selectedUserIds = selectedUsers.map(user => user._id);
-            this.setState({selectedUsers, selectedUserIds});
+            this.setState({selectedUsers, selectedUserIds, checked});
         }
 
         this.unsubscribe = store.subscribe(() => {
@@ -166,7 +170,7 @@ class UserAdminComponent extends React.Component {
         } else {
             const selectedUserIds = users.map(user=>user._id);
             this.setState({selectedUsers: users, selectedUserIds, checked: true});
-            this.handleUsersSelect([users]);
+            this.handleUsersSelect(users);
         }
     }
 
@@ -175,7 +179,10 @@ class UserAdminComponent extends React.Component {
         const element = <div>
             <Checkbox value={'1'} checked={ checked } onChange={this.selectAllUsers}/>
         </div>;
-        ReactDOM.render(element, document.querySelector('#root > div.root > main > div > div > div > div > div > div > div > div:nth-child(2) > div > div > table > tbody > tr:nth-child(1) > td:nth-child(1)'))
+        const container = document.querySelector('#root > div.root > main > div > div > div > div > div > div > ' +
+            'div > div:nth-child(2) > div > div > table > tbody > tr:nth-child(1) > td:nth-child(1)');
+        if(container)
+        ReactDOM.render(element, container)
     }
 
     render() {

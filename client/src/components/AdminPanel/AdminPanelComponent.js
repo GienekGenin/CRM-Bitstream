@@ -244,7 +244,7 @@ class AdminPanel extends React.Component {
                         {value === 0 && <TabContainer>
                             <UserAdminComponent
                                 handleSetUsers={this.handleSetUsers}
-                                resetSelectedUserParent={this.resetSelectedUsers}
+                                resetSelectedUsers={this.resetSelectedUsers}
                                 onUsersSelect={this.handleUsersSelect}
                                 selectedFirm={selectedFirm}
                                 selectedUsers={selectedUsers}
