@@ -1,4 +1,5 @@
 import React from "react";
+import ReactDOM from 'react-dom'
 import * as PropTypes from 'prop-types';
 import _ from "lodash";
 
@@ -62,6 +63,7 @@ class UserAdminComponent extends React.Component {
         this.state = {
             page: 0,
             rowsPerPage: 5,
+            checked: false,
             selectedUsers: [],
             selectedUserIds: [],
             loading: false,
@@ -88,6 +90,7 @@ class UserAdminComponent extends React.Component {
         this.handleUsersSelect = this.handleUsersSelect.bind(this);
         this.resetSelected = this.resetSelected.bind(this);
         this.addRemoveColumn = this.addRemoveColumn.bind(this);
+        this.selectAllUsers = this.selectAllUsers.bind(this);
     }
 
 
@@ -109,7 +112,7 @@ class UserAdminComponent extends React.Component {
 
         if (this.props.selectedUsers) {
             const selectedUsers = this.props.selectedUsers;
-            const selectedUserIds = selectedUsers.map(user=>user._id);
+            const selectedUserIds = selectedUsers.map(user => user._id);
             this.setState({selectedUsers, selectedUserIds});
         }
 
@@ -138,24 +141,48 @@ class UserAdminComponent extends React.Component {
     };
 
     onRowClick = (e, rowData) => {
-        const {selectedUsers} = this.state;
+        const {users, selectedUsers} = this.state;
         let usersSet = new Set(selectedUsers);
         usersSet.has(rowData) ? usersSet.delete(rowData) : usersSet.add(rowData);
-        const selectedUserIds = [...usersSet].map(el=>el._id);
-        this.setState({selectedUsers: [...usersSet], selectedUserIds});
+        const selectedUserIds = [...usersSet].map(el => el._id);
+        let checked = false;
+        if(users.length === [...usersSet].length) {
+            checked = true;
+        }
+        this.setState({selectedUsers: [...usersSet], selectedUserIds, checked});
         this.handleUsersSelect([...usersSet]);
+
     };
 
     addRemoveColumn = (columns) => {
         this.setState({columns});
     };
 
+    selectAllUsers(){
+        const {users, selectedUsers} = this.state;
+        if(users.length === selectedUsers.length){
+            this.setState({selectedUsers: [], selectedUserIds: [], checked: false});
+        } else {
+            const selectedUserIds = users.map(user=>user._id);
+            this.setState({selectedUsers: users, selectedUserIds, checked: true});
+        }
+    }
+
+    renderSelectAllCheckBox() {
+        const {checked} = this.state;
+        const element = <div>
+            <Checkbox value={'1'} checked={ checked } onChange={this.selectAllUsers}/>
+        </div>;
+        ReactDOM.render(element, document.querySelector('#root > div.root > main > div > div > div > div > div > div > div > div:nth-child(2) > div > div > table > tbody > tr:nth-child(1) > td:nth-child(1)'))
+    }
+
     render() {
         const {rowsPerPage, page, selectedUsers, selectedUserIds, loading, selectedFirm, users, columns} = this.state;
+        this.renderSelectAllCheckBox();
         users && users.map((el, i, arr) => arr[i] = Object.assign(el, {
             action: (
                 <div>
-                    <Checkbox value={el._id} checked={selectedUserIds.includes(el._id)} />
+                    <Checkbox value={el._id} checked={selectedUserIds.includes(el._id)}/>
                 </div>
             )
         }));
