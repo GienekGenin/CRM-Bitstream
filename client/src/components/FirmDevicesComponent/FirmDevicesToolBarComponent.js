@@ -205,7 +205,7 @@ class FirmDevicesToolBar extends React.Component {
                 <div className={'title'}>
                     {this.props.selected ? <h3>
                         Selected {this.props.selected.name}
-                    </h3> : <h3>Firm devices</h3>}
+                    </h3> : <h3>Devices</h3>}
                 </div>
                 <div className={'device-controls'}>
                     <div>

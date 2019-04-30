@@ -925,7 +925,7 @@ class FirmDevicesComponent extends React.Component {
                                         isLoading={loading}
                                         data={devices}
                                         columns={columns}
-                                        title="Firm devices"
+                                        title="Devices"
                                         options={{
                                             filtering: true,
                                             columnsButton: false,

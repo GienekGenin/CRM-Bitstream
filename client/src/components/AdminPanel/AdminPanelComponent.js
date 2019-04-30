@@ -196,8 +196,8 @@ class AdminPanel extends React.Component {
                         >
                             {checkAccess('/editFirms') && <Tab label="Firms"/>}
                             <Tab label="Users" disabled={!selectedFirm && checkAccess('/editFirms')}/>
-                            <Tab label="Firm devices" disabled={!selectedUsers && checkAccess('/editFirms')}/>
-                            <Tab label="Visualisation 1" disabled={!selectedDevices}/>
+                            <Tab label="Devices" disabled={!selectedUsers && checkAccess('/editFirms')}/>
+                            <Tab label="Visualisation" disabled={!selectedDevices}/>
                         </Tabs>
                     </Toolbar>
                 </AppBar>
