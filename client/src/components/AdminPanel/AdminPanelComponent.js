@@ -220,8 +220,8 @@ class AdminPanel extends React.Component {
                             scrollButtons="on"
                         >
                             {checkAccess('/editFirms') && <Tab label="Firms"/>}
-                            <Tab label="Firm devices" disabled={!selectedFirm && checkAccess('/editFirms')}/>
                             <Tab label="Users" disabled={!selectedFirm && checkAccess('/editFirms')}/>
+                            <Tab label="Firm devices" disabled={!selectedFirm && checkAccess('/editFirms')}/>
                             <Tab label="Devices" disabled={!selectedUser}/>
                             <Tab label="Visualisation 1" disabled={!selectedDevice}/>
                             <Tab label="Visualisation 2" disabled={!selectedUserDevice}/>
@@ -238,6 +238,16 @@ class AdminPanel extends React.Component {
                             />
                         </TabContainer>}
                         {value === 1 && <TabContainer>
+                            <UserAdminComponent
+                                handleSetUsers={this.handleSetUsers}
+                                resetSelectedUserParent={this.resetSelectedUser}
+                                onUserSelect={this.handleUserSelect}
+                                selectedFirm={selectedFirm}
+                                selectedUser={selectedUser}
+                                parentUsers={users}
+                            />
+                        </TabContainer>}
+                        {value === 2 && <TabContainer>
                             <FirmDevicesComponent
                                 handleSetDevices={this.handleSetDevices}
                                 resetSelectedDeviceParent={this.resetSelectedDevice}
@@ -246,16 +256,6 @@ class AdminPanel extends React.Component {
                                 parentDevices={devices}
                                 selectedDevice={selectedDevice}
                                 deviceTypes={deviceTypes}
-                            />
-                        </TabContainer>}
-                        {value === 2 && <TabContainer>
-                            <UserAdminComponent
-                                handleSetUsers={this.handleSetUsers}
-                                resetSelectedUserParent={this.resetSelectedUser}
-                                onUserSelect={this.handleUserSelect}
-                                selectedFirm={selectedFirm}
-                                selectedUser={selectedUser}
-                                parentUsers={users}
                             />
                         </TabContainer>}
                         {value === 3 && <TabContainer>
@@ -284,6 +284,16 @@ class AdminPanel extends React.Component {
                     </div> :
                     <div>
                         {value === 0 && <TabContainer>
+                            <UserAdminComponent
+                                handleSetUsers={this.handleSetUsers}
+                                resetSelectedUserParent={this.resetSelectedUser}
+                                onUserSelect={this.handleUserSelect}
+                                selectedFirm={selectedFirm}
+                                selectedUser={selectedUser}
+                                parentUsers={users}
+                            />
+                        </TabContainer>}
+                        {value === 1 && <TabContainer>
                             <FirmDevicesComponent
                                 handleSetDevices={this.handleSetDevices}
                                 resetSelectedDeviceParent={this.resetSelectedDevice}
@@ -294,15 +304,6 @@ class AdminPanel extends React.Component {
                                 deviceTypes={deviceTypes}
                             />
                         </TabContainer>}
-                        {value === 1 && <TabContainer>
-                            <UserAdminComponent
-                                handleSetUsers={this.handleSetUsers}
-                                resetSelectedUserParent={this.resetSelectedUser}
-                                onUserSelect={this.handleUserSelect}
-                                selectedFirm={selectedFirm}
-                                selectedUser={selectedUser}
-                                parentUsers={users}
-                            /></TabContainer>}
                         {value === 2 && <TabContainer>
                             <DeviceAdminComponent
                                 handleSetUserDevices={this.handleSetUserDevices}
