@@ -62,8 +62,8 @@ class UserAdminComponent extends React.Component {
         this.state = {
             page: 0,
             rowsPerPage: 5,
-            selectedUser: null,
-            selectedUserId: '',
+            selectedUsers: [],
+            selectedUserIds: [],
             loading: false,
             selectedFirm: null,
             columns: [
@@ -85,7 +85,7 @@ class UserAdminComponent extends React.Component {
             ]
         };
 
-        this.handleUserSelect = this.handleUserSelect.bind(this);
+        this.handleUsersSelect = this.handleUsersSelect.bind(this);
         this.resetSelected = this.resetSelected.bind(this);
         this.addRemoveColumn = this.addRemoveColumn.bind(this);
     }
@@ -108,9 +108,10 @@ class UserAdminComponent extends React.Component {
         }
 
 
-        if (this.props.selectedUser) {
-            const selectedUser = this.props.selectedUser;
-            this.setState({selectedUser, selectedUserId: selectedUser._id});
+        if (this.props.selectedUsers) {
+            const selectedUsers = this.props.selectedUsers;
+            const selectedUserIds = selectedUsers.map(user=>user._id);
+            this.setState({selectedUsers, selectedUserIds});
         }
         if (this.props.parentUsers) {
             this.setState({users: this.props.parentUsers});
@@ -132,23 +133,20 @@ class UserAdminComponent extends React.Component {
         this.unsubscribe();
     }
 
-    handleUserSelect(user) {
-        this.props.onUserSelect(user);
+    handleUsersSelect(users) {
+        this.props.onUsersSelect(users);
     }
 
     resetSelected = () => {
-        this.setState({selectedUser: null, selectedUserId: null});
+        this.setState({selectedUsers: [], selectedUserIds: []});
     };
 
     onRowClick = (e, rowData) => {
-        let selectedUser = _.omit(this.props.users.filter(el => (el._id === rowData._id) ? el : null)[0], 'action');
-        if (this.state.selectedUser && this.state.selectedUser._id === selectedUser._id) {
-            this.setState({selectedUser: null, selectedUserId: ''});
-            this.props.onUserSelect(null);
-        } else {
-            this.setState({selectedUser, selectedUserId: selectedUser._id});
-            this.props.onUserSelect(selectedUser);
-        }
+        const {selectedUsers} = this.state;
+        let usersSet = new Set(selectedUsers);
+        usersSet.has(rowData) ? usersSet.delete(rowData) : usersSet.add(rowData);
+        const selectedUserIds = [...usersSet].map(el=>el._id);
+        this.setState({selectedUsers: [...usersSet], selectedUserIds});
     };
 
     addRemoveColumn = (columns) => {
@@ -156,11 +154,11 @@ class UserAdminComponent extends React.Component {
     };
 
     render() {
-        const {rowsPerPage, page, selectedUser, selectedUserId, loading, selectedFirm, users, columns} = this.state;
+        const {rowsPerPage, page, selectedUsers, selectedUserIds, loading, selectedFirm, users, columns} = this.state;
         users && users.map((el, i, arr) => arr[i] = Object.assign(el, {
             action: (
                 <div>
-                    <Checkbox value={el._id} checked={selectedUserId === el._id} />
+                    <Checkbox value={el._id} checked={selectedUserIds.includes(el._id)} />
                 </div>
             )
         }));
@@ -174,7 +172,7 @@ class UserAdminComponent extends React.Component {
                                     Toolbar: props => (
                                         <div className={'custom-toolbar'}>
                                             <UserToolBarComponent
-                                                selected={selectedUser}
+                                                selected={selectedUsers.length === 1 ? selectedUsers[0] : null}
                                                 resetSelected={this.resetSelected}
                                                 loading={loading}
                                                 selectedFirmId={selectedFirm ? selectedFirm._id : ''}
@@ -210,7 +208,7 @@ class UserAdminComponent extends React.Component {
 
 UserAdminComponent.propTypes = {
     selectedFirm: PropTypes.object,
-    onUserSelect: PropTypes.func.isRequired,
+    onUsersSelect: PropTypes.func.isRequired,
     classes: PropTypes.object.isRequired,
     resetSelectedUserParent: PropTypes.func,
     handleSetUsers: PropTypes.func,

@@ -1,5 +1,6 @@
 import React from "react";
 import * as PropTypes from 'prop-types';
+import _ from 'lodash';
 
 // Material
 import Button from "@material-ui/core/Button";
@@ -128,7 +129,8 @@ class UserToolBar extends React.Component {
     };
 
     handleAddUser = () => {
-        this.props.addUserRequest(Object.assign({}, this.state.newUser, {firm_id: this.props.selectedFirmId}));
+        const userToAdd = _.omit(this.state.newUser, ['action', 'tableData']);
+        this.props.addUserRequest(Object.assign({}, userToAdd, {firm_id: this.props.selectedFirmId}));
         this.setState({
             addDialog: false,
             newUser: {
@@ -157,7 +159,8 @@ class UserToolBar extends React.Component {
     }
 
     handleUpdateUser() {
-        this.props.updateUserRequest(Object.assign({}, this.state.newUser, {firm_id: this.props.selectedFirmId}));
+        const userToUpdate = _.omit(this.state.newUser, ['action', 'tableData']);
+        this.props.updateUserRequest(Object.assign({}, userToUpdate, {firm_id: this.props.selectedFirmId}));
         this.props.resetSelected();
         this.handleClose('editDialog');
     }
