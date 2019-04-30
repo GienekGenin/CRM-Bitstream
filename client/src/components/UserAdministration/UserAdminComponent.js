@@ -107,14 +107,10 @@ class UserAdminComponent extends React.Component {
             } else this.setState({users: this.props.parentUsers, loading: false});
         }
 
-
         if (this.props.selectedUsers) {
             const selectedUsers = this.props.selectedUsers;
             const selectedUserIds = selectedUsers.map(user=>user._id);
             this.setState({selectedUsers, selectedUserIds});
-        }
-        if (this.props.parentUsers) {
-            this.setState({users: this.props.parentUsers});
         }
 
         this.unsubscribe = store.subscribe(() => {
@@ -147,6 +143,7 @@ class UserAdminComponent extends React.Component {
         usersSet.has(rowData) ? usersSet.delete(rowData) : usersSet.add(rowData);
         const selectedUserIds = [...usersSet].map(el=>el._id);
         this.setState({selectedUsers: [...usersSet], selectedUserIds});
+        this.handleUsersSelect([...usersSet]);
     };
 
     addRemoveColumn = (columns) => {
@@ -186,7 +183,7 @@ class UserAdminComponent extends React.Component {
                                 isLoading={loading}
                                 data={users}
                                 columns={columns}
-                                title="Firms"
+                                title="Users"
                                 options={{
                                     filtering: true,
                                     columnsButton: false,
@@ -213,7 +210,7 @@ UserAdminComponent.propTypes = {
     resetSelectedUserParent: PropTypes.func,
     handleSetUsers: PropTypes.func,
     parentUsers: PropTypes.array,
-    selectedUser: PropTypes.object,
+    selectedUsers: PropTypes.array,
 };
 
 const UserAdminStyles = withStyles(styles)(UserAdminComponent);
