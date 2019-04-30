@@ -93,7 +93,7 @@ export const devicesReducer = (state = initialState, action) => {
         }
         case devicesConstants.USER_DEVICES_GET_SUCCESS: {
             return Object.assign({}, state, {
-                userDevices: action.payload,
+                devices: action.payload,
                 loading: false,
                 success: 'User devices loaded successfully'
             });

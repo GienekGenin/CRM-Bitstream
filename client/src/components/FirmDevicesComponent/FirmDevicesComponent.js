@@ -16,7 +16,7 @@ import Paper from '@material-ui/core/Paper';
 // Redux
 import store from "../../redux/store";
 import {connect} from "react-redux";
-import {firmDevicesRequest} from "../../redux/actions";
+import {userDevicesRequest} from "../../redux/actions";
 import {tokenService} from "../../redux/services/token";
 
 // Components
@@ -27,7 +27,7 @@ import {theme} from "../material.theme";
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        firmDevicesRequest: (payload) => dispatch(firmDevicesRequest(payload)),
+        userDevicesRequest: (payload) => dispatch(userDevicesRequest(payload)),
     };
 };
 
@@ -82,22 +82,23 @@ class FirmDevicesComponent extends React.Component {
     componentDidMount() {
         this._isMounted = true;
         this.setState({loading: true});
-        // console.log(this.props.selectedUsers);
-        if (this.props.selectedFirm) {
-            this.setState({selectedFirm: this.props.selectedFirm});
-            if (!this.props.parentDevices) {
-                this.props.firmDevicesRequest(this.props.selectedFirm._id);
+        const {selectedFirm, selectedUsers, parentDevices} = this.props;
+        if (selectedUsers) {
+            this.setState({selectedFirm, selectedUsers});
+            if (!parentDevices) {
+                const selectedUserIds = selectedUsers.map(user=>user._id);
+                this.props.userDevicesRequest(selectedUserIds);
             } else {
                 this.createPie(this.props.parentDevices);
                 this.createPiePhyid(this.props.parentDevices);
                 this.setState({devices: this.props.parentDevices, loading: false});
             }
         } else {
-            let selectedFirm = tokenService.verifyToken().firm;
-            this.setState({selectedFirm});
+            let selectedUser = tokenService.verifyToken().user;
+            this.setState({selectedUsers: [selectedUser]});
             const {parentDevices} = this.props;
             if (!parentDevices) {
-                this.props.firmDevicesRequest(selectedFirm._id);
+                this.props.userDevicesRequest(selectedUser._id);
             } else {
                 this.createPie(parentDevices);
                 this.createPiePhyid(parentDevices);

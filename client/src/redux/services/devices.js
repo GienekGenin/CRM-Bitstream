@@ -1,16 +1,16 @@
 const apiBase = process.env.REACT_APP_API_BASE;
 
-const getUserDevices = (userId) => {
+const getUserDevices = (userIds) => {
     const token = localStorage.getItem('token');
     const requestOptions = {
-        method: 'GET',
+        method: 'POST',
         headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`
-        }
+        },
+        body: JSON.stringify(userIds)
     };
-
-    return fetch(`${apiBase}users/devices/${userId}`, requestOptions)
+    return fetch(`${apiBase}users/devices/`, requestOptions)
         .then(handleResponse)
         .then(devices => {
             // store user details and jwt token in local storage to keep user logged in between page refreshes

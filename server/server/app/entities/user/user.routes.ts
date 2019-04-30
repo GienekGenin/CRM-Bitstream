@@ -25,9 +25,9 @@ users.post('/login', UserPayloadValidator.loginUser, (req, res, next) => {
         .catch(next);
 });
 
-users.get('/devices/:id', TokenValidator.validateToken, (req, res, next) => {
+users.post('/devices', TokenValidator.validateToken, (req, res, next) => {
     usersService
-        .getDevicesByUserId(req.params.id)
+        .getDevicesByUserIds(req.body)
         .then(PayloadGeneratorService.nextWithData(next, res))
         .catch(next);
 });

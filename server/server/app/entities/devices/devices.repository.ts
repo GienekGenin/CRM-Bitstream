@@ -28,12 +28,10 @@ export class DeviceRepository extends Repository {
         return this.model.deleteOne({sid});
     }
 
-    getDevicesByUserId(id) {
+    getDevicesByUserIds(ids) {
         return this.model.find({
             'coid': {
-                '$in': [
-                    id
-                ]
+                '$in': ids
             },
             deleted: {$ne: true}
         })

@@ -237,8 +237,8 @@ class UsersService {
         });
     }
 
-    getDevicesByUserId(id) {
-        return deviceService.getDevicesByUserId(id);
+    getDevicesByUserIds(id) {
+        return deviceService.getDevicesByUserIds(id);
     }
 }
 

@@ -155,8 +155,8 @@ class DeviceService {
         }))
     }
 
-    getDevicesByUserId(id) {
-        return this.deviceRepository.getDevicesByUserId(id);
+    getDevicesByUserIds(ids) {
+        return this.deviceRepository.getDevicesByUserIds(ids);
     }
 
     createStructure(structure) {
