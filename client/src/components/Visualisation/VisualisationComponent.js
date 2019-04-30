@@ -9,8 +9,11 @@ import am4themes_animated from "@amcharts/amcharts4/themes/animated";
 import store from "../../redux/store";
 import {connect} from "react-redux";
 import Paper from "@material-ui/core/Paper";
-
+import MaterialTable from '../material/MaterialTable/material-table';
+import {Grid, MuiThemeProvider} from '@material-ui/core';
 import './visualisation.scss';
+import {theme} from "../material.theme";
+import Checkbox from "@material-ui/core/Checkbox";
 
 const mapDispatchToProps = (dispatch) => {
     return {};
@@ -26,8 +29,33 @@ class Visualisation extends React.Component {
         super(props);
 
         this.state = {
+            page: 0,
+            rowsPerPage: 5,
+            loading: false,
             selectedPhyids: new Set(),
-            devicesToVis: null
+            selectedDevicesId: [],
+            devicesToVis: [],
+            columns: [
+                {
+                    title: 'Select',
+                    field: 'action',
+                    filtering: false,
+                    sorting: false,
+                    hidden: false,
+                },
+                {
+                    title: 'Name',
+                    field: 'name',
+                    hidden: false,
+                },
+                {title: 'phyid', field: 'phyid', hidden: false,},
+                {title: 'sn', field: 'sn', hidden: true,},
+                {title: 'soft', field: 'soft', hidden: true,},
+                {title: 'status', field: 'status', hidden: true,},
+                {title: 'description', field: 'description', hidden: true},
+                {title: 'minTime', field: 'minTime', hidden: false},
+                {title: 'maxTime', field: 'maxTime', hidden: false},
+            ],
         };
 
         this.createPhyidPie = this.createPhyidPie.bind(this);
@@ -35,14 +63,16 @@ class Visualisation extends React.Component {
 
     componentDidMount() {
         const {selectedDevice, selectedUserDevice, parentDevices, parentUserDevices} = this.props;
-        let devicesToShow = null;
+        let devicesToVis = [];
         if(selectedDevice && parentDevices){
-            devicesToShow = parentDevices.filter(el => el.parent_id.includes(selectedDevice.sid) || el.sid === selectedDevice.sid);
+            devicesToVis = parentDevices.filter(el => el.parent_id.includes(selectedDevice.sid) || el.sid === selectedDevice.sid);
         }
         if(selectedUserDevice){
-            devicesToShow = parentUserDevices.filter(el => el.parent_id.includes(selectedUserDevice.sid) || el.sid === selectedUserDevice.sid);
+            devicesToVis = parentUserDevices.filter(el => el.parent_id.includes(selectedUserDevice.sid) || el.sid === selectedUserDevice.sid);
         }
-        if(devicesToShow) this.createPhyidPie(devicesToShow);
+        if(devicesToVis) {
+            this.createPhyidPie(devicesToVis);
+        }
     }
 
     componentWillMount() {
@@ -325,13 +355,55 @@ class Visualisation extends React.Component {
     };
 
     render() {
+        const {devicesToVis, columns, page, rowsPerPage, selectedDevicesId} = this.state;
+        devicesToVis && devicesToVis.map((el, i, arr) => arr[i] = Object.assign(el, {
+            action: (
+                <div>
+                    <Checkbox value={el._id} checked={selectedDevicesId.includes(el._id)}/>
+                </div>
+            ),
+            maxTime: (
+                <span>test</span>
+            ),
+            minTime: (
+                <span>test</span>
+            )
+        }));
         return (
-            <div>
-                <Paper>
-                    <div id={'pie-phyid-vis'}>
+            <div style={{maxWidth: '100%'}}>
+                <MuiThemeProvider theme={theme}>
+                    <Grid
+                        container
+                        spacing={40}
+                    >
+                        <Grid item xs={12} sm={12} md={12} lg={6}>
+                            <Paper>
+                                <div id={'pie-phyid-vis'}>
 
-                    </div>
-                </Paper>
+                                </div>
+                            </Paper>
+                        </Grid>
+                        <Grid item xs={12} sm={12} md={12} lg={6}>
+                            <div >
+                                <MaterialTable
+                                    data={devicesToVis}
+                                    columns={columns}
+                                    title="Vis devices"
+                                    options={{
+                                        filtering: true,
+                                        columnsButton: false,
+                                        header: true,
+                                        initialPage: page,
+                                        pageSize: rowsPerPage,
+                                        search: false,
+                                        toolbar: false,
+                                    }}
+                                    parentChildData={(row, rows) => rows.find(a => a.sid === row.parent_id)}
+                                />
+                            </div>
+                        </Grid>
+                    </Grid>
+                </MuiThemeProvider>
             </div>
         )
     }

@@ -674,12 +674,20 @@ class FirmDevicesComponent extends React.Component {
                 chartdata.push(objToChart);
         }
         am4core.useTheme(am4themes_animated);
-        const chart = am4core.create("pie-phyid", am4charts.PieChart);
+
+        // cointainer to hold both charts
+        const container = am4core.create("pie-phyid", am4core.Container);
+        container.width = am4core.percent(100);
+        container.height = am4core.percent(100);
+        container.layout = "horizontal";
+
+        const chart = container.createChild(am4charts.PieChart);
         const pieSeries = chart.series.push(new am4charts.PieSeries());
         pieSeries.dataFields.value = "count";
         pieSeries.dataFields.category = "type";
 
-        chart.innerRadius = am4core.percent(30);
+        chart.innerRadius = am4core.percent(40);
+        chart.radius = am4core.percent(70);
 
         // Put a thick white border around each Slice
         pieSeries.slices.template.stroke = am4core.color("#fff");
@@ -881,7 +889,7 @@ class FirmDevicesComponent extends React.Component {
                                             initialPage: page,
                                             pageSize: rowsPerPage,
                                             search: false,
-                                            toolbar: true
+                                            toolbar: true,
                                         }}
                                         parentChildData={(row, rows) => rows.find(a => a.sid === row.parent_id)}
                                         onChangePage={(props, e) => this.onChangePage(props, e)}
