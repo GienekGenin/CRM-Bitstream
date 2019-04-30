@@ -24,6 +24,7 @@ import FirmDevicesToolBarComponent from "./FirmDevicesToolBarComponent";
 import MaterialTable from '../material/MaterialTable/material-table';
 import './firmDevices.scss';
 import {theme} from "../material.theme";
+import ReactDOM from "react-dom";
 
 const mapDispatchToProps = (dispatch) => {
     return {
@@ -46,10 +47,11 @@ class FirmDevicesComponent extends React.Component {
         this.state = {
             page: 0,
             rowsPerPage: 5,
+            checked: false,
             loading: false,
             selectedFirm: null,
-            selectedDevice: null,
-            selectedDeviceId: '',
+            selectedDevices: [],
+            selectedDeviceIds: [],
             columns: [
                 {
                     title: 'Select',
@@ -63,7 +65,7 @@ class FirmDevicesComponent extends React.Component {
                     field: 'name',
                     hidden: false,
                 },
-                {title: 'phyid', field: 'phyid', hidden: true,},
+                {title: 'phyid', field: 'phyid', hidden: false,},
                 {title: 'sn', field: 'sn', hidden: true,},
                 {title: 'soft', field: 'soft', hidden: true,},
                 {title: 'status', field: 'status', hidden: false,},
@@ -75,23 +77,28 @@ class FirmDevicesComponent extends React.Component {
 
         this.resetSelected = this.resetSelected.bind(this);
         this.addRemoveColumn = this.addRemoveColumn.bind(this);
-        this.buildChart = this.buildChart.bind(this)
+        this.buildChart = this.buildChart.bind(this);
+        this.selectAllDevices = this.selectAllDevices.bind(this);
     }
 
 
     componentDidMount() {
         this._isMounted = true;
         this.setState({loading: true});
-        const {selectedFirm, selectedUsers, parentDevices} = this.props;
+        const {selectedFirm, selectedUsers, parentDevices, selectedDevices} = this.props;
         if (selectedUsers) {
             this.setState({selectedFirm, selectedUsers});
             if (!parentDevices) {
-                const selectedUserIds = selectedUsers.map(user=>user._id);
+                const selectedUserIds = selectedUsers.map(user => user._id);
                 this.props.userDevicesRequest(selectedUserIds);
             } else {
-                this.createPie(this.props.parentDevices);
-                this.createPiePhyid(this.props.parentDevices);
-                this.setState({devices: this.props.parentDevices, loading: false});
+                this.createPie(parentDevices);
+                this.createPiePhyid(parentDevices);
+                let checked = false;
+                if(selectedDevices.length === parentDevices.length){
+                    checked = true;
+                }
+                this.setState({devices: parentDevices, selectedDevices, checked, loading: false});
             }
         } else {
             let selectedUser = tokenService.verifyToken().user;
@@ -105,11 +112,12 @@ class FirmDevicesComponent extends React.Component {
                 this.setState({devices: parentDevices, loading: false});
             }
         }
-        let device = null;
-        if (this.props.selectedDevice) {
-            device = this.props.selectedDevice;
-            this.buildChart(Object.assign({}, this.props.selectedDevice, {parent_id: '0'}), this.props.parentDevices);
-            this.setState({selectedDevice: device, selectedDeviceId: device._id});
+        if (selectedDevices) {
+            if (selectedDevices.length === 1) {
+                this.buildChart(Object.assign({}, selectedDevices[0], {parent_id: '0'}), parentDevices);
+            }
+            const selectedDeviceIds = selectedDevices.map(device => device.sid);
+            this.setState({selectedDevices, selectedDeviceIds});
         }
 
         this.unsubscribe = store.subscribe(() => {
@@ -133,7 +141,7 @@ class FirmDevicesComponent extends React.Component {
     }
 
     resetSelected = () => {
-        this.setState({selectedDeviceId: null, selectedDevice: null});
+        this.setState({selectedDeviceIds: [], selectedDevices: [], checked: false});
     };
 
     onChangePage = (page) => {
@@ -145,24 +153,33 @@ class FirmDevicesComponent extends React.Component {
     };
 
     onRowClick = (e, rowData) => {
-        let selectedDevice = _.omit(this.state.devices.filter(el => (el._id === rowData._id) ? el : null)[0], 'action');
-        if (this.state.selectedDevice && this.state.selectedDevice._id === selectedDevice._id) {
-            this.setState({selectedDevice: null, selectedDeviceId: ''});
-            this.props.onDeviceSelect(null);
-        } else {
-            this.setState({selectedDevice, selectedDeviceId: selectedDevice._id});
-            this.props.onDeviceSelect(selectedDevice);
-        }
-        this.handleDeviceSelect(selectedDevice);
+        const {devices, selectedDeviceIds} = this.state;
+        let selectedDevice = _.omit(this.state.devices.filter(el => (el.sid === rowData.sid) ? el : null)[0], 'action');
+        let selectedDeviceIdsSet = new Set(selectedDeviceIds);
+        let sid = selectedDevice.sid;
+        selectedDeviceIdsSet.has(sid) ? selectedDeviceIdsSet.delete(sid) : selectedDeviceIdsSet.add(sid);
+        let selectedDevices = [];
+        [...selectedDeviceIdsSet].forEach(sid=>{
+            devices.forEach(device=>{
+                if(device.sid === sid){
+                    selectedDevices.push(device);
+                }
+            })
+        });
+        let checked = false;
+        if(selectedDevices.length === devices.length) checked = true;
+        this.setState({selectedDevices, selectedDeviceIds: [...selectedDeviceIdsSet], checked});
+        this.handleDeviceSelect(selectedDevices);
     };
 
     addRemoveColumn = (columns) => {
         this.setState({columns});
     };
 
-    handleDeviceSelect(device) {
-        this.buildChart(Object.assign({}, device, {parent_id: '0'}), this.state.devices);
-        this.props.onDeviceSelect(device);
+    handleDeviceSelect(devices) {
+        if(devices.length === 1)
+            this.buildChart(Object.assign({}, devices[0], {parent_id: '0'}), this.state.devices);
+        this.props.onDeviceSelect(devices);
     }
 
     // todo: possible bugs
@@ -299,7 +316,7 @@ class FirmDevicesComponent extends React.Component {
                 nodeUpdate.select('circle.node')
                     .attr('id', (data) => {
                         if (d.data.name === data.data.name) {
-                            this.handleClickNoBuild(null, d.data._id);
+                            this.handleClickNoBuild(null, d.data.sid);
                             return 'selected'
                         }
                     })
@@ -572,14 +589,14 @@ class FirmDevicesComponent extends React.Component {
 
     // todo: possible bugs
     handleDeviceSelectNoBuild(device) {
-        this.props.onDeviceSelect(device);
+        this.props.onDeviceSelect([device]);
     }
 
     // todo: possible bugs
-    handleClickNoBuild = (event, id) => {
+    handleClickNoBuild = (event, sid) => {
         const {devices} = this.state;
-        let device = devices.filter(el => el._id === id ? el : null)[0];
-        this.setState({selectedDeviceId: id, selectedDevice: device});
+        let device = devices.filter(el => el.sid === sid ? el : null)[0];
+        this.setState({selectedDeviceIds: [sid], selectedDevices: [device]});
         this.handleDeviceSelectNoBuild(device);
     };
 
@@ -806,7 +823,7 @@ class FirmDevicesComponent extends React.Component {
                 })
             });
             result = [...trueParents].concat([...filteredDevices]);
-            if(!trueParents.size) {
+            if (!trueParents.size) {
                 this.setState({devices: []})
             } else {
                 this.setState({devices: result});
@@ -816,8 +833,30 @@ class FirmDevicesComponent extends React.Component {
         this.props.resetSelectedDeviceParent();
     }
 
+    selectAllDevices(){
+        const {devices, selectedDevices} = this.state;
+        if(devices.length === selectedDevices.length){
+            this.resetSelected();
+        } else {
+            const selectedDeviceIds = devices.map(devices=>devices.sid);
+            this.setState({selectedDevices: devices, selectedDeviceIds, checked: true});
+            this.handleDeviceSelect(devices);
+        }
+    }
+
+    renderSelectAllCheckBox(){
+        const {checked} = this.state;
+        const element = <div>
+            <Checkbox value={'1'} checked={ checked } onChange={this.selectAllDevices}/>
+        </div>;
+        const container = document.querySelector('#root > div > main > div > div > div > div > div:nth-child(1) > div' +
+            ' > div > div > div > div:nth-child(2) > div > div > table > tbody > tr:nth-child(1) > td:nth-child(2)');
+        if(container)
+            ReactDOM.render(element, container)
+    }
+
     render() {
-        const {loading, devices, selectedDevice, selectedDeviceId, selectedFirm, columns, rowsPerPage, page} = this.state;
+        const {loading, devices, selectedDevices, selectedDeviceIds, selectedFirm, columns, rowsPerPage, page} = this.state;
         const {deviceTypes} = this.props;
         devices && devices.map((el, i, arr) => arr[i] = Object.assign(el, {
             // status: el.status ? (
@@ -827,10 +866,11 @@ class FirmDevicesComponent extends React.Component {
             // ) : '',
             action: (
                 <div>
-                    <Checkbox value={el._id} checked={selectedDeviceId === el._id}/>
+                    <Checkbox value={el.sid} checked={selectedDeviceIds.includes(el.sid)}/>
                 </div>
             )
         }));
+        this.renderSelectAllCheckBox();
         return (
             <div>
                 <MuiThemeProvider theme={theme}>
@@ -869,7 +909,7 @@ class FirmDevicesComponent extends React.Component {
                                             Toolbar: props => (
                                                 <div className={'custom-toolbar'}>
                                                     <FirmDevicesToolBarComponent
-                                                        selected={selectedDevice}
+                                                        selected={selectedDevices.length === 1 ? selectedDevices[0] : null}
                                                         resetSelected={this.resetSelected}
                                                         loading={loading}
                                                         addRemoveColumn={this.addRemoveColumn}
@@ -914,7 +954,7 @@ class FirmDevicesComponent extends React.Component {
 
 FirmDevicesComponent.propTypes = {
     selectedFirm: PropTypes.object,
-    selectedDevice: PropTypes.object,
+    selectedDevices: PropTypes.array,
     classes: PropTypes.object.isRequired,
     onDeviceSelect: PropTypes.func.isRequired,
     resetSelectedDeviceParent: PropTypes.func,

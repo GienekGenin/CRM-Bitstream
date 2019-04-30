@@ -149,7 +149,7 @@ class FirmDevicesToolBar extends React.Component {
     }
 
     handleUpdateFirmDevice() {
-        let deviceToUpdate = _.omit(this.state.newFirmDevice, 'tableData');
+        let deviceToUpdate = _.omit(this.state.newFirmDevice, ['tableData', 'action']);
         this.props.updateFirmDevice(deviceToUpdate);
         this.props.resetSelected();
         this.handleClose('editDialog');
