@@ -92,7 +92,10 @@ class AdminPanel extends React.Component {
             }
             if (store.getState().devicesReducer.devices) {
                 const reduxDevices = store.getState().devicesReducer.devices;
-                this.setState({devices: reduxDevices, selectedDevice: null});
+                if(!this.state.devices)
+                if(this.state.devices && reduxDevices.length !== this.state.devices.length){
+                    this.setState({devices: reduxDevices, selectedDevice: null});
+                }
             }
         });
 
@@ -220,8 +223,8 @@ class AdminPanel extends React.Component {
                             <Tab label="Firm devices" disabled={!selectedFirm && checkAccess('/editFirms')}/>
                             <Tab label="Users" disabled={!selectedFirm && checkAccess('/editFirms')}/>
                             <Tab label="Devices" disabled={!selectedUser}/>
-                            <Tab label="Visualisation" disabled={!selectedDevice}/>
-                            <Tab label="Optional"/>
+                            <Tab label="Visualisation 1" disabled={!selectedDevice}/>
+                            <Tab label="Visualisation 2" disabled={!selectedUserDevice}/>
                         </Tabs>
                     </Toolbar>
                 </AppBar>
@@ -269,9 +272,15 @@ class AdminPanel extends React.Component {
                         {value === 4 && <TabContainer>
                             <VisualisationComponent
                                 selectedDevice={selectedDevice}
+                                parentDevices={devices}
                             />
                         </TabContainer>}
-                        {value === 5 && <TabContainer>Optional</TabContainer>}
+                        {value === 5 && <TabContainer>
+                            <VisualisationComponent
+                                parentUserDevices={userDevices}
+                                selectedUserDevice={selectedUserDevice}
+                            />
+                        </TabContainer>}
                     </div> :
                     <div>
                         {value === 0 && <TabContainer>
@@ -282,6 +291,7 @@ class AdminPanel extends React.Component {
                                 selectedFirm={selectedFirm}
                                 parentDevices={devices}
                                 selectedDevice={selectedDevice}
+                                deviceTypes={deviceTypes}
                             />
                         </TabContainer>}
                         {value === 1 && <TabContainer>
@@ -307,9 +317,15 @@ class AdminPanel extends React.Component {
                         {value === 3 && <TabContainer>
                             <VisualisationComponent
                                 selectedDevice={selectedDevice}
+                                parentDevices={devices}
                             />
                         </TabContainer>}
-                        {value === 4 && <TabContainer>Optional</TabContainer>}
+                        {value === 4 && <TabContainer>
+                            <VisualisationComponent
+                                parentUserDevices={userDevices}
+                                selectedUserDevice={selectedUserDevice}
+                            />
+                        </TabContainer>}
                     </div>}
 
             </div>

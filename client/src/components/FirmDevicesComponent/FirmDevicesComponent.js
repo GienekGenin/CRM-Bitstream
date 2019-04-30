@@ -94,11 +94,15 @@ class FirmDevicesComponent extends React.Component {
         } else {
             let selectedFirm = tokenService.verifyToken().firm;
             this.setState({selectedFirm});
-            if (!this.props.parentDevices) {
+            const {parentDevices} = this.props;
+            if (!parentDevices) {
                 this.props.firmDevicesRequest(selectedFirm._id);
-            } else this.setState({devices: this.props.parentDevices, loading: false});
+            } else {
+                this.createPie(parentDevices);
+                this.createPiePhyid(parentDevices);
+                this.setState({devices: parentDevices, loading: false});
+            }
         }
-
         let device = null;
         if (this.props.selectedDevice) {
             device = this.props.selectedDevice;
@@ -204,13 +208,13 @@ class FirmDevicesComponent extends React.Component {
         }
         let treeData = unflatten(arr)[0];
         let margin = {
-                top: 60,
+                top: 200,
                 right: 90,
                 bottom: 30,
                 left: 90
             },
             width = 560,
-            height = 10;
+            height = 150;
 
 // append the svg object to the body of the page
 // appends a 'group' element to 'svg'
@@ -721,11 +725,12 @@ class FirmDevicesComponent extends React.Component {
     };
 
     chartSelect() {
+        d3.select('#tree').remove();
         let reduxDevices = store.getState().devicesReducer.devices;
         let {selectedTypes, selectedPhyids} = this.state;
         let filteredDevicesParents = [];
-        let filteredDevicesChildren = [];
-        let filteredDevices = [];
+        let filteredDevicesChildren = new Set();
+        let filteredDevices = new Set();
         if (!selectedTypes.size && !selectedPhyids.size) {
             return this.setState({devices: reduxDevices});
         }
@@ -752,11 +757,11 @@ class FirmDevicesComponent extends React.Component {
             selectedPhyids.forEach(phyid => {
                 reduxDevices.forEach(device => {
                     if (device.phyid === phyid) {
-                        filteredDevicesChildren.push(device);
+                        filteredDevicesChildren.add(device);
                     }
                 })
             });
-            this.setState({devices: filteredDevicesChildren});
+            this.setState({devices: [...filteredDevicesChildren]});
         }
         if (selectedTypes.size && selectedPhyids.size) {
             let trueParents = new Set();
@@ -770,57 +775,32 @@ class FirmDevicesComponent extends React.Component {
             selectedPhyids.forEach(phyid => {
                 reduxDevices.forEach(device => {
                     if (device.phyid === 'status') {
-                        filteredDevicesChildren.push(device);
+                        filteredDevicesChildren.add(device);
                     }
                 });
-                if(phyid !== 'status'){
+                if (phyid !== 'status') {
                     reduxDevices.forEach(device => {
                         if (device.phyid === phyid) {
-                            filteredDevicesChildren.push(device);
+                            filteredDevicesChildren.add(device);
                         }
                     })
                 }
             });
-            if(selectedPhyids.has('status')){
-                let result = [];
-                if(selectedPhyids.size > 1){
-                    filteredDevicesParents.forEach(parent=>{
-                        filteredDevicesChildren.forEach(child=>{
-                            if(child.parent_id.includes(parent.sid)){
-                                trueParents.add(parent);
-                                filteredDevices.push(child);
-                            }
-                        })
-                    });
-                    result = [...trueParents].concat(filteredDevices);
-                } else {
-                    result = [...filteredDevicesParents];
-                }
-                this.setState({devices: result});
+            let result;
+            filteredDevicesParents.forEach(parent => {
+                filteredDevicesChildren.forEach(child => {
+                    if (child.parent_id.includes(parent.sid)) {
+                        trueParents.add(parent);
+                        filteredDevices.add(child);
+                    }
+                })
+            });
+            result = [...trueParents].concat([...filteredDevices]);
+            if(!trueParents.size) {
+                this.setState({devices: []})
             } else {
-                filteredDevicesParents.forEach(parent=>{
-                    filteredDevicesChildren.forEach(child=>{
-                        if(child.parent_id.includes(parent.sid)){
-                            trueParents.add(parent);
-                        }
-                    })
-                });
-                if(trueParents.size){
-                    let childrenWithStatus = filteredDevicesChildren.filter(el=> el.phyid === 'status').concat([...trueParents]);
-                    let regularChildren = filteredDevicesChildren.filter(el=> el.phyid !== 'status');
-                    let trueChildrenStatus = new Set();
-                    childrenWithStatus.forEach(childWithStatus=>{
-                        regularChildren.forEach(child=>{
-                            if(child.parent_id.includes(childWithStatus.sid)){
-                                trueChildrenStatus.add(childWithStatus);
-                            }
-                        })
-                    });
-                    let result = [...trueChildrenStatus].concat(regularChildren).concat();
-                    this.setState({devices: result});
-                } else this.setState({devices: []});
+                this.setState({devices: result});
             }
-
         }
         this.resetSelected();
         this.props.resetSelectedDeviceParent();
