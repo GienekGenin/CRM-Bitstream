@@ -1,4 +1,4 @@
-import React from "react";
+import React, {Fragment, useState} from "react";
 import * as PropTypes from 'prop-types';
 
 // Material
@@ -12,6 +12,7 @@ import Divider from "@material-ui/core/Divider";
 import ListItem from "@material-ui/core/ListItem";
 import Checkbox from "@material-ui/core/Checkbox";
 import ListItemText from "@material-ui/core/ListItemText";
+import {DateTimePicker} from 'material-ui-pickers';
 
 // Redux
 import {connect} from "react-redux";
@@ -21,10 +22,13 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogActions from "@material-ui/core/DialogActions";
 
-const mapDispatchToProps = (dispatch) => {
-    return {
+// Services
+import {dataService} from "../../redux/services/data";
+import {MuiPickersUtilsProvider} from 'material-ui-pickers';
+import DateFnsUtils from "@date-io/date-fns";
 
-    };
+const mapDispatchToProps = (dispatch) => {
+    return {};
 };
 
 class VisualisationToolBar extends React.Component {
@@ -36,7 +40,9 @@ class VisualisationToolBar extends React.Component {
             columns: null,
             columnsDialog: false,
             timeDialog: false,
-            loading: false
+            loading: false,
+            minTime: '',
+            maxTime: ''
         };
     }
 
@@ -57,6 +63,13 @@ class VisualisationToolBar extends React.Component {
 
     handleClickOpen = (state) => {
         this.setState({[state]: true});
+        dataService.getMinMaxDataTime(this.props.selectedDeviceIds)
+            .then(d => {
+                console.log(d);
+                this.setState(d);
+            })
+            .catch(e => console.log(e));
+
     };
 
     handleClose = (state) => {
@@ -69,91 +82,115 @@ class VisualisationToolBar extends React.Component {
 
     }
 
-    handleConfigTime(){
-        console.log(this.props.selectedDeviceIds)
+    handleConfigTime() {
         this.handleClose('timeDialog');
     }
 
+    handleTimeChange(state, time) {
+        this.setState({[state]: time});
+    }
+
     render() {
-        let {anchorEl, columnsDialog, columns} = this.state;
+        let {anchorEl, columnsDialog, columns, minTime, maxTime} = this.state;
         return (
-            <div className="device-toolbar">
-                <div className={'title'}>
-                    {this.props.selected ? <h3>
-                        Selected {this.props.selected.name}
-                    </h3> : <h3>Devices</h3>}
-                </div>
-                <div className={'device-controls'}>
-                    <div>
-                        <Tooltip title={'Select time'}>
+            <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                <div className="device-toolbar">
+                    <div className={'title'}>
+                        {this.props.selected ? <h3>
+                            Selected {this.props.selected.name}
+                        </h3> : <h3>Devices</h3>}
+                    </div>
+                    <div className={'device-controls'}>
+                        <div>
+                            <Tooltip title={'Select time'}>
+                                <div>
+                                    <IconButton disabled={!this.props.selectedDeviceIds.length} variant="contained"
+                                                color="primary"
+                                                onClick={() => this.handleClickOpen('timeDialog')}>
+                                        <TimelineIcon/>
+                                    </IconButton>
+                                </div>
+                            </Tooltip>
+                            <Dialog
+                                open={this.state.timeDialog}
+                                onClose={() => this.handleClose('timeDialog')}
+                                aria-labelledby="key-dialog-title"
+                                aria-describedby="alert-dialog-description"
+                            >
+                                <DialogTitle id="alert-dialog-title">Config time for devices</DialogTitle>
+                                <DialogContent>
+                                    <DialogContent>
+                                        <div className="picker">
+                                            <DateTimePicker
+                                                autoOk
+                                                ampm={false}
+                                                disablePast={minTime}
+                                                value={minTime}
+                                                onChange={(time) => this.handleTimeChange('minTime', time)}
+                                                label="Min time"/>
+                                        </div>
+                                        <div className="picker">
+                                            <DateTimePicker
+                                                autoOk
+                                                ampm={false}
+                                                disableFuture
+                                                value={maxTime}
+                                                onChange={(time) => this.handleTimeChange('maxTime', time)}
+                                                label="Max time"/>
+                                        </div>
+                                    </DialogContent>
+                                </DialogContent>
+                                <DialogActions>
+                                    <Button variant="outlined" color="primary"
+                                            onClick={() => this.handleConfigTime()}>
+                                        Confirm
+                                    </Button>
+                                    <Button onClick={() => this.handleClose('timeDialog')} color="primary">
+                                        Close
+                                    </Button>
+                                </DialogActions>
+                            </Dialog>
+                        </div>
+                        <Tooltip title={'Show columns'}>
                             <div>
-                                <IconButton disabled={!this.props.selectedDeviceIds.length} variant="contained" color="primary"
-                                            onClick={() => this.handleClickOpen('timeDialog')}>
-                                    <TimelineIcon/>
+                                <IconButton variant="outlined" color="primary" disabled={this.props.loading}
+                                            onClick={this.handleClickMenu}>
+                                    <ViewColumnIcon/>
                                 </IconButton>
+                                <Menu
+                                    id="long-menu"
+                                    open={columnsDialog}
+                                    anchorEl={anchorEl}
+                                    onClose={this.handleCloseMenu}
+                                    PaperProps={{
+                                        style: {
+                                            maxHeight: 45 * 4.5,
+                                            width: 250,
+                                        },
+                                    }}
+                                >
+                                    <List id={'column-list'}>
+                                        {columns && columns.map(el => (
+                                            <div key={el.title}>
+                                                <Divider dark={'true'}/>
+                                                <ListItem key={el.title} dense button disabled={el.field === 'action'}
+                                                          onClick={() => this.handleColumnsChange(el.title)}>
+                                                    <Checkbox checked={!el.hidden}/>
+                                                    <ListItemText primary={el.title}/>
+                                                </ListItem>
+                                            </div>
+                                        ))}
+                                        <Button fullWidth={true} onClick={this.handleCloseMenu}
+                                                className={'submit-button'}>
+                                            Submit
+                                        </Button>
+                                    </List>
+                                </Menu>
                             </div>
                         </Tooltip>
-                        <Dialog
-                            open={this.state.timeDialog}
-                            onClose={() => this.handleClose('timeDialog')}
-                            aria-labelledby="key-dialog-title"
-                            aria-describedby="alert-dialog-description"
-                        >
-                            <DialogTitle id="alert-dialog-title">Config time for devices</DialogTitle>
-                            <DialogContent>
-                                <DialogContent>
-                                    Test
-                                </DialogContent>
-                            </DialogContent>
-                            <DialogActions>
-                                <Button variant="outlined" color="primary"
-                                        onClick={() => this.handleConfigTime()}>
-                                    Confirm
-                                </Button>
-                                <Button onClick={() => this.handleClose('timeDialog')} color="primary">
-                                    Close
-                                </Button>
-                            </DialogActions>
-                        </Dialog>
                     </div>
-                    <Tooltip title={'Show columns'}>
-                        <div>
-                            <IconButton variant="outlined" color="primary" disabled={this.props.loading}
-                                        onClick={this.handleClickMenu}>
-                                <ViewColumnIcon/>
-                            </IconButton>
-                            <Menu
-                                id="long-menu"
-                                open={columnsDialog}
-                                anchorEl={anchorEl}
-                                onClose={this.handleCloseMenu}
-                                PaperProps={{
-                                    style: {
-                                        maxHeight: 45 * 4.5,
-                                        width: 250,
-                                    },
-                                }}
-                            >
-                                <List id={'column-list'} >
-                                    {columns && columns.map(el => (
-                                        <div key={el.title}>
-                                            <Divider dark={'true'}/>
-                                            <ListItem key={el.title} dense button disabled={el.field === 'action'}
-                                                      onClick={() => this.handleColumnsChange(el.title)}>
-                                                <Checkbox checked={!el.hidden}/>
-                                                <ListItemText primary={el.title}/>
-                                            </ListItem>
-                                        </div>
-                                    ))}
-                                    <Button fullWidth={true} onClick={this.handleCloseMenu} className={'submit-button'}>
-                                        Submit
-                                    </Button>
-                                </List>
-                            </Menu>
-                        </div>
-                    </Tooltip>
                 </div>
-            </div>
+            </MuiPickersUtilsProvider>
         )
     }
 }
