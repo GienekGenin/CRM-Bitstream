@@ -376,7 +376,7 @@ class TestToolBar extends React.Component {
                                     {columns && columns.map(el => (
                                         <div key={el.title}>
                                             <Divider dark={'true'}/>
-                                            <ListItem key={el.title} dense button
+                                            <ListItem key={el.title} dense button disabled={el.field === 'action'}
                                                       onClick={() => this.handleColumnsChange(el.title)}>
                                                 <Checkbox checked={!el.hidden}/>
                                                 <ListItemText primary={el.title}/>

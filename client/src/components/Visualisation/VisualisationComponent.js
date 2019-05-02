@@ -6,7 +6,7 @@ import * as am4charts from "@amcharts/amcharts4/charts";
 import am4themes_animated from "@amcharts/amcharts4/themes/animated";
 
 // Redux
-import store from "../../redux/store";
+// import store from "../../redux/store";
 import {connect} from "react-redux";
 import Paper from "@material-ui/core/Paper";
 import MaterialTable from '../material/MaterialTable/material-table';
@@ -16,6 +16,7 @@ import {theme} from "../material.theme";
 import Checkbox from "@material-ui/core/Checkbox";
 import _ from "lodash";
 import ReactDOM from "react-dom";
+import VisualisationToolBarComponent from "../Visualisation/VisualisationToolBarComponent";
 
 const mapDispatchToProps = (dispatch) => {
     return {};
@@ -79,7 +80,7 @@ class Visualisation extends React.Component {
     }
 
     createPhyidPie = (devicesToShow) => {
-        let {selectedPhyids, devicesToVis} = this.state;
+        let {selectedPhyids} = this.state;
         if (devicesToShow) {
             let parsedData = [];
             let data = [];
@@ -398,8 +399,12 @@ class Visualisation extends React.Component {
             ReactDOM.render(element, container)
     }
 
+    addRemoveColumn = (columns) => {
+        this.setState({columns});
+    };
+
     render() {
-        const {devicesToVis, columns, page, rowsPerPage, selectedDeviceIds} = this.state;
+        const {devicesToVis, columns, page, rowsPerPage, selectedDevices, selectedDeviceIds, loading} = this.state;
         devicesToVis && devicesToVis.map((el, i, arr) => arr[i] = Object.assign(el, {
             action: (
                 <div>
@@ -415,16 +420,34 @@ class Visualisation extends React.Component {
                         container
                         spacing={40}
                     >
-                        <Grid item xs={12} sm={12} md={12} lg={6}>
+                        <Grid item xs={12} sm={12} md={12} lg={12}>
                             <Paper>
+                                <div className={'chart-toolbar'}>
+                                    <h3>
+                                        Drag to select devices
+                                    </h3>
+                                </div>
                                 <div id={'pie-phyid-vis'}>
-
                                 </div>
                             </Paper>
                         </Grid>
-                        <Grid item xs={12} sm={12} md={12} lg={6}>
+                        <Grid item xs={12} sm={12} md={12} lg={12}>
                             <div >
                                 <MaterialTable
+                                    components={{
+                                        Toolbar: props => (
+                                            <div className={'custom-toolbar'}>
+                                                <VisualisationToolBarComponent
+                                                    selected={selectedDevices && selectedDevices.length === 1 ? selectedDevices[0] : null}
+                                                    selectedDevices={selectedDevices}
+                                                    resetSelected={this.resetSelected}
+                                                    loading={loading}
+                                                    addRemoveColumn={this.addRemoveColumn}
+                                                    columns={columns}
+                                                />
+                                            </div>
+                                        ),
+                                    }}
                                     data={devicesToVis}
                                     columns={columns}
                                     title="Vis devices"
@@ -435,7 +458,7 @@ class Visualisation extends React.Component {
                                         initialPage: page,
                                         pageSize: rowsPerPage,
                                         search: false,
-                                        toolbar: false,
+                                        toolbar: true,
                                     }}
                                     parentChildData={(row, rows) => rows.find(a => a.sid === row.parent_id)}
                                     onRowClick={this.onRowClick}

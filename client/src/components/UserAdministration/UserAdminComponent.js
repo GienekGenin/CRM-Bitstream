@@ -1,7 +1,6 @@
 import React from "react";
 import ReactDOM from 'react-dom'
 import * as PropTypes from 'prop-types';
-import _ from "lodash";
 
 // Material
 import {createMuiTheme, MuiThemeProvider, withStyles} from '@material-ui/core/styles';
