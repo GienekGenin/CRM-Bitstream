@@ -70,6 +70,7 @@ class VisualisationToolBar extends React.Component {
     }
 
     handleConfigTime(){
+        console.log(this.props.selectedDeviceIds)
         this.handleClose('timeDialog');
     }
 
@@ -86,7 +87,7 @@ class VisualisationToolBar extends React.Component {
                     <div>
                         <Tooltip title={'Select time'}>
                             <div>
-                                <IconButton disabled={!this.props.selectedDevices.length} variant="contained" color="primary"
+                                <IconButton disabled={!this.props.selectedDeviceIds.length} variant="contained" color="primary"
                                             onClick={() => this.handleClickOpen('timeDialog')}>
                                     <TimelineIcon/>
                                 </IconButton>
@@ -159,7 +160,7 @@ class VisualisationToolBar extends React.Component {
 
 VisualisationToolBar.propTypes = {
     selected: PropTypes.object,
-    selectedDevices: PropTypes.array,
+    selectedDeviceIds: PropTypes.array,
     loading: PropTypes.bool,
     columns: PropTypes.array,
     addRemoveColumn: PropTypes.func,
