@@ -228,7 +228,7 @@ class AdminPanel extends React.Component {
                                 selectedFirm={selectedFirm}
                                 selectedUsers={selectedUsers}
                                 parentDevices={devices}
-                                selectedDevice={selectedDevices}
+                                selectedDevices={selectedDevices}
                                 deviceTypes={deviceTypes}
                             />
                         </TabContainer>}
@@ -257,13 +257,13 @@ class AdminPanel extends React.Component {
                                 onDeviceSelect={this.handleDevicesSelect}
                                 selectedFirm={selectedFirm}
                                 parentDevices={devices}
-                                selectedDevice={selectedDevices}
+                                selectedDevices={selectedDevices}
                                 deviceTypes={deviceTypes}
                             />
                         </TabContainer>}
                         {value === 2 && <TabContainer>
                             <VisualisationComponent
-                                selectedDevice={selectedDevices}
+                                devices={selectedDevices}
                                 parentDevices={devices}
                             />
                         </TabContainer>}

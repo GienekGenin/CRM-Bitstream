@@ -49,6 +49,7 @@ class FirmDevicesComponent extends React.Component {
             rowsPerPage: 5,
             checked: false,
             loading: false,
+            devices: [],
             selectedFirm: null,
             selectedDevices: [],
             selectedDeviceIds: [],
@@ -96,7 +97,7 @@ class FirmDevicesComponent extends React.Component {
                 this.createPie(parentDevices);
                 this.createPiePhyid(parentDevices);
                 let checked = false;
-                if(selectedDevices.length === parentDevices.length){
+                if(selectedDevices && selectedDevices.length === parentDevices.length){
                     checked = true;
                 }
                 this.setState({devices: parentDevices, selectedDevices, checked, loading: false});
@@ -155,7 +156,7 @@ class FirmDevicesComponent extends React.Component {
 
     onRowClick = (e, rowData) => {
         const {devices, selectedDeviceIds} = this.state;
-        let selectedDevice = _.omit(this.state.devices.filter(el => (el.sid === rowData.sid) ? el : null)[0], 'action');
+        let selectedDevice = _.omit(devices.filter(el => (el.sid === rowData.sid) ? el : null)[0], 'action');
         let selectedDeviceIdsSet = new Set(selectedDeviceIds);
         let sid = selectedDevice.sid;
         selectedDeviceIdsSet.has(sid) ? selectedDeviceIdsSet.delete(sid) : selectedDeviceIdsSet.add(sid);
@@ -910,7 +911,7 @@ class FirmDevicesComponent extends React.Component {
                                             Toolbar: props => (
                                                 <div className={'custom-toolbar'}>
                                                     <FirmDevicesToolBarComponent
-                                                        selected={selectedDevices.length === 1 ? selectedDevices[0] : null}
+                                                        selected={selectedDevices && selectedDevices.length === 1 ? selectedDevices[0] : null}
                                                         resetSelected={this.resetSelected}
                                                         loading={loading}
                                                         addRemoveColumn={this.addRemoveColumn}

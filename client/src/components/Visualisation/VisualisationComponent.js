@@ -14,6 +14,8 @@ import {Grid, MuiThemeProvider} from '@material-ui/core';
 import './visualisation.scss';
 import {theme} from "../material.theme";
 import Checkbox from "@material-ui/core/Checkbox";
+import _ from "lodash";
+import ReactDOM from "react-dom";
 
 const mapDispatchToProps = (dispatch) => {
     return {};
@@ -32,8 +34,10 @@ class Visualisation extends React.Component {
             page: 0,
             rowsPerPage: 5,
             loading: false,
+            checked: false,
             selectedPhyids: new Set(),
-            selectedDevicesId: [],
+            selectedDevices: [],
+            selectedDeviceIds: [],
             devicesToVis: [],
             columns: [
                 {
@@ -53,17 +57,17 @@ class Visualisation extends React.Component {
                 {title: 'soft', field: 'soft', hidden: true,},
                 {title: 'status', field: 'status', hidden: true,},
                 {title: 'description', field: 'description', hidden: true},
-                {title: 'minTime', field: 'minTime', hidden: false},
-                {title: 'maxTime', field: 'maxTime', hidden: false},
             ],
         };
 
         this.createPhyidPie = this.createPhyidPie.bind(this);
+        this.selectAllDevices = this.selectAllDevices.bind(this);
+        this.resetSelected = this.resetSelected.bind(this);
     }
 
     componentDidMount() {
-        const {selectedDevices} = this.props;
-        this.createPhyidPie(selectedDevices);
+        const {devices} = this.props;
+        this.createPhyidPie(devices);
     }
 
     componentWillMount() {
@@ -130,6 +134,9 @@ class Visualisation extends React.Component {
             chart1.radius = am4core.percent(70);
             chart1.innerRadius = am4core.percent(40);
             chart1.zIndex = 1;
+
+            // legend
+            // chart1.legend = new am4charts.Legend();
 
             const series1 = chart1.series.push(new am4charts.PieSeries());
             series1.dataFields.value = "count";
@@ -345,21 +352,62 @@ class Visualisation extends React.Component {
         }
     };
 
+    onRowClick = (e, rowData) => {
+        const {devices} = this.props;
+        const {selectedDeviceIds} = this.state;
+        let selectedDevice = _.omit(devices.filter(el => (el.sid === rowData.sid) ? el : null)[0], 'action');
+        let selectedDeviceIdsSet = new Set(selectedDeviceIds);
+        let sid = selectedDevice.sid;
+        selectedDeviceIdsSet.has(sid) ? selectedDeviceIdsSet.delete(sid) : selectedDeviceIdsSet.add(sid);
+        let selectedDevices = [];
+        [...selectedDeviceIdsSet].forEach(sid=>{
+            devices.forEach(device=>{
+                if(device.sid === sid){
+                    selectedDevices.push(device);
+                }
+            })
+        });
+        let checked = false;
+        if(selectedDevices.length === devices.length) checked = true;
+        this.setState({selectedDevices, selectedDeviceIds: [...selectedDeviceIdsSet], checked});
+    };
+
+    selectAllDevices(){
+        const {devices} = this.props;
+        const {selectedDevices} = this.state;
+        if(devices.length === selectedDevices.length){
+            this.resetSelected();
+        } else {
+            const selectedDeviceIds = devices.map(devices=>devices.sid);
+            this.setState({selectedDevices: devices, selectedDeviceIds, checked: true});
+        }
+    }
+
+    resetSelected = () => {
+        this.setState({selectedDeviceIds: [], selectedDevices: [], checked: false});
+    };
+
+    renderSelectAllCheckBox(){
+        const {checked} = this.state;
+        const element = <div>
+            <Checkbox value={'1'} checked={ checked } onChange={this.selectAllDevices}/>
+        </div>;
+        const container = document.querySelector('#root > div > main > div > div > div > div > div > ' +
+            'div:nth-child(2) > div > div > div > div > div > table > tbody > tr:nth-child(1) > td:nth-child(2)');
+        if(container)
+            ReactDOM.render(element, container)
+    }
+
     render() {
-        const {devicesToVis, columns, page, rowsPerPage, selectedDevicesId} = this.state;
+        const {devicesToVis, columns, page, rowsPerPage, selectedDeviceIds} = this.state;
         devicesToVis && devicesToVis.map((el, i, arr) => arr[i] = Object.assign(el, {
             action: (
                 <div>
-                    <Checkbox value={el._id} checked={selectedDevicesId.includes(el._id)}/>
+                    <Checkbox value={el.sid} checked={selectedDeviceIds.includes(el.sid)}/>
                 </div>
-            ),
-            maxTime: (
-                <span>test</span>
-            ),
-            minTime: (
-                <span>test</span>
             )
         }));
+        this.renderSelectAllCheckBox();
         return (
             <div style={{maxWidth: '100%'}}>
                 <MuiThemeProvider theme={theme}>
@@ -390,6 +438,7 @@ class Visualisation extends React.Component {
                                         toolbar: false,
                                     }}
                                     parentChildData={(row, rows) => rows.find(a => a.sid === row.parent_id)}
+                                    onRowClick={this.onRowClick}
                                 />
                             </div>
                         </Grid>
@@ -398,11 +447,10 @@ class Visualisation extends React.Component {
             </div>
         )
     }
-
 }
 
 Visualisation.propTypes = {
-    selectedDevices: PropTypes.array,
+    devices: PropTypes.array.isRequired,
 };
 
 const VisualisationComponent = connect(mapStateToProps, mapDispatchToProps)(Visualisation);
