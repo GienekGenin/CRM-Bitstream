@@ -124,8 +124,8 @@ class VisualisationToolBar extends React.Component {
                                             <DateTimePicker
                                                 autoOk
                                                 ampm={false}
-                                                disablePast={minTime}
                                                 value={minTime}
+                                                minDate={minTime}
                                                 onChange={(time) => this.handleTimeChange('minTime', time)}
                                                 label="Min time"/>
                                         </div>
@@ -133,8 +133,8 @@ class VisualisationToolBar extends React.Component {
                                             <DateTimePicker
                                                 autoOk
                                                 ampm={false}
-                                                disableFuture
                                                 value={maxTime}
+                                                maxDate={maxTime}
                                                 onChange={(time) => this.handleTimeChange('maxTime', time)}
                                                 label="Max time"/>
                                         </div>
