@@ -1,4 +1,4 @@
-import React, {Fragment, useState} from "react";
+import React from "react";
 import * as PropTypes from 'prop-types';
 
 // Material
@@ -12,7 +12,7 @@ import Divider from "@material-ui/core/Divider";
 import ListItem from "@material-ui/core/ListItem";
 import Checkbox from "@material-ui/core/Checkbox";
 import ListItemText from "@material-ui/core/ListItemText";
-import {DateTimePicker} from 'material-ui-pickers';
+import {DatePicker} from 'material-ui-pickers';
 
 // Redux
 import {connect} from "react-redux";
@@ -42,7 +42,9 @@ class VisualisationToolBar extends React.Component {
             timeDialog: false,
             loading: false,
             minTime: '',
-            maxTime: ''
+            maxTime: '',
+            minSelectedDate: '',
+            maxSelectedDate: ''
         };
     }
 
@@ -63,13 +65,6 @@ class VisualisationToolBar extends React.Component {
 
     handleClickOpen = (state) => {
         this.setState({[state]: true});
-        dataService.getMinMaxDataTime(this.props.selectedDeviceIds)
-            .then(d => {
-                console.log(d);
-                this.setState(d);
-            })
-            .catch(e => console.log(e));
-
     };
 
     handleClose = (state) => {
@@ -79,7 +74,18 @@ class VisualisationToolBar extends React.Component {
     };
 
     componentDidMount() {
-
+        this.setState({loading: true});
+        if(this.props.selectedDeviceIds.length){
+            dataService.getMinMaxDataTime(this.props.selectedDeviceIds)
+                .then(d => {
+                    this.setState(Object.assign(d, {
+                        minSelectedDate: d.minTime,
+                        maxSelectedDate: d.maxTime,
+                        loading: false
+                    }));
+                })
+                .catch(e => console.log(e));
+        }
     }
 
     handleConfigTime() {
@@ -91,7 +97,7 @@ class VisualisationToolBar extends React.Component {
     }
 
     render() {
-        let {anchorEl, columnsDialog, columns, minTime, maxTime} = this.state;
+        let {anchorEl, columnsDialog, columns, minTime, maxTime, minSelectedDate, maxSelectedDate, loading} = this.state;
         return (
             <MuiPickersUtilsProvider utils={DateFnsUtils}>
                 <div className="device-toolbar">
@@ -104,7 +110,7 @@ class VisualisationToolBar extends React.Component {
                         <div>
                             <Tooltip title={'Select time'}>
                                 <div>
-                                    <IconButton disabled={!this.props.selectedDeviceIds.length} variant="contained"
+                                    <IconButton disabled={!this.props.selectedDeviceIds.length || loading} variant="contained"
                                                 color="primary"
                                                 onClick={() => this.handleClickOpen('timeDialog')}>
                                         <TimelineIcon/>
@@ -121,21 +127,21 @@ class VisualisationToolBar extends React.Component {
                                 <DialogContent>
                                     <DialogContent>
                                         <div className="picker">
-                                            <DateTimePicker
+                                            <DatePicker
                                                 autoOk
-                                                ampm={false}
-                                                value={minTime}
+                                                value={minSelectedDate}
                                                 minDate={minTime}
-                                                onChange={(time) => this.handleTimeChange('minTime', time)}
+                                                maxDate={maxSelectedDate}
+                                                onChange={(time) => this.handleTimeChange('minSelectedDate', time)}
                                                 label="Min time"/>
                                         </div>
                                         <div className="picker">
-                                            <DateTimePicker
+                                            <DatePicker
                                                 autoOk
-                                                ampm={false}
-                                                value={maxTime}
+                                                value={maxSelectedDate}
                                                 maxDate={maxTime}
-                                                onChange={(time) => this.handleTimeChange('maxTime', time)}
+                                                minDate={minSelectedDate}
+                                                onChange={(time) => this.handleTimeChange('maxSelectedDate', time)}
                                                 label="Max time"/>
                                         </div>
                                     </DialogContent>
