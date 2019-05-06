@@ -259,7 +259,7 @@ class Visualisation extends React.Component {
                             property: "y",
                             to: series2CenterConverted.y
                         }], 400);
-                        animation.events.on("animationprogress",  (event) => {
+                        animation.events.on("animationprogress", (event) => {
                             slice1.hideTooltip();
                         });
 
@@ -284,7 +284,7 @@ class Visualisation extends React.Component {
                             property: "y",
                             to: series1CenterConverted.y
                         }], 400);
-                        animation.events.on("animationprogress",  (event) => {
+                        animation.events.on("animationprogress", (event) => {
                             slice2.hideTooltip();
                         });
 
@@ -298,12 +298,12 @@ class Visualisation extends React.Component {
 
                 // get all devices with matching phyids
                 let devicesToVis = [];
-                selectedPhyids.forEach(phyid=>{
-                    devicesToShow.forEach(device =>{
-                        if(device.phyid === phyid){
+                selectedPhyids.forEach(phyid => {
+                    devicesToShow.forEach(device => {
+                        if (device.phyid === phyid) {
                             devicesToVis.push(device);
                         }
-                   });
+                    });
                 });
 
                 this.setState({selectedPhyids, devicesToVis});
@@ -332,7 +332,7 @@ class Visualisation extends React.Component {
                 }
             };
 
-            series2.events.on("datavalidated",  () => {
+            series2.events.on("datavalidated", () => {
                 const dummyDataItem = series2.dataItems.getIndex(0);
                 dummyDataItem.show(0);
                 dummyDataItem.slice.draggable = false;
@@ -343,7 +343,7 @@ class Visualisation extends React.Component {
                 }
             });
 
-            series1.events.on("datavalidated",  () => {
+            series1.events.on("datavalidated", () => {
                 const dummyDataItem = series1.dataItems.getIndex(0);
                 dummyDataItem.hide(0);
                 dummyDataItem.slice.draggable = false;
@@ -361,25 +361,25 @@ class Visualisation extends React.Component {
         let sid = selectedDevice.sid;
         selectedDeviceIdsSet.has(sid) ? selectedDeviceIdsSet.delete(sid) : selectedDeviceIdsSet.add(sid);
         let selectedDevices = [];
-        [...selectedDeviceIdsSet].forEach(sid=>{
-            devices.forEach(device=>{
-                if(device.sid === sid){
+        [...selectedDeviceIdsSet].forEach(sid => {
+            devices.forEach(device => {
+                if (device.sid === sid) {
                     selectedDevices.push(device);
                 }
             })
         });
         let checked = false;
-        if(selectedDevices.length === devices.length) checked = true;
+        if (selectedDevices.length === devices.length) checked = true;
         this.setState({selectedDevices, selectedDeviceIds: [...selectedDeviceIdsSet], checked});
     };
 
-    selectAllDevices(){
+    selectAllDevices() {
         const {devices} = this.props;
         const {selectedDevices} = this.state;
-        if(devices.length === selectedDevices.length){
+        if (devices.length === selectedDevices.length) {
             this.resetSelected();
         } else {
-            const selectedDeviceIds = devices.map(devices=>devices.sid);
+            const selectedDeviceIds = devices.map(devices => devices.sid);
             this.setState({selectedDevices: devices, selectedDeviceIds, checked: true});
         }
     }
@@ -388,14 +388,14 @@ class Visualisation extends React.Component {
         this.setState({selectedDeviceIds: [], selectedDevices: [], checked: false});
     };
 
-    renderSelectAllCheckBox(){
+    renderSelectAllCheckBox() {
         const {checked} = this.state;
         const element = <div>
-            <Checkbox value={'1'} checked={ checked } onChange={this.selectAllDevices}/>
+            <Checkbox value={'1'} checked={checked} onChange={this.selectAllDevices}/>
         </div>;
         const container = document.querySelector('#root > div > main > div > div > div > div > div > ' +
             'div:nth-child(2) > div > div > div > div > div > table > tbody > tr:nth-child(1) > td:nth-child(2)');
-        if(container)
+        if (container)
             ReactDOM.render(element, container)
     }
 
@@ -432,7 +432,7 @@ class Visualisation extends React.Component {
                             </Paper>
                         </Grid>
                         <Grid item xs={12} sm={12} md={12} lg={12}>
-                            <div >
+                            <div>
                                 <MaterialTable
                                     components={{
                                         Toolbar: props => (
@@ -464,6 +464,12 @@ class Visualisation extends React.Component {
                                     onRowClick={this.onRowClick}
                                 />
                             </div>
+                        </Grid>
+                        <Grid item xs={12} sm={12} md={12} lg={12}>
+                            <Paper>
+                                <div id={'lineChart'}>
+                                </div>
+                            </Paper>
                         </Grid>
                     </Grid>
                 </MuiThemeProvider>

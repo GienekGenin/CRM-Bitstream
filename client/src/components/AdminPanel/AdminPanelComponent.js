@@ -263,7 +263,7 @@ class AdminPanel extends React.Component {
                         </TabContainer>}
                         {value === 2 && <TabContainer>
                             <VisualisationComponent
-                                devices={selectedDevices}
+                                selectedDevices={selectedDevices}
                                 parentDevices={devices}
                             />
                         </TabContainer>}

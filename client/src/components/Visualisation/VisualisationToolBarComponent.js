@@ -26,6 +26,7 @@ import DialogActions from "@material-ui/core/DialogActions";
 import {dataService} from "../../redux/services/data";
 import {MuiPickersUtilsProvider} from 'material-ui-pickers';
 import DateFnsUtils from "@date-io/date-fns";
+import {createLineChart} from "./lineChart.service";
 
 const mapDispatchToProps = (dispatch) => {
     return {};
@@ -91,9 +92,10 @@ class VisualisationToolBar extends React.Component {
 
     handleConfigTime() {
         const {minSelectedDate, maxSelectedDate} = this.state;
-        dataService.getData(minSelectedDate, maxSelectedDate)
+        dataService.getData(minSelectedDate, maxSelectedDate, this.props.selectedDeviceIds)
             .then(data => {
                 console.log(data);
+                createLineChart(data);
                 this.setState({data});
             })
             .catch(e => console.log(e));

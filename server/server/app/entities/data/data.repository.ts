@@ -19,22 +19,31 @@ export class DataRepository extends Repository {
         }).sort({ts: 1}).select({ts: 1, _id: 0});
     }
 
-    getData(body){
+    getData(body) {
         return this.model.aggregate([
             {
                 '$match': {
                     $and: [
                         {ts: {$gte: new Date(body.minSelectedDate)}},
                         {ts: {$lte: new Date(body.maxSelectedDate)}},
-                        {$or: [
+                        {device_id: {$in: body.sids}},
+                        {
+                            $or: [
                                 {value: {$type: 'double'}},
                                 {value: {$type: 'int'}},
                                 {value: {$type: 'long'}},
                                 {value: {$in: ['ONLINE', 'OFFLINE']}}
-                            ]}
+                            ]
+                        }
                     ]
                 }
-            }, {
+            },
+            {
+                '$sort': {
+                    'ts': 1
+                }
+            },
+            {
                 '$group': {
                     '_id': {
                         'sid': '$device_id'
