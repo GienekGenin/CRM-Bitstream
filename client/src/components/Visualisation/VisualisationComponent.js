@@ -467,7 +467,8 @@ class Visualisation extends React.Component {
                         </Grid>
                         <Grid item xs={12} sm={12} md={12} lg={12}>
                             <Paper>
-                                <div id={'lineChart'}>
+                                <div id={'parent-line-chart'}>
+
                                 </div>
                             </Paper>
                         </Grid>

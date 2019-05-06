@@ -1,5 +1,6 @@
 import React from "react";
 import * as PropTypes from 'prop-types';
+import * as d3 from "d3";
 
 // Material
 import Button from "@material-ui/core/Button";
@@ -94,7 +95,8 @@ class VisualisationToolBar extends React.Component {
         const {minSelectedDate, maxSelectedDate} = this.state;
         dataService.getData(minSelectedDate, maxSelectedDate, this.props.selectedDeviceIds)
             .then(data => {
-                console.log(data);
+                d3.select('#lineChart').remove();
+                d3.select('#parent-line-chart').append('div').attr("id", 'lineChart');
                 createLineChart(data);
                 this.setState({data});
             })
