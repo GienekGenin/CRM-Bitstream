@@ -9,3 +9,8 @@ data.post('/time', TokenValidator.validateToken, (req, res, next) => {
         .catch(next);
 });
 
+data.post('/selected', TokenValidator.validateToken, (req, res, next) => {
+    dataService.getData(req.body)
+        .then(PayloadGeneratorService.nextWithData(next, res))
+        .catch(next);
+});

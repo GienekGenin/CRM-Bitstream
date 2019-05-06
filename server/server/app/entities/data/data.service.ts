@@ -23,12 +23,17 @@ class DeviceTypesService {
                     }
                 ],
                 (err, payload) => {
+                    console.log(payload);
                     if (err) {
                         reject(err);
                     }
                     resolve(payload);
                 })
         }))
+    }
+
+    getData(body){
+        return this.dataRepository.getData(body);
     }
 }
 

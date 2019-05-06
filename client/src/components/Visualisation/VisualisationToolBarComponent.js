@@ -44,7 +44,8 @@ class VisualisationToolBar extends React.Component {
             minTime: '',
             maxTime: '',
             minSelectedDate: '',
-            maxSelectedDate: ''
+            maxSelectedDate: '',
+            data: []
         };
     }
 
@@ -75,7 +76,7 @@ class VisualisationToolBar extends React.Component {
 
     componentDidMount() {
         this.setState({loading: true});
-        if(this.props.selectedDeviceIds.length){
+        if (this.props.selectedDeviceIds.length) {
             dataService.getMinMaxDataTime(this.props.selectedDeviceIds)
                 .then(d => {
                     this.setState(Object.assign(d, {
@@ -89,6 +90,13 @@ class VisualisationToolBar extends React.Component {
     }
 
     handleConfigTime() {
+        const {minSelectedDate, maxSelectedDate} = this.state;
+        dataService.getData(minSelectedDate, maxSelectedDate)
+            .then(data => {
+                console.log(data);
+                this.setState({data});
+            })
+            .catch(e => console.log(e));
         this.handleClose('timeDialog');
     }
 
@@ -110,7 +118,8 @@ class VisualisationToolBar extends React.Component {
                         <div>
                             <Tooltip title={'Select time'}>
                                 <div>
-                                    <IconButton disabled={!this.props.selectedDeviceIds.length || loading} variant="contained"
+                                    <IconButton disabled={!this.props.selectedDeviceIds.length || loading}
+                                                variant="contained"
                                                 color="primary"
                                                 onClick={() => this.handleClickOpen('timeDialog')}>
                                         <TimelineIcon/>

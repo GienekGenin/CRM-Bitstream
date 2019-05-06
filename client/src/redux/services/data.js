@@ -13,9 +13,28 @@ const getMinMaxDataTime = (deviceIds) => {
 
     return fetch(`${apiBase}data/time`, requestOptions)
         .then(handleResponse)
-        .then(firms => {
+        .then(dates => {
             // store user details and jwt token in local storage to keep user logged in between page refreshes
-            return firms;
+            return dates;
+        })
+};
+
+const getData  = (minSelectedDate, maxSelectedDate) => {
+    const token = localStorage.getItem('token');
+    const requestOptions = {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({minSelectedDate, maxSelectedDate})
+    };
+
+    return fetch(`${apiBase}data/selected`, requestOptions)
+        .then(handleResponse)
+        .then(data => {
+            // store user details and jwt token in local storage to keep user logged in between page refreshes
+            return data;
         })
 };
 
@@ -35,5 +54,6 @@ const handleResponse = (response) => {
 };
 
 export const dataService = {
-    getMinMaxDataTime
+    getMinMaxDataTime,
+    getData
 };
