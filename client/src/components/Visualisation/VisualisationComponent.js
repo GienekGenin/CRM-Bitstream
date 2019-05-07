@@ -1,6 +1,6 @@
 import React from "react";
 import * as PropTypes from 'prop-types';
-// import * as dotenv from 'dotenv';
+import * as dotenv from 'dotenv';
 
 import * as am4core from "@amcharts/amcharts4/core";
 import * as am4charts from "@amcharts/amcharts4/charts";
@@ -18,11 +18,10 @@ import Checkbox from "@material-ui/core/Checkbox";
 import _ from "lodash";
 import ReactDOM from "react-dom";
 import VisualisationToolBarComponent from "../Visualisation/VisualisationToolBarComponent";
-// import MapGL, {Marker} from 'react-map-gl';
-// import Pin from '../UI/map/pin/PinComponent';
+import MapGL from 'react-map-gl';
 
 /* eslint-disable import/first */
-// dotenv.config({path: '../../../.env.local'});
+dotenv.config({path: '../../../.env.local'});
 
 const mapDispatchToProps = (dispatch) => {
     return {};
@@ -68,6 +67,14 @@ class Visualisation extends React.Component {
                 {title: 'description', field: 'description', hidden: true},
             ],
 
+            viewport: {
+                width: '100%',
+                height: 700,
+                latitude: 51.919438,
+                longitude: 19.145136,
+                zoom: 6,
+                mapboxApiAccessToken: process.env.REACT_APP_MAP_BOX_TOKEN_PUBLIC
+            },
         };
 
         this.createPhyidPie = this.createPhyidPie.bind(this);
@@ -481,6 +488,15 @@ class Visualisation extends React.Component {
                                 <div id={'parent-line-chart'}>
 
                                 </div>
+                            </Paper>
+                        </Grid>
+                        <Grid item xs={12} sm={12} md={12} lg={12}>
+                            <Paper>
+                                <MapGL
+                                    {...this.state.viewport}
+                                    mapStyle='mapbox://styles/mapbox/outdoors-v10'
+                                    onViewportChange={(viewport) => this.setState({viewport})}>
+                                </MapGL>
                             </Paper>
                         </Grid>
                     </Grid>

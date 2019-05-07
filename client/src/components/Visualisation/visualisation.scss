@@ -8,3 +8,7 @@
   width: 100%;
   height: 500px;
 }
+
+div.mapboxgl-map{
+  z-index: 1000;
+}
