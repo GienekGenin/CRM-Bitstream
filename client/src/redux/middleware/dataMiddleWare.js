@@ -23,7 +23,6 @@ export const dataMiddleWare = ({dispatch}) => {
             if (action.type === dataConstants.DATA_GET_REQUEST) {
                 dataService.getData(action.payload)
                     .then((data) => {
-                        console.log(data);
                         return dispatch({
                             type: dataConstants.DATA_GET_REQUEST_SUCCESS,
                             payload: data

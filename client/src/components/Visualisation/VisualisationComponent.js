@@ -440,6 +440,7 @@ class Visualisation extends React.Component {
                                             <div className={'custom-toolbar'}>
                                                 <VisualisationToolBarComponent
                                                     selected={selectedDevices && selectedDevices.length === 1 ? selectedDevices[0] : null}
+                                                    selectedDevices={selectedDevices}
                                                     selectedDeviceIds={selectedDeviceIds}
                                                     resetSelected={this.resetSelected}
                                                     loading={loading}

@@ -19,13 +19,17 @@ const getColorFromPalete = (i) => {
     }
 };
 
-export const createLineChart = (data) => {
+export const createLineChart = (data, selectedDevices) => {
     am4core.useTheme(am4themes_animated);
 
     const chart = am4core.create("lineChart", am4charts.XYChart);
 
     const chartData = [];
-
+    // let max, len = [];
+    // data.forEach((dev, i) => {
+    //     len.push(dev.data.length);
+    // });
+    // max = Math.max(...len);
     data.forEach((dev, i) => {
         dev.data.forEach(mes=>{
             let value = mes.value;
@@ -55,7 +59,7 @@ export const createLineChart = (data) => {
         // valueAxis.renderer.line.strokeWidth = 2;
 
         let series = chart.series.push(new am4charts.LineSeries());
-        series.name = dev._id.sid;
+        series.name = selectedDevices.filter(el=> el.sid === dev._id.sid)[0].name;
         series.dataFields.dateX = 'date'+i;
         series.dataFields.valueY = 'value'+i;
         series.yAxis = valueAxis;
@@ -67,6 +71,12 @@ export const createLineChart = (data) => {
 
         dateAxis.renderer.grid.template.strokeOpacity = 0.07;
         valueAxis.renderer.grid.template.strokeOpacity = 0.07;
+
+        // if(dev.data.length === max){
+        //     let scrollbarX = new am4charts.XYChartScrollbar();
+        //     scrollbarX.series.push(series);
+        //     chart.scrollbarX = scrollbarX;
+        // }
 
     });
 

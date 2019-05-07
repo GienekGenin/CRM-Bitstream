@@ -89,7 +89,7 @@ class VisualisationToolBar extends React.Component {
 
     componentDidMount() {
         this.setState({loading: true});
-        const {selectedDeviceIds} = this.props;
+        const {selectedDevices, selectedDeviceIds} = this.props;
 
         this.unsubscribe = store.subscribe(() => {
             this.setState({loading: store.getState().dataReducer.loading});
@@ -104,7 +104,7 @@ class VisualisationToolBar extends React.Component {
                 const data = store.getState().dataReducer.data;
                 d3.select('#lineChart').remove();
                 d3.select('#parent-line-chart').append('div').attr("id", 'lineChart');
-                createLineChart(data);
+                createLineChart(data, selectedDevices);
                 this.setState({data})
             }
             return true;
@@ -237,6 +237,7 @@ class VisualisationToolBar extends React.Component {
 
 VisualisationToolBar.propTypes = {
     selected: PropTypes.object,
+    selectedDevices: PropTypes.array,
     selectedDeviceIds: PropTypes.array,
     loading: PropTypes.bool,
     columns: PropTypes.array,
