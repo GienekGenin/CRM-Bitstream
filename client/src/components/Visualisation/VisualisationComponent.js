@@ -80,6 +80,7 @@ class Visualisation extends React.Component {
     }
 
     createPhyidPie = (devicesToShow) => {
+        this.renderSelectAllCheckBox(false);
         let {selectedPhyids} = this.state;
         if (devicesToShow) {
             let parsedData = [];
@@ -370,25 +371,27 @@ class Visualisation extends React.Component {
         });
         let checked = false;
         if (selectedDevices.length === devices.length) checked = true;
-        this.setState({selectedDevices, selectedDeviceIds: [...selectedDeviceIdsSet], checked});
+        this.setState({selectedDevices, selectedDeviceIds: [...selectedDeviceIdsSet]});
+        this.renderSelectAllCheckBox(checked);
     };
 
     selectAllDevices() {
         const {selectedDevices, devicesToVis} = this.state;
         if (devicesToVis.length === selectedDevices.length) {
+            this.renderSelectAllCheckBox(false);
             this.resetSelected();
         } else {
             const selectedDeviceIds = devicesToVis.map(devices => devices.sid);
-            this.setState({selectedDevices: devicesToVis, selectedDeviceIds, checked: true});
+            this.setState({selectedDevices: devicesToVis, selectedDeviceIds});
+            this.renderSelectAllCheckBox(true);
         }
     }
 
     resetSelected = () => {
-        this.setState({selectedDeviceIds: [], selectedDevices: [], checked: false});
+        this.setState({selectedDeviceIds: [], selectedDevices: []});
     };
 
-    renderSelectAllCheckBox() {
-        const {checked} = this.state;
+    renderSelectAllCheckBox(checked) {
         const element = <div>
             <Checkbox value={'1'} checked={checked} onChange={this.selectAllDevices}/>
         </div>;
@@ -411,7 +414,6 @@ class Visualisation extends React.Component {
                 </div>
             )
         }));
-        this.renderSelectAllCheckBox();
         return (
             <div style={{maxWidth: '100%'}}>
                 <MuiThemeProvider theme={theme}>

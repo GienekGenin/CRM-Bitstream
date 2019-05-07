@@ -24,7 +24,6 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogActions from "@material-ui/core/DialogActions";
 
 // Services
-import {dataService} from "../../redux/services/data";
 import {MuiPickersUtilsProvider} from 'material-ui-pickers';
 import DateFnsUtils from "@date-io/date-fns";
 import {createLineChart} from "./lineChart.service";

@@ -47,7 +47,6 @@ class FirmDevicesComponent extends React.Component {
         this.state = {
             page: 0,
             rowsPerPage: 5,
-            checked: false,
             loading: false,
             devices: [],
             selectedFirm: null,
@@ -134,7 +133,7 @@ class FirmDevicesComponent extends React.Component {
             }
             return true;
         });
-
+        this.renderSelectAllCheckBox(false);
     }
 
     componentWillUnmount() {
@@ -143,7 +142,7 @@ class FirmDevicesComponent extends React.Component {
     }
 
     resetSelected = () => {
-        this.setState({selectedDeviceIds: [], selectedDevices: [], checked: false});
+        this.setState({selectedDeviceIds: [], selectedDevices: []});
     };
 
     onChangePage = (page) => {
@@ -170,8 +169,9 @@ class FirmDevicesComponent extends React.Component {
         });
         let checked = false;
         if(selectedDevices.length === devices.length) checked = true;
-        this.setState({selectedDevices, selectedDeviceIds: [...selectedDeviceIdsSet], checked});
+        this.setState({selectedDevices, selectedDeviceIds: [...selectedDeviceIdsSet]});
         this.handleDeviceSelect(selectedDevices);
+        this.renderSelectAllCheckBox(checked);
     };
 
     addRemoveColumn = (columns) => {
@@ -754,6 +754,7 @@ class FirmDevicesComponent extends React.Component {
     };
 
     chartSelect() {
+        this.renderSelectAllCheckBox(false);
         d3.select('#tree').remove();
         let reduxDevices = store.getState().devicesReducer.devices;
         let {selectedTypes, selectedPhyids} = this.state;
@@ -838,16 +839,17 @@ class FirmDevicesComponent extends React.Component {
     selectAllDevices(){
         const {devices, selectedDevices} = this.state;
         if(devices.length === selectedDevices.length){
+            this.renderSelectAllCheckBox(false);
             this.resetSelected();
         } else {
             const selectedDeviceIds = devices.map(devices=>devices.sid);
-            this.setState({selectedDevices: devices, selectedDeviceIds, checked: true});
+            this.setState({selectedDevices: devices, selectedDeviceIds});
+            this.renderSelectAllCheckBox(true);
             this.handleDeviceSelect(devices);
         }
     }
 
-    renderSelectAllCheckBox(){
-        const {checked} = this.state;
+    renderSelectAllCheckBox(checked){
         const element = <div>
             <Checkbox value={'1'} checked={ checked } onChange={this.selectAllDevices}/>
         </div>;
@@ -872,7 +874,6 @@ class FirmDevicesComponent extends React.Component {
                 </div>
             )
         }));
-        this.renderSelectAllCheckBox();
         return (
             <div>
                 <MuiThemeProvider theme={theme}>

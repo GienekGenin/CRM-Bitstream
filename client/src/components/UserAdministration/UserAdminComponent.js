@@ -62,7 +62,6 @@ class UserAdminComponent extends React.Component {
         this.state = {
             page: 0,
             rowsPerPage: 5,
-            checked: false,
             selectedUsers: [],
             selectedUserIds: [],
             loading: false,
@@ -115,8 +114,9 @@ class UserAdminComponent extends React.Component {
             if(parentUsers.length === selectedUsers.length){
                 checked = true;
             }
+            this.renderSelectAllCheckBox(checked);
             const selectedUserIds = selectedUsers.map(user => user._id);
-            this.setState({selectedUsers, selectedUserIds, checked});
+            this.setState({selectedUsers, selectedUserIds});
         }
 
         this.unsubscribe = store.subscribe(() => {
@@ -128,6 +128,7 @@ class UserAdminComponent extends React.Component {
             }
             return true;
         });
+        this.renderSelectAllCheckBox(false);
     }
 
     componentWillUnmount() {
@@ -141,7 +142,7 @@ class UserAdminComponent extends React.Component {
 
     resetSelected = () => {
         this.props.resetSelectedUsers();
-        this.setState({selectedUsers: [], selectedUserIds: [], checked: false});
+        this.setState({selectedUsers: [], selectedUserIds: []});
     };
 
     onRowClick = (e, rowData) => {
@@ -153,9 +154,9 @@ class UserAdminComponent extends React.Component {
         if(users.length === [...usersSet].length) {
             checked = true;
         }
-        this.setState({selectedUsers: [...usersSet], selectedUserIds, checked});
+        this.setState({selectedUsers: [...usersSet], selectedUserIds});
         this.handleUsersSelect([...usersSet]);
-
+        this.renderSelectAllCheckBox(checked);
     };
 
     addRemoveColumn = (columns) => {
@@ -165,16 +166,17 @@ class UserAdminComponent extends React.Component {
     selectAllUsers(){
         const {users, selectedUsers} = this.state;
         if(users.length === selectedUsers.length){
+            this.renderSelectAllCheckBox(false);
             this.resetSelected();
         } else {
             const selectedUserIds = users.map(user=>user._id);
-            this.setState({selectedUsers: users, selectedUserIds, checked: true});
+            this.setState({selectedUsers: users, selectedUserIds});
+            this.renderSelectAllCheckBox(true);
             this.handleUsersSelect(users);
         }
     }
 
-    renderSelectAllCheckBox() {
-        const {checked} = this.state;
+    renderSelectAllCheckBox(checked) {
         const element = <div>
             <Checkbox value={'1'} checked={ checked } onChange={this.selectAllUsers}/>
         </div>;
@@ -186,7 +188,6 @@ class UserAdminComponent extends React.Component {
 
     render() {
         const {rowsPerPage, page, selectedUsers, selectedUserIds, loading, selectedFirm, users, columns} = this.state;
-        this.renderSelectAllCheckBox();
         users && users.map((el, i, arr) => arr[i] = Object.assign(el, {
             action: (
                 <div>
