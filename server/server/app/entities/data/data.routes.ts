@@ -14,3 +14,9 @@ data.post('/selected', TokenValidator.validateToken, (req, res, next) => {
         .then(PayloadGeneratorService.nextWithData(next, res))
         .catch(next);
 });
+
+data.post('/selected/withData', TokenValidator.validateToken, (req, res, next) => {
+    dataService.getDevicesWithData(req.body)
+        .then(PayloadGeneratorService.nextWithData(next, res))
+        .catch(next);
+});

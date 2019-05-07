@@ -95,24 +95,15 @@ class VisualisationToolBar extends React.Component {
             this.setState({loading: store.getState().dataReducer.loading});
             if (store.getState().dataReducer.time) {
                 const time = store.getState().dataReducer.time;
+                console.log(time);
                 this.setState({
                     minSelectedDate: time.minSelectedDate,
                     maxSelectedDate: time.maxSelectedDate,
                 })
             }
-            if (store.getState().dataReducer.data.length) {
-                const data = store.getState().dataReducer.data;
-                d3.select('#lineChart').remove();
-                d3.select('#parent-line-chart').append('div').attr("id", 'lineChart');
-                createLineChart(data, selectedDevices);
-                this.setState({data})
-            }
             return true;
         });
 
-        if (selectedDeviceIds.length) {
-            this.props.getMinMaxTimeRequest(selectedDeviceIds);
-        }
     }
 
     componentWillUnmount() {
@@ -143,7 +134,8 @@ class VisualisationToolBar extends React.Component {
                         <div>
                             <Tooltip title={'Select time'}>
                                 <div>
-                                    <IconButton disabled={!(minSelectedDate && maxSelectedDate) || loading}
+                                    <IconButton
+                                                disabled={!this.props.selectedDeviceIds.length}
                                                 variant="contained"
                                                 color="primary"
                                                 onClick={() => this.handleClickOpen('timeDialog')}>

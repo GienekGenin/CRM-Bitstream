@@ -19,12 +19,20 @@ import _ from "lodash";
 import ReactDOM from "react-dom";
 import VisualisationToolBarComponent from "../Visualisation/VisualisationToolBarComponent";
 import MapGL from 'react-map-gl';
+import 'mapbox-gl/dist/mapbox-gl.css';
+import store from "../../redux/store";
+import * as d3 from "d3";
+import {createLineChart} from "./lineChart.service";
+import {getMinMaxTimeRequest} from "../../redux/actions";
+import {dataService} from "../../redux/services/data";
 
 /* eslint-disable import/first */
 dotenv.config({path: '../../../.env.local'});
 
 const mapDispatchToProps = (dispatch) => {
-    return {};
+    return {
+        getMinMaxTimeRequest: (sids) => dispatch(getMinMaxTimeRequest(sids)),
+    };
 };
 
 const mapStateToProps = state => {
@@ -45,7 +53,7 @@ class Visualisation extends React.Component {
             selectedDevices: [],
             selectedDeviceIds: [],
             devicesToVis: [],
-
+            data: [],
             // table
             columns: [
                 {
@@ -84,7 +92,27 @@ class Visualisation extends React.Component {
 
     componentDidMount() {
         const {selectedDevices} = this.props;
-        this.createPhyidPie(selectedDevices);
+        const sids = selectedDevices.map(el => el.sid);
+        dataService.getDevicesWithData({sids}).then(d => {
+            let sids = d.map(el => el._id.sid);
+            const devicesWithData = selectedDevices.filter(el => sids.includes(el.sid));
+            this.createPhyidPie(devicesWithData);
+        }).catch(e => console.log(e));
+
+        this.unsubscribe = store.subscribe(() => {
+
+            const {data} = this.state;
+            if (store.getState().dataReducer.data.length) {
+                const reduxData = store.getState().dataReducer.data;
+                if (reduxData.length !== data.length) {
+                    d3.select('#lineChart').remove();
+                    d3.select('#parent-line-chart').append('div').attr("id", 'lineChart');
+                    createLineChart(reduxData, selectedDevices);
+                    this.setState({data: reduxData})
+                }
+            }
+            return true;
+        });
     }
 
     componentWillMount() {
@@ -92,7 +120,7 @@ class Visualisation extends React.Component {
     }
 
     componentWillUnmount() {
-
+        this.unsubscribe();
     }
 
     createPhyidPie = (devicesToShow) => {
@@ -388,6 +416,7 @@ class Visualisation extends React.Component {
         let checked = false;
         if (selectedDevices.length === devices.length) checked = true;
         this.setState({selectedDevices, selectedDeviceIds: [...selectedDeviceIdsSet]});
+        this.props.getMinMaxTimeRequest([...selectedDeviceIdsSet]);
         this.renderSelectAllCheckBox(checked);
     };
 
@@ -395,15 +424,18 @@ class Visualisation extends React.Component {
         const {selectedDevices, devicesToVis} = this.state;
         if (devicesToVis.length === selectedDevices.length) {
             this.renderSelectAllCheckBox(false);
+            this.props.getMinMaxTimeRequest([]);
             this.resetSelected();
         } else {
             const selectedDeviceIds = devicesToVis.map(devices => devices.sid);
             this.setState({selectedDevices: devicesToVis, selectedDeviceIds});
+            this.props.getMinMaxTimeRequest(selectedDeviceIds);
             this.renderSelectAllCheckBox(true);
         }
     }
 
     resetSelected = () => {
+        this.props.getMinMaxTimeRequest([]);
         this.setState({selectedDeviceIds: [], selectedDevices: []});
     };
 
@@ -492,11 +524,13 @@ class Visualisation extends React.Component {
                         </Grid>
                         <Grid item xs={12} sm={12} md={12} lg={12}>
                             <Paper>
-                                <MapGL
-                                    {...this.state.viewport}
-                                    mapStyle='mapbox://styles/mapbox/outdoors-v10'
-                                    onViewportChange={(viewport) => this.setState({viewport})}>
-                                </MapGL>
+                                <div id={'map'}>
+                                    <MapGL
+                                        {...this.state.viewport}
+                                        mapStyle='mapbox://styles/mapbox/outdoors-v10'
+                                        onViewportChange={(viewport) => this.setState({viewport})}>
+                                    </MapGL>
+                                </div>
                             </Paper>
                         </Grid>
                     </Grid>

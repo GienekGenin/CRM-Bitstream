@@ -58,4 +58,31 @@ export class DataRepository extends Repository {
             }
         ])
     }
+
+    getDevicesWithData(body){
+        return this.model.aggregate([
+            {
+                '$match': {
+                    $and: [
+                        {device_id: {$in: body.sids}},
+                        {
+                            $or: [
+                                {value: {$type: 'double'}},
+                                {value: {$type: 'int'}},
+                                {value: {$type: 'long'}},
+                                {value: {$in: ['ONLINE', 'OFFLINE']}}
+                            ]
+                        }
+                    ]
+                }
+            },
+            {
+                '$group': {
+                    '_id': {
+                        'sid': '$device_id'
+                    }
+                }
+            }
+        ])
+    }
 }

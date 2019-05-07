@@ -46,6 +46,10 @@ class DeviceTypesService {
     getData(body){
         return this.dataRepository.getData(body);
     }
+
+    getDevicesWithData(body){
+        return this.dataRepository.getDevicesWithData(body);
+    }
 }
 
 export const dataService = new DeviceTypesService();

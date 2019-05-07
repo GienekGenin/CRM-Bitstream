@@ -38,6 +38,25 @@ const getData  = (body) => {
         })
 };
 
+const getDevicesWithData  = (body) => {
+    const token = localStorage.getItem('token');
+    const requestOptions = {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(body)
+    };
+
+    return fetch(`${apiBase}data/selected/withData`, requestOptions)
+        .then(handleResponse)
+        .then(data => {
+            // store user details and jwt token in local storage to keep user logged in between page refreshes
+            return data;
+        })
+};
+
 const handleResponse = (response) => {
     return response.text().then(text => {
         const data = text && JSON.parse(text);
@@ -55,5 +74,6 @@ const handleResponse = (response) => {
 
 export const dataService = {
     getMinMaxDataTime,
-    getData
+    getData,
+    getDevicesWithData
 };
