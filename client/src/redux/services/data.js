@@ -19,7 +19,7 @@ const getMinMaxDataTime = (deviceIds) => {
         })
 };
 
-const getData  = (minSelectedDate, maxSelectedDate, sids) => {
+const getData  = (body) => {
     const token = localStorage.getItem('token');
     const requestOptions = {
         method: 'POST',
@@ -27,7 +27,7 @@ const getData  = (minSelectedDate, maxSelectedDate, sids) => {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify({minSelectedDate, maxSelectedDate, sids})
+        body: JSON.stringify(body)
     };
 
     return fetch(`${apiBase}data/selected`, requestOptions)

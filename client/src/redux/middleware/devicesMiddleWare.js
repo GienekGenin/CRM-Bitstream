@@ -1,13 +1,6 @@
 import {devicesConstants} from '../constants/index';
 import {devicesService} from "../services/devices";
-
-const errorParser = (err) => {
-    let errorPayload = '';
-    if (err.length > 0) {
-        err.forEach((e, i) => errorPayload += `${i + 1}) ${e.message}.\n`)
-    } else errorPayload = err.message;
-    return errorPayload;
-};
+import {errorParser} from "../services/common";
 
 export const devicesMiddleWare = ({dispatch}) => {
     return (next) => {

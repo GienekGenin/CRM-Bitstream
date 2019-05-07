@@ -13,17 +13,28 @@ class DeviceTypesService {
             async.waterfall([
                     callback => {
                         this.dataRepository.getMinTime(deviceIds)
-                            .then(data => callback(null, {minTime: data.ts}))
+                            .then(data => {
+                                if(data){
+                                    callback(null, {minTime: data.ts});
+                                } else {
+                                    callback('No minTime');
+                                }
+                            })
                             .catch(e => callback(e));
                     },
                     (payload, callback) => {
                         this.dataRepository.getMaxTime(deviceIds)
-                            .then(data => callback(null, Object.assign(payload, {maxTime: data.ts})))
+                            .then(data => {
+                                if(data){
+                                    callback(null, Object.assign(payload, {maxTime: data.ts}))
+                                } else {
+                                    callback('No maxTime');
+                                }
+                            })
                             .catch(e => callback(e));
                     }
                 ],
                 (err, payload) => {
-                    console.log(payload);
                     if (err) {
                         reject(err);
                     }

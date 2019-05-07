@@ -28,9 +28,21 @@ import {dataService} from "../../redux/services/data";
 import {MuiPickersUtilsProvider} from 'material-ui-pickers';
 import DateFnsUtils from "@date-io/date-fns";
 import {createLineChart} from "./lineChart.service";
+import {getMinMaxTimeRequest, getDataRequest} from "../../redux/actions";
+import store from "../../redux/store";
 
 const mapDispatchToProps = (dispatch) => {
-    return {};
+    return {
+        getMinMaxTimeRequest: (sids) => dispatch(getMinMaxTimeRequest(sids)),
+        getDataRequest: (minSelectedDate, maxSelectedDate, sids) => dispatch(getDataRequest(minSelectedDate, maxSelectedDate, sids))
+    };
+};
+
+const mapStateToProps = state => {
+    return {
+        time: state.dataReducer.time,
+        data: state.dataReducer.data,
+    };
 };
 
 class VisualisationToolBar extends React.Component {
@@ -78,29 +90,39 @@ class VisualisationToolBar extends React.Component {
 
     componentDidMount() {
         this.setState({loading: true});
-        if (this.props.selectedDeviceIds.length) {
-            dataService.getMinMaxDataTime(this.props.selectedDeviceIds)
-                .then(d => {
-                    this.setState(Object.assign(d, {
-                        minSelectedDate: d.minTime,
-                        maxSelectedDate: d.maxTime,
-                        loading: false
-                    }));
+        const {selectedDeviceIds} = this.props;
+
+        this.unsubscribe = store.subscribe(() => {
+            this.setState({loading: store.getState().dataReducer.loading});
+            if (store.getState().dataReducer.time) {
+                const time = store.getState().dataReducer.time;
+                this.setState({
+                    minSelectedDate: time.minSelectedDate,
+                    maxSelectedDate: time.maxSelectedDate,
                 })
-                .catch(e => console.log(e));
+            }
+            if (store.getState().dataReducer.data.length) {
+                const data = store.getState().dataReducer.data;
+                d3.select('#lineChart').remove();
+                d3.select('#parent-line-chart').append('div').attr("id", 'lineChart');
+                createLineChart(data);
+                this.setState({data})
+            }
+            return true;
+        });
+
+        if (selectedDeviceIds.length) {
+            this.props.getMinMaxTimeRequest(selectedDeviceIds);
         }
+    }
+
+    componentWillUnmount() {
+        this.unsubscribe();
     }
 
     handleConfigTime() {
         const {minSelectedDate, maxSelectedDate} = this.state;
-        dataService.getData(minSelectedDate, maxSelectedDate, this.props.selectedDeviceIds)
-            .then(data => {
-                d3.select('#lineChart').remove();
-                d3.select('#parent-line-chart').append('div').attr("id", 'lineChart');
-                createLineChart(data);
-                this.setState({data});
-            })
-            .catch(e => console.log(e));
+        this.props.getDataRequest(minSelectedDate, maxSelectedDate, this.props.selectedDeviceIds);
         this.handleClose('timeDialog');
     }
 
@@ -122,7 +144,7 @@ class VisualisationToolBar extends React.Component {
                         <div>
                             <Tooltip title={'Select time'}>
                                 <div>
-                                    <IconButton disabled={!this.props.selectedDeviceIds.length || loading}
+                                    <IconButton disabled={!(minSelectedDate && maxSelectedDate) || loading}
                                                 variant="contained"
                                                 color="primary"
                                                 onClick={() => this.handleClickOpen('timeDialog')}>
@@ -222,4 +244,4 @@ VisualisationToolBar.propTypes = {
     addRemoveColumn: PropTypes.func,
 };
 
-export default connect(null, mapDispatchToProps)(VisualisationToolBar);
+export default connect(mapStateToProps, mapDispatchToProps)(VisualisationToolBar);

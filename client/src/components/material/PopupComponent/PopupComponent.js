@@ -10,6 +10,8 @@ import {
     cleanUsersSuccess,
     cleanDevicesErrors,
     cleanDevicesSuccess,
+    cleanDataErrors,
+    cleanDataSuccess
 } from "../../../redux/actions/index";
 import {connect} from "react-redux";
 
@@ -22,6 +24,8 @@ const mapDispatchToProps = (dispatch) => {
         cleanUsersSuccess: () => dispatch(cleanUsersSuccess()),
         cleanDevicesErrors: () => dispatch(cleanDevicesErrors()),
         cleanDevicesSuccess: () => dispatch(cleanDevicesSuccess()),
+        cleanDataErrors: () => dispatch(cleanDataErrors()),
+        cleanDataSuccess: () => dispatch(cleanDataSuccess()),
     };
 };
 
@@ -65,6 +69,16 @@ class Popup extends React.Component {
             {
                 this.handleClickVariant(store.getState().devicesReducer.success, 'success');
                 this.props.cleanDevicesSuccess();
+            }
+            if(store.getState().dataReducer.error)
+            {
+                this.handleClickVariant(store.getState().dataReducer.error, 'warning');
+                this.props.cleanDataErrors();
+            }
+            if(store.getState().dataReducer.success)
+            {
+                this.handleClickVariant(store.getState().dataReducer.success, 'success');
+                this.props.cleanDataSuccess();
             }
         })
     }

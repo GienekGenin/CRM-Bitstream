@@ -1,6 +1,12 @@
 import {createStore, applyMiddleware, compose} from "redux";
 import {rootReducer} from '../reducers/index';
-import {loginMiddleWare, firmMiddleWare, usersMiddleWare, devicesMiddleWare} from "../middleware/index";
+import {
+    loginMiddleWare,
+    firmMiddleWare,
+    usersMiddleWare,
+    devicesMiddleWare,
+    dataMiddleWare
+} from "../middleware/index";
 
 const storeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
@@ -10,7 +16,9 @@ const store = createStore(
         loginMiddleWare,
         firmMiddleWare,
         usersMiddleWare,
-        devicesMiddleWare))
+        devicesMiddleWare,
+        dataMiddleWare
+    ))
 );
 
 export default store;

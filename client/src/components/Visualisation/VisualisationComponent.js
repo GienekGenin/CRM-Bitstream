@@ -67,8 +67,8 @@ class Visualisation extends React.Component {
     }
 
     componentDidMount() {
-        const {devices} = this.props;
-        this.createPhyidPie(devices);
+        const {selectedDevices} = this.props;
+        this.createPhyidPie(selectedDevices);
     }
 
     componentWillMount() {
@@ -374,13 +374,12 @@ class Visualisation extends React.Component {
     };
 
     selectAllDevices() {
-        const {devices} = this.props;
-        const {selectedDevices} = this.state;
-        if (devices.length === selectedDevices.length) {
+        const {selectedDevices, devicesToVis} = this.state;
+        if (devicesToVis.length === selectedDevices.length) {
             this.resetSelected();
         } else {
-            const selectedDeviceIds = devices.map(devices => devices.sid);
-            this.setState({selectedDevices: devices, selectedDeviceIds, checked: true});
+            const selectedDeviceIds = devicesToVis.map(devices => devices.sid);
+            this.setState({selectedDevices: devicesToVis, selectedDeviceIds, checked: true});
         }
     }
 
@@ -480,7 +479,8 @@ class Visualisation extends React.Component {
 }
 
 Visualisation.propTypes = {
-    devices: PropTypes.array.isRequired,
+    selectedDevices: PropTypes.array.isRequired,
+    parentDevices: PropTypes.array
 };
 
 const VisualisationComponent = connect(mapStateToProps, mapDispatchToProps)(Visualisation);
