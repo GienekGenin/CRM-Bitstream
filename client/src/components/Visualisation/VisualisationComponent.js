@@ -1,5 +1,6 @@
 import React from "react";
 import * as PropTypes from 'prop-types';
+// import * as dotenv from 'dotenv';
 
 import * as am4core from "@amcharts/amcharts4/core";
 import * as am4charts from "@amcharts/amcharts4/charts";
@@ -9,7 +10,7 @@ import am4themes_animated from "@amcharts/amcharts4/themes/animated";
 // import store from "../../redux/store";
 import {connect} from "react-redux";
 import Paper from "@material-ui/core/Paper";
-import MaterialTable from '../material/MaterialTable/material-table';
+import MaterialTable from '../UI/material/MaterialTable/material-table';
 import {Grid, MuiThemeProvider} from '@material-ui/core';
 import './visualisation.scss';
 import {theme} from "../material.theme";
@@ -17,6 +18,11 @@ import Checkbox from "@material-ui/core/Checkbox";
 import _ from "lodash";
 import ReactDOM from "react-dom";
 import VisualisationToolBarComponent from "../Visualisation/VisualisationToolBarComponent";
+// import MapGL, {Marker} from 'react-map-gl';
+// import Pin from '../UI/map/pin/PinComponent';
+
+/* eslint-disable import/first */
+// dotenv.config({path: '../../../.env.local'});
 
 const mapDispatchToProps = (dispatch) => {
     return {};
@@ -40,6 +46,8 @@ class Visualisation extends React.Component {
             selectedDevices: [],
             selectedDeviceIds: [],
             devicesToVis: [],
+
+            // table
             columns: [
                 {
                     title: 'Select',
@@ -59,6 +67,7 @@ class Visualisation extends React.Component {
                 {title: 'status', field: 'status', hidden: true,},
                 {title: 'description', field: 'description', hidden: true},
             ],
+
         };
 
         this.createPhyidPie = this.createPhyidPie.bind(this);

@@ -9,7 +9,7 @@ import am4themes_animated from "@amcharts/amcharts4/themes/animated";
 // Material
 import {withStyles} from '@material-ui/core/styles';
 import Checkbox from "@material-ui/core/Checkbox";
-import {styles} from '../material/table-styles';
+import {styles} from '../UI/material/table-styles';
 import {Grid, MuiThemeProvider} from '@material-ui/core';
 import Paper from '@material-ui/core/Paper';
 
@@ -21,7 +21,7 @@ import {tokenService} from "../../redux/services/token";
 
 // Components
 import FirmDevicesToolBarComponent from "./FirmDevicesToolBarComponent";
-import MaterialTable from '../material/MaterialTable/material-table';
+import MaterialTable from '../UI/material/MaterialTable/material-table';
 import './firmDevices.scss';
 import {theme} from "../material.theme";
 import ReactDOM from "react-dom";

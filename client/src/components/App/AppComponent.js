@@ -33,7 +33,7 @@ import LoginForm from '../Login/LoginForm';
 import HomeComponent from "../Home/HomeComponent";
 import AdminPanelComponent from "../AdminPanel/AdminPanelComponent";
 import DashboardComponent from '../../components/Dashboard/DashboardComponent';
-import {PopupComponent} from "../material/PopupComponent/PopupComponent";
+import {PopupComponent} from "../UI/material/PopupComponent/PopupComponent";
 import {SnackbarProvider} from "notistack";
 import {withStyles} from "@material-ui/core";
 

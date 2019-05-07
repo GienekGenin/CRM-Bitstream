@@ -14,7 +14,7 @@ import {addFirmRequest, deleteFirmRequest, updateFirmRequest} from "../../redux/
 
 // Components
 import './firmAdministration.scss'
-import MaterialTable from '../material/MaterialTable/material-table';
+import MaterialTable from '../UI/material/MaterialTable/material-table';
 import FirmAdministrationToolBar from './FirmAdministrationToolBar';
 
 const mapDispatchToProps = (dispatch) => {

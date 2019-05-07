@@ -5,7 +5,7 @@ import * as PropTypes from 'prop-types';
 // Material
 import {createMuiTheme, MuiThemeProvider, withStyles} from '@material-ui/core/styles';
 import Checkbox from "@material-ui/core/Checkbox";
-import {styles} from '../material/table-styles';
+import {styles} from '../UI/material/table-styles';
 import {Grid} from "@material-ui/core";
 
 // Redux
@@ -23,7 +23,7 @@ import {tokenService} from "../../redux/services/token";
 
 // Components
 import './userAdmin.scss';
-import MaterialTable from '../material/MaterialTable/material-table';
+import MaterialTable from '../UI/material/MaterialTable/material-table';
 import UserToolBarComponent from './UserToolBarComponent';
 
 const theme = createMuiTheme({

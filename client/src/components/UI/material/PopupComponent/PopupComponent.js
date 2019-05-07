@@ -1,5 +1,5 @@
 import React from "react";
-import store from "../../../redux/store";
+import store from "../../../../redux/store";
 import * as PropTypes from "prop-types";
 import {withSnackbar} from "notistack";
 import {
@@ -12,7 +12,7 @@ import {
     cleanDevicesSuccess,
     cleanDataErrors,
     cleanDataSuccess
-} from "../../../redux/actions/index";
+} from "../../../../redux/actions/index";
 import {connect} from "react-redux";
 
 const mapDispatchToProps = (dispatch) => {
