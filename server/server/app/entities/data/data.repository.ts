@@ -32,6 +32,7 @@ export class DataRepository extends Repository {
                                 {value: {$type: 'double'}},
                                 {value: {$type: 'int'}},
                                 {value: {$type: 'long'}},
+                                {value: {$type: 'array'}},
                                 {value: {$in: ['ONLINE', 'OFFLINE']}}
                             ]
                         }
@@ -70,6 +71,7 @@ export class DataRepository extends Repository {
                                 {value: {$type: 'double'}},
                                 {value: {$type: 'int'}},
                                 {value: {$type: 'long'}},
+                                {value: {$type: 'array'}},
                                 {value: {$in: ['ONLINE', 'OFFLINE']}}
                             ]
                         }

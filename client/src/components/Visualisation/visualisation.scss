@@ -9,9 +9,17 @@
 }
 
 div.mapboxgl-map{
-  z-index: 1000;
+  z-index: 999;
+}
+
+.mapboxgl-marker{
+  z-index: 999;
 }
 
 #map > div{
   width: 100%;
+}
+
+.chart_hide{
+  display: none;
 }

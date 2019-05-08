@@ -1,5 +1,7 @@
 .marker-icon{
   &:hover{
     cursor: pointer;
+    z-index: 1000;
   }
+  z-index: 1000;
 }

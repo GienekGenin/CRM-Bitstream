@@ -14,7 +14,7 @@ class DeviceTypesService {
                     callback => {
                         this.dataRepository.getMinTime(deviceIds)
                             .then(data => {
-                                if(data){
+                                if (data) {
                                     callback(null, {minTime: data.ts});
                                 } else {
                                     callback('No minTime');
@@ -25,7 +25,7 @@ class DeviceTypesService {
                     (payload, callback) => {
                         this.dataRepository.getMaxTime(deviceIds)
                             .then(data => {
-                                if(data){
+                                if (data) {
                                     callback(null, Object.assign(payload, {maxTime: data.ts}))
                                 } else {
                                     callback('No maxTime');
@@ -43,11 +43,26 @@ class DeviceTypesService {
         }))
     }
 
-    getData(body){
-        return this.dataRepository.getData(body);
+    getData(body) {
+        return new Promise(((resolve, reject) => {
+            async.waterfall([
+                callback => {
+                    this.dataRepository.getData(body)
+                        .then(data => {
+                            callback(null, data);
+                        })
+                        .catch(e => callback(e));
+                }
+            ], (err, payload) => {
+                if (err) {
+                    reject(err);
+                }
+                resolve(payload);
+            })
+        }))
     }
 
-    getDevicesWithData(body){
+    getDevicesWithData(body) {
         return this.dataRepository.getDevicesWithData(body);
     }
 }

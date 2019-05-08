@@ -25,11 +25,11 @@ export const createLineChart = (data, selectedDevices) => {
     const chart = am4core.create("lineChart", am4charts.XYChart);
 
     const chartData = [];
-    // let max, len = [];
-    // data.forEach((dev, i) => {
-    //     len.push(dev.data.length);
-    // });
-    // max = Math.max(...len);
+    let max, len = [];
+    data.forEach((dev, i) => {
+        len.push(dev.data.length);
+    });
+    max = Math.max(...len);
     data.forEach((dev, i) => {
         dev.data.forEach(mes=>{
             let value = mes.value;
@@ -51,7 +51,7 @@ export const createLineChart = (data, selectedDevices) => {
 
         let valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
         valueAxis.tooltip.disabled = true;
-        valueAxis.renderer.grid.template.strokeDasharray = "2,3";
+        // valueAxis.renderer.grid.template.strokeDasharray = "2,3";
         valueAxis.renderer.labels.template.fill = am4core.color(color);
         valueAxis.renderer.line.stroke = am4core.color(color);
         valueAxis.renderer.minWidth = 60;
@@ -72,11 +72,11 @@ export const createLineChart = (data, selectedDevices) => {
         dateAxis.renderer.grid.template.strokeOpacity = 0.07;
         valueAxis.renderer.grid.template.strokeOpacity = 0.07;
 
-        // if(dev.data.length === max){
-        //     let scrollbarX = new am4charts.XYChartScrollbar();
-        //     scrollbarX.series.push(series);
-        //     chart.scrollbarX = scrollbarX;
-        // }
+        if(dev.data.length === max){
+            let scrollbarX = new am4charts.XYChartScrollbar();
+            scrollbarX.series.push(series);
+            chart.scrollbarX = scrollbarX;
+        }
 
     });
 

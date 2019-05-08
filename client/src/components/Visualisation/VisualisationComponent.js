@@ -39,7 +39,8 @@ import {dataService} from "../../redux/services/data";
 // Components
 import './visualisation.scss';
 import 'mapbox-gl/dist/mapbox-gl.css';
-import MapGL from 'react-map-gl';
+import MapGL, {Marker} from 'react-map-gl';
+import Pin from '../UI/map/pin/PinComponent';
 import MaterialTable from 'material-table';
 import {DatePicker, MuiPickersUtilsProvider} from "material-ui-pickers";
 
@@ -73,7 +74,8 @@ class Visualisation extends React.Component {
             selectedDevices: [],
             selectedDeviceIds: [],
             devicesToVis: [],
-            data: [],
+            linearData: [],
+            locationData: [],
             // table
             columns: [
                 {title: 'Name', field: 'name', hidden: false,},
@@ -99,7 +101,7 @@ class Visualisation extends React.Component {
                 longitude: 19.145136,
                 zoom: 6,
                 mapboxApiAccessToken: process.env.REACT_APP_MAP_BOX_TOKEN_PUBLIC
-            },
+            }
         };
 
         this.createPhyidPie = this.createPhyidPie.bind(this);
@@ -107,7 +109,7 @@ class Visualisation extends React.Component {
     }
 
     handleClickMenu = event => {
-        this.setState({anchorEl: event.currentTarget, columnsDialog: true, columns: this.props.columns});
+        this.setState({anchorEl: event.currentTarget, columnsDialog: true});
     };
 
     handleCloseMenu = () => {
@@ -118,7 +120,7 @@ class Visualisation extends React.Component {
 
     handleColumnsChange = (title) => {
         let columns = this.state.columns.map((el, i, arr) => el.title === title ? arr[i] = Object.assign(el, {hidden: !el.hidden}) : el);
-        this.setState({columns});
+        this.addRemoveColumn(columns);
     };
 
     handleClickOpen = (state) => {
@@ -153,15 +155,27 @@ class Visualisation extends React.Component {
 
         this.unsubscribe = store.subscribe(() => {
 
-            const {data} = this.state;
+            const {linearData, locationData} = this.state;
             this.setState({loading: true});
             if (store.getState().dataReducer.data.length) {
                 const reduxData = store.getState().dataReducer.data;
-                if (reduxData.length !== data.length) {
+                const reduxLinearData = [];
+                const reduxLocationData = [];
+                reduxData.forEach(el=>{
+                    if(Array.isArray(el.data[0].value)){
+                        reduxLocationData.push(el)
+                    } else {
+                        reduxLinearData.push(el);
+                    }
+                });
+                if (reduxLinearData.length !== linearData.length) {
                     d3.select('#lineChart').remove();
                     d3.select('#parent-line-chart').append('div').attr("id", 'lineChart');
-                    createLineChart(reduxData, selectedDevices);
-                    this.setState({data: reduxData})
+                    reduxLinearData.length && createLineChart(reduxLinearData, selectedDevices);
+                    this.setState({linearData: reduxLinearData})
+                }
+                if(reduxLocationData.length !== locationData.length){
+                    this.setState({locationData: reduxLocationData})
                 }
             }
             if (store.getState().dataReducer.time) {
@@ -474,7 +488,7 @@ class Visualisation extends React.Component {
     render() {
         const {
             devicesToVis, columns, page, rowsPerPage, selectedDevices, columnsDialog, anchorEl,
-            loading, minTime, maxTime, minSelectedDate, maxSelectedDate
+            loading, minTime, maxTime, minSelectedDate, maxSelectedDate, locationData, linearData
         } = this.state;
         return (
             <div style={{maxWidth: '100%'}}>
@@ -496,7 +510,6 @@ class Visualisation extends React.Component {
                         </Grid>
                         <Grid item xs={12} sm={12} md={12} lg={12}>
                             <div>
-
                                 <MaterialTable
                                     components={{
                                         Toolbar: props => (
@@ -575,7 +588,7 @@ class Visualisation extends React.Component {
                                                                     <ViewColumnIcon/>
                                                                 </IconButton>
                                                                 <Menu
-                                                                    id="long-menu"
+                                                                    id="time-menu"
                                                                     open={columnsDialog}
                                                                     anchorEl={anchorEl}
                                                                     onClose={this.handleCloseMenu}
@@ -629,7 +642,7 @@ class Visualisation extends React.Component {
                                 />
                             </div>
                         </Grid>
-                        <Grid item xs={12} sm={12} md={12} lg={12}>
+                        <Grid item xs={12} sm={12} md={12} lg={12} className={'chart_' + (linearData.length ? 'show' : 'hide')}>
                             <Paper>
                                 <div id={'parent-line-chart'}>
 
@@ -643,6 +656,16 @@ class Visualisation extends React.Component {
                                         {...this.state.viewport}
                                         mapStyle='mapbox://styles/mapbox/outdoors-v10'
                                         onViewportChange={(viewport) => this.setState({viewport})}>
+                                        {locationData.length && locationData.map(el=>{
+                                            return (<Marker
+                                                key={el._id.sid}
+                                                longitude={el.data[0].value[1]}
+                                                latitude={el.data[0].value[0]}
+                                                offsetTop={-20}
+                                                offsetLeft={-10}>
+                                                <Pin size={20} onClick={() => alert(el._id.sid)}/>
+                                            </Marker>)
+                                        })}
                                     </MapGL>
                                 </div>
                             </Paper>
