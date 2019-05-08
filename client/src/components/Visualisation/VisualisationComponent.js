@@ -515,121 +515,117 @@ class Visualisation extends React.Component {
                             </Paper>
                         </Grid>
                         <Grid item xs={12} sm={12} md={12} lg={12}>
-                            <div>
-                                <MaterialTable
-                                    components={{
-                                        Toolbar: props => (
-                                            <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                                                <div className="device-toolbar">
-                                                    <div className={'title'}>
-                                                        {(selectedDevices && selectedDevices.length === 1) ? <h3>
-                                                            Selected {selectedDevices[0].name}
-                                                        </h3> : <h3>Devices</h3>}
-                                                    </div>
-                                                    <div className={'device-controls'}>
+                            <Paper>
+                                <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                                        <div className="device-toolbar">
+                                            <div className={'title'}>
+                                                {(selectedDevices && selectedDevices.length === 1) ? <h3>
+                                                    Selected {selectedDevices[0].name}
+                                                </h3> : <h3>Devices</h3>}
+                                            </div>
+                                            <div className={'device-controls'}>
+                                                <div>
+                                                    <Tooltip title={'Select time'}>
                                                         <div>
-                                                            <Tooltip title={'Select time'}>
-                                                                <div>
-                                                                    <IconButton
-                                                                        disabled={!selectedDevices.length}
-                                                                        variant="contained"
-                                                                        color="primary"
-                                                                        onClick={() => this.handleClickOpen('timeDialog')}>
-                                                                        <TimelineIcon/>
-                                                                    </IconButton>
-                                                                </div>
-                                                            </Tooltip>
-                                                            <Dialog
-                                                                open={this.state.timeDialog}
-                                                                onClose={() => this.handleClose('timeDialog')}
-                                                                aria-labelledby="key-dialog-title"
-                                                                aria-describedby="alert-dialog-description"
-                                                            >
-                                                                <DialogTitle id="alert-dialog-title">Config time for
-                                                                    devices</DialogTitle>
-                                                                <DialogContent>
-                                                                    <DialogContent>
-                                                                        <div className="picker">
-                                                                            <DatePicker
-                                                                                disabled={loading}
-                                                                                autoOk
-                                                                                value={minSelectedDate}
-                                                                                minDate={minTime}
-                                                                                maxDate={maxSelectedDate}
-                                                                                onChange={(time) => this.handleTimeChange('minSelectedDate', time)}
-                                                                                label="Min time"/>
-                                                                        </div>
-                                                                        <div className="picker">
-                                                                            <DatePicker
-                                                                                autoOk
-                                                                                disabled={loading}
-                                                                                value={maxSelectedDate}
-                                                                                maxDate={maxTime}
-                                                                                minDate={minSelectedDate}
-                                                                                onChange={(time) => this.handleTimeChange('maxSelectedDate', time)}
-                                                                                label="Max time"/>
-                                                                        </div>
-                                                                    </DialogContent>
-                                                                </DialogContent>
-                                                                <DialogActions>
-                                                                    <Button
-                                                                        variant="outlined" color="primary"
-                                                                        onClick={() => this.handleConfigTime()}
-                                                                        disabled={loading}
-                                                                    >
-                                                                        Confirm
-                                                                    </Button>
-                                                                    <Button onClick={() => this.handleClose('timeDialog')}
-                                                                            color="primary">
-                                                                        Close
-                                                                    </Button>
-                                                                </DialogActions>
-                                                            </Dialog>
+                                                            <IconButton
+                                                                disabled={!selectedDevices.length}
+                                                                variant="contained"
+                                                                color="primary"
+                                                                onClick={() => this.handleClickOpen('timeDialog')}>
+                                                                <TimelineIcon/>
+                                                            </IconButton>
                                                         </div>
-                                                        <Tooltip title={'Show columns'}>
-                                                            <div>
-                                                                <IconButton variant="outlined" color="primary"
-                                                                            disabled={loading}
-                                                                            onClick={this.handleClickMenu}>
-                                                                    <ViewColumnIcon/>
-                                                                </IconButton>
-                                                                <Menu
-                                                                    id="time-menu"
-                                                                    open={columnsDialog}
-                                                                    anchorEl={anchorEl}
-                                                                    onClose={this.handleCloseMenu}
-                                                                    PaperProps={{
-                                                                        style: {
-                                                                            maxHeight: 45 * 4.5,
-                                                                            width: 250,
-                                                                        },
-                                                                    }}
-                                                                >
-                                                                    <List id={'column-list'}>
-                                                                        {columns && columns.map(el => (
-                                                                            <div key={el.title}>
-                                                                                <Divider dark={'true'}/>
-                                                                                <ListItem key={el.title} dense button
-                                                                                          disabled={el.field === 'action'}
-                                                                                          onClick={() => this.handleColumnsChange(el.title)}>
-                                                                                    <Checkbox checked={!el.hidden}/>
-                                                                                    <ListItemText primary={el.title}/>
-                                                                                </ListItem>
-                                                                            </div>
-                                                                        ))}
-                                                                        <Button fullWidth={true} onClick={this.handleCloseMenu}
-                                                                                className={'submit-button'}>
-                                                                            Submit
-                                                                        </Button>
-                                                                    </List>
-                                                                </Menu>
-                                                            </div>
-                                                        </Tooltip>
-                                                    </div>
+                                                    </Tooltip>
+                                                    <Dialog
+                                                        open={this.state.timeDialog}
+                                                        onClose={() => this.handleClose('timeDialog')}
+                                                        aria-labelledby="key-dialog-title"
+                                                        aria-describedby="alert-dialog-description"
+                                                    >
+                                                        <DialogTitle id="alert-dialog-title">Config time for
+                                                            devices</DialogTitle>
+                                                        <DialogContent>
+                                                            <DialogContent>
+                                                                <div className="picker">
+                                                                    <DatePicker
+                                                                        disabled={loading}
+                                                                        autoOk
+                                                                        value={minSelectedDate}
+                                                                        minDate={minTime}
+                                                                        maxDate={maxSelectedDate}
+                                                                        onChange={(time) => this.handleTimeChange('minSelectedDate', time)}
+                                                                        label="Min time"/>
+                                                                </div>
+                                                                <div className="picker">
+                                                                    <DatePicker
+                                                                        autoOk
+                                                                        disabled={loading}
+                                                                        value={maxSelectedDate}
+                                                                        maxDate={maxTime}
+                                                                        minDate={minSelectedDate}
+                                                                        onChange={(time) => this.handleTimeChange('maxSelectedDate', time)}
+                                                                        label="Max time"/>
+                                                                </div>
+                                                            </DialogContent>
+                                                        </DialogContent>
+                                                        <DialogActions>
+                                                            <Button
+                                                                variant="outlined" color="primary"
+                                                                onClick={() => this.handleConfigTime()}
+                                                                disabled={loading}
+                                                            >
+                                                                Confirm
+                                                            </Button>
+                                                            <Button onClick={() => this.handleClose('timeDialog')}
+                                                                    color="primary">
+                                                                Close
+                                                            </Button>
+                                                        </DialogActions>
+                                                    </Dialog>
                                                 </div>
-                                            </MuiPickersUtilsProvider>
-                                        ),
-                                    }}
+                                                <Tooltip title={'Show columns'}>
+                                                    <div>
+                                                        <IconButton variant="outlined" color="primary"
+                                                                    disabled={loading}
+                                                                    onClick={this.handleClickMenu}>
+                                                            <ViewColumnIcon/>
+                                                        </IconButton>
+                                                        <Menu
+                                                            id="time-menu"
+                                                            open={columnsDialog}
+                                                            anchorEl={anchorEl}
+                                                            onClose={this.handleCloseMenu}
+                                                            PaperProps={{
+                                                                style: {
+                                                                    maxHeight: 45 * 4.5,
+                                                                    width: 250,
+                                                                },
+                                                            }}
+                                                        >
+                                                            <List id={'column-list'}>
+                                                                {columns && columns.map(el => (
+                                                                    <div key={el.title}>
+                                                                        <Divider dark={'true'}/>
+                                                                        <ListItem key={el.title} dense button
+                                                                                  disabled={el.field === 'action'}
+                                                                                  onClick={() => this.handleColumnsChange(el.title)}>
+                                                                            <Checkbox checked={!el.hidden}/>
+                                                                            <ListItemText primary={el.title}/>
+                                                                        </ListItem>
+                                                                    </div>
+                                                                ))}
+                                                                {/*<Button fullWidth={true} onClick={this.handleCloseMenu}*/}
+                                                                        {/*className={'submit-button'}>*/}
+                                                                    {/*Submit*/}
+                                                                {/*</Button>*/}
+                                                            </List>
+                                                        </Menu>
+                                                    </div>
+                                                </Tooltip>
+                                            </div>
+                                        </div>
+                                </MuiPickersUtilsProvider>
+                                <MaterialTable
                                     data={devicesToVis}
                                     columns={columns}
                                     title="Vis devices"
@@ -640,13 +636,13 @@ class Visualisation extends React.Component {
                                         initialPage: page,
                                         pageSize: rowsPerPage,
                                         search: false,
-                                        toolbar: true,
+                                        toolbar: false,
                                         selection: true
                                     }}
                                     parentChildData={(row, rows) => rows.find(a => a.sid === row.parent_id)}
                                     onSelectionChange={this.onSelectionChange}
                                 />
-                            </div>
+                            </Paper>
                         </Grid>
                         <Grid item xs={12} sm={12} md={12} lg={12} className={'chart_' + (linearData.length ? 'show' : 'hide')}>
                             <Paper>

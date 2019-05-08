@@ -23,3 +23,7 @@ div.mapboxgl-map{
 .chart_hide{
   display: none;
 }
+
+#root > div > main > div > div > div > div > div > div:nth-child(2) > div > div{
+  box-shadow: none;
+}
