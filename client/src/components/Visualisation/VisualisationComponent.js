@@ -2,6 +2,7 @@ import React from "react";
 import * as PropTypes from 'prop-types';
 import * as dotenv from 'dotenv';
 import DateFnsUtils from "@date-io/date-fns";
+import _ from "lodash";
 
 // Viz
 import * as am4core from "@amcharts/amcharts4/core";
@@ -145,7 +146,8 @@ class Visualisation extends React.Component {
     }
 
     componentDidMount() {
-        const {selectedDevices} = this.props;
+        let {selectedDevices} = this.props;
+        selectedDevices = selectedDevices.map(el=>_.omit(el, ['action', 'tableData']));
         const sids = selectedDevices.map(el => el.sid);
         dataService.getDevicesWithData({sids}).then(d => {
             let sids = d.map(el => el._id.sid);
@@ -424,7 +426,6 @@ class Visualisation extends React.Component {
                         }
                     });
                 });
-
                 this.setState({selectedPhyids, devicesToVis});
 
                 toggleDummySlice(series1);

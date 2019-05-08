@@ -44,6 +44,7 @@ main {
   & > div > header > div{
     margin: 0 auto;
     width: 100%;
+    justify-content: space-evenly;
   }
   & > div > header > div > div > div{
     min-height: 64px;
