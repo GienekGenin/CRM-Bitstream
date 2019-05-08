@@ -486,6 +486,11 @@ class Visualisation extends React.Component {
         this.setState({columns});
     };
 
+    showInfo(sid){
+        let device = this.props.selectedDevices.filter(el => el.sid === sid)[0];
+        alert(`Device name: ${device.name} \nsid: ${device.sid}`);
+    }
+
     render() {
         const {
             devicesToVis, columns, page, rowsPerPage, selectedDevices, columnsDialog, anchorEl,
@@ -664,7 +669,7 @@ class Visualisation extends React.Component {
                                                 latitude={el.data[0].value[0]}
                                                 offsetTop={-20}
                                                 offsetLeft={-10}>
-                                                <Pin size={20} onClick={() => alert(el._id.sid)}/>
+                                                <Pin size={20} onClick={() => this.showInfo(el._id.sid)}/>
                                             </Marker>)
                                         })}
                                     </MapGL>
