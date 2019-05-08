@@ -1,10 +1,8 @@
 import React from "react";
-import ReactDOM from 'react-dom'
 import * as PropTypes from 'prop-types';
 
 // Material
 import {createMuiTheme, MuiThemeProvider, withStyles} from '@material-ui/core/styles';
-import Checkbox from "@material-ui/core/Checkbox";
 import {styles} from '../UI/material/table-styles';
 import {Grid} from "@material-ui/core";
 
@@ -23,7 +21,7 @@ import {tokenService} from "../../redux/services/token";
 
 // Components
 import './userAdmin.scss';
-import MaterialTable from '../UI/material/MaterialTable/material-table';
+import MaterialTable from 'material-table';
 import UserToolBarComponent from './UserToolBarComponent';
 
 const theme = createMuiTheme({
@@ -67,18 +65,7 @@ class UserAdminComponent extends React.Component {
             loading: false,
             selectedFirm: null,
             columns: [
-                {
-                    title: 'Select',
-                    field: 'action',
-                    filtering: false,
-                    sorting: false,
-                    hidden: false,
-                },
-                {
-                    title: 'Name',
-                    field: 'name',
-                    hidden: false,
-                },
+                {title: 'Name', field: 'name', hidden: false,},
                 {title: 'Surname', field: 'surname', hidden: false,},
                 {title: 'Email', field: 'email', hidden: false,},
                 {title: 'tel', field: 'tel', hidden: false,},
@@ -88,7 +75,6 @@ class UserAdminComponent extends React.Component {
         this.handleUsersSelect = this.handleUsersSelect.bind(this);
         this.resetSelected = this.resetSelected.bind(this);
         this.addRemoveColumn = this.addRemoveColumn.bind(this);
-        this.selectAllUsers = this.selectAllUsers.bind(this);
     }
 
 
@@ -109,12 +95,7 @@ class UserAdminComponent extends React.Component {
         }
 
         if (this.props.selectedUsers) {
-            const {selectedUsers, parentUsers} = this.props;
-            let checked = false;
-            if(parentUsers.length === selectedUsers.length){
-                checked = true;
-            }
-            this.renderSelectAllCheckBox(checked);
+            const {selectedUsers} = this.props;
             const selectedUserIds = selectedUsers.map(user => user._id);
             this.setState({selectedUsers, selectedUserIds});
         }
@@ -128,7 +109,6 @@ class UserAdminComponent extends React.Component {
             }
             return true;
         });
-        this.renderSelectAllCheckBox(false);
     }
 
     componentWillUnmount() {
@@ -145,56 +125,18 @@ class UserAdminComponent extends React.Component {
         this.setState({selectedUsers: [], selectedUserIds: []});
     };
 
-    onRowClick = (e, rowData) => {
-        const {users, selectedUsers} = this.state;
-        let usersSet = new Set(selectedUsers);
-        usersSet.has(rowData) ? usersSet.delete(rowData) : usersSet.add(rowData);
-        const selectedUserIds = [...usersSet].map(el => el._id);
-        let checked = false;
-        if(users.length === [...usersSet].length) {
-            checked = true;
-        }
-        this.setState({selectedUsers: [...usersSet], selectedUserIds});
-        this.handleUsersSelect([...usersSet]);
-        this.renderSelectAllCheckBox(checked);
+    onSelectionChange = (rows) => {
+        const selectedUserIds = rows.map(el => el._id);
+        this.setState({selectedUsers: rows, selectedUserIds});
+        this.handleUsersSelect(rows);
     };
 
     addRemoveColumn = (columns) => {
         this.setState({columns});
     };
 
-    selectAllUsers(){
-        const {users, selectedUsers} = this.state;
-        if(users.length === selectedUsers.length){
-            this.renderSelectAllCheckBox(false);
-            this.resetSelected();
-        } else {
-            const selectedUserIds = users.map(user=>user._id);
-            this.setState({selectedUsers: users, selectedUserIds});
-            this.renderSelectAllCheckBox(true);
-            this.handleUsersSelect(users);
-        }
-    }
-
-    renderSelectAllCheckBox(checked) {
-        const element = <div>
-            <Checkbox value={'1'} checked={ checked } onChange={this.selectAllUsers}/>
-        </div>;
-        const container = document.querySelector('#root > div.root > main > div > div > div > div > div > div > ' +
-            'div > div:nth-child(2) > div > div > table > tbody > tr:nth-child(1) > td:nth-child(1)');
-        if(container)
-        ReactDOM.render(element, container)
-    }
-
     render() {
-        const {rowsPerPage, page, selectedUsers, selectedUserIds, loading, selectedFirm, users, columns} = this.state;
-        users && users.map((el, i, arr) => arr[i] = Object.assign(el, {
-            action: (
-                <div>
-                    <Checkbox value={el._id} checked={selectedUserIds.includes(el._id)}/>
-                </div>
-            )
-        }));
+        const {rowsPerPage, page, selectedUsers, loading, selectedFirm, users, columns} = this.state;
         return (
             <MuiThemeProvider theme={theme}>
                 <div style={{maxWidth: '100%'}}>
@@ -216,10 +158,11 @@ class UserAdminComponent extends React.Component {
                                         </div>
                                     ),
                                 }}
-                                isLoading={loading}
+                                title="Users"
+                                // Todo: crash hole application
+                                // isLoading={loading}
                                 data={users}
                                 columns={columns}
-                                title="Users"
                                 options={{
                                     filtering: true,
                                     columnsButton: false,
@@ -227,9 +170,10 @@ class UserAdminComponent extends React.Component {
                                     initialPage: page,
                                     pageSize: rowsPerPage,
                                     search: false,
-                                    toolbar: true
+                                    toolbar: true,
+                                    selection: true
                                 }}
-                                onRowClick={this.onRowClick}
+                                onSelectionChange={this.onSelectionChange}
                             />
                         </Grid>
                     </Grid>
@@ -242,7 +186,6 @@ class UserAdminComponent extends React.Component {
 UserAdminComponent.propTypes = {
     selectedFirm: PropTypes.object,
     onUsersSelect: PropTypes.func.isRequired,
-    classes: PropTypes.object.isRequired,
     resetSelectedUsers: PropTypes.func,
     handleSetUsers: PropTypes.func,
     parentUsers: PropTypes.array,
@@ -252,3 +195,4 @@ UserAdminComponent.propTypes = {
 const UserAdminStyles = withStyles(styles)(UserAdminComponent);
 
 export default connect(mapStateToProps, mapDispatchToProps)(UserAdminStyles);
+

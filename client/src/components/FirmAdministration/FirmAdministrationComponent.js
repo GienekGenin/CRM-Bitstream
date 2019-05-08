@@ -13,8 +13,8 @@ import store from "../../redux/store";
 import {addFirmRequest, deleteFirmRequest, updateFirmRequest} from "../../redux/actions";
 
 // Components
-import './firmAdministration.scss'
-import MaterialTable from '../UI/material/MaterialTable/material-table';
+import './firmAdministration.scss';
+import MaterialTable from 'material-table';
 import FirmAdministrationToolBar from './FirmAdministrationToolBar';
 
 const mapDispatchToProps = (dispatch) => {

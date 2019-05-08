@@ -1,37 +1,57 @@
 import React from "react";
 import * as PropTypes from 'prop-types';
 import * as dotenv from 'dotenv';
+import DateFnsUtils from "@date-io/date-fns";
 
+// Viz
 import * as am4core from "@amcharts/amcharts4/core";
 import * as am4charts from "@amcharts/amcharts4/charts";
 import am4themes_animated from "@amcharts/amcharts4/themes/animated";
+import * as d3 from "d3";
+
+//Material
+import {theme} from "../material.theme";
+import Paper from "@material-ui/core/Paper";
+import Tooltip from '@material-ui/core/Tooltip';
+import IconButton from "@material-ui/core/IconButton";
+import Dialog from "@material-ui/core/Dialog";
+import DialogTitle from "@material-ui/core/DialogTitle";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogActions from "@material-ui/core/DialogActions";
+import Button from "@material-ui/core/Button";
+import Menu from "@material-ui/core/Menu";
+import List from "@material-ui/core/List";
+import Divider from "@material-ui/core/Divider";
+import ListItem from "@material-ui/core/ListItem";
+import Checkbox from "@material-ui/core/Checkbox";
+import ListItemText from "@material-ui/core/ListItemText";
+import ViewColumnIcon from '@material-ui/icons/ViewColumn';
+import TimelineIcon from '@material-ui/icons/Timeline';
+import {Grid, MuiThemeProvider} from '@material-ui/core';
 
 // Redux
-// import store from "../../redux/store";
 import {connect} from "react-redux";
-import Paper from "@material-ui/core/Paper";
-import MaterialTable from '../UI/material/MaterialTable/material-table';
-import {Grid, MuiThemeProvider} from '@material-ui/core';
-import './visualisation.scss';
-import {theme} from "../material.theme";
-import Checkbox from "@material-ui/core/Checkbox";
-import _ from "lodash";
-import ReactDOM from "react-dom";
-import VisualisationToolBarComponent from "../Visualisation/VisualisationToolBarComponent";
-import MapGL from 'react-map-gl';
-import 'mapbox-gl/dist/mapbox-gl.css';
+
 import store from "../../redux/store";
-import * as d3 from "d3";
-import {createLineChart} from "./lineChart.service";
-import {getMinMaxTimeRequest} from "../../redux/actions";
+import {getMinMaxTimeRequest, getDataRequest} from "../../redux/actions";
 import {dataService} from "../../redux/services/data";
 
+// Components
+import './visualisation.scss';
+import 'mapbox-gl/dist/mapbox-gl.css';
+import MapGL from 'react-map-gl';
+import MaterialTable from 'material-table';
+import {DatePicker, MuiPickersUtilsProvider} from "material-ui-pickers";
+
+//Services
+import {createLineChart} from "./lineChart.service";
 /* eslint-disable import/first */
 dotenv.config({path: '../../../.env.local'});
 
 const mapDispatchToProps = (dispatch) => {
     return {
         getMinMaxTimeRequest: (sids) => dispatch(getMinMaxTimeRequest(sids)),
+        getDataRequest: (minSelectedDate, maxSelectedDate, sids) => dispatch(getDataRequest(minSelectedDate, maxSelectedDate, sids))
     };
 };
 
@@ -56,24 +76,21 @@ class Visualisation extends React.Component {
             data: [],
             // table
             columns: [
-                {
-                    title: 'Select',
-                    field: 'action',
-                    filtering: false,
-                    sorting: false,
-                    hidden: false,
-                },
-                {
-                    title: 'Name',
-                    field: 'name',
-                    hidden: false,
-                },
+                {title: 'Name', field: 'name', hidden: false,},
                 {title: 'phyid', field: 'phyid', hidden: false,},
                 {title: 'sn', field: 'sn', hidden: true,},
                 {title: 'soft', field: 'soft', hidden: true,},
                 {title: 'status', field: 'status', hidden: true,},
                 {title: 'description', field: 'description', hidden: true},
             ],
+
+            anchorEl: null,
+            columnsDialog: false,
+            timeDialog: false,
+            minTime: '',
+            maxTime: '',
+            minSelectedDate: '',
+            maxSelectedDate: '',
 
             viewport: {
                 width: '100%',
@@ -86,8 +103,43 @@ class Visualisation extends React.Component {
         };
 
         this.createPhyidPie = this.createPhyidPie.bind(this);
-        this.selectAllDevices = this.selectAllDevices.bind(this);
         this.resetSelected = this.resetSelected.bind(this);
+    }
+
+    handleClickMenu = event => {
+        this.setState({anchorEl: event.currentTarget, columnsDialog: true, columns: this.props.columns});
+    };
+
+    handleCloseMenu = () => {
+        const columns = this.state.columns;
+        this.addRemoveColumn(columns);
+        this.setState({anchorEl: null, columnsDialog: false, columns});
+    };
+
+    handleColumnsChange = (title) => {
+        let columns = this.state.columns.map((el, i, arr) => el.title === title ? arr[i] = Object.assign(el, {hidden: !el.hidden}) : el);
+        this.setState({columns});
+    };
+
+    handleClickOpen = (state) => {
+        this.setState({[state]: true});
+        this.props.getMinMaxTimeRequest(this.state.selectedDeviceIds);
+    };
+
+    handleClose = (state) => {
+        this.setState({
+            [state]: false
+        });
+    };
+
+    handleConfigTime() {
+        const {minSelectedDate, maxSelectedDate, selectedDeviceIds} = this.state;
+        this.props.getDataRequest(minSelectedDate, maxSelectedDate, selectedDeviceIds);
+        this.handleClose('timeDialog');
+    }
+
+    handleTimeChange(state, time) {
+        this.setState({[state]: time});
     }
 
     componentDidMount() {
@@ -102,6 +154,7 @@ class Visualisation extends React.Component {
         this.unsubscribe = store.subscribe(() => {
 
             const {data} = this.state;
+            this.setState({loading: true});
             if (store.getState().dataReducer.data.length) {
                 const reduxData = store.getState().dataReducer.data;
                 if (reduxData.length !== data.length) {
@@ -110,6 +163,14 @@ class Visualisation extends React.Component {
                     createLineChart(reduxData, selectedDevices);
                     this.setState({data: reduxData})
                 }
+            }
+            if (store.getState().dataReducer.time) {
+                const time = store.getState().dataReducer.time;
+                this.setState({
+                    minSelectedDate: time.minSelectedDate,
+                    maxSelectedDate: time.maxSelectedDate,
+                    loading: false
+                })
             }
             return true;
         });
@@ -124,7 +185,6 @@ class Visualisation extends React.Component {
     }
 
     createPhyidPie = (devicesToShow) => {
-        this.renderSelectAllCheckBox(false);
         let {selectedPhyids} = this.state;
         if (devicesToShow) {
             let parsedData = [];
@@ -398,70 +458,24 @@ class Visualisation extends React.Component {
         }
     };
 
-    onRowClick = (e, rowData) => {
-        const {devices} = this.props;
-        const {selectedDeviceIds} = this.state;
-        let selectedDevice = _.omit(devices.filter(el => (el.sid === rowData.sid) ? el : null)[0], 'action');
-        let selectedDeviceIdsSet = new Set(selectedDeviceIds);
-        let sid = selectedDevice.sid;
-        selectedDeviceIdsSet.has(sid) ? selectedDeviceIdsSet.delete(sid) : selectedDeviceIdsSet.add(sid);
-        let selectedDevices = [];
-        [...selectedDeviceIdsSet].forEach(sid => {
-            devices.forEach(device => {
-                if (device.sid === sid) {
-                    selectedDevices.push(device);
-                }
-            })
-        });
-        let checked = false;
-        if (selectedDevices.length === devices.length) checked = true;
-        this.setState({selectedDevices, selectedDeviceIds: [...selectedDeviceIdsSet]});
-        this.props.getMinMaxTimeRequest([...selectedDeviceIdsSet]);
-        this.renderSelectAllCheckBox(checked);
+    onSelectionChange = (rows) => {
+        const selectedDeviceIds = rows.map(el => el.sid);
+        this.setState({selectedDevices: rows, selectedDeviceIds});
     };
-
-    selectAllDevices() {
-        const {selectedDevices, devicesToVis} = this.state;
-        if (devicesToVis.length === selectedDevices.length) {
-            this.renderSelectAllCheckBox(false);
-            this.props.getMinMaxTimeRequest([]);
-            this.resetSelected();
-        } else {
-            const selectedDeviceIds = devicesToVis.map(devices => devices.sid);
-            this.setState({selectedDevices: devicesToVis, selectedDeviceIds});
-            this.props.getMinMaxTimeRequest(selectedDeviceIds);
-            this.renderSelectAllCheckBox(true);
-        }
-    }
 
     resetSelected = () => {
-        this.props.getMinMaxTimeRequest([]);
         this.setState({selectedDeviceIds: [], selectedDevices: []});
     };
-
-    renderSelectAllCheckBox(checked) {
-        const element = <div>
-            <Checkbox value={'1'} checked={checked} onChange={this.selectAllDevices}/>
-        </div>;
-        const container = document.querySelector('#root > div > main > div > div > div > div > div > ' +
-            'div:nth-child(2) > div > div > div > div > div > table > tbody > tr:nth-child(1) > td:nth-child(2)');
-        if (container)
-            ReactDOM.render(element, container)
-    }
 
     addRemoveColumn = (columns) => {
         this.setState({columns});
     };
 
     render() {
-        const {devicesToVis, columns, page, rowsPerPage, selectedDevices, selectedDeviceIds, loading} = this.state;
-        devicesToVis && devicesToVis.map((el, i, arr) => arr[i] = Object.assign(el, {
-            action: (
-                <div>
-                    <Checkbox value={el.sid} checked={selectedDeviceIds.includes(el.sid)}/>
-                </div>
-            )
-        }));
+        const {
+            devicesToVis, columns, page, rowsPerPage, selectedDevices, columnsDialog, anchorEl,
+            loading, minTime, maxTime, minSelectedDate, maxSelectedDate
+        } = this.state;
         return (
             <div style={{maxWidth: '100%'}}>
                 <MuiThemeProvider theme={theme}>
@@ -482,20 +496,119 @@ class Visualisation extends React.Component {
                         </Grid>
                         <Grid item xs={12} sm={12} md={12} lg={12}>
                             <div>
+
                                 <MaterialTable
                                     components={{
                                         Toolbar: props => (
-                                            <div className={'custom-toolbar'}>
-                                                <VisualisationToolBarComponent
-                                                    selected={selectedDevices && selectedDevices.length === 1 ? selectedDevices[0] : null}
-                                                    selectedDevices={selectedDevices}
-                                                    selectedDeviceIds={selectedDeviceIds}
-                                                    resetSelected={this.resetSelected}
-                                                    loading={loading}
-                                                    addRemoveColumn={this.addRemoveColumn}
-                                                    columns={columns}
-                                                />
-                                            </div>
+                                            <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                                                <div className="device-toolbar">
+                                                    <div className={'title'}>
+                                                        {(selectedDevices && selectedDevices.length === 1) ? <h3>
+                                                            Selected {selectedDevices[0].name}
+                                                        </h3> : <h3>Devices</h3>}
+                                                    </div>
+                                                    <div className={'device-controls'}>
+                                                        <div>
+                                                            <Tooltip title={'Select time'}>
+                                                                <div>
+                                                                    <IconButton
+                                                                        disabled={!selectedDevices.length}
+                                                                        variant="contained"
+                                                                        color="primary"
+                                                                        onClick={() => this.handleClickOpen('timeDialog')}>
+                                                                        <TimelineIcon/>
+                                                                    </IconButton>
+                                                                </div>
+                                                            </Tooltip>
+                                                            <Dialog
+                                                                open={this.state.timeDialog}
+                                                                onClose={() => this.handleClose('timeDialog')}
+                                                                aria-labelledby="key-dialog-title"
+                                                                aria-describedby="alert-dialog-description"
+                                                            >
+                                                                <DialogTitle id="alert-dialog-title">Config time for
+                                                                    devices</DialogTitle>
+                                                                <DialogContent>
+                                                                    <DialogContent>
+                                                                        <div className="picker">
+                                                                            <DatePicker
+                                                                                disabled={loading}
+                                                                                autoOk
+                                                                                value={minSelectedDate}
+                                                                                minDate={minTime}
+                                                                                maxDate={maxSelectedDate}
+                                                                                onChange={(time) => this.handleTimeChange('minSelectedDate', time)}
+                                                                                label="Min time"/>
+                                                                        </div>
+                                                                        <div className="picker">
+                                                                            <DatePicker
+                                                                                autoOk
+                                                                                disabled={loading}
+                                                                                value={maxSelectedDate}
+                                                                                maxDate={maxTime}
+                                                                                minDate={minSelectedDate}
+                                                                                onChange={(time) => this.handleTimeChange('maxSelectedDate', time)}
+                                                                                label="Max time"/>
+                                                                        </div>
+                                                                    </DialogContent>
+                                                                </DialogContent>
+                                                                <DialogActions>
+                                                                    <Button
+                                                                        variant="outlined" color="primary"
+                                                                        onClick={() => this.handleConfigTime()}
+                                                                        disabled={loading}
+                                                                    >
+                                                                        Confirm
+                                                                    </Button>
+                                                                    <Button onClick={() => this.handleClose('timeDialog')}
+                                                                            color="primary">
+                                                                        Close
+                                                                    </Button>
+                                                                </DialogActions>
+                                                            </Dialog>
+                                                        </div>
+                                                        <Tooltip title={'Show columns'}>
+                                                            <div>
+                                                                <IconButton variant="outlined" color="primary"
+                                                                            disabled={loading}
+                                                                            onClick={this.handleClickMenu}>
+                                                                    <ViewColumnIcon/>
+                                                                </IconButton>
+                                                                <Menu
+                                                                    id="long-menu"
+                                                                    open={columnsDialog}
+                                                                    anchorEl={anchorEl}
+                                                                    onClose={this.handleCloseMenu}
+                                                                    PaperProps={{
+                                                                        style: {
+                                                                            maxHeight: 45 * 4.5,
+                                                                            width: 250,
+                                                                        },
+                                                                    }}
+                                                                >
+                                                                    <List id={'column-list'}>
+                                                                        {columns && columns.map(el => (
+                                                                            <div key={el.title}>
+                                                                                <Divider dark={'true'}/>
+                                                                                <ListItem key={el.title} dense button
+                                                                                          disabled={el.field === 'action'}
+                                                                                          onClick={() => this.handleColumnsChange(el.title)}>
+                                                                                    <Checkbox checked={!el.hidden}/>
+                                                                                    <ListItemText primary={el.title}/>
+                                                                                </ListItem>
+                                                                            </div>
+                                                                        ))}
+                                                                        <Button fullWidth={true} onClick={this.handleCloseMenu}
+                                                                                className={'submit-button'}>
+                                                                            Submit
+                                                                        </Button>
+                                                                    </List>
+                                                                </Menu>
+                                                            </div>
+                                                        </Tooltip>
+                                                    </div>
+                                                </div>
+                                            </MuiPickersUtilsProvider>
                                         ),
                                     }}
                                     data={devicesToVis}
@@ -509,9 +622,10 @@ class Visualisation extends React.Component {
                                         pageSize: rowsPerPage,
                                         search: false,
                                         toolbar: true,
+                                        selection: true
                                     }}
                                     parentChildData={(row, rows) => rows.find(a => a.sid === row.parent_id)}
-                                    onRowClick={this.onRowClick}
+                                    onSelectionChange={this.onSelectionChange}
                                 />
                             </div>
                         </Grid>

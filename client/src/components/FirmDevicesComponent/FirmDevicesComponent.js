@@ -21,7 +21,7 @@ import {tokenService} from "../../redux/services/token";
 
 // Components
 import FirmDevicesToolBarComponent from "./FirmDevicesToolBarComponent";
-import MaterialTable from '../UI/material/MaterialTable/material-table';
+import MaterialTable from 'material-table';
 import './firmDevices.scss';
 import {theme} from "../material.theme";
 import ReactDOM from "react-dom";
@@ -924,7 +924,7 @@ class FirmDevicesComponent extends React.Component {
                                                 </div>
                                             ),
                                         }}
-                                        isLoading={loading}
+                                        // isLoading={loading}
                                         data={devices}
                                         columns={columns}
                                         title="Devices"
@@ -936,6 +936,7 @@ class FirmDevicesComponent extends React.Component {
                                             pageSize: rowsPerPage,
                                             search: false,
                                             toolbar: true,
+                                            selection: false
                                         }}
                                         parentChildData={(row, rows) => rows.find(a => a.sid === row.parent_id)}
                                         onChangePage={(props, e) => this.onChangePage(props, e)}
