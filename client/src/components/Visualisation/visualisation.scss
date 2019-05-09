@@ -16,8 +16,11 @@ div.mapboxgl-map{
   z-index: 999;
 }
 
-#map > div{
+#map {
   width: 100%;
+  & > div{
+    width: 100% !important;
+  }
 }
 
 .chart_hide{
