@@ -34,7 +34,7 @@
     "react-iframe": "^1.8.0",
     "react-map-gl": "^4.1.1",
     "react-router-dom": "^5.0.0",
-    "react-scripts": "^2.1.8",
+    "react-scripts": "^3.0.1",
     "socket.io-client": "^2.2.0"
   },
   "scripts": {
@@ -53,7 +53,7 @@
     "not op_mini all"
   ],
   "devDependencies": {
-    "node-sass": "^4.11.0",
+    "node-sass": "^4.12.0",
     "react-app-env": "^1.2.3",
     "react-redux": "^6.0.1",
     "redux": "^4.0.1"
