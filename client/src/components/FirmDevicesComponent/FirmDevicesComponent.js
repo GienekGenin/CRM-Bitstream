@@ -5,6 +5,7 @@ import * as d3 from "d3";
 import * as am4core from "@amcharts/amcharts4/core";
 import * as am4charts from "@amcharts/amcharts4/charts";
 import am4themes_animated from "@amcharts/amcharts4/themes/animated";
+import * as am4plugins_forceDirected from "@amcharts/amcharts4/plugins/forceDirected"
 
 // Material
 import {withStyles} from '@material-ui/core/styles';
@@ -79,6 +80,7 @@ class FirmDevicesComponent extends React.Component {
         this.addRemoveColumn = this.addRemoveColumn.bind(this);
         this.buildChart = this.buildChart.bind(this);
         this.selectAllDevices = this.selectAllDevices.bind(this);
+        this.forcedTree = this.forcedTree.bind(this);
     }
 
 
@@ -115,7 +117,8 @@ class FirmDevicesComponent extends React.Component {
         }
         if (selectedDevices) {
             if (selectedDevices.length === 1) {
-                this.buildChart(Object.assign({}, selectedDevices[0], {parent_id: '0'}), parentDevices);
+                // this.buildChart(Object.assign({}, selectedDevices[0], {parent_id: '0'}), parentDevices);
+                this.forcedTree(Object.assign({}, selectedDevices[0], {parent_id: '0'}), parentDevices);
             }
             const selectedDeviceIds = selectedDevices.map(device => device.sid);
             this.setState({selectedDevices, selectedDeviceIds});
@@ -180,7 +183,8 @@ class FirmDevicesComponent extends React.Component {
 
     handleDeviceSelect(devices) {
         if(devices.length === 1)
-            this.buildChart(Object.assign({}, devices[0], {parent_id: '0'}), this.state.devices);
+            // this.buildChart(Object.assign({}, devices[0], {parent_id: '0'}), this.state.devices);
+            this.forcedTree(Object.assign({}, devices[0], {parent_id: '0'}), this.state.devices);
         this.props.onDeviceSelect(devices);
     }
 
@@ -857,6 +861,84 @@ class FirmDevicesComponent extends React.Component {
             ' > div > div > div > div:nth-child(2) > div > div > table > tbody > tr:nth-child(1) > td:nth-child(2)');
         if(container)
             ReactDOM.render(element, container)
+    }
+
+    forcedTree(parent, stateDevices){
+
+        const unflatten = (array, parent, tree) => {
+            tree = typeof tree !== 'undefined' ? tree : [];
+            parent = typeof parent !== 'undefined' ? parent : {sid: '0'};
+
+            let children = _.filter(array, function (child) {
+                return child.parent_id === parent.sid;
+            });
+
+            if (!_.isEmpty(children)) {
+                if (parent.sid === '0') {
+                    tree = children;
+                } else {
+                    parent['children'] = children;
+                }
+                _.each(children, function (child) {
+                    unflatten(array, child)
+                });
+            }
+
+            return tree;
+        };
+
+        d3.select('#forcedTree').remove();
+        d3.select('#parent').append('div').attr("id", 'forcedTree');
+
+        let Parent = Object.assign({}, parent);
+        let devices = [...stateDevices];
+        let arr = [];
+        devices.forEach(el => {
+            if (el.sid.includes(Parent.sid)) {
+                if (el.sid === Parent.sid) {
+                    arr.push(Parent);
+                } else arr.push(el);
+
+            }
+        });
+
+        // Needed to change radius size
+        arr.forEach((el,i, arr)=>{
+            el = Object.assign(el, {value: 1});
+            arr.forEach((el1)=>{
+                if(el1.parent_id.includes(el.sid)){
+                    el = _.omit(el, 'value');
+                }
+            });
+            arr[i] = el;
+        });
+
+        // todo: not building if arr of 1 element
+        if (arr.length === 0 || arr.length === 1) {
+            return false
+        }
+        let treeData = [unflatten(arr)[0]];
+
+        // Themes begin
+        am4core.useTheme(am4themes_animated);
+// Themes end
+
+        let chart = am4core.create("forcedTree", am4plugins_forceDirected.ForceDirectedTree);
+        let networkSeries = chart.series.push(new am4plugins_forceDirected.ForceDirectedSeries());
+
+        chart.data = treeData;
+
+        networkSeries.dataFields.value = "value";
+        networkSeries.dataFields.name = "name";
+        networkSeries.dataFields.children = "children";
+        networkSeries.nodes.template.tooltipText = "{name}:{phyid}";
+        networkSeries.nodes.template.fillOpacity = 1;
+        networkSeries.manyBodyStrength = -20;
+        networkSeries.links.template.strength = 0.8;
+        networkSeries.minRadius = am4core.percent(2);
+
+        networkSeries.nodes.template.label.text = "{name}";
+        networkSeries.fontSize = 10;
     }
 
     render() {

@@ -3,30 +3,31 @@
   height: 500px;
 }
 
-#lineChart{
+#lineChart {
   width: 100%;
   height: 600px;
 }
 
-div.mapboxgl-map{
+div.mapboxgl-map {
   z-index: 999;
 }
 
-.mapboxgl-marker{
+.mapboxgl-marker {
   z-index: 999;
 }
 
 #map {
   width: 100%;
-  & > div{
+
+  & > div {
     width: 100% !important;
   }
 }
 
-.chart_hide{
+.chart_hide {
   display: none;
 }
 
-#root > div > main > div > div > div > div > div > div:nth-child(2) > div > div{
+#root > div > main > div > div > div > div > div > div:nth-child(2) > div > div {
   box-shadow: none;
 }

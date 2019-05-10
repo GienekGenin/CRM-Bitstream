@@ -12,7 +12,7 @@ const getColorFromPalete = (i) => {
         '#D78965',
         '#68B7DC',
     ];
-    if(colors[i]){
+    if (colors[i]) {
         return colors[i];
     } else {
         return '#6169CD';
@@ -31,15 +31,15 @@ export const createLineChart = (data, selectedDevices) => {
     });
     max = Math.max(...len);
     data.forEach((dev, i) => {
-        dev.data.forEach(mes=>{
+        dev.data.forEach(mes => {
             let value = mes.value;
-            if(value === 'ONLINE'){
+            if (value === 'ONLINE') {
                 value = 1;
             }
-            if(value === 'OFFLINE'){
+            if (value === 'OFFLINE') {
                 value = 0;
             }
-            chartData.push({['date'+i]: new Date(mes.ts), ['value'+i]: value});
+            chartData.push({['date' + i]: new Date(mes.ts), ['value' + i]: value});
         });
 
         let color = getColorFromPalete(i);
@@ -59,9 +59,9 @@ export const createLineChart = (data, selectedDevices) => {
         // valueAxis.renderer.line.strokeWidth = 2;
 
         let series = chart.series.push(new am4charts.LineSeries());
-        series.name = selectedDevices.filter(el=> el.sid === dev._id.sid)[0].name;
-        series.dataFields.dateX = 'date'+i;
-        series.dataFields.valueY = 'value'+i;
+        series.name = selectedDevices.filter(el => el.sid === dev._id.sid)[0].name;
+        series.dataFields.dateX = 'date' + i;
+        series.dataFields.valueY = 'value' + i;
         series.yAxis = valueAxis;
         series.xAxis = dateAxis;
         series.tooltipText = "{dateX.formatDate('yyyy-MM-dd hh:mm')}: [bold]{valueY}[/]";
@@ -72,7 +72,7 @@ export const createLineChart = (data, selectedDevices) => {
         dateAxis.renderer.grid.template.strokeOpacity = 0.07;
         valueAxis.renderer.grid.template.strokeOpacity = 0.07;
 
-        if(dev.data.length === max){
+        if (dev.data.length === max) {
             let scrollbarX = new am4charts.XYChartScrollbar();
             scrollbarX.series.push(series);
             chart.scrollbarX = scrollbarX;
