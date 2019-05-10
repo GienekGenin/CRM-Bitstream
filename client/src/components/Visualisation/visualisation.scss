@@ -31,3 +31,20 @@ div.mapboxgl-map {
 #root > div > main > div > div > div > div > div > div:nth-child(2) > div > div {
   box-shadow: none;
 }
+
+#pie-phyid-vis > div:nth-child(2) > svg > g > g:nth-child(2) > g:nth-child(2) > g > g:nth-child(3){
+  display: none;
+}
+
+#lineChart > div:nth-child(2) > svg > g > g:nth-child(2) > g:nth-child(2) > g > g:nth-child(4){
+  display: none;
+}
+
+#map > div > div > div.mapboxgl-map > div.mapboxgl-control-container {
+  & > div.mapboxgl-ctrl-bottom-left{
+    display: none;
+  }
+  &> div.mapboxgl-ctrl-bottom-right{
+    display: none;
+  }
+}

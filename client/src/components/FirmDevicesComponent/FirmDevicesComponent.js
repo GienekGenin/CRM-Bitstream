@@ -13,8 +13,6 @@ import Checkbox from "@material-ui/core/Checkbox";
 import {styles} from '../UI/material/table-styles';
 import {Grid, MuiThemeProvider} from '@material-ui/core';
 import Paper from '@material-ui/core/Paper';
-import MobileOffIcon from '@material-ui/icons/MobileOff';
-import MobileOnIcon from '@material-ui/icons/MobileFriendly';
 
 // Redux
 import store from "../../redux/store";
