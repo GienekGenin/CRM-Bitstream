@@ -13,6 +13,8 @@ import Checkbox from "@material-ui/core/Checkbox";
 import {styles} from '../UI/material/table-styles';
 import {Grid, MuiThemeProvider} from '@material-ui/core';
 import Paper from '@material-ui/core/Paper';
+import MobileOffIcon from '@material-ui/icons/MobileOff';
+import MobileOnIcon from '@material-ui/icons/MobileFriendly';
 
 // Redux
 import store from "../../redux/store";
@@ -98,7 +100,7 @@ class FirmDevicesComponent extends React.Component {
                 this.createPie(parentDevices);
                 this.createPiePhyid(parentDevices);
                 let checked = false;
-                if(selectedDevices && selectedDevices.length === parentDevices.length){
+                if (selectedDevices && selectedDevices.length === parentDevices.length) {
                     checked = true;
                 }
                 this.setState({devices: parentDevices, selectedDevices, checked, loading: false});
@@ -163,15 +165,15 @@ class FirmDevicesComponent extends React.Component {
         let sid = selectedDevice.sid;
         selectedDeviceIdsSet.has(sid) ? selectedDeviceIdsSet.delete(sid) : selectedDeviceIdsSet.add(sid);
         let selectedDevices = [];
-        [...selectedDeviceIdsSet].forEach(sid=>{
-            devices.forEach(device=>{
-                if(device.sid === sid){
+        [...selectedDeviceIdsSet].forEach(sid => {
+            devices.forEach(device => {
+                if (device.sid === sid) {
                     selectedDevices.push(device);
                 }
             })
         });
         let checked = false;
-        if(selectedDevices.length === devices.length) checked = true;
+        if (selectedDevices.length === devices.length) checked = true;
         this.setState({selectedDevices, selectedDeviceIds: [...selectedDeviceIdsSet]});
         this.handleDeviceSelect(selectedDevices);
         this.renderSelectAllCheckBox(checked);
@@ -182,8 +184,8 @@ class FirmDevicesComponent extends React.Component {
     };
 
     handleDeviceSelect(devices) {
-        if(devices.length === 1)
-            // this.buildChart(Object.assign({}, devices[0], {parent_id: '0'}), this.state.devices);
+        if (devices.length === 1)
+        // this.buildChart(Object.assign({}, devices[0], {parent_id: '0'}), this.state.devices);
             this.forcedTree(Object.assign({}, devices[0], {parent_id: '0'}), this.state.devices);
         this.props.onDeviceSelect(devices);
     }
@@ -840,30 +842,30 @@ class FirmDevicesComponent extends React.Component {
         this.props.resetSelectedDeviceParent();
     }
 
-    selectAllDevices(){
+    selectAllDevices() {
         const {devices, selectedDevices} = this.state;
-        if(devices.length === selectedDevices.length){
+        if (devices.length === selectedDevices.length) {
             this.renderSelectAllCheckBox(false);
             this.resetSelected();
         } else {
-            const selectedDeviceIds = devices.map(devices=>devices.sid);
+            const selectedDeviceIds = devices.map(devices => devices.sid);
             this.setState({selectedDevices: devices, selectedDeviceIds});
             this.renderSelectAllCheckBox(true);
             this.handleDeviceSelect(devices);
         }
     }
 
-    renderSelectAllCheckBox(checked){
+    renderSelectAllCheckBox(checked) {
         const element = <div>
-            <Checkbox value={'1'} checked={ checked } onChange={this.selectAllDevices}/>
+            <Checkbox value={'1'} checked={checked} onChange={this.selectAllDevices}/>
         </div>;
         const container = document.querySelector('#root > div > main > div > div > div > div > div:nth-child(1) > div' +
             ' > div > div > div > div:nth-child(2) > div > div > table > tbody > tr:nth-child(1) > td:nth-child(2)');
-        if(container)
+        if (container)
             ReactDOM.render(element, container)
     }
 
-    forcedTree(parent, stateDevices){
+    forcedTree(parent, stateDevices) {
 
         const unflatten = (array, parent, tree) => {
             tree = typeof tree !== 'undefined' ? tree : [];
@@ -902,15 +904,32 @@ class FirmDevicesComponent extends React.Component {
             }
         });
 
+        const getProps = (status) => {
+            if (status === 'OFFLINE') {
+                return {color: '#616161'};
+            } else {
+                return {color: '#257'};
+            }
+        };
+
+        arr.forEach((el, i, arr) => {
+            if (!el.status) {
+                arr[i] = Object.assign(el, {status: 'OFFLINE'});
+            }
+        });
+
         // Needed to change radius size
-        arr.forEach((el,i, arr)=>{
-            el = Object.assign(el, {value: 1});
-            arr.forEach((el1)=>{
-                if(el1.parent_id.includes(el.sid)){
-                    el = _.omit(el, 'value');
+        arr.forEach((parent, i, arr) => {
+            parent = Object.assign(parent, getProps(parent.status), {value: 1});
+            arr.forEach((child, c) => {
+                if (child.parent_id.includes(parent.sid)) {
+                    parent = _.omit(parent, 'value');
+                    if (parent.status === 'OFFLINE') {
+                        arr[c] = Object.assign(child, getProps('OFFLINE'), {status: 'OFFLINE'});
+                    }
                 }
             });
-            arr[i] = el;
+            arr[i] = parent;
         });
 
         // todo: not building if arr of 1 element
@@ -930,15 +949,28 @@ class FirmDevicesComponent extends React.Component {
 
         networkSeries.dataFields.value = "value";
         networkSeries.dataFields.name = "name";
+        networkSeries.dataFields.color = 'color';
         networkSeries.dataFields.children = "children";
-        networkSeries.nodes.template.tooltipText = "{name}:{phyid}";
+        networkSeries.nodes.template.label.valign = "bottom";
+        networkSeries.nodes.template.label.fill = am4core.color("#000");
+        networkSeries.nodes.template.label.dy = 10;
+        networkSeries.nodes.template.tooltipText = "{name} : Phyid - {phyid}";
         networkSeries.nodes.template.fillOpacity = 1;
         networkSeries.manyBodyStrength = -20;
         networkSeries.links.template.strength = 0.8;
-        networkSeries.minRadius = am4core.percent(2);
+        networkSeries.minRadius = 30;
+        networkSeries.fontSize = 10;
 
         networkSeries.nodes.template.label.text = "{name}";
-        networkSeries.fontSize = 10;
+
+        let icon = networkSeries.nodes.template.createChild(am4core.Image);
+        icon.href = "http://www.iconhot.com/icon/png/devine-icons-part-2/512/device-and-hardware-w.png";
+        icon.horizontalCenter = "middle";
+        icon.verticalCenter = "middle";
+        icon.width = 40;
+        icon.height = 40;
+
+        chart.legend = new am4charts.Legend();
     }
 
     render() {
