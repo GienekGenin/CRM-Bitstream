@@ -88,6 +88,24 @@ const updateDevice = (payload) => {
         })
 };
 
+const getDeviceCS = (sid) => {
+    const token = localStorage.getItem('token');
+    const requestOptions = {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({sid})
+    };
+    return fetch(`${apiBase}devices/key`, requestOptions)
+        .then(handleResponse)
+        .then(CS => {
+            // store user details and jwt token in local storage to keep user logged in between page refreshes
+            return CS;
+        })
+};
+
 const handleResponse = (response) => {
     return response.text().then(text => {
         const data = text && JSON.parse(text);
@@ -108,5 +126,6 @@ export const devicesService = {
     addDevice,
     deleteDevice,
     updateDeviceUsers,
-    updateDevice
+    updateDevice,
+    getDeviceCS
 };

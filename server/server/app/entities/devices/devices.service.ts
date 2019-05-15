@@ -258,6 +258,10 @@ class DeviceService {
     replaceUserForDevices(parentId, adminId) {
         return this.deviceRepository.replaceUserForDevices(parentId, adminId);
     }
+
+    getDeviceCS(body){
+        return DeviceRegistryService.getDeviceCSFromRegistry(body.sid);
+    }
 }
 
 export const deviceService = new DeviceService();

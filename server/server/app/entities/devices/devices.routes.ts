@@ -21,6 +21,12 @@ devices.post('/', TokenValidator.validateToken, (req, res, next) => {
         .catch(next);
 });
 
+devices.post('/key', TokenValidator.validateToken, (req, res, next) => {
+    deviceService.getDeviceCS(req.body)
+        .then(PayloadGeneratorService.nextWithData(next, res))
+        .catch(next);
+});
+
 // todo: test api for creating data sources
 devices.post('/source', TokenValidator.validateToken, (req, res, next) => {
     deviceService.createDataSource(req.body)

@@ -31,14 +31,18 @@ import Divider from "@material-ui/core/Divider";
 import ListItem from "@material-ui/core/ListItem";
 import Checkbox from "@material-ui/core/Checkbox";
 import ListItemText from "@material-ui/core/ListItemText";
+import VpnKeyIcon from '@material-ui/icons/VpnKey';
 
 // Redux
 import {connect} from "react-redux";
-import {addFirmDeviceRequest, deleteFirmDeviceRequest,
+import {
+    addFirmDeviceRequest, deleteFirmDeviceRequest,
     updateFirmDevice, updateDeviceUsersRequest,
-    userDevicesRequest} from "../../redux/actions";
+    userDevicesRequest
+} from "../../redux/actions";
 import {deviceTypesService} from '../../redux/services/device_types';
 import {userService} from '../../redux/services/user';
+import {devicesService} from '../../redux/services/devices';
 
 const mapDispatchToProps = (dispatch) => {
     return {
@@ -61,9 +65,11 @@ class FirmDevicesToolBar extends React.Component {
             addDialog: false,
             confirmDeleteDialog: false,
             configUsersDialog: false,
+            CSDialog: false,
             anchorEl: null,
             columns: null,
             columnsDialog: false,
+            CS: '',
             newFirmDevice: {
                 name: '',
                 type: '',
@@ -83,14 +89,15 @@ class FirmDevicesToolBar extends React.Component {
             this.setState({loading: true});
             userService.getAllByFirmId(this.props.selectedFirmId).then(dbUsers => {
                 this.setState({
-                    firmUsers: dbUsers, loading: false});
+                    firmUsers: dbUsers, loading: false
+                });
             }).catch(e => console.log(e))
         }
-        if(state === 'configUsersDialog'){
+        if (state === 'configUsersDialog') {
             this.setState({loading: true});
             let users = [];
             userService.getAllByFirmId(this.props.selectedFirmId).then(dbUsers => {
-                dbUsers.forEach(el=>{
+                dbUsers.forEach(el => {
                     this.props.selected.coid.forEach(id => {
                         if (el._id === id) {
                             users.push(el);
@@ -99,8 +106,17 @@ class FirmDevicesToolBar extends React.Component {
                 });
                 this.setState({
                     newFirmDevice: Object.assign({}, this.props.selected, {coid: users}),
-                    firmUsers: dbUsers, loading: false});
+                    firmUsers: dbUsers, loading: false
+                });
             }).catch(e => console.log(e))
+        }
+        if (state === 'CSDialog') {
+            devicesService.getDeviceCS(this.props.selected.sid)
+                .then(CS => this.setState({CS}))
+                .catch(e => {
+                    console.log(e);
+                    this.setState({CS: 'Device not found'});
+                });
         }
     };
 
@@ -111,7 +127,8 @@ class FirmDevicesToolBar extends React.Component {
                 name: '',
                 type: '',
                 user_desc: '',
-                coid: []
+                coid: [],
+                CS: ''
             }
         });
     };
@@ -189,7 +206,7 @@ class FirmDevicesToolBar extends React.Component {
 
     componentDidMount() {
         this.setState({loading: true});
-        if(this.props.deviceTypes){
+        if (this.props.deviceTypes) {
             this.setState({deviceTypes: this.props.deviceTypes, loading: false});
         } else {
             deviceTypesService.getDeviceTypes().then(deviceTypes => {
@@ -208,6 +225,32 @@ class FirmDevicesToolBar extends React.Component {
                     </h3> : <h3>Devices</h3>}
                 </div>
                 <div className={'device-controls'}>
+                    <div>
+                        <Tooltip title={'Device CS'}>
+                            <div>
+                                <IconButton disabled={this.props.selected ? (this.props.selected.parent_id !== '0') : true} variant="contained" color="primary"
+                                            onClick={() => this.handleClickOpen('CSDialog')}>
+                                    <VpnKeyIcon/>
+                                </IconButton>
+                            </div>
+                        </Tooltip>
+                        <Dialog
+                            open={this.state.CSDialog}
+                            onClose={() => this.handleClose('CSDialog')}
+                            aria-labelledby="key-dialog-title"
+                            aria-describedby="alert-dialog-description"
+                        >
+                            <DialogTitle id="alert-dialog-title">Device CS</DialogTitle>
+                            <DialogContent>
+                                {this.state.CS}
+                            </DialogContent>
+                            <DialogActions>
+                                <Button onClick={() => this.handleClose('CSDialog')} color="primary">
+                                    Close
+                                </Button>
+                            </DialogActions>
+                        </Dialog>
+                    </div>
                     <div>
                         <Tooltip title={'Edit selected device'}>
                             <div>
@@ -355,7 +398,8 @@ class FirmDevicesToolBar extends React.Component {
                     <div>
                         <Tooltip title={'Delete device'}>
                             <div>
-                                <IconButton variant="contained" color="secondary" disabled={this.props.selected ? !(this.props.selected.parent_id === '0') : true}
+                                <IconButton variant="contained" color="secondary"
+                                            disabled={this.props.selected ? !(this.props.selected.parent_id === '0') : true}
                                             onClick={() => this.handleClickOpen('confirmDeleteDialog')}>
                                     <DeleteIcon/>
                                 </IconButton>
@@ -400,7 +444,8 @@ class FirmDevicesToolBar extends React.Component {
                             }
                         >
                             <div>
-                                <IconButton variant="outlined" color="primary" disabled={this.props.loading || !this.props.selected}
+                                <IconButton variant="outlined" color="primary"
+                                            disabled={this.props.loading || !this.props.selected}
                                             onClick={() => this.handleClickOpen('configUsersDialog')}>
                                     <AssignmentIndIcon/>
                                 </IconButton>
@@ -467,7 +512,7 @@ class FirmDevicesToolBar extends React.Component {
                                     },
                                 }}
                             >
-                                <List id={'column-list'} >
+                                <List id={'column-list'}>
                                     {columns && columns.map(el => (
                                         <div key={el.title}>
                                             <Divider dark={'true'}/>

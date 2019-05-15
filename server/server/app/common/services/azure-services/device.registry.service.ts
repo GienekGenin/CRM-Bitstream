@@ -63,5 +63,19 @@ export class DeviceRegistryService {
 				})
 		});
 	}
+
+	static getDeviceCSFromRegistry(sid) {
+		const registry = Registry.fromConnectionString(DeviceRegistryService.connectionString);
+		return new Promise((resolve, reject) => {
+			registry.get(sid)
+				.then(payload=>{
+					const device = payload.responseBody;
+					const key = device.authentication ? device.authentication.symmetricKey.primaryKey : '<no primary key>';
+					const CS = process.env.IOTHUB_HOST_NAME + `DeviceId=${sid};SharedAccessKey=${key}`;
+					resolve(CS);
+				})
+				.catch(e=>reject(e));
+		})
+	}
 }
 
