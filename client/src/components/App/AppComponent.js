@@ -3,6 +3,7 @@ import {Router, Switch, Route, Link} from 'react-router-dom';
 import {PrivateRoute} from "../privateRoute";
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
+
 // Material
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
@@ -19,6 +20,9 @@ import ListItem from '@material-ui/core/ListItem';
 import HomeIcon from '@material-ui/icons/Home';
 import DashboardIcon from '@material-ui/icons/Dashboard';
 import AccountIcon from '@material-ui/icons/AccountCircle';
+import {withStyles} from "@material-ui/core";
+import {SnackbarProvider} from "notistack";
+import {PopupComponent} from "../UI/material/PopupComponent/PopupComponent";
 
 // Redux
 import {history} from '../../redux/services/history';
@@ -33,32 +37,28 @@ import LoginForm from '../Login/LoginForm';
 import HomeComponent from "../Home/HomeComponent";
 import AdminPanelComponent from "../AdminPanel/AdminPanelComponent";
 import DashboardComponent from '../../components/Dashboard/DashboardComponent';
-import {PopupComponent} from "../UI/material/PopupComponent/PopupComponent";
-import {SnackbarProvider} from "notistack";
-import {withStyles} from "@material-ui/core";
 
-const drawerWidth = 260;
 const styles = theme => ({
-        palette: {
-            primary: {
-                light: '#757ce8',
-                main: '#212121',
-                dark: '#002884',
-                contrastText: '#fff',
-            },
-            secondary: '#e3f2fd',
-            error: red,
-            // Used by `getContrastText()` to maximize the contrast between the background and
-            // the text.
-            contrastThreshold: 3,
-            // Used to shift a color's luminance by approximately
-            // two indexes within its tonal palette.
-            // E.g., shift from Red 500 to Red 300 or Red 700.
-            tonalOffset: 0.2,
+    palette: {
+        primary: {
+            light: '#757ce8',
+            main: '#212121',
+            dark: '#002884',
+            contrastText: '#fff',
         },
-        typography: {
-            useNextVariants: true,
-        },
+        secondary: '#e3f2fd',
+        error: red,
+        // Used by `getContrastText()` to maximize the contrast between the background and
+        // the text.
+        contrastThreshold: 3,
+        // Used to shift a color's luminance by approximately
+        // two indexes within its tonal palette.
+        // E.g., shift from Red 500 to Red 300 or Red 700.
+        tonalOffset: 0.2,
+    },
+    typography: {
+        useNextVariants: true,
+    },
     appBar: {
         zIndex: theme.zIndex.drawer + 1,
         transition: theme.transitions.create(['width', 'margin'], {
@@ -67,8 +67,8 @@ const styles = theme => ({
         }),
     },
     appBarShift: {
-        marginLeft: drawerWidth,
-        width: `calc(100% - ${drawerWidth}px)`,
+        marginLeft: 260,
+        width: `calc(100% - ${260}px)`,
         transition: theme.transitions.create(['width', 'margin'], {
             easing: theme.transitions.easing.sharp,
             duration: theme.transitions.duration.enteringScreen,
@@ -82,7 +82,7 @@ const styles = theme => ({
         display: 'none',
     },
     drawer: {
-        width: drawerWidth,
+        width: 260,
         minWidth: 75,
         flexShrink: 0,
         whiteSpace: 'nowrap',
@@ -90,7 +90,7 @@ const styles = theme => ({
         backgroundSize: '300px 1100px',
     },
     drawerOpen: {
-        width: drawerWidth,
+        width: 260,
         transition: theme.transitions.create('width', {
             easing: theme.transitions.easing.sharp,
             duration: 1000,
@@ -169,87 +169,88 @@ class AppComponent extends Component {
         return (
             <Router history={history}>
                 <MuiThemeProvider theme={theme}>
-                <div className={'root'}>
-                    <div>
-                        <Drawer
-                            variant="permanent"
-                            className={classNames(classes.drawer, {
-                                [classes.drawerOpen]: this.state.open,
-                                [classes.drawerClose]: !this.state.open,
-                            })}
-                            classes={{
-                                paper: classNames({
+                    <div className={'root'}>
+                        <div>
+                            <Drawer
+                                variant="permanent"
+                                className={classNames(classes.drawer, {
                                     [classes.drawerOpen]: this.state.open,
                                     [classes.drawerClose]: !this.state.open,
-                                }),
-                            }}
-                            open={this.state.open}
-                        >
-                            {this.state.open && <div className={classes.toolbar}>
-                                {/*<div className={'logo'}>*/}
-                                {/*<img src="https://bitstream.pl/wp-content/uploads/2019/04/Logo-Bitstream-4-01.png" alt=""/>*/}
-                                {/*</div>*/}
-                                <IconButton onClick={this.handleDrawerClose}>
-                                    {theme.direction === 'rtl' ? <ChevronRightIcon color='primary'/> : <ChevronLeftIcon color='primary'/>}
-                                </IconButton>
-                            </div>}
-                            {!this.state.open && <Toolbar disableGutters={!this.state.open}>
-                                <IconButton
-                                    color="inherit"
-                                    aria-label="Open drawer"
-                                    onClick={this.handleDrawerOpen}
-                                    className={classNames(classes.menuButton, {
-                                        [classes.hide]: this.state.open,
-                                    })}
-                                >
-                                    <MenuIcon/>
-                                </IconButton>
-                            </Toolbar>}
-                            <Divider light/>
-                            <List>
-                                <Link to={'/'}><ListItem button>
+                                })}
+                                classes={{
+                                    paper: classNames({
+                                        [classes.drawerOpen]: this.state.open,
+                                        [classes.drawerClose]: !this.state.open,
+                                    }),
+                                }}
+                                open={this.state.open}
+                            >
+                                {this.state.open && <div className={classes.toolbar}>
+                                    {/*<div className={'logo'}>*/}
+                                    {/*<img src="https://bitstream.pl/wp-content/uploads/2019/04/Logo-Bitstream-4-01.png" alt=""/>*/}
+                                    {/*</div>*/}
+                                    <IconButton onClick={this.handleDrawerClose}>
+                                        {theme.direction === 'rtl' ? <ChevronRightIcon color='primary'/> :
+                                            <ChevronLeftIcon color='primary'/>}
+                                    </IconButton>
+                                </div>}
+                                {!this.state.open && <Toolbar disableGutters={!this.state.open}>
+                                    <IconButton
+                                        color="inherit"
+                                        aria-label="Open drawer"
+                                        onClick={this.handleDrawerOpen}
+                                        className={classNames(classes.menuButton, {
+                                            [classes.hide]: this.state.open,
+                                        })}
+                                    >
+                                        <MenuIcon/>
+                                    </IconButton>
+                                </Toolbar>}
+                                <Divider light/>
+                                <List>
+                                    <Link to={'/'}><ListItem button>
                                         <HomeIcon/>
-                                    <Typography variant="h6" color="inherit">
-                                         Home
-                                    </Typography>
-                                </ListItem></Link>
-                                {checkAccess('/dashboard') && <Link to={'/dashboard'}><ListItem button>
+                                        <Typography variant="h6" color="inherit">
+                                            Home
+                                        </Typography>
+                                    </ListItem></Link>
+                                    {checkAccess('/dashboard') && <Link to={'/dashboard'}><ListItem button>
                                         <DashboardIcon/>
-                                    <Typography variant="h6" color="inherit">
-                                         Dashboard
-                                    </Typography>
-                                </ListItem></Link>}
-                                {checkAccess('/admin_panel') && <Link to={'/admin_panel'}><ListItem button>
-                                        <DashboardIcon/>
-                                    <Typography variant="h6" color="inherit">
-                                         Admin Panel
-                                    </Typography>
-                                </ListItem></Link>}
-                                {checkAccess('/devices') && <Link to={'/devices'}><ListItem button>
-                                    <Typography variant="h6" color="inherit">
-                                        Devices
-                                    </Typography>
-                                </ListItem></Link>}
-                                {user ?
-                                    <Link to={'/login'}><ListItem button onClick={this.props.logoutRequest}>
-                                        <AccountIcon/><Typography variant="h6" color="inherit">
-                                         Logout </Typography>
-                                </ListItem></Link> :
-                                    <Link to={'/login'}><ListItem button>
-                                        <AccountIcon/><Typography variant="h6" color="inherit"> Login</Typography>
+                                        <Typography variant="h6" color="inherit">
+                                            Dashboard
+                                        </Typography>
                                     </ListItem></Link>}
-                            </List>
-                        </Drawer>
-                    </div>
-                    <main className={classes.content}>
+                                    {checkAccess('/admin_panel') && <Link to={'/admin_panel'}><ListItem button>
+                                        <DashboardIcon/>
+                                        <Typography variant="h6" color="inherit">
+                                            Admin Panel
+                                        </Typography>
+                                    </ListItem></Link>}
+                                    {checkAccess('/devices') && <Link to={'/devices'}><ListItem button>
+                                        <Typography variant="h6" color="inherit">
+                                            Devices
+                                        </Typography>
+                                    </ListItem></Link>}
+                                    {user ?
+                                        <Link to={'/login'}><ListItem button onClick={this.props.logoutRequest}>
+                                            <AccountIcon/><Typography variant="h6" color="inherit">
+                                            Logout </Typography>
+                                        </ListItem></Link> :
+                                        <Link to={'/login'}><ListItem button>
+                                            <AccountIcon/><Typography variant="h6" color="inherit"> Login</Typography>
+                                        </ListItem></Link>}
+                                </List>
+                            </Drawer>
+                        </div>
+                        <main className={classes.content}>
                             <Switch history={history}>
                                 <Route exact path='/' component={HomeComponent}/>
                                 <PrivateRoute exact path='/admin_panel' component={AdminPanelComponent}/>
                                 <PrivateRoute exact path='/dashboard' component={DashboardComponent}/>
                                 <Route exact path='/login' component={LoginForm}/>
                             </Switch>
-                    </main>
-                </div>
+                        </main>
+                    </div>
                     <SnackbarProvider maxSnack={5}>
                         <PopupComponent/>
                     </SnackbarProvider>

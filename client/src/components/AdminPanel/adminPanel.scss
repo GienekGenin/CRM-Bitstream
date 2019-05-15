@@ -1,4 +1,4 @@
-#line{
+#line {
   width: 100px;
   height: 5px;
 }
@@ -7,60 +7,68 @@ main {
   min-width: 580px;
 }
 
-.admin-panel{
+.admin-panel {
   overflow-y: scroll;
   //overflow-x: hidden;
   height: 100%;
   min-width: 580px;
   background: #F5F5F5;
+
   &::-webkit-scrollbar {
     width: 10px;
     background-color: #F5F5F5;
     z-index: 9999;
   }
+
   &::-webkit-scrollbar-track {
     border-radius: 10px;
-    background: rgba(0,0,0,0.1);
+    background: rgba(0, 0, 0, 0.1);
     border: 1px solid #ccc;
   }
+
   &::-webkit-scrollbar-thumb {
     border-radius: 10px;
     background: linear-gradient(to left, #fff, #e4e4e4);
     border: 1px solid #aaa;
   }
+
   &::-webkit-scrollbar-thumb:hover {
     background: #fff;
   }
+
   &::-webkit-scrollbar-thumb:active {
     background: linear-gradient(to left, #22ADD4, #008DD2);
   }
 }
 
-#root > div > main{
+#root > div > main {
   //overflow-y: hidden;
-  & > div > div{
+  & > div > div {
     //margin-top: 80px;
   }
-  & > div > header > div{
+
+  & > div > header > div {
     margin: 0 auto;
     width: 100%;
     justify-content: space-evenly;
   }
-  & > div > header > div > div > div{
+
+  & > div > header > div > div > div {
     min-height: 64px;
     padding-right: 20px;
-    & > div > div{
+
+    & > div > div {
       min-height: 64px;
     }
   }
 }
 
-#root > div > main > div > header > div{
+#root > div > main > div > header > div {
   padding-right: 0;
   padding-left: 0;
   z-index: 1000;
 }
 
-header{
+header {
   position: fixed;
 }

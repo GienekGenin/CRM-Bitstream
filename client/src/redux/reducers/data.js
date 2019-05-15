@@ -7,6 +7,7 @@ const initialState = {
     error: null,
     success: null
 };
+
 export const dataReducer = (state = initialState, action) => {
     switch (action.type) {
 

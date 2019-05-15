@@ -2,7 +2,7 @@ import * as am4core from "@amcharts/amcharts4/core";
 import * as am4charts from "@amcharts/amcharts4/charts";
 import am4themes_animated from "@amcharts/amcharts4/themes/animated";
 
-const getColorFromPalete = (i) => {
+const getColorFromPalette = (i) => {
     const colors = [
         '#9660CB',
         '#DC6788',
@@ -42,7 +42,7 @@ export const createLineChart = (data, selectedDevices) => {
             chartData.push({['date' + i]: new Date(mes.ts), ['value' + i]: value});
         });
 
-        let color = getColorFromPalete(i);
+        let color = getColorFromPalette(i);
 
         let dateAxis = chart.xAxes.push(new am4charts.DateAxis());
         dateAxis.renderer.grid.template.location = 0;

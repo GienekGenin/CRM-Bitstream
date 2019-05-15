@@ -10,6 +10,8 @@ import Checkbox from "@material-ui/core/Checkbox";
 import {styles} from '../UI/material/table-styles';
 import {Grid, MuiThemeProvider} from '@material-ui/core';
 import Paper from '@material-ui/core/Paper';
+import MaterialTable from 'material-table';
+import {theme} from "../material.theme";
 
 // Redux
 import store from "../../redux/store";
@@ -18,10 +20,8 @@ import {userDevicesRequest} from "../../redux/actions";
 import {tokenService} from "../../redux/services/token";
 
 // Components
-import FirmDevicesToolBarComponent from "./FirmDevicesToolBarComponent";
-import MaterialTable from 'material-table';
 import './firmDevices.scss';
-import {theme} from "../material.theme";
+import FirmDevicesToolBarComponent from "./FirmDevicesToolBarComponent";
 
 // Services
 import {forcedTree, createPie, createPiePhyid} from "./chart.service";

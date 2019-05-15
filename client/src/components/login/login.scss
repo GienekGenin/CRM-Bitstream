@@ -1,11 +1,11 @@
 @import "../../colors";
 
 #loginContainer {
-  position:fixed;
+  position: fixed;
   top: 50%;
   left: 50%;
-  width:30em;
-  height:18em;
+  width: 30em;
+  height: 18em;
   margin-top: -9em;
   margin-left: -15em;
 }
@@ -14,29 +14,29 @@
   width: 100%;
 }
 
-.loginBtnGroup{
+.loginBtnGroup {
   position: relative;
   top: 0;
   left: 0;
 }
 
-#progressLogin{
+#progressLogin {
   position: absolute;
   top: 0;
   bottom: 0;
-  left:0;
-  right:0;
+  left: 0;
+  right: 0;
   margin: auto;
   width: 35%;
   height: 25px;
 }
 
-#progressLogin > div > svg{
+#progressLogin > div > svg {
   position: absolute;
   top: 0;
   bottom: 0;
-  left:0;
-  right:0;
+  left: 0;
+  right: 0;
   margin: auto;
 }
 

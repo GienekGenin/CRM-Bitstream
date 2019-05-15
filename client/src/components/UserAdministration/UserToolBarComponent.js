@@ -144,7 +144,7 @@ class UserToolBar extends React.Component {
         });
     };
 
-    updateNextOwner(e){
+    updateNextOwner(e) {
         this.setState({nextOwner: e.target.value})
     }
 
@@ -190,7 +190,7 @@ class UserToolBar extends React.Component {
         }
     }
 
-    handleChangeUserEmail(){
+    handleChangeUserEmail() {
         const newEmail = this.state.newUser.email;
         const {email} = this.props.selected;
         this.props.changeEmailAdminRequest(email, newEmail);
@@ -198,7 +198,7 @@ class UserToolBar extends React.Component {
         this.handleClose('changeEmailDialog');
     }
 
-    emailValidation(){
+    emailValidation() {
         const emailPattern = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/i;
         const email = this.state.newUser.email;
         if (!email) {
@@ -236,7 +236,8 @@ class UserToolBar extends React.Component {
                     <div>
                         <Tooltip title={'Edit selected user'}>
                             <div>
-                                <IconButton disabled={this.props.loading || !this.props.selected} variant="contained" color="primary"
+                                <IconButton disabled={this.props.loading || !this.props.selected} variant="contained"
+                                            color="primary"
                                             onClick={() => this.handleClickOpen('editDialog')}>
                                     <EditIcon/>
                                 </IconButton>
@@ -442,7 +443,8 @@ class UserToolBar extends React.Component {
                     <div>
                         <Tooltip title={'Delete user'}>
                             <div>
-                                <IconButton variant="outlined" color="secondary" disabled={this.props.loading || !this.props.selected}
+                                <IconButton variant="outlined" color="secondary"
+                                            disabled={this.props.loading || !this.props.selected}
                                             onClick={() => this.handleClickOpen('confirmDeleteDialog')}>
                                     <DeleteIcon/>
                                 </IconButton>
@@ -465,7 +467,8 @@ class UserToolBar extends React.Component {
                                         id='nextOwner'
                                     >
                                         {this.props.users && this.props.users.map((user) =>
-                                            (user.email !== this.props.selected.email) && <MenuItem key={user._id} value={user}>
+                                            (user.email !== this.props.selected.email) &&
+                                            <MenuItem key={user._id} value={user}>
                                                 {user.name}
                                             </MenuItem>)}
                                     </Select>
@@ -485,7 +488,8 @@ class UserToolBar extends React.Component {
                     <div>
                         <Tooltip title={'Change password'}>
                             <div>
-                                <IconButton variant="outlined" color="primary" disabled={this.props.loading || !this.props.selected}
+                                <IconButton variant="outlined" color="primary"
+                                            disabled={this.props.loading || !this.props.selected}
                                             onClick={() => this.handleClickOpen('changePassDialog')}>
                                     <LockIcon/>
                                 </IconButton>
@@ -526,7 +530,8 @@ class UserToolBar extends React.Component {
                     <div>
                         <Tooltip title={'Change email'}>
                             <div>
-                                <IconButton variant="outlined" color="primary" disabled={this.props.loading || !this.props.selected}
+                                <IconButton variant="outlined" color="primary"
+                                            disabled={this.props.loading || !this.props.selected}
                                             onClick={() => this.handleClickOpen('changeEmailDialog')}>
                                     <EmailIcon/>
                                 </IconButton>
@@ -590,7 +595,7 @@ class UserToolBar extends React.Component {
                                     },
                                 }}
                             >
-                                <List id={'column-list'} >
+                                <List id={'column-list'}>
                                     {columns && columns.map(el => (
                                         <div key={el.title}>
                                             <Divider dark={'true'}/>

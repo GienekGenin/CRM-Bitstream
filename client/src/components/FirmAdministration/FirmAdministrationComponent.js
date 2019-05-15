@@ -6,6 +6,7 @@ import _ from 'lodash';
 import Checkbox from "@material-ui/core/Checkbox";
 import {Grid, MuiThemeProvider} from '@material-ui/core';
 import {createMuiTheme} from '@material-ui/core/styles';
+import MaterialTable from 'material-table';
 
 // Redux
 import {connect} from "react-redux";
@@ -14,7 +15,6 @@ import {addFirmRequest, deleteFirmRequest, updateFirmRequest} from "../../redux/
 
 // Components
 import './firmAdministration.scss';
-import MaterialTable from 'material-table';
 import FirmAdministrationToolBar from './FirmAdministrationToolBar';
 
 const mapDispatchToProps = (dispatch) => {
@@ -79,7 +79,6 @@ class FirmAdministrationComponent extends Component {
     };
 
     componentDidMount() {
-        this._isMounted = true;
         this.unsubscribe = store.subscribe(() => {
             this.setState({loading: store.getState().firmReducer.loading});
             if (store.getState().firmReducer.firms) {
@@ -90,7 +89,6 @@ class FirmAdministrationComponent extends Component {
     }
 
     componentWillUnmount() {
-        this._isMounted = false;
         this.unsubscribe();
     }
 
@@ -127,7 +125,7 @@ class FirmAdministrationComponent extends Component {
         firms.map((el, i, arr) => arr[i] = Object.assign(el, {
             action: (
                 <div>
-                    <Checkbox value={el._id} checked={selectedFirmId === el._id} />
+                    <Checkbox value={el._id} checked={selectedFirmId === el._id}/>
                 </div>
             )
         }));

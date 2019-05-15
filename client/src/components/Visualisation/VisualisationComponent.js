@@ -24,6 +24,8 @@ import ListItemText from "@material-ui/core/ListItemText";
 import ViewColumnIcon from '@material-ui/icons/ViewColumn';
 import TimelineIcon from '@material-ui/icons/Timeline';
 import {Grid, MuiThemeProvider} from '@material-ui/core';
+import MaterialTable from 'material-table';
+import {DatePicker, MuiPickersUtilsProvider} from "material-ui-pickers";
 
 // Redux
 import {connect} from "react-redux";
@@ -37,8 +39,6 @@ import './visualisation.scss';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import MapGL, {Marker} from 'react-map-gl';
 import Pin from '../UI/map/pin/PinComponent';
-import MaterialTable from 'material-table';
-import {DatePicker, MuiPickersUtilsProvider} from "material-ui-pickers";
 
 //Services
 import {createLineChart, createDragPhyidPie} from "./chart.service";

@@ -228,8 +228,10 @@ class FirmDevicesToolBar extends React.Component {
                     <div>
                         <Tooltip title={'Device CS'}>
                             <div>
-                                <IconButton disabled={this.props.selected ? (this.props.selected.parent_id !== '0') : true} variant="contained" color="primary"
-                                            onClick={() => this.handleClickOpen('CSDialog')}>
+                                <IconButton
+                                    disabled={this.props.selected ? (this.props.selected.parent_id !== '0') : true}
+                                    variant="contained" color="primary"
+                                    onClick={() => this.handleClickOpen('CSDialog')}>
                                     <VpnKeyIcon/>
                                 </IconButton>
                             </div>

@@ -5,6 +5,7 @@ import * as PropTypes from 'prop-types';
 import {createMuiTheme, MuiThemeProvider, withStyles} from '@material-ui/core/styles';
 import {styles} from '../UI/material/table-styles';
 import {Grid} from "@material-ui/core";
+import MaterialTable from 'material-table';
 
 // Redux
 import store from "../../redux/store";
@@ -21,7 +22,6 @@ import {tokenService} from "../../redux/services/token";
 
 // Components
 import './userAdmin.scss';
-import MaterialTable from 'material-table';
 import UserToolBarComponent from './UserToolBarComponent';
 
 const theme = createMuiTheme({

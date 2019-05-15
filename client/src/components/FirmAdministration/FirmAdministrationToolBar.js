@@ -14,19 +14,20 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import IconButton from "@material-ui/core/IconButton";
 import ViewColumnIcon from '@material-ui/icons/ViewColumn';
-
-// Redux
-import {connect} from "react-redux";
-import {addFirmRequest, deleteFirmRequest, firmsRequest, updateFirmRequest} from "../../redux/actions";
 import Tooltip from "@material-ui/core/Tooltip";
 import Menu from "@material-ui/core/Menu";
 import Checkbox from "@material-ui/core/Checkbox";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
-
-import './firmToolBar.scss'
 import Divider from "@material-ui/core/Divider";
+
+// Redux
+import {connect} from "react-redux";
+import {addFirmRequest, deleteFirmRequest, firmsRequest, updateFirmRequest} from "../../redux/actions";
+
+// Components
+import './firmToolBar.scss'
 
 const mapDispatchToProps = (dispatch) => {
     return {
@@ -372,7 +373,7 @@ class TestToolBar extends React.Component {
                                     },
                                 }}
                             >
-                                <List id={'column-list'} >
+                                <List id={'column-list'}>
                                     {columns && columns.map(el => (
                                         <div key={el.title}>
                                             <Divider dark={'true'}/>

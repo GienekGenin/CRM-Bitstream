@@ -32,7 +32,7 @@ div.mapboxgl-map {
   box-shadow: none;
 }
 
-#pie-phyid-vis > div:nth-child(2) > svg > g > g:nth-child(2) > g:nth-child(2) > g > g:nth-child(3){
+#pie-phyid-vis > div:nth-child(2) > svg > g > g:nth-child(2) > g:nth-child(2) > g > g:nth-child(3) {
   display: none;
 }
 
@@ -42,10 +42,11 @@ div.mapboxgl-map {
 }
 
 #map > div > div > div.mapboxgl-map > div.mapboxgl-control-container {
-  & > div.mapboxgl-ctrl-bottom-left{
+  & > div.mapboxgl-ctrl-bottom-left {
     display: none;
   }
-  &> div.mapboxgl-ctrl-bottom-right{
+
+  & > div.mapboxgl-ctrl-bottom-right {
     display: none;
   }
 }

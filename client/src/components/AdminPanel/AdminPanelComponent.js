@@ -6,8 +6,8 @@ import {withStyles} from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
-import Typography from '@material-ui/core/Typography';
 import Toolbar from '@material-ui/core/Toolbar';
+import {TabContainer} from "../UI/material/TabContainer/TabContainer";
 
 // Redux
 import {firmsRequest, usersRequest} from "../../redux/actions/index";
@@ -34,18 +34,6 @@ const mapStateToProps = state => {
     return {
         firms: state.firmReducer.firms,
     };
-};
-
-const TabContainer = (props) => {
-    return (
-        <Typography component="div" style={{padding: 8 * 3}}>
-            {props.children}
-        </Typography>
-    );
-};
-
-TabContainer.propTypes = {
-    children: PropTypes.node.isRequired,
 };
 
 const styles = theme => ({
@@ -91,10 +79,10 @@ class AdminPanel extends React.Component {
             }
             if (store.getState().devicesReducer.devices) {
                 const reduxDevices = store.getState().devicesReducer.devices;
-                if(!this.state.devices)
-                if(this.state.devices && reduxDevices.length !== this.state.devices.length){
-                    this.setState({devices: reduxDevices, selectedDevice: null});
-                }
+                if (!this.state.devices)
+                    if (this.state.devices && reduxDevices.length !== this.state.devices.length) {
+                        this.setState({devices: reduxDevices, selectedDevice: null});
+                    }
             }
         });
 

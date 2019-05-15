@@ -51,7 +51,7 @@ class LoginPage extends React.Component {
             if (store.getState().loginReducer.user) {
                 this.props.history.push('/');
             }
-            if(this._isMounted){
+            if (this._isMounted) {
                 this.setState({loading: store.getState().loginReducer.loading});
             }
         })
@@ -73,7 +73,7 @@ class LoginPage extends React.Component {
         this.props.loginRequest({email, password});
     }
 
-    handleChangePassSubmit(e){
+    handleChangePassSubmit(e) {
         e.preventDefault();
         const {email, password, newPassword} = this.state;
         this.props.changePassRequest({email, password, newPassword});
@@ -125,15 +125,18 @@ class LoginPage extends React.Component {
                                         <div className="help-block">Password is required</div>
                                         }
                                         {
-                                            password && password.length<5 && <div className="help-block">Password should NOT be shorter that 5 characters</div>
+                                            password && password.length < 5 &&
+                                            <div className="help-block">Password should NOT be shorter that 5
+                                                characters</div>
                                         }
                                     </div>
                                 </CardContent>
                                 <CardActions>
                                     <div className="loginBtnGroup">
-                                        <Button variant="contained" type='submit' color="inherit" disabled={loading}>Submit</Button>
-                                        {loading &&<div id='progressLogin'>
-                                            <CircularProgress  size={25}/>
+                                        <Button variant="contained" type='submit' color="inherit"
+                                                disabled={loading}>Submit</Button>
+                                        {loading && <div id='progressLogin'>
+                                            <CircularProgress size={25}/>
                                         </div>}
                                     </div>
                                 </CardActions>

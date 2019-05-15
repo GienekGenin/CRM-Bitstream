@@ -3,40 +3,46 @@ a {
   color: white;
 }
 
-@media screen and (max-width: 825px){
-  #root{
+@media screen and (max-width: 825px) {
+  #root {
     position: fixed;
     overflow-x: scroll;
     overflow-y: hidden;
+
     &::-webkit-scrollbar {
       height: 10px;
       background-color: #F5F5F5;
       z-index: 9999;
     }
+
     &::-webkit-scrollbar-track {
       border-radius: 10px;
-      background: rgba(0,0,0,0.1);
+      background: rgba(0, 0, 0, 0.1);
       border: 1px solid #ccc;
     }
+
     &::-webkit-scrollbar-thumb {
       border-radius: 10px;
       background: linear-gradient(to left, #fff, #e4e4e4);
       border: 1px solid #aaa;
     }
+
     &::-webkit-scrollbar-thumb:hover {
       background: #fff;
       z-index: 9999;
     }
+
     &::-webkit-scrollbar-thumb:active {
       background: linear-gradient(to left, #22ADD4, #1E98BA);
     }
   }
 }
 
-#root > div > header > div  {
-  & > a{
+#root > div > header > div {
+  & > a {
     margin-left: auto;
   }
+
   & > button {
     margin-left: auto;
   }
@@ -44,36 +50,38 @@ a {
 
 .logo {
   display: inherit;
-  width:  100px;
+  width: 100px;
 }
 
-.root{
+.root {
   display: flex;
   width: 100%;
   height: 100%;
-  & > div > div > div > div{
-      min-height: 64px;
+
+  & > div > div > div > div {
+    min-height: 64px;
   }
 }
 
-#root > div > div > div > div > ul > a > div > svg{
+#root > div > div > div > div > ul > a > div > svg {
   margin-left: 10px;
   margin-right: 25px;
 }
 
 #root > div > div > div > div > div > button {
-  &> span > svg{
+  & > span > svg {
     color: white;
   }
-  &:hover > span > svg{
-      color: #008DD2;
+
+  &:hover > span > svg {
+    color: #008DD2;
   }
 }
 
-#root > div > div > div > div > ul > a > div:hover > svg{
+#root > div > div > div > div > ul > a > div:hover > svg {
   color: #008DD2;
 }
 
-#root > div > div > div > div > hr{
-  background-color: rgba(255,255,255, 0.12);
+#root > div > div > div > div > hr {
+  background-color: rgba(255, 255, 255, 0.12);
 }

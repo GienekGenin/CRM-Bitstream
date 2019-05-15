@@ -35,48 +35,39 @@ class Popup extends React.Component {
         super(props);
 
         store.subscribe(() => {
-            if(store.getState().loginReducer.error)
-            {
+            if (store.getState().loginReducer.error) {
                 this.handleClickVariant(store.getState().loginReducer.error, 'warning');
                 this.props.cleanLoginErrors();
             }
-            if(store.getState().firmReducer.error)
-            {
+            if (store.getState().firmReducer.error) {
                 this.handleClickVariant(store.getState().firmReducer.error, 'warning');
                 this.props.cleanFirmsErrors();
             }
-            if(store.getState().firmReducer.success)
-            {
+            if (store.getState().firmReducer.success) {
                 this.handleClickVariant(store.getState().firmReducer.success, 'success');
                 this.props.cleanFirmsSuccess();
             }
-            if(store.getState().userReducer.error)
-            {
+            if (store.getState().userReducer.error) {
                 this.handleClickVariant(store.getState().userReducer.error, 'warning');
                 this.props.cleanUsersErrors();
             }
-            if(store.getState().userReducer.success)
-            {
+            if (store.getState().userReducer.success) {
                 this.handleClickVariant(store.getState().userReducer.success, 'success');
                 this.props.cleanUsersSuccess();
             }
-            if(store.getState().devicesReducer.error)
-            {
+            if (store.getState().devicesReducer.error) {
                 this.handleClickVariant(store.getState().devicesReducer.error, 'warning');
                 this.props.cleanDevicesErrors();
             }
-            if(store.getState().devicesReducer.success)
-            {
+            if (store.getState().devicesReducer.success) {
                 this.handleClickVariant(store.getState().devicesReducer.success, 'success');
                 this.props.cleanDevicesSuccess();
             }
-            if(store.getState().dataReducer.error)
-            {
+            if (store.getState().dataReducer.error) {
                 this.handleClickVariant(store.getState().dataReducer.error, 'warning');
                 this.props.cleanDataErrors();
             }
-            if(store.getState().dataReducer.success)
-            {
+            if (store.getState().dataReducer.success) {
                 this.handleClickVariant(store.getState().dataReducer.success, 'success');
                 this.props.cleanDataSuccess();
             }
@@ -85,7 +76,7 @@ class Popup extends React.Component {
 
     handleClickVariant = (message, variant) => {
         // variant could be success, error, warning or info
-        if(message){
+        if (message) {
             this.props.enqueueSnackbar(message, {variant});
         }
     };

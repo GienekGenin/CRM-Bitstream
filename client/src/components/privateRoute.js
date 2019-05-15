@@ -13,21 +13,21 @@ export const PrivateRoute = ({component: Component, ...rest}) => {
 
 export const checkAccess = (path) => {
     const jwt = tokenService.verifyToken();
-    if(!jwt){
+    if (!jwt) {
         return false;
     }
     const user = jwt.user;
-    if(user && user.deleted) {
+    if (user && user.deleted) {
         return false;
     }
     const roles = JSON.parse(localStorage.getItem('roles'));
     if (!user || !roles) return false;
     const key = user.role_id;
     let result = false;
-    roles.forEach(role=>{
-       if(key === role._id){
+    roles.forEach(role => {
+        if (key === role._id) {
             return result = !!(role.features.includes(path) && tokenService.verifyToken());
-       }
+        }
     });
     return result;
 };

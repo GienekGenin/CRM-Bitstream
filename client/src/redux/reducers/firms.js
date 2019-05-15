@@ -27,7 +27,7 @@ export const firmReducer = (state = initialState, action) => {
                 success: action.payload.success
             }
         }
-        case firmConstants.UPDATE_FIRM_SUCCESS:{
+        case firmConstants.UPDATE_FIRM_SUCCESS: {
             return {
                 ...state,
                 firms: state.firms.map(el => (el._id === action.payload.firm._id) ? action.payload.firm : el),

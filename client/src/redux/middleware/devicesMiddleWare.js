@@ -17,10 +17,12 @@ export const devicesMiddleWare = ({dispatch}) => {
             if (action.type === devicesConstants.ADD_FIRM_DEVICE_REQUEST) {
                 devicesService.addDevice(action.payload)
                     .then(device => {
-                        return dispatch({type: devicesConstants.ADD_FIRM_DEVICE_SUCCESS, payload: {
+                        return dispatch({
+                            type: devicesConstants.ADD_FIRM_DEVICE_SUCCESS, payload: {
                                 device,
                                 success: 'Device was successfully created'
-                            }})
+                            }
+                        })
                     })
                     .catch(err => {
                         dispatch({type: devicesConstants.ADD_DEVICE_FAILURE, payload: errorParser(err)})

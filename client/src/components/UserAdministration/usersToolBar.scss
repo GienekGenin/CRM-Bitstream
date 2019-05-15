@@ -1,13 +1,14 @@
-.users-toolbar{
+.users-toolbar {
   display: flex;
   width: 100%;
   justify-content: space-between;
-  & .title{
+
+  & .title {
     padding-left: 20px;
   }
 }
 
-.users-controls{
+.users-controls {
   display: flex;
   padding-right: 20px;
 }

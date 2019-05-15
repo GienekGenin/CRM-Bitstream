@@ -19,7 +19,7 @@ const getMinMaxDataTime = (deviceIds) => {
         })
 };
 
-const getData  = (body) => {
+const getData = (body) => {
     const token = localStorage.getItem('token');
     const requestOptions = {
         method: 'POST',
@@ -38,7 +38,7 @@ const getData  = (body) => {
         })
 };
 
-const getDevicesWithData  = (body) => {
+const getDevicesWithData = (body) => {
     const token = localStorage.getItem('token');
     const requestOptions = {
         method: 'POST',
