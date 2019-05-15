@@ -1,11 +1,8 @@
 import React from "react";
+import ReactDOM from "react-dom";
 import * as PropTypes from 'prop-types';
 import _ from "lodash";
 import * as d3 from "d3";
-import * as am4core from "@amcharts/amcharts4/core";
-import * as am4charts from "@amcharts/amcharts4/charts";
-import am4themes_animated from "@amcharts/amcharts4/themes/animated";
-import * as am4plugins_forceDirected from "@amcharts/amcharts4/plugins/forceDirected"
 
 // Material
 import {withStyles} from '@material-ui/core/styles';
@@ -25,7 +22,9 @@ import FirmDevicesToolBarComponent from "./FirmDevicesToolBarComponent";
 import MaterialTable from 'material-table';
 import './firmDevices.scss';
 import {theme} from "../material.theme";
-import ReactDOM from "react-dom";
+
+// Services
+import {forcedTree, createPie, createPiePhyid} from "./chart.service";
 
 const mapDispatchToProps = (dispatch) => {
     return {
@@ -40,7 +39,6 @@ const mapStateToProps = state => {
 class FirmDevicesComponent extends React.Component {
 
     _isMounted = false;
-
 
     constructor(props) {
         super(props);
@@ -78,11 +76,11 @@ class FirmDevicesComponent extends React.Component {
 
         this.resetSelected = this.resetSelected.bind(this);
         this.addRemoveColumn = this.addRemoveColumn.bind(this);
-        this.buildChart = this.buildChart.bind(this);
         this.selectAllDevices = this.selectAllDevices.bind(this);
-        this.forcedTree = this.forcedTree.bind(this);
+        this.forcedTree = forcedTree.bind(this);
+        this.createPie = createPie.bind(this);
+        this.createPiePhyid = createPiePhyid.bind(this);
     }
-
 
     componentDidMount() {
         this._isMounted = true;
@@ -95,8 +93,8 @@ class FirmDevicesComponent extends React.Component {
                 this.setState({selectedUserIds});
                 this.props.userDevicesRequest(selectedUserIds);
             } else {
-                this.createPie(parentDevices);
-                this.createPiePhyid(parentDevices);
+                this.createPie(parentDevices, this);
+                this.createPiePhyid(parentDevices, this);
                 let checked = false;
                 if (selectedDevices && selectedDevices.length === parentDevices.length) {
                     checked = true;
@@ -110,14 +108,13 @@ class FirmDevicesComponent extends React.Component {
             if (!parentDevices) {
                 this.props.userDevicesRequest(selectedUser._id);
             } else {
-                this.createPie(parentDevices);
-                this.createPiePhyid(parentDevices);
+                this.createPie(parentDevices, this);
+                this.createPiePhyid(parentDevices, this);
                 this.setState({devices: parentDevices, loading: false});
             }
         }
         if (selectedDevices) {
             if (selectedDevices.length === 1) {
-                // this.buildChart(Object.assign({}, selectedDevices[0], {parent_id: '0'}), parentDevices);
                 this.forcedTree(Object.assign({}, selectedDevices[0], {parent_id: '0'}), parentDevices);
             }
             const selectedDeviceIds = selectedDevices.map(device => device.sid);
@@ -128,11 +125,10 @@ class FirmDevicesComponent extends React.Component {
             this.setState({loading: store.getState().devicesReducer.loading});
             if (store.getState().devicesReducer.devices) {
                 const devices = store.getState().devicesReducer.devices;
-                this.createPie(devices);
-                this.createPiePhyid(devices);
+                this.createPie(devices, this);
+                this.createPiePhyid(devices, this);
                 this.setState({devices, selectedTypes: new Set(), selectedPhyids: new Set()});
                 this.props.handleSetDevices(devices);
-
             }
             return true;
         });
@@ -183,579 +179,9 @@ class FirmDevicesComponent extends React.Component {
 
     handleDeviceSelect(devices) {
         if (devices.length === 1)
-        // this.buildChart(Object.assign({}, devices[0], {parent_id: '0'}), this.state.devices);
             this.forcedTree(Object.assign({}, devices[0], {parent_id: '0'}), this.state.devices);
         this.props.onDeviceSelect(devices);
     }
-
-    // todo: possible bugs
-    buildChart = (parent, stateDevices) => {
-
-        const unflatten = (array, parent, tree) => {
-            tree = typeof tree !== 'undefined' ? tree : [];
-            parent = typeof parent !== 'undefined' ? parent : {sid: '0'};
-
-            let children = _.filter(array, function (child) {
-                return child.parent_id === parent.sid;
-            });
-
-            if (!_.isEmpty(children)) {
-                if (parent.sid === '0') {
-                    tree = children;
-                } else {
-                    parent['children'] = children
-                }
-                _.each(children, function (child) {
-                    unflatten(array, child)
-                });
-            }
-
-            return tree;
-        };
-
-        d3.select('#tree').remove();
-        d3.select('#parent').append('div').attr("id", 'tree');
-
-        let Parent = Object.assign({}, parent);
-        let devices = [...stateDevices];
-        let arr = [];
-        devices.forEach(el => {
-            if (el.sid.includes(Parent.sid)) {
-                if (el.sid === Parent.sid) {
-                    arr.push(Parent);
-                } else arr.push(el);
-
-            }
-        });
-        // todo: not building if arr of 1 element
-        if (arr.length === 0 || arr.length === 1) {
-            return false
-        }
-        let treeData = unflatten(arr)[0];
-        let margin = {
-                top: 200,
-                right: 90,
-                bottom: 30,
-                left: 90
-            },
-            width = 560,
-            height = 150;
-
-// append the svg object to the body of the page
-// appends a 'group' element to 'svg'
-// moves the 'group' element to the top left margin
-        let svg = d3.select("#tree")
-            .append("svg")
-            .attr("width", width)
-            .attr("height", height + margin.top + margin.bottom)
-            .append("g")
-            .attr("transform", "translate(" +
-                margin.left + "," + margin.top + ")");
-
-        let i = 0,
-            duration = 750,
-            root;
-
-// declares a tree layout and assigns the size
-        // todo: here change distance between nodes
-        let treemap = d3.tree().nodeSize([20, width]);
-
-// Assigns parent, children, height, depth
-        root = d3.hierarchy(treeData, function (d) {
-            return d.children;
-        });
-        root.x0 = height / 2;
-        root.y0 = 0;
-
-// Collapse after the second level
-        root.children.forEach(collapse);
-
-
-// Collapse the node and all it's children
-        function collapse(d) {
-            if (d.children) {
-                d._children = d.children;
-                d._children.forEach(collapse);
-                d.children = null;
-            }
-        }
-
-        const update = (source) => {
-
-            // Assigns the x and y position for the nodes
-            let treeData = treemap(root);
-
-            // Compute the new tree layout.
-            let nodes = treeData.descendants(),
-                links = treeData.descendants().slice(1);
-
-            // Normalize for fixed-depth.
-            // todo: distance between nodes
-            nodes.forEach(function (d) {
-                d.y = d.depth * 100
-            });
-
-            // ****************** Nodes section ***************************
-
-            // Update the nodes...
-            let node = svg.selectAll('g.node')
-                .data(nodes, function (d) {
-                    return d.id || (d.id = ++i);
-                });
-
-            // Toggle children on click.
-            function click(d) {
-                // console.log('dataa---', d.data._id);
-                if (d.children) {
-                    d._children = d.children;
-                    d.children = null;
-                } else {
-                    d.children = d._children;
-                    d._children = null;
-                }
-                update(d);
-            }
-
-            const dbClick = (d) => {
-                d3.select('#selected').attr("id", '');
-                d3.select('#selected-circle').attr("id", '');
-                nodeUpdate.select('circle.node')
-                    .attr('id', (data) => {
-                        if (d.data.name === data.data.name) {
-                            this.handleClickNoBuild(null, d.data.sid);
-                            return 'selected'
-                        }
-                    })
-            };
-
-            // Enter any new modes at the parent's previous position.
-            let nodeEnter = node.enter().append('g')
-                .attr('class', 'node')
-                .attr("transform", function (d) {
-                    return "translate(" + source.y0 + "," + source.x0 + ")";
-                })
-                // todo: handle click
-                .on('mouseover', dbClick)
-                .on('click', click)
-                // todo: show info
-                .on("dblclick", function (d) {
-                    let g = d3.select(this); // The node
-                    // The class is used to remove the additional text later
-                    // let info = g.append('text')
-                    g.append('text')
-                        .classed('info', true)
-                        .attr('x', 20)
-                        .attr('y', 10)
-                        .text('More info');
-                })
-                // todo: hide info
-                .on("mouseout", function () {
-                    // Remove the info text on mouse out.
-                    d3.select(this).select('text.info').remove()
-                });
-
-            // Add Circle for the nodes
-            nodeEnter.append('circle')
-                .attr('class', 'node')
-                .attr('r', 1e-6)
-                .style("fill", function (d) {
-                    return d._children ? "lightsteelblue" : "#888333";
-                });
-
-
-            // Add labels for the nodes
-            nodeEnter.append('text')
-                .attr("class", "label")
-                .attr("dy", ".35em")
-                .attr("x", function (d) {
-                    return d.children || d._children ? -13 : 13;
-                })
-                .attr("text-anchor", function (d) {
-                    return d.children || d._children ? "end" : "start";
-                })
-                .text(function (d) {
-                    return d.data.name;
-                })
-                .style("fill", function (d) {
-                    return d.type;
-                })
-                // todo: label width
-                .call(wrap, 50);
-
-            // todo: text inside node
-            // nodeEnter.append('text')
-            //     .attr("dy", ".4em")
-            //     .attr("x", function (d) {
-            //         return d.children || d._children ? 4 : -4;
-            //     })
-            //     .attr("text-anchor", function (d) {
-            //         return d.children || d._children ? "end" : "start";
-            //     })
-            //     .text(function (d) {
-            //         let children = d.children || d._children;
-            //         return children ? children.length : null;
-            //     });
-
-            // UPDATE
-            let nodeUpdate = nodeEnter.merge(node);
-
-            // Transition to the proper position for the node
-            nodeUpdate.transition()
-                .duration(duration)
-                .attr("transform", function (d) {
-                    return "translate(" + d.y + "," + d.x + ")";
-                });
-
-            // Update the node attributes and style
-            // todo: size of node
-            nodeUpdate.select('circle.node')
-                .attr('r', 5)
-                .style("fill", function (d) {
-                    //console.log("parentID",d.aspid);
-                    // console.log(d)
-                    let parentStatus = d.parent ? (d.parent.data.status ? d.parent.data.status : 'OFFLINE') : (d.data.status ? d.data.status : 'OFFLINE');
-                    let childStatus = d.data.status ? d.data.status : 'OFFLINE';
-                    if (d.parent) {
-                        if (parentStatus === childStatus) {
-                            if (childStatus === 'ONLINE') {
-                                return '#76ff03';
-                            } else {
-                                return '#616161'
-                            }
-                        } else {
-                            return '#616161'
-                        }
-                    } else {
-                        if (parentStatus === 'ONLINE') {
-                            return '#76ff03';
-                        } else {
-                            return '#76ff03'
-                        }
-                    }
-                    // '#000' '#00FF00'
-                })
-                // .style("fill", "blue")
-                .attr('cursor', 'pointer');
-
-
-            // Remove any exiting nodes
-            let nodeExit = node.exit().transition()
-                .duration(duration)
-                .attr("transform", function (d) {
-                    return "translate(" + source.y + "," + source.x + ")";
-                })
-                .remove();
-
-            // On exit reduce the node circles size to 0
-            nodeExit.select('circle')
-                .attr('r', 1e-6);
-
-            // On exit reduce the opacity of text labels
-            nodeExit.select('text')
-                .style('fill-opacity', 1e-6);
-
-            // ****************** links section ***************************
-
-            // Update the links...
-            let link = svg.selectAll('path.link')
-                .data(links, function (d) {
-                    return d.id;
-                });
-
-            // Enter any new links at the parent's previous position.
-            let linkEnter = link.enter().insert('path', "g")
-                .attr("class", "link")
-                .attr('d', function (d) {
-                    let o = {
-                        x: source.x0,
-                        y: source.y0
-                    };
-                    return diagonal(o, o)
-                });
-
-            // UPDATE
-            let linkUpdate = linkEnter.merge(link);
-
-            // Transition back to the parent element position
-            linkUpdate.transition()
-                .duration(duration)
-                .attr('d', function (d) {
-                    return diagonal(d, d.parent)
-                });
-
-            // Remove any exiting links
-            // let linkExit = link.exit().transition()
-            link.exit().transition()
-                .duration(duration)
-                .attr('d', function (d) {
-                    let o = {
-                        x: source.x,
-                        y: source.y
-                    };
-                    return diagonal(o, o)
-                })
-                .remove();
-
-            // Store the old positions for transition.
-            nodes.forEach(function (d) {
-                d.x0 = d.x;
-                d.y0 = d.y;
-            });
-
-            // Creates a curved (diagonal) path from parent to the child nodes
-            function diagonal(s, d) {
-
-                let path = `M ${s.y} ${s.x}
-            C ${(s.y + d.y) / 2} ${s.x},
-              ${(s.y + d.y) / 2} ${d.x},
-              ${d.y} ${d.x}`;
-
-                return path
-            }
-
-            // function mousemove(d) {
-            //     return d
-            //         .text("Info about " + d.name)
-            //         .style("left", (d3.event.pageX) + "px")
-            //         .style("top", (d3.event.pageY) + "px");
-            // }
-            //
-            // function mouseout(d) {
-            //     d.transition()
-            //         .duration(300)
-            //         .style("opacity", 1e-6);
-            // }
-
-
-            // function zoom() {
-            //     let scale = d3.event.scale,
-            //         translation = d3.event.translate,
-            //         tbound = -height * scale * 100,
-            //         bbound = height * scale,
-            //         lbound = (-width + margin.right) * scale,
-            //         rbound = (width - margin.bottom) * scale;
-            //     console.log("pre min/max" + translation);
-            //     // limit translation to thresholds
-            //     translation = [
-            //         Math.max(Math.min(translation[0], rbound),
-            //             lbound),
-            //         Math.max(Math.min(translation[1], bbound),
-            //             tbound)
-            //     ];
-            //     console.log("scale" + scale);
-            //     console.log("translation" + translation);
-            //
-            //     svg.attr("transform", "translate(" + translation + ")" +
-            //         " scale(" + scale + ")");
-            // }
-        };
-
-        update(root);
-
-        /* Word Wrap */
-        function wrap(text, width) {
-            text.each(function () {
-                let text = d3.select(this),
-                    words = text.text().split(/\s+/).reverse(),
-                    word,
-                    line = [],
-                    lineNumber = 1,
-                    lineHeight = 1, // ems
-                    x = text.attr("x"),
-                    y = text.attr("y"),
-                    dy = 0, //parseFloat(text.attr("dy")),
-                    tspan = text.text(null)
-                        .append("tspan")
-                        .attr("x", x)
-                        .attr("y", y)
-                        .attr("dy", dy + "em");
-                while ((word = words.pop())) {
-                    line.push(word);
-                    tspan.text(line.join(" "));
-                    if (tspan.node().getComputedTextLength() >
-                        width) {
-                        line.pop();
-                        tspan.text(line.join(" "));
-                        line = [word];
-                        tspan = text.append("tspan")
-                            .attr("x", x)
-                            .attr("y", y)
-                            .attr("dy", lineNumber *
-                                lineHeight + dy + "em")
-                            .text(word);
-                    }
-                }
-            });
-        }
-
-
-// Set the dimensions and margins of the diagram
-
-    };
-
-    // todo: possible bugs
-    handleDeviceSelectNoBuild(device) {
-        this.props.onDeviceSelect([device]);
-    }
-
-    // todo: possible bugs
-    handleClickNoBuild = (event, sid) => {
-        const {devices} = this.state;
-        let device = devices.filter(el => el.sid === sid ? el : null)[0];
-        this.setState({selectedDeviceIds: [sid], selectedDevices: [device]});
-        this.handleDeviceSelectNoBuild(device);
-    };
-
-    createPie = (data) => {
-        const types = this.props.deviceTypes;
-        let parsedData = [];
-        let chartdata = [];
-        types.forEach(el => {
-            parsedData[el.name] = 0;
-            data.forEach(device => {
-                if (device.type === el._id) {
-                    parsedData[el.name]++;
-                }
-            })
-        });
-        for (let key in parsedData) {
-            let objToChart = {
-                type: key,
-                count: parsedData[key]
-            };
-            if (objToChart.count > 0)
-                chartdata.push(objToChart);
-        }
-        am4core.useTheme(am4themes_animated);
-        const chart = am4core.create("device-types-chart", am4charts.PieChart);
-        const pieSeries = chart.series.push(new am4charts.PieSeries());
-        pieSeries.dataFields.value = "count";
-        pieSeries.dataFields.category = "type";
-
-        chart.innerRadius = am4core.percent(30);
-
-        // Put a thick white border around each Slice
-        pieSeries.slices.template.stroke = am4core.color("#fff");
-        pieSeries.slices.template.strokeWidth = 2;
-        pieSeries.slices.template.strokeOpacity = 1;
-        pieSeries.slices.template
-            // change the cursor on hover to make it apparent the object can be interacted with
-            .cursorOverStyle = [
-            {
-                "property": "cursor",
-                "value": "pointer"
-            }
-        ];
-
-        pieSeries.alignLabels = false;
-        pieSeries.labels.template.bent = true;
-        pieSeries.labels.template.radius = 3;
-        pieSeries.labels.template.padding(0, 0, 0, 0);
-
-        pieSeries.ticks.template.disabled = true;
-        const shadow = pieSeries.slices.template.filters.push(new am4core.DropShadowFilter());
-        shadow.opacity = 0;
-
-        const hoverState = pieSeries.slices.template.states.getKey("hover");
-        const hoverShadow = hoverState.filters.push(new am4core.DropShadowFilter());
-        // const activeState =
-        hoverShadow.opacity = 0.7;
-        hoverShadow.blur = 5;
-
-        // todo: change table filters onHit
-        pieSeries.slices.template.events.on("hit", (ev) => {
-            let selectedTypes = this.state.selectedTypes;
-            let typeClicked = types.filter(el => el.name === ev.target.dataItem.dataContext.type)[0]._id;
-            selectedTypes.has(typeClicked) ? selectedTypes.delete(typeClicked) : selectedTypes.add(typeClicked);
-            this.setState({selectedTypes});
-            this.chartSelect();
-        }, this);
-
-        chart.legend = new am4charts.Legend();
-        chart.data = chartdata;
-    };
-
-    createPiePhyid = (data) => {
-        let parsedData = [];
-        let chartdata = [];
-        let phyidSet = new Set();
-        data.forEach(el => {
-            phyidSet.add(el.phyid);
-        });
-        phyidSet.forEach(phyid => {
-            parsedData[phyid] = 0;
-            data.forEach(el => {
-                if (phyid === el.phyid) {
-                    parsedData[phyid]++;
-                }
-            });
-        });
-        for (let key in parsedData) {
-            let objToChart = {
-                type: key,
-                count: parsedData[key]
-            };
-            if (objToChart.count > 0)
-                chartdata.push(objToChart);
-        }
-        am4core.useTheme(am4themes_animated);
-
-        // cointainer to hold both charts
-        const container = am4core.create("pie-phyid", am4core.Container);
-        container.width = am4core.percent(100);
-        container.height = am4core.percent(100);
-        container.layout = "horizontal";
-
-        const chart = container.createChild(am4charts.PieChart);
-        const pieSeries = chart.series.push(new am4charts.PieSeries());
-        pieSeries.dataFields.value = "count";
-        pieSeries.dataFields.category = "type";
-
-        chart.innerRadius = am4core.percent(40);
-        chart.radius = am4core.percent(70);
-
-        // Put a thick white border around each Slice
-        pieSeries.slices.template.stroke = am4core.color("#fff");
-        pieSeries.slices.template.strokeWidth = 2;
-        pieSeries.slices.template.strokeOpacity = 1;
-        pieSeries.slices.template
-            // change the cursor on hover to make it apparent the object can be interacted with
-            .cursorOverStyle = [
-            {
-                "property": "cursor",
-                "value": "pointer"
-            }
-        ];
-
-        pieSeries.alignLabels = false;
-        pieSeries.labels.template.bent = true;
-        pieSeries.labels.template.radius = 5;
-        pieSeries.labels.template.padding(0, 0, 0, 0);
-        pieSeries.labels.template.text = '{category}';
-
-        pieSeries.ticks.template.disabled = true;
-        pieSeries.slices.template.tooltipText = "{category}: {value.value}";
-        const shadow = pieSeries.slices.template.filters.push(new am4core.DropShadowFilter());
-        shadow.opacity = 0;
-
-        const hoverState = pieSeries.slices.template.states.getKey("hover");
-        const hoverShadow = hoverState.filters.push(new am4core.DropShadowFilter());
-        // const activeState =
-        hoverShadow.opacity = 0.7;
-        hoverShadow.blur = 5;
-
-        // todo: change table filters onHit
-        pieSeries.slices.template.events.on("hit", (ev) => {
-            let selectedPhyids = this.state.selectedPhyids;
-            let phyidClicked = ev.target.dataItem.dataContext.type;
-            selectedPhyids.has(phyidClicked) ? selectedPhyids.delete(phyidClicked) : selectedPhyids.add(phyidClicked);
-            this.setState({selectedPhyids});
-            this.chartSelect();
-        }, this);
-
-        chart.legend = new am4charts.Legend();
-        chart.data = chartdata;
-    };
 
     chartSelect() {
         this.renderSelectAllCheckBox(false);
@@ -863,123 +289,10 @@ class FirmDevicesComponent extends React.Component {
             ReactDOM.render(element, container)
     }
 
-    forcedTree(parent, stateDevices) {
-
-        const unflatten = (array, parent, tree) => {
-            tree = typeof tree !== 'undefined' ? tree : [];
-            parent = typeof parent !== 'undefined' ? parent : {sid: '0'};
-
-            let children = _.filter(array, function (child) {
-                return child.parent_id === parent.sid;
-            });
-
-            if (!_.isEmpty(children)) {
-                if (parent.sid === '0') {
-                    tree = children;
-                } else {
-                    parent['children'] = children;
-                }
-                _.each(children, function (child) {
-                    unflatten(array, child)
-                });
-            }
-
-            return tree;
-        };
-
-        d3.select('#forcedTree').remove();
-        d3.select('#parent').append('div').attr("id", 'forcedTree');
-
-        let Parent = Object.assign({}, parent);
-        let devices = [...stateDevices];
-        let arr = [];
-        devices.forEach(el => {
-            if (el.sid.includes(Parent.sid)) {
-                if (el.sid === Parent.sid) {
-                    arr.push(Parent);
-                } else arr.push(el);
-
-            }
-        });
-
-        const getProps = (status) => {
-            if (status === 'OFFLINE') {
-                return {color: '#616161'};
-            } else {
-                return {color: '#257'};
-            }
-        };
-
-        arr.forEach((el, i, arr) => {
-            if (!el.status) {
-                arr[i] = Object.assign(el, {status: 'OFFLINE'});
-            }
-        });
-
-        // Needed to change radius size
-        arr.forEach((parent, i, arr) => {
-            parent = Object.assign(parent, getProps(parent.status), {value: 1});
-            arr.forEach((child, c) => {
-                if (child.parent_id.includes(parent.sid)) {
-                    parent = _.omit(parent, 'value');
-                    if (parent.status === 'OFFLINE') {
-                        arr[c] = Object.assign(child, getProps('OFFLINE'), {status: 'OFFLINE'});
-                    }
-                }
-            });
-            arr[i] = parent;
-        });
-
-        // todo: not building if arr of 1 element
-        if (arr.length === 0 || arr.length === 1) {
-            return false
-        }
-        let treeData = [unflatten(arr)[0]];
-
-        // Themes begin
-        am4core.useTheme(am4themes_animated);
-// Themes end
-
-        let chart = am4core.create("forcedTree", am4plugins_forceDirected.ForceDirectedTree);
-        let networkSeries = chart.series.push(new am4plugins_forceDirected.ForceDirectedSeries());
-
-        chart.data = treeData;
-
-        networkSeries.dataFields.value = "value";
-        networkSeries.dataFields.name = "name";
-        networkSeries.dataFields.color = 'color';
-        networkSeries.dataFields.children = "children";
-        networkSeries.nodes.template.label.valign = "bottom";
-        networkSeries.nodes.template.label.fill = am4core.color("#000");
-        networkSeries.nodes.template.label.dy = 10;
-        networkSeries.nodes.template.tooltipText = "{name} : Phyid - {phyid}";
-        networkSeries.nodes.template.fillOpacity = 1;
-        networkSeries.manyBodyStrength = -20;
-        networkSeries.links.template.strength = 0.8;
-        networkSeries.minRadius = 30;
-        networkSeries.fontSize = 10;
-
-        networkSeries.nodes.template.label.text = "{name}";
-
-        let icon = networkSeries.nodes.template.createChild(am4core.Image);
-        icon.href = "http://www.iconhot.com/icon/png/devine-icons-part-2/512/device-and-hardware-w.png";
-        icon.horizontalCenter = "middle";
-        icon.verticalCenter = "middle";
-        icon.width = 40;
-        icon.height = 40;
-
-        chart.legend = new am4charts.Legend();
-    }
-
     render() {
         const {loading, devices, selectedDevices, selectedDeviceIds, selectedUserIds, selectedFirm, columns, rowsPerPage, page} = this.state;
         const {deviceTypes} = this.props;
         devices && devices.map((el, i, arr) => arr[i] = Object.assign(el, {
-            // status: el.status ? (
-            //     <Chip
-            //         label={el.status}
-            //     />
-            // ) : '',
             action: (
                 <div>
                     <Checkbox value={el.sid} checked={selectedDeviceIds.includes(el.sid)}/>
