@@ -47,7 +47,7 @@ class UsersService {
                                 if (d['nModified'] === 0) {
                                     callback(new Error('Unable to delete user'));
                                 }
-                                callback(null);
+                                callback(null, payload.id);
                             })
                             .catch(e => callback(e));
                     }

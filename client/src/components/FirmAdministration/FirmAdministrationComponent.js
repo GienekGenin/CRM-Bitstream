@@ -148,7 +148,8 @@ class FirmAdministrationComponent extends Component {
                                         </div>
                                     ),
                                 }}
-                                isLoading={loading}
+                                // todo: bug if loading used
+                                // isLoading={loading}
                                 data={firms}
                                 columns={columns}
                                 title="Firms"
