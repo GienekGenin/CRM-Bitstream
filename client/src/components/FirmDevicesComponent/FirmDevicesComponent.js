@@ -338,6 +338,7 @@ class FirmDevicesComponent extends React.Component {
                                                 <div className={'custom-toolbar'}>
                                                     <FirmDevicesToolBarComponent
                                                         selected={selectedDevices && selectedDevices.length === 1 ? selectedDevices[0] : null}
+                                                        selectedDevices={selectedDevices}
                                                         resetSelected={this.resetSelected}
                                                         loading={loading}
                                                         addRemoveColumn={this.addRemoveColumn}

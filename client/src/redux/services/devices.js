@@ -29,7 +29,12 @@ const updateDevice = (payload) => {
 
 const getDeviceCS = (sid) => {
     const url = `${apiBase}devices/key`;
-    return postRequest(url, sid);
+    return postRequest(url, {sid});
+};
+
+const changeActivity = (sids, status) => {
+    const url = `${apiBase}devices/activity`;
+    return postRequest(url, {sids, status});
 };
 
 export const devicesService = {
@@ -38,5 +43,6 @@ export const devicesService = {
     deleteDevice,
     updateDeviceUsers,
     updateDevice,
-    getDeviceCS
+    getDeviceCS,
+    changeActivity
 };

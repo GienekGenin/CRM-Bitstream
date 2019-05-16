@@ -41,6 +41,12 @@ devices.post('/structure', TokenValidator.validateToken, (req, res, next) => {
         .catch(next);
 });
 
+devices.post('/activity', TokenValidator.validateToken, (req, res, next) => {
+    deviceService.changeActivity(req.body)
+        .then(PayloadGeneratorService.nextWithData(next, res))
+        .catch(next);
+});
+
 devices.delete('/', TokenValidator.validateToken, (req, res, next) => {
     deviceService.fakeDeleteStructure(req.body.sid)
         .then(PayloadGeneratorService.nextWithData(next, res))

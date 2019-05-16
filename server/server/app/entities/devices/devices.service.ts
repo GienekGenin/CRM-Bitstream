@@ -259,8 +259,14 @@ class DeviceService {
         return this.deviceRepository.replaceUserForDevices(parentId, adminId);
     }
 
-    getDeviceCS(body){
+    getDeviceCS(body) {
         return DeviceRegistryService.getDeviceCSFromRegistry(body.sid);
+    }
+
+    changeActivity(body) {
+        const sids = body.sids;
+        const status = body.status;
+        return DeviceRegistryService.changeActivity(sids, status);
     }
 }
 

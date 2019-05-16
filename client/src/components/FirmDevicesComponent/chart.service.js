@@ -78,7 +78,6 @@ export const forcedTree = (parent, stateDevices) => {
         return false
     }
     let treeData = [unflatten(arr)[0]];
-
     // Themes begin
     am4core.useTheme(am4themes_animated);
 // Themes end

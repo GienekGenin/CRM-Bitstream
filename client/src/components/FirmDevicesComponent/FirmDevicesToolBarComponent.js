@@ -32,6 +32,8 @@ import ListItem from "@material-ui/core/ListItem";
 import Checkbox from "@material-ui/core/Checkbox";
 import ListItemText from "@material-ui/core/ListItemText";
 import VpnKeyIcon from '@material-ui/icons/VpnKey';
+import RadioButtonCheckedIcon from '@material-ui/icons/RadioButtonChecked';
+import RadioButtonUncheckedIcon from '@material-ui/icons/RadioButtonUnchecked';
 
 // Redux
 import {connect} from "react-redux";
@@ -202,6 +204,15 @@ class FirmDevicesToolBar extends React.Component {
     handleColumnsChange = (title) => {
         let columns = this.state.columns.map((el, i, arr) => el.title === title ? arr[i] = Object.assign(el, {hidden: !el.hidden}) : el);
         this.setState({columns});
+    };
+
+    changeDeviceActivity = (activity) => {
+        const parentDeviceIds = this.props.selectedDevices
+            .filter(el => el.parent_id === '0')
+            .map(el => el.sid);
+        devicesService.changeActivity(parentDeviceIds, activity)
+            .then(d => console.log(d))
+            .catch(e => console.log(e));
     };
 
     componentDidMount() {
@@ -487,7 +498,8 @@ class FirmDevicesToolBar extends React.Component {
                                     </FormControl>
                                 </DialogContent>
                                 <DialogActions>
-                                    <Button variant="outlined" color="primary" disabled={this.state.newFirmDevice.coid < 1}
+                                    <Button variant="outlined" color="primary"
+                                            disabled={this.state.newFirmDevice.coid < 1}
                                             onClick={() => this.handleConfigUsersForDevice()}>
                                         Submit
                                     </Button>
@@ -526,17 +538,34 @@ class FirmDevicesToolBar extends React.Component {
                                                 </ListItem>
                                             </div>
                                         ))}
-                                        <Button fullWidth={true} onClick={this.handleCloseMenu} className={'submit-button'}>
+                                        <Button fullWidth={true} onClick={this.handleCloseMenu}
+                                                className={'submit-button'}>
                                             Submit
                                         </Button>
                                     </List>
                                 </Menu>
                             </div>
                         </Tooltip>
+                        <Tooltip title={'Turn on'}>
+                            <div>
+                                <IconButton variant="outlined" color="primary" disabled={this.props.loading}
+                                            onClick={() => this.changeDeviceActivity('Enabled')}>
+                                    <RadioButtonCheckedIcon/>
+                                </IconButton>
+                            </div>
+                        </Tooltip>
+                        <Tooltip title={'Turn off'}>
+                            <div>
+                                <IconButton variant="outlined" color="primary" disabled={this.props.loading}
+                                            onClick={() => this.changeDeviceActivity('Disabled')}>
+                                    <RadioButtonUncheckedIcon/>
+                                </IconButton>
+                            </div>
+                        </Tooltip>
                     </div>
                 </div>
                 {this.props.loading && <div className={'progress'}>
-                    <LinearProgress />
+                    <LinearProgress/>
                 </div>}
             </div>
         )
@@ -545,6 +574,7 @@ class FirmDevicesToolBar extends React.Component {
 
 FirmDevicesToolBar.propTypes = {
     selected: PropTypes.object,
+    selectedDevices: PropTypes.array,
     resetSelected: PropTypes.func,
     selectedFirmId: PropTypes.string,
     loading: PropTypes.bool,
