@@ -68,6 +68,7 @@ class FirmDevicesComponent extends React.Component {
                 {title: 'sn', field: 'sn', hidden: true,},
                 {title: 'soft', field: 'soft', hidden: true,},
                 {title: 'status', field: 'status', hidden: false,},
+                {title: 'azure', field: 'azure', hidden: false,},
                 {title: 'description', field: 'description', hidden: true,},
             ],
             selectedTypes: new Set(),

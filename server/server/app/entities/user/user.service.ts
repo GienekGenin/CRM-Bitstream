@@ -6,6 +6,7 @@ import {Types} from 'mongoose';
 import {tokenService} from '../../common/services/request-services/token.service';
 import {firmService} from '../firm/firm.service';
 import {deviceService} from '../devices/devices.service';
+import {DeviceRegistryService} from '../../common/services/azure-services/device.registry.service';
 
 class UsersService {
     private usersRepository: UserRepository;
@@ -238,7 +239,25 @@ class UsersService {
     }
 
     getDevicesByUserIds(id) {
-        return deviceService.getDevicesByUserIds(id);
+        return deviceService.getDevicesByUserIds(id)
+            .then(devices => {
+                const sids = devices.map(el => el.sid);
+                let devicesToUI = [];
+                return DeviceRegistryService.getActivity(sids)
+                    .then(twins => {
+                        for (let twinsKey in twins) {
+                            devices.forEach(device => {
+                                if (device._doc.sid === twins[twinsKey]['deviceId']) {
+                                    devicesToUI.push(Object.assign({}, device._doc, {azure: twins[twinsKey]['status']}))
+                                }
+                            })
+                        }
+                        let children = devices.filter(el => el.parent_id !== '0');
+                        devicesToUI = devicesToUI.concat(children);
+                        return devicesToUI;
+                    });
+
+            })
     }
 }
 

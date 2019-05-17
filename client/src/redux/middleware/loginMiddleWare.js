@@ -8,7 +8,8 @@ export const loginMiddleWare = ({dispatch}) => {
         return (action) => {
             if (action.type === loginConstants.LOGIN_REQUEST) {
                 userService.login(action.payload.email, action.payload.password)
-                    .then(() => {
+                    .then((token) => {
+                        localStorage.setItem('token', token);
                         const decoded = tokenService.verifyToken();
                         return dispatch({
                             type: loginConstants.LOGIN_SUCCESS,

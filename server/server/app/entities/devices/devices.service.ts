@@ -1,5 +1,4 @@
 import {DeviceRepository} from './devices.repository';
-import * as _ from 'lodash';
 import {Types} from 'mongoose';
 import * as async from 'async';
 import {DeviceRegistryService} from '../../common/services/azure-services/device.registry.service';
@@ -57,7 +56,10 @@ class DeviceService {
                     },
                     (deviceToDb, callback) => {
                         this.deviceRepository.save(deviceToDb)
-                            .then(d => callback(null, d['_doc']))
+                            .then(d => {
+                                console.log(deviceToDb);
+                                callback(null, d['_doc'])
+                            })
                             .catch(err => {
                                 DeviceRegistryService.deleteDevice(deviceToDb.sid)
                                     .then(() => callback('Unable to create device, try again later'))
@@ -166,10 +168,6 @@ class DeviceService {
     deleteStructure(base) {
         return this.deviceRepository.deleteStructure(base);
     }
-
-    // updateDeviceUsers(payload){
-    //     return this.deviceRepository.updateDeviceUsers(payload.sid, payload.coid);
-    // }
 
     updateDeviceUsers(payload) {
         return new Promise((resolve, reject) => {

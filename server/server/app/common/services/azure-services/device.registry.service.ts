@@ -113,5 +113,30 @@ export class DeviceRegistryService {
             )
         }))
     }
+
+    static getActivity(sids) {
+        const registry = Registry.fromConnectionString(DeviceRegistryService.connectionString);
+        return new Promise(((resolve, reject) => {
+            async.waterfall(
+                [
+                    callback => {
+                        registry.list()
+                            .then((payload) => {
+                                const devices: Device[] = payload.responseBody;
+                                const devicesToUI = devices
+                                    .filter(el => sids.includes(el.deviceId));
+                                callback(null, devicesToUI);
+                            })
+                            .catch(e => callback(e));
+                    }
+                ], (err, payload) => {
+                    if (err) {
+                        reject(err);
+                    }
+                    resolve(payload);
+                }
+            )
+        }))
+    }
 }
 
