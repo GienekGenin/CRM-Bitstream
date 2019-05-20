@@ -55,6 +55,9 @@ const deviceSchema = new mongoose.Schema({
 	con_type: {
 		type: String
 	},
+	units: {
+		type: String
+	},
 	deleted: {
 		type: Boolean,
 		required: true,
