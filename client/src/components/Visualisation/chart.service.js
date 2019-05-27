@@ -46,7 +46,7 @@ export const createLineChart = (data, selectedDevices) => {
 
         let dateAxis = chart.xAxes.push(new am4charts.DateAxis());
         dateAxis.renderer.grid.template.location = 0;
-        dateAxis.renderer.minGridDistance = 350;
+        dateAxis.renderer.minGridDistance = 150;
         dateAxis.renderer.labels.template.fill = am4core.color(color);
 
         let valueAxis = chart.yAxes.push(new am4charts.ValueAxis());

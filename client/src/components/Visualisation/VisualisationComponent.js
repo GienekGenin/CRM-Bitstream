@@ -165,13 +165,20 @@ class Visualisation extends React.Component {
                         reduxLinearData.push(el);
                     }
                 });
-                if (reduxLinearData.length !== linearData.length) {
+                if(linearData[0] && reduxLinearData.length){
+                    if(reduxLinearData[0].data.length !== linearData[0].data.length){
+                        d3.select('#lineChart').remove();
+                        d3.select('#parent-line-chart').append('div').attr("id", 'lineChart');
+                        createLineChart(reduxLinearData, selectedDevices);
+                        this.setState({linearData: reduxLinearData})
+                    }
+                } else {
                     d3.select('#lineChart').remove();
                     d3.select('#parent-line-chart').append('div').attr("id", 'lineChart');
-                    reduxLinearData.length && createLineChart(reduxLinearData, selectedDevices);
+                    createLineChart(reduxLinearData, selectedDevices);
                     this.setState({linearData: reduxLinearData})
                 }
-                if (reduxLocationData.length !== locationData.length) {
+                if (reduxLocationData.length) {
                     this.setState({locationData: reduxLocationData})
                 }
             }
