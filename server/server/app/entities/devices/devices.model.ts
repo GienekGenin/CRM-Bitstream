@@ -58,6 +58,18 @@ const deviceSchema = new mongoose.Schema({
 	units: {
 		type: String
 	},
+	version: {
+		type: String
+	},
+	time: {
+		type: Date,
+	},
+	value: {
+		type: mongoose.Schema.Types.Mixed,
+	},
+	status: {
+		type: String
+	},
 	deleted: {
 		type: Boolean,
 		required: true,
@@ -66,7 +78,4 @@ const deviceSchema = new mongoose.Schema({
 }, {versionKey: false, collection: 'devices'});
 
 export const deviceModel = mongoose.model('Device', deviceSchema);
-
-
-
 

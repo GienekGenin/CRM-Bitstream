@@ -39,7 +39,7 @@ export const createLineChart = (data, selectedDevices) => {
             if (value === 'OFFLINE') {
                 value = 0;
             }
-            chartData.push({['date' + i]: new Date(mes.ts), ['value' + i]: value});
+            chartData.push({['date' + i]: new Date(mes.ts), ['value' + i]: new Date(value)});
         });
 
         let color = getColorFromPalette(i);
@@ -64,7 +64,7 @@ export const createLineChart = (data, selectedDevices) => {
         series.dataFields.valueY = 'value' + i;
         series.yAxis = valueAxis;
         series.xAxis = dateAxis;
-        series.tooltipText = "{dateX.formatDate('yyyy-MM-dd hh:mm')}: [bold]{valueY}[/]";
+        series.tooltipText = "{dateX.formatDate('yyyy-MM-dd hh:mm:ss')}: [bold]{valueY}[/]";
         series.fill = am4core.color(color);
         series.stroke = am4core.color(color);
         // series.strokeWidth = 2;
