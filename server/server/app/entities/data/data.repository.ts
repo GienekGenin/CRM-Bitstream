@@ -52,7 +52,8 @@ export class DataRepository extends Repository {
                     'data': {
                         '$push': {
                             'value': '$value',
-                            'ts': '$ts'
+                            'ts': '$ts',
+                            'status': '$status'
                         }
                     }
                 }

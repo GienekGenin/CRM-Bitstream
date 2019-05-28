@@ -25,7 +25,7 @@ import ViewColumnIcon from '@material-ui/icons/ViewColumn';
 import TimelineIcon from '@material-ui/icons/Timeline';
 import {Grid, MuiThemeProvider} from '@material-ui/core';
 import MaterialTable from 'material-table';
-import {DatePicker, MuiPickersUtilsProvider} from "material-ui-pickers";
+import {DatePicker, MuiPickersUtilsProvider, DateTimePicker} from "material-ui-pickers";
 
 // Redux
 import {connect} from "react-redux";
@@ -272,9 +272,10 @@ class Visualisation extends React.Component {
                                                     <DialogContent>
                                                         <DialogContent>
                                                             <div className="picker">
-                                                                <DatePicker
+                                                                <DateTimePicker
                                                                     disabled={loading}
                                                                     autoOk
+                                                                    ampm={false}
                                                                     value={minSelectedDate}
                                                                     minDate={minTime}
                                                                     maxDate={maxSelectedDate}
@@ -282,8 +283,9 @@ class Visualisation extends React.Component {
                                                                     label="Min time"/>
                                                             </div>
                                                             <div className="picker">
-                                                                <DatePicker
+                                                                <DateTimePicker
                                                                     autoOk
+                                                                    ampm={false}
                                                                     disabled={loading}
                                                                     value={maxSelectedDate}
                                                                     maxDate={maxTime}

@@ -39,7 +39,19 @@ export const createLineChart = (data, selectedDevices) => {
             if (value === 'OFFLINE') {
                 value = 0;
             }
-            chartData.push({['date' + i]: new Date(mes.ts), ['value' + i]: new Date(value)});
+            let radius = 0;
+            let status = '';
+            let color = '#fff';
+            if(mes.status){
+                status = mes.status;
+                if(status === 'ERROR'){
+                    color = '#821';
+                } else {
+                    color = '#FF0';
+                }
+                radius = 5;
+            }
+            chartData.push({['date' + i]: new Date(mes.ts), ['value' + i]: new Date(value), status, radius, color});
         });
 
         let color = getColorFromPalette(i);
@@ -64,13 +76,19 @@ export const createLineChart = (data, selectedDevices) => {
         series.dataFields.valueY = 'value' + i;
         series.yAxis = valueAxis;
         series.xAxis = dateAxis;
-        series.tooltipText = "{dateX.formatDate('yyyy-MM-dd hh:mm:ss')}: [bold]{valueY}[/]";
+        series.tooltipText = "{dateX.formatDate('yyyy-MM-dd hh:mm:ss')}: [bold]{valueY}[/], [bold]{status}";
         series.fill = am4core.color(color);
         series.stroke = am4core.color(color);
         // series.strokeWidth = 2;
 
         dateAxis.renderer.grid.template.strokeOpacity = 0.07;
         valueAxis.renderer.grid.template.strokeOpacity = 0.07;
+
+        const latitudeBullet = series.bullets.push(new am4charts.CircleBullet());
+        latitudeBullet.circle.fill = am4core.color("#fff");
+        latitudeBullet.circle.strokeWidth = 2;
+        latitudeBullet.circle.propertyFields.radius = "radius";
+        latitudeBullet.circle.propertyFields.fill = 'color';
 
         if (dev.data.length === max) {
             let scrollbarX = new am4charts.XYChartScrollbar();
