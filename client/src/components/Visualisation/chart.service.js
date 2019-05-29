@@ -25,11 +25,10 @@ export const createLineChart = (data, selectedDevices) => {
     const chart = am4core.create("lineChart", am4charts.XYChart);
 
     const chartData = [];
-    let max, len = [];
-    data.forEach((dev, i) => {
-        len.push(dev.data.length);
-    });
-    max = Math.max(...len);
+
+    let dateAxis = chart.xAxes.push(new am4charts.DateAxis());
+    dateAxis.renderer.minGridDistance = 150;
+
     data.forEach((dev, i) => {
         dev.data.forEach(mes => {
             let value = mes.value;
@@ -51,38 +50,25 @@ export const createLineChart = (data, selectedDevices) => {
                 }
                 radius = 5;
             }
-            chartData.push({['date' + i]: new Date(mes.ts), ['value' + i]: new Date(value), status, radius, color});
+            chartData.push({['date']: new Date(mes.ts), ['value' + i]: value, status, radius, color});
         });
 
-        let color = getColorFromPalette(i);
-
-        let dateAxis = chart.xAxes.push(new am4charts.DateAxis());
-        dateAxis.renderer.grid.template.location = 0;
-        dateAxis.renderer.minGridDistance = 150;
-        dateAxis.renderer.labels.template.fill = am4core.color(color);
-
         let valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
-        valueAxis.tooltip.disabled = true;
-        // valueAxis.renderer.grid.template.strokeDasharray = "2,3";
-        valueAxis.renderer.labels.template.fill = am4core.color(color);
-        valueAxis.renderer.line.stroke = am4core.color(color);
-        valueAxis.renderer.minWidth = 60;
-        valueAxis.renderer.line.strokeOpacity = 1;
-        // valueAxis.renderer.line.strokeWidth = 2;
 
         let series = chart.series.push(new am4charts.LineSeries());
-        series.name = selectedDevices.filter(el => el.sid === dev._id.sid)[0].name;
-        series.dataFields.dateX = 'date' + i;
-        series.dataFields.valueY = 'value' + i;
+        series.dataFields.valueY = ['value' + i];
+        series.dataFields.dateX = "date";
+        series.strokeWidth = 2;
         series.yAxis = valueAxis;
-        series.xAxis = dateAxis;
-        series.tooltipText = "{dateX.formatDate('yyyy-MM-dd hh:mm:ss')}: [bold]{valueY}[/], [bold]{status}";
-        series.fill = am4core.color(color);
-        series.stroke = am4core.color(color);
-        // series.strokeWidth = 2;
+        series.name = selectedDevices.filter(el => el.sid === dev._id.sid)[0].name;
+        series.tooltipText = "{name}: [bold]{valueY}[/]";
+        series.tensionX = 0.8;
 
-        dateAxis.renderer.grid.template.strokeOpacity = 0.07;
-        valueAxis.renderer.grid.template.strokeOpacity = 0.07;
+        valueAxis.renderer.line.strokeOpacity = 1;
+        valueAxis.renderer.line.strokeWidth = 2;
+        valueAxis.renderer.line.stroke = series.stroke;
+        valueAxis.renderer.labels.template.fill = series.stroke;
+        valueAxis.renderer.grid.template.disabled = true;
 
         const latitudeBullet = series.bullets.push(new am4charts.CircleBullet());
         latitudeBullet.circle.fill = am4core.color("#fff");
@@ -90,17 +76,14 @@ export const createLineChart = (data, selectedDevices) => {
         latitudeBullet.circle.propertyFields.radius = "radius";
         latitudeBullet.circle.propertyFields.fill = 'color';
 
-        if (dev.data.length === max) {
-            let scrollbarX = new am4charts.XYChartScrollbar();
-            scrollbarX.series.push(series);
-            chart.scrollbarX = scrollbarX;
-        }
-
     });
-
     chart.data = chartData;
 
+    chart.scrollbarX = new am4core.Scrollbar();
+    chart.scrollbarY = new am4core.Scrollbar();
+
     chart.cursor = new am4charts.XYCursor();
+    chart.cursor.behavior = "zoomXY";
 
     chart.legend = new am4charts.Legend();
 

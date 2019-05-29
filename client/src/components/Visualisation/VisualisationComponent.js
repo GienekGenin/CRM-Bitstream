@@ -169,13 +169,13 @@ class Visualisation extends React.Component {
                     if(reduxLinearData[0].data.length !== linearData[0].data.length){
                         d3.select('#lineChart').remove();
                         d3.select('#parent-line-chart').append('div').attr("id", 'lineChart');
-                        createLineChart(reduxLinearData, selectedDevices);
+                        !this.timeDialog && createLineChart(reduxLinearData, selectedDevices);
                         this.setState({linearData: reduxLinearData})
                     }
                 } else {
                     d3.select('#lineChart').remove();
                     d3.select('#parent-line-chart').append('div').attr("id", 'lineChart');
-                    createLineChart(reduxLinearData, selectedDevices);
+                    !this.timeDialog && createLineChart(reduxLinearData, selectedDevices);
                     this.setState({linearData: reduxLinearData})
                 }
                 if (reduxLocationData.length) {
