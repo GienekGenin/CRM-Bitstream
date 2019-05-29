@@ -83,7 +83,7 @@ export const createLineChart = (data, selectedDevices) => {
     chart.scrollbarY = new am4core.Scrollbar();
 
     chart.cursor = new am4charts.XYCursor();
-    chart.cursor.behavior = "zoomXY";
+    chart.cursor.behavior = "zoomX";
 
     chart.legend = new am4charts.Legend();
 
