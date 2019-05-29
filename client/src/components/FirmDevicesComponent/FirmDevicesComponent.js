@@ -2,7 +2,6 @@ import React from "react";
 import ReactDOM from "react-dom";
 import * as PropTypes from 'prop-types';
 import _ from "lodash";
-import * as d3 from "d3";
 
 // Material
 import {withStyles} from '@material-ui/core/styles';
@@ -24,7 +23,7 @@ import './firmDevices.scss';
 import FirmDevicesToolBarComponent from "./FirmDevicesToolBarComponent";
 
 // Services
-import {forcedTree, createPie, createPiePhyid} from "./chart.service";
+import {forcedTree, createPie, createPiePhyid, createPieGroup} from "./chart.service";
 
 const mapDispatchToProps = (dispatch) => {
     return {
@@ -52,31 +51,22 @@ class FirmDevicesComponent extends React.Component {
             selectedDevices: [],
             selectedDeviceIds: [],
             columns: [
-                {
-                    title: 'Select',
-                    field: 'action',
-                    filtering: false,
-                    sorting: false,
-                    hidden: false,
-                },
-                {
-                    title: 'Name',
-                    field: 'name',
-                    hidden: false,
-                },
+                {title: 'Select', field: 'action', filtering: false, sorting: false, hidden: false,},
+                {title: 'Name', field: 'name', hidden: false,},
                 {title: 'phyid', field: 'phyid', hidden: false,},
                 {title: 'sn', field: 'sn', hidden: true,},
                 {title: 'soft', field: 'soft', hidden: true,},
                 {title: 'status', field: 'status', hidden: false,},
                 {title: 'azure', field: 'azure', hidden: false,},
+                {title: 'group', field: 'groupid', hidden: false,},
                 {title: 'auto_desc', field: 'auto_desc', hidden: false,},
                 {title: 'user_desc', field: 'user_desc', hidden: false,},
                 {title: 'time', field: 'time', hidden: false,},
                 {title: 'value', field: 'value', hidden: false,},
-                {title: 'group', field: 'groupid', hidden: false,},
             ],
             selectedTypes: new Set(),
-            selectedPhyids: new Set()
+            selectedPhyids: new Set(),
+            selectedGroups: new Set()
         };
 
         this.resetSelected = this.resetSelected.bind(this);
@@ -85,6 +75,7 @@ class FirmDevicesComponent extends React.Component {
         this.forcedTree = forcedTree.bind(this);
         this.createPie = createPie.bind(this);
         this.createPiePhyid = createPiePhyid.bind(this);
+        this.createPieGroup = createPieGroup.bind(this);
     }
 
     componentDidMount() {
@@ -99,7 +90,8 @@ class FirmDevicesComponent extends React.Component {
                 this.props.userDevicesRequest(selectedUserIds);
             } else {
                 this.createPie(parentDevices, this);
-                this.createPiePhyid(parentDevices, this);
+                // this.createPiePhyid(parentDevices, this);
+                // this.createPieGroup(parentDevices, this);
                 let checked = false;
                 if (selectedDevices && selectedDevices.length === parentDevices.length) {
                     checked = true;
@@ -114,7 +106,8 @@ class FirmDevicesComponent extends React.Component {
                 this.props.userDevicesRequest(selectedUser._id);
             } else {
                 this.createPie(parentDevices, this);
-                this.createPiePhyid(parentDevices, this);
+                // this.createPiePhyid(parentDevices, this);
+                // this.createPieGroup(parentDevices, this);
                 this.setState({devices: parentDevices, loading: false});
             }
         }
@@ -131,8 +124,13 @@ class FirmDevicesComponent extends React.Component {
             if (store.getState().devicesReducer.devices) {
                 const devices = store.getState().devicesReducer.devices;
                 this.createPie(devices, this);
-                this.createPiePhyid(devices, this);
-                this.setState({devices, selectedTypes: new Set(), selectedPhyids: new Set()});
+                // this.createPiePhyid(devices, this);
+                // this.createPieGroup(devices, this);
+                this.setState({
+                    devices,
+                    selectedTypes: new Set(),
+                    selectedPhyids: new Set(),
+                    selectedGroups: new Set()});
                 this.props.handleSetDevices(devices);
             }
             return true;
@@ -188,89 +186,6 @@ class FirmDevicesComponent extends React.Component {
         this.props.onDeviceSelect(devices);
     }
 
-    chartSelect() {
-        this.renderSelectAllCheckBox(false);
-        d3.select('#tree').remove();
-        let reduxDevices = store.getState().devicesReducer.devices;
-        let {selectedTypes, selectedPhyids} = this.state;
-        let filteredDevicesParents = [];
-        let filteredDevicesChildren = new Set();
-        let filteredDevices = new Set();
-        if (!selectedTypes.size && !selectedPhyids.size) {
-            return this.setState({devices: reduxDevices});
-        }
-        if (selectedTypes.size && !selectedPhyids.size) {
-            selectedTypes.forEach(typeId => {
-                reduxDevices.forEach(device => {
-                    if (device.type === typeId) {
-                        filteredDevicesParents.push(device);
-                    }
-                })
-            });
-            let children = [];
-            filteredDevicesParents.forEach(parent => {
-                reduxDevices.forEach(device => {
-                    if (device.parent_id && device.parent_id.includes(parent.sid)) {
-                        children.push(device);
-                    }
-                })
-            });
-            filteredDevicesParents = filteredDevicesParents.concat(children);
-            this.setState({devices: filteredDevicesParents});
-        }
-        if (selectedPhyids.size && !selectedTypes.size) {
-            selectedPhyids.forEach(phyid => {
-                reduxDevices.forEach(device => {
-                    if (device.phyid === phyid) {
-                        filteredDevicesChildren.add(device);
-                    }
-                })
-            });
-            this.setState({devices: [...filteredDevicesChildren]});
-        }
-        if (selectedTypes.size && selectedPhyids.size) {
-            let trueParents = new Set();
-            selectedTypes.forEach(typeId => {
-                reduxDevices.forEach(device => {
-                    if (device.type === typeId) {
-                        filteredDevicesParents.push(device);
-                    }
-                })
-            });
-            selectedPhyids.forEach(phyid => {
-                reduxDevices.forEach(device => {
-                    if (device.phyid === 'status') {
-                        filteredDevicesChildren.add(device);
-                    }
-                });
-                if (phyid !== 'status') {
-                    reduxDevices.forEach(device => {
-                        if (device.phyid === phyid) {
-                            filteredDevicesChildren.add(device);
-                        }
-                    })
-                }
-            });
-            let result;
-            filteredDevicesParents.forEach(parent => {
-                filteredDevicesChildren.forEach(child => {
-                    if (child.parent_id.includes(parent.sid)) {
-                        trueParents.add(parent);
-                        filteredDevices.add(child);
-                    }
-                })
-            });
-            result = [...trueParents].concat([...filteredDevices]);
-            if (!trueParents.size) {
-                this.setState({devices: []})
-            } else {
-                this.setState({devices: result});
-            }
-        }
-        this.resetSelected();
-        this.props.resetSelectedDeviceParent();
-    }
-
     selectAllDevices() {
         const {devices, selectedDevices} = this.state;
         if (devices.length === selectedDevices.length) {
@@ -313,22 +228,33 @@ class FirmDevicesComponent extends React.Component {
                             spacing={40}
 
                         >
-                            <Grid item xs={12} sm={12} md={12} lg={6}>
+                            <Grid item xs={12} sm={12} md={12} lg={4}>
                                 <Paper className={'chart-container'}>
                                     <div className={'chart-toolbar'}>
                                         <h3>
-                                            Click to select devices
+                                            Device types
                                         </h3>
                                     </div>
                                     <div id={'device-types-chart'}>
                                     </div>
                                 </Paper>
                             </Grid>
-                            <Grid item xs={12} sm={12} md={12} lg={6}>
+                            <Grid item xs={12} sm={12} md={12} lg={4}>
                                 <Paper className={'chart-container'}>
                                     <div className={'chart-toolbar'}>
                                         <h3>
-                                            Device phyid types
+                                            Phyid groups
+                                        </h3>
+                                    </div>
+                                    <div id='pie-group'>
+                                    </div>
+                                </Paper>
+                            </Grid>
+                            <Grid item xs={12} sm={12} md={12} lg={4}>
+                                <Paper className={'chart-container'}>
+                                    <div className={'chart-toolbar'}>
+                                        <h3>
+                                            Phyid types
                                         </h3>
                                     </div>
                                     <div id='pie-phyid'>
