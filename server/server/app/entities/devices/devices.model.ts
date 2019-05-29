@@ -1,6 +1,5 @@
 import * as mongoose from 'mongoose';
 import {usersService} from '../user/user.service';
-import {deviceService} from './devices.service';
 
 const deviceSchema = new mongoose.Schema({
 	name: {
@@ -69,6 +68,10 @@ const deviceSchema = new mongoose.Schema({
 	},
 	status: {
 		type: String
+	},
+	groupid: {
+		type: String,
+		default: 'General'
 	},
 	deleted: {
 		type: Boolean,

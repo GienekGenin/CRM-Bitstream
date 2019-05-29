@@ -69,7 +69,11 @@ class FirmDevicesComponent extends React.Component {
                 {title: 'soft', field: 'soft', hidden: true,},
                 {title: 'status', field: 'status', hidden: false,},
                 {title: 'azure', field: 'azure', hidden: false,},
-                {title: 'description', field: 'description', hidden: true,},
+                {title: 'auto_desc', field: 'auto_desc', hidden: false,},
+                {title: 'user_desc', field: 'user_desc', hidden: false,},
+                {title: 'time', field: 'time', hidden: false,},
+                {title: 'value', field: 'value', hidden: false,},
+                {title: 'group', field: 'groupid', hidden: false,},
             ],
             selectedTypes: new Set(),
             selectedPhyids: new Set()
