@@ -20,8 +20,8 @@ const getColorFromPalette = (i) => {
 };
 
 export const createLineChart = (data, selectedDevices) => {
-    am4core.unuseAllThemes();
-    // am4core.useTheme(am4themes_animated);
+    // am4core.unuseAllThemes();
+    am4core.useTheme(am4themes_animated);
     // am4core.options.minPolylineStep = 10;
     // series.minBulletDistance = 20;
     const chart = am4core.create("lineChart", am4charts.XYChart);
@@ -63,7 +63,7 @@ export const createLineChart = (data, selectedDevices) => {
         series.yAxis = valueAxis;
         series.name = selectedDevices.filter(el => el.sid === dev.sid)[0].name;
         series.tooltipText = "{name}: [bold]{valueY}[/]";
-        series.tensionX = 0.8;
+        // series.tensionX = 0.8;
 
         valueAxis.renderer.line.strokeOpacity = 1;
         valueAxis.renderer.line.strokeWidth = 2;
