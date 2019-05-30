@@ -40,28 +40,99 @@ export class DataRepository extends Repository {
                 }
             },
             {
-                '$sort': {
-                    'ts': 1
-                }
-            },
-            {
                 '$group': {
                     '_id': {
-                        'sid': '$device_id'
+                        'sid': '$device_id',
+                        'dayOfYear': {
+                            '$dayOfYear': '$ts'
+                        },
+                        'hour': {
+                            '$hour': '$ts'
+                        },
+                        'interval': {
+                            '$subtract': [
+                                {
+                                    '$minute': '$ts'
+                                }, {
+                                    '$mod': [
+                                        {
+                                            '$minute': '$ts'
+                                        }, 10
+                                    ]
+                                }
+                            ]
+                        }
                     },
                     'data': {
                         '$push': {
                             'value': '$value',
-                            'ts': '$ts',
-                            'status': '$status'
+                            'ts': '$ts'
                         }
+                    },
+                    'count': {
+                        '$sum': 1
                     }
+                }
+            }, {
+                '$project': {
+                    'minData': {
+                        '$min': '$data'
+                    },
+                    'maxData': {
+                        '$max': '$data'
+                    }
+                }
+            }, {
+                '$group': {
+                    '_id': {
+                        'sid': '$_id.sid'
+                    },
+                    'mins': {
+                        '$push': '$minData'
+                    },
+                    'maxs': {
+                        '$push': '$maxData'
+                    }
+                }
+            }, {
+                '$project': {
+                    '_id': 0,
+                    'data': {
+                        '$concatArrays': [
+                            '$mins', '$maxs'
+                        ]
+                    },
+                    'sid': '$_id.sid'
+                }
+            }, {
+                '$unwind': {
+                    'path': '$data',
+                    'preserveNullAndEmptyArrays': false
+                }
+            }, {
+                '$sort': {
+                    'data.ts': 1
+                }
+            }, {
+                '$group': {
+                    '_id': {
+                        'sid': '$sid'
+                    },
+                    'data': {
+                        '$push': '$data'
+                    }
+                }
+            }, {
+                '$project': {
+                    '_id': 0,
+                    'data': 1,
+                    'sid': '$_id.sid'
                 }
             }
         ])
     }
 
-    getDevicesWithData(body){
+    getDevicesWithData(body) {
         return this.model.aggregate([
             {
                 '$match': {

@@ -20,16 +20,16 @@ const getColorFromPalette = (i) => {
 };
 
 export const createLineChart = (data, selectedDevices) => {
+    am4core.unuseAllThemes();
     // am4core.useTheme(am4themes_animated);
-    am4core.options.minPolylineStep = 10;
+    // am4core.options.minPolylineStep = 10;
     // series.minBulletDistance = 20;
     const chart = am4core.create("lineChart", am4charts.XYChart);
 
     const chartData = [];
 
     let dateAxis = chart.xAxes.push(new am4charts.DateAxis());
-    dateAxis.renderer.minGridDistance = 150;
-
+    dateAxis.renderer.minGridDistance = 50;
     data.forEach((dev, i) => {
         dev.data.forEach(mes => {
             let value = mes.value;
@@ -61,7 +61,7 @@ export const createLineChart = (data, selectedDevices) => {
         series.dataFields.dateX = "date";
         series.strokeWidth = 2;
         series.yAxis = valueAxis;
-        series.name = selectedDevices.filter(el => el.sid === dev._id.sid)[0].name;
+        series.name = selectedDevices.filter(el => el.sid === dev.sid)[0].name;
         series.tooltipText = "{name}: [bold]{valueY}[/]";
         series.tensionX = 0.8;
 
@@ -81,7 +81,6 @@ export const createLineChart = (data, selectedDevices) => {
     chart.data = chartData;
 
     chart.scrollbarX = new am4core.Scrollbar();
-    chart.scrollbarY = new am4core.Scrollbar();
 
     chart.cursor = new am4charts.XYCursor();
     chart.cursor.behavior = "zoomX";
@@ -92,6 +91,8 @@ export const createLineChart = (data, selectedDevices) => {
 };
 
 export const createDragPhyidPie = (devicesToShow, _this) => {
+    am4core.useTheme(am4themes_animated);
+
     let {selectedPhyids} = _this.state;
     if (devicesToShow) {
         let parsedData = [];
@@ -125,7 +126,6 @@ export const createDragPhyidPie = (devicesToShow, _this) => {
                 data.push(objToChart);
         }
 
-        am4core.useTheme(am4themes_animated);
 
         // cointainer to hold both charts
         const container = am4core.create("pie-phyid-vis", am4core.Container);
