@@ -20,8 +20,9 @@ const getColorFromPalette = (i) => {
 };
 
 export const createLineChart = (data, selectedDevices) => {
-    am4core.useTheme(am4themes_animated);
-
+    // am4core.useTheme(am4themes_animated);
+    am4core.options.minPolylineStep = 10;
+    // series.minBulletDistance = 20;
     const chart = am4core.create("lineChart", am4charts.XYChart);
 
     const chartData = [];
