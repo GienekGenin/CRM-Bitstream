@@ -13,6 +13,11 @@ const dataSchema = new mongoose.Schema({
         type: Date,
         required: true
     },
+    status: [
+        {
+            type: String
+        }
+    ],
     createdAt: {
         type: Date,
         default: Date.now
@@ -20,7 +25,4 @@ const dataSchema = new mongoose.Schema({
 }, {versionKey: false, collection: 'data'});
 
 export const dataModel = mongoose.model('Data', dataSchema);
-
-
-
 

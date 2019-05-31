@@ -4,6 +4,7 @@ import * as dotenv from 'dotenv';
 import DateFnsUtils from "@date-io/date-fns";
 import _ from "lodash";
 import * as d3 from "d3";
+import * as moment from 'moment';
 
 //Material
 import {theme} from "../material.theme";

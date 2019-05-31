@@ -1,11 +1,19 @@
 import {DataRepository} from './data.repository';
 import * as async from 'async';
+import * as moment from 'moment';
 
 class DeviceTypesService {
     private dataRepository: DataRepository;
 
     constructor() {
         this.dataRepository = new DataRepository();
+    }
+
+    diffInHours(minSelectedDate, maxSelectedDate) {
+        const minDate = moment(new Date(minSelectedDate), 'DD/MM/YYYY HH:mm:ss:Z');
+        const maxDate = moment(new Date(maxSelectedDate), 'DD/MM/YYYY HH:mm:ss:Z');
+        const hours = maxDate.diff(minDate, 'hours');
+        return Math.abs(hours);
     }
 
     getMinMaxTime(deviceIds) {
@@ -44,22 +52,57 @@ class DeviceTypesService {
     }
 
     getData(body) {
-        return new Promise(((resolve, reject) => {
-            async.waterfall([
-                callback => {
-                    this.dataRepository.getData(body)
-                        .then(data => {
-                            callback(null, data);
-                        })
-                        .catch(e => callback(e));
-                }
-            ], (err, payload) => {
-                if (err) {
-                    reject(err);
-                }
-                resolve(payload);
-            })
-        }))
+        let diff = this.diffInHours(body.minSelectedDate, body.maxSelectedDate);
+        if (diff > 48) {
+            return new Promise(((resolve, reject) => {
+                async.waterfall([
+                    callback => {
+                        this.dataRepository.countDataByDevice(body)
+                            .then(counter => {
+                                let zoomedIndexes = [];
+                                let allIndexes = [];
+                                counter.forEach(el => {
+                                    if (el.count > 5000) {
+                                        zoomedIndexes.push(el.sid);
+                                    } else {
+                                        allIndexes.push(el.sid);
+                                    }
+                                });
+                                callback(null, allIndexes, zoomedIndexes);
+                            })
+                            .catch(e => callback(e));
+                    },
+                    async (allIndexes, zoomedIndexes, callback) => {
+                        const bodyAll = Object.assign({}, body, {
+                            sids: allIndexes
+                        });
+                        const bodyZoom = Object.assign({}, body, {
+                            sids: zoomedIndexes
+                        });
+                        let payload = [];
+                        await this.dataRepository.getAllData(bodyAll)
+                            .then(d => {
+                                payload = payload.concat(d);
+                            })
+                            .catch(e => console.log(e));
+                        await this.dataRepository.getDataWithZoom(bodyZoom, 10)
+                            .then(d => {
+                                payload = payload.concat(d);
+                            })
+                            .catch(e => console.log(e));
+                        callback(null, payload);
+                    }
+                ], (err, payload) => {
+                    console.log(err, payload);
+                    if (err) {
+                        reject(err);
+                    }
+                    resolve(payload);
+                })
+            }))
+        } else {
+
+        }
     }
 
     getDevicesWithData(body) {

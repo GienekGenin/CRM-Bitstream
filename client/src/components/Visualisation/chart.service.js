@@ -29,7 +29,7 @@ export const createLineChart = (data, selectedDevices) => {
     const chartData = [];
 
     let dateAxis = chart.xAxes.push(new am4charts.DateAxis());
-    dateAxis.renderer.minGridDistance = 50;
+    dateAxis.renderer.minGridDistance = 150;
     data.forEach((dev, i) => {
         dev.data.forEach(mes => {
             let value = mes.value;

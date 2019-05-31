@@ -19,7 +19,55 @@ export class DataRepository extends Repository {
         }).sort({ts: 1}).select({ts: 1, _id: 0});
     }
 
-    getData(body) {
+    getAllData(body) {
+        return this.model.aggregate([
+            {
+                '$match': {
+                    $and: [
+                        {ts: {$gte: new Date(body.minSelectedDate)}},
+                        {ts: {$lte: new Date(body.maxSelectedDate)}},
+                        {device_id: {$in: body.sids}},
+                        {
+                            $or: [
+                                {value: {$type: 'double'}},
+                                {value: {$type: 'int'}},
+                                {value: {$type: 'long'}},
+                                {value: {$type: 'array'}},
+                                {value: {$in: ['ONLINE', 'OFFLINE']}}
+                            ]
+                        }
+                    ]
+                }
+            },
+            {
+                '$sort': {
+                    'ts': 1
+                }
+            },
+            {
+                '$group': {
+                    '_id': {
+                        'sid': '$device_id'
+                    },
+                    'data': {
+                        '$push': {
+                            'value': '$value',
+                            'ts': '$ts'
+                        }
+                    }
+                }
+            },
+            {
+                '$project': {
+                    '_id': 0,
+                    'data': 1,
+                    'sid': '$_id.sid'
+                }
+            }
+        ])
+    }
+
+    getDataWithZoom(body, zoom) {
         return this.model.aggregate([
             {
                 '$match': {
@@ -57,7 +105,7 @@ export class DataRepository extends Repository {
                                     '$mod': [
                                         {
                                             '$minute': '$ts'
-                                        }, 10
+                                        }, zoom
                                     ]
                                 }
                             ]
@@ -127,6 +175,58 @@ export class DataRepository extends Repository {
                     '_id': 0,
                     'data': 1,
                     'sid': '$_id.sid'
+                }
+            }
+        ])
+    }
+
+    countDataByDevice(body) {
+        return this.model.aggregate([
+            {
+                '$match': {
+                    $and: [
+                        {ts: {$gte: new Date(body.minSelectedDate)}},
+                        {ts: {$lte: new Date(body.maxSelectedDate)}},
+                        {device_id: {$in: body.sids}},
+                        {
+                            '$or': [
+                                {
+                                    'value': {
+                                        '$type': 'double'
+                                    }
+                                }, {
+                                    'value': {
+                                        '$type': 'int'
+                                    }
+                                }, {
+                                    'value': {
+                                        '$type': 'long'
+                                    }
+                                }, {
+                                    'value': {
+                                        '$in': [
+                                            'ONLINE', 'OFFLINE'
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    ]
+                }
+            }, {
+                '$group': {
+                    '_id': {
+                        'sid': '$device_id'
+                    },
+                    'count': {
+                        '$sum': 1
+                    }
+                }
+            }, {
+                '$project': {
+                    '_id': 0,
+                    'sid': '$_id.sid',
+                    'count': 1
                 }
             }
         ])
