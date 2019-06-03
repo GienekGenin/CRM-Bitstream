@@ -53,8 +53,8 @@ class DeviceTypesService {
 
     getData(body) {
         let diff = this.diffInHours(body.minSelectedDate, body.maxSelectedDate);
-        if (diff > 48) {
-            return new Promise(((resolve, reject) => {
+        return new Promise(((resolve, reject) => {
+            if (diff > 48) {
                 async.waterfall([
                     callback => {
                         this.dataRepository.countDataByDevice(body)
@@ -99,10 +99,59 @@ class DeviceTypesService {
                     }
                     resolve(payload);
                 })
-            }))
-        } else {
-
-        }
+            } else {
+                if (diff > 2) {
+                    async.waterfall([
+                        callback => {
+                            this.dataRepository.countDataByDevice(body)
+                                .then(counter => {
+                                    let zoomedIndexes = [];
+                                    let allIndexes = [];
+                                    counter.forEach(el => {
+                                        if (el.count > 5000) {
+                                            zoomedIndexes.push(el.sid);
+                                        } else {
+                                            allIndexes.push(el.sid);
+                                        }
+                                    });
+                                    callback(null, allIndexes, zoomedIndexes);
+                                })
+                                .catch(e => callback(e));
+                        },
+                        async (allIndexes, zoomedIndexes, callback) => {
+                            const bodyAll = Object.assign({}, body, {
+                                sids: allIndexes
+                            });
+                            const bodyZoom = Object.assign({}, body, {
+                                sids: zoomedIndexes
+                            });
+                            let payload = [];
+                            await this.dataRepository.getAllData(bodyAll)
+                                .then(d => {
+                                    payload = payload.concat(d);
+                                })
+                                .catch(e => console.log(e));
+                            await this.dataRepository.getDataWithZoom(bodyZoom, 1)
+                                .then(d => {
+                                    payload = payload.concat(d);
+                                })
+                                .catch(e => console.log(e));
+                            callback(null, payload);
+                        }
+                    ], (err, payload) => {
+                        console.log(err, payload);
+                        if (err) {
+                            reject(err);
+                        }
+                        resolve(payload);
+                    })
+                } else {
+                    this.dataRepository.getAllData(body)
+                        .then(d => resolve(d))
+                        .catch(e => reject(e));
+                }
+            }
+        }))
     }
 
     getDevicesWithData(body) {

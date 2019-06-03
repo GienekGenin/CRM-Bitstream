@@ -153,7 +153,7 @@ class Visualisation extends React.Component {
 
         this.unsubscribe = store.subscribe(() => {
 
-            const {linearData, locationData} = this.state;
+            const {linearData, locationData, timeDialog} = this.state;
             this.setState({loading: true});
             if (store.getState().dataReducer.data.length) {
                 const reduxData = store.getState().dataReducer.data;
@@ -166,11 +166,11 @@ class Visualisation extends React.Component {
                         reduxLinearData.push(el);
                     }
                 });
-                if(linearData[0] && reduxLinearData.length){
-                    if(reduxLinearData[0].data.length !== linearData[0].data.length){
+                if (linearData.length) {
+                    if (reduxLinearData.length && linearData[0].data.length !== reduxLinearData[0].data.length) {
                         d3.select('#lineChart').remove();
                         d3.select('#parent-line-chart').append('div').attr("id", 'lineChart');
-                        !this.timeDialog && createLineChart(reduxLinearData, selectedDevices);
+                        !timeDialog && createLineChart(reduxLinearData, selectedDevices);
                         this.setState({linearData: reduxLinearData})
                     }
                 } else {

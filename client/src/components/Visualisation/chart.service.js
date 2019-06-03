@@ -30,6 +30,8 @@ export const createLineChart = (data, selectedDevices) => {
 
     let dateAxis = chart.xAxes.push(new am4charts.DateAxis());
     dateAxis.renderer.minGridDistance = 150;
+    dateAxis.minZoomCount = 10;
+
     data.forEach((dev, i) => {
         dev.data.forEach(mes => {
             let value = mes.value;
@@ -42,8 +44,8 @@ export const createLineChart = (data, selectedDevices) => {
             let radius = 0;
             let status = '';
             let color = '#fff';
-            if(mes.status){
-                status = mes.status;
+            if(mes.status && mes.status[0]){
+                status = mes.status[0];
                 if(status === 'ERROR'){
                     color = '#821';
                 } else {
@@ -61,7 +63,8 @@ export const createLineChart = (data, selectedDevices) => {
         series.dataFields.dateX = "date";
         series.strokeWidth = 2;
         series.yAxis = valueAxis;
-        series.name = selectedDevices.filter(el => el.sid === dev.sid)[0].name;
+        const device = selectedDevices.filter(el => el.sid === dev.sid)[0];
+        series.name = device ? device.name : '';
         series.tooltipText = "{name}: [bold]{valueY}[/]";
         // series.tensionX = 0.8;
 
@@ -79,7 +82,7 @@ export const createLineChart = (data, selectedDevices) => {
 
     });
     chart.data = chartData;
-
+    console.log(chartData);
     chart.scrollbarX = new am4core.Scrollbar();
 
     chart.cursor = new am4charts.XYCursor();
