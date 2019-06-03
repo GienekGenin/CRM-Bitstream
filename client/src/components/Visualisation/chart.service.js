@@ -1,6 +1,14 @@
 import * as am4core from "@amcharts/amcharts4/core";
 import * as am4charts from "@amcharts/amcharts4/charts";
 import am4themes_animated from "@amcharts/amcharts4/themes/animated";
+import * as moment from 'moment';
+
+const diffInHours = (minSelectedDate, maxSelectedDate) => {
+    const minDate = moment(new Date(minSelectedDate), 'DD/MM/YYYY HH:mm:ss:Z');
+    const maxDate = moment(new Date(maxSelectedDate), 'DD/MM/YYYY HH:mm:ss:Z');
+    const hours = maxDate.diff(minDate, 'hours');
+    return Math.abs(hours);
+};
 
 const getColorFromPalette = (i) => {
     const colors = [
@@ -19,9 +27,9 @@ const getColorFromPalette = (i) => {
     }
 };
 
-export const createLineChart = (data, selectedDevices) => {
-    // am4core.unuseAllThemes();
-    am4core.useTheme(am4themes_animated);
+export const createLineChart = (_this, data, selectedDevices) => {
+    am4core.unuseAllThemes();
+    // am4core.useTheme(am4themes_animated);
     // am4core.options.minPolylineStep = 10;
     // series.minBulletDistance = 20;
     const chart = am4core.create("lineChart", am4charts.XYChart);
@@ -30,9 +38,37 @@ export const createLineChart = (data, selectedDevices) => {
 
     let dateAxis = chart.xAxes.push(new am4charts.DateAxis());
     dateAxis.renderer.minGridDistance = 150;
-    dateAxis.minZoomCount = 10;
-
+    // dateAxis.minZoomCount = 10;
+    let init = false;
+    let prevMin, prevMax, prevDiff;
+    const dateAxisChanged = (ev) => {
+        const start = new Date(ev.target.minZoomed);
+        const end = new Date(ev.target.maxZoomed);
+        if (init) {
+            let newDiff = diffInHours(start, end);
+            console.log(newDiff);
+            if (prevDiff > 48 && (newDiff >= 2 && newDiff < 48)) {
+                console.log('load');
+                _this.handleChartZoom(start, end);
+            }
+            if (prevDiff >= 2 && newDiff < 2) {
+                console.log('load');
+                _this.handleChartZoom(start, end);
+            }
+            prevDiff = newDiff;
+            // console.log("New range: " + start + " -- " + end);
+        } else {
+            init = true;
+            prevMin = start;
+            prevMax = end;
+            prevDiff = diffInHours(prevMin, prevMax);
+            // console.log("New range: " + start + " -- " + end);
+        }
+    };
+    dateAxis.events.on("selectionextremeschanged", dateAxisChanged);
+    let con = [];
     data.forEach((dev, i) => {
+        con = con.concat(dev.data);
         dev.data.forEach(mes => {
             let value = mes.value;
             if (value === 'ONLINE') {
@@ -44,9 +80,9 @@ export const createLineChart = (data, selectedDevices) => {
             let radius = 0;
             let status = '';
             let color = '#fff';
-            if(mes.status && mes.status[0]){
+            if (mes.status && mes.status[0]) {
                 status = mes.status[0];
-                if(status === 'ERROR'){
+                if (status === 'ERROR') {
                     color = '#821';
                 } else {
                     color = '#FF0';
@@ -74,6 +110,11 @@ export const createLineChart = (data, selectedDevices) => {
         valueAxis.renderer.labels.template.fill = series.stroke;
         valueAxis.renderer.grid.template.disabled = true;
 
+        // chart.events.on("ready", function (ev) {
+        //     valueAxis.min = valueAxis.minZoomed;
+        //     valueAxis.max = valueAxis.maxZoomed;
+        // });
+
         const latitudeBullet = series.bullets.push(new am4charts.CircleBullet());
         latitudeBullet.circle.fill = am4core.color("#fff");
         latitudeBullet.circle.strokeWidth = 2;
@@ -81,8 +122,12 @@ export const createLineChart = (data, selectedDevices) => {
         latitudeBullet.circle.propertyFields.fill = 'color';
 
     });
+
+    chartData.sort((a, b) => {
+        return a.date - b.date
+    });
+    localStorage.setItem('chartData', JSON.stringify(chartData));
     chart.data = chartData;
-    console.log(chartData);
     chart.scrollbarX = new am4core.Scrollbar();
 
     chart.cursor = new am4charts.XYCursor();

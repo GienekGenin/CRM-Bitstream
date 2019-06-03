@@ -103,6 +103,7 @@ class Visualisation extends React.Component {
 
         this.createDragPhyidPie = createDragPhyidPie.bind(this);
         this.resetSelected = this.resetSelected.bind(this);
+        this.handleChartZoom = this.handleChartZoom.bind(this);
     }
 
     handleClickMenu = event => {
@@ -135,6 +136,11 @@ class Visualisation extends React.Component {
         const {minSelectedDate, maxSelectedDate, selectedDeviceIds} = this.state;
         this.props.getDataRequest(minSelectedDate, maxSelectedDate, selectedDeviceIds);
         this.handleClose('timeDialog');
+    }
+
+    handleChartZoom(minSelectedDate, maxSelectedDate) {
+        const {selectedDeviceIds} = this.state;
+        this.props.getDataRequest(minSelectedDate, maxSelectedDate, selectedDeviceIds);
     }
 
     handleTimeChange(state, time) {
@@ -170,13 +176,13 @@ class Visualisation extends React.Component {
                     if (reduxLinearData.length && linearData[0].data.length !== reduxLinearData[0].data.length) {
                         d3.select('#lineChart').remove();
                         d3.select('#parent-line-chart').append('div').attr("id", 'lineChart');
-                        !timeDialog && createLineChart(reduxLinearData, selectedDevices);
+                        !timeDialog && createLineChart(this, reduxLinearData, selectedDevices);
                         this.setState({linearData: reduxLinearData})
                     }
                 } else {
                     d3.select('#lineChart').remove();
                     d3.select('#parent-line-chart').append('div').attr("id", 'lineChart');
-                    !this.timeDialog && createLineChart(reduxLinearData, selectedDevices);
+                    !this.timeDialog && createLineChart(this, reduxLinearData, selectedDevices);
                     this.setState({linearData: reduxLinearData})
                 }
                 if (reduxLocationData.length) {
@@ -215,6 +221,12 @@ class Visualisation extends React.Component {
     showInfo(sid) {
         let device = this.props.selectedDevices.filter(el => el.sid === sid)[0];
         alert(`Device name: ${device.name} \nsid: ${device.sid}`);
+    }
+
+    resetChartData(){
+        const {selectedDevices} = this.state;
+        let data = JSON.parse(localStorage.getItem('chartData'));
+        createLineChart(this, data, selectedDevices);
     }
 
     render() {
@@ -370,6 +382,11 @@ class Visualisation extends React.Component {
                         </Grid>
                         <Grid item xs={12} sm={12} md={12} lg={12}
                               className={'chart_' + (linearData.length ? 'show' : 'hide')}>
+                            <div>
+                                <Button onClick={this.resetChartData}>
+                                    Return
+                                </Button>
+                            </div>
                             <Paper>
                                 <div id={'parent-line-chart'}>
 
