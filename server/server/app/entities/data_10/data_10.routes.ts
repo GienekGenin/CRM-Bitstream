@@ -1,5 +1,5 @@
 export const data_10 = require('express').Router();
-import {data_10Service} from './data.service';
+import {data_10Service} from './data_10.service';
 import {PayloadGeneratorService} from '../../common/services/request-services/payload-generator.service';
 
 data_10.get('/', (req, res, next) => {

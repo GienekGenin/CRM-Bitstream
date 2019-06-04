@@ -1,4 +1,4 @@
-import {Data_10Repository} from './data.repository';
+import {Data_10Repository} from './data_10.repository';
 
 class Device_10Service {
     private data_10Repository: Data_10Repository;
