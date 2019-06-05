@@ -33,7 +33,7 @@ import {checkAccess} from "../privateRoute";
 
 // Components
 import './App.scss';
-import LoginForm from '../Login/LoginForm';
+import LoginForm from '../Login/LoginComponent';
 import HomeComponent from "../Home/HomeComponent";
 import AdminPanelComponent from "../AdminPanel/AdminPanelComponent";
 import DashboardComponent from '../../components/Dashboard/DashboardComponent';

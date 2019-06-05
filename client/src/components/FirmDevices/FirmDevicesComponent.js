@@ -19,8 +19,8 @@ import {userDevicesRequest} from "../../redux/actions";
 import {tokenService} from "../../redux/services/token";
 
 // Components
-import './firmDevices.scss';
-import FirmDevicesToolBarComponent from "./FirmDevicesToolBarComponent";
+import './FirmDevices.scss';
+import FirmDevicesToolBar from "./FirmDevicesToolBar";
 
 // Services
 import {forcedTree, createPie, createPiePhyid, createPieGroup} from "./chart.service";
@@ -267,7 +267,7 @@ class FirmDevicesComponent extends React.Component {
                                         components={{
                                             Toolbar: props => (
                                                 <div className={'custom-toolbar'}>
-                                                    <FirmDevicesToolBarComponent
+                                                    <FirmDevicesToolBar
                                                         selected={selectedDevices && selectedDevices.length === 1 ? selectedDevices[0] : null}
                                                         selectedDevices={selectedDevices}
                                                         resetSelected={this.resetSelected}

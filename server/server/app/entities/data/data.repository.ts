@@ -39,11 +39,11 @@ export class DataRepository extends Repository {
                     ]
                 }
             },
-            {
-                '$sort': {
-                    'ts': 1
-                }
-            },
+            // {
+            //     '$sort': {
+            //         'ts': 1
+            //     }
+            // },
             {
                 '$group': {
                     '_id': {
@@ -157,11 +157,13 @@ export class DataRepository extends Repository {
                     'path': '$data',
                     'preserveNullAndEmptyArrays': false
                 }
-            }, {
-                '$sort': {
-                    'data.ts': 1
-                }
-            }, {
+            },
+            // {
+            //     '$sort': {
+            //         'data.ts': 1
+            //     }
+            // },
+            {
                 '$group': {
                     '_id': {
                         'sid': '$sid'

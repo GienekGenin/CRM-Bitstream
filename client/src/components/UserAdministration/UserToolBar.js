@@ -28,6 +28,7 @@ import ListItemText from "@material-ui/core/ListItemText";
 import Menu from "@material-ui/core/Menu";
 import EmailIcon from '@material-ui/icons/Email';
 import LockIcon from '@material-ui/icons/Lock';
+import LinearProgress from "@material-ui/core/LinearProgress";
 
 // Redux
 import {connect} from "react-redux";
@@ -41,8 +42,7 @@ import {
 } from "../../redux/actions";
 
 // Components
-import './usersToolBar.scss';
-import LinearProgress from "@material-ui/core/LinearProgress";
+import './UsersToolBar.scss';
 
 
 const mapDispatchToProps = (dispatch) => {

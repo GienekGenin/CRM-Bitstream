@@ -10,23 +10,6 @@ const diffInHours = (minSelectedDate, maxSelectedDate) => {
     return Math.abs(hours);
 };
 
-const getColorFromPalette = (i) => {
-    const colors = [
-        '#9660CB',
-        '#DC6788',
-        '#6169CD',
-        '#D765CA',
-        '#8DADE1',
-        '#D78965',
-        '#68B7DC',
-    ];
-    if (colors[i]) {
-        return colors[i];
-    } else {
-        return '#6169CD';
-    }
-};
-
 export const createLineChart = (_this, data, selectedDevices) => {
     am4core.unuseAllThemes();
     // am4core.useTheme(am4themes_animated);
@@ -41,18 +24,19 @@ export const createLineChart = (_this, data, selectedDevices) => {
     // dateAxis.minZoomCount = 10;
     let init = false;
     let prevMin, prevMax, prevDiff;
+    // Todo: determines to load or not
     const dateAxisChanged = (ev) => {
         const start = new Date(ev.target.minZoomed);
         const end = new Date(ev.target.maxZoomed);
         if (init) {
             let newDiff = diffInHours(start, end);
-            console.log(newDiff);
+            // console.log(newDiff);
             if (prevDiff > 48 && (newDiff >= 2 && newDiff < 48)) {
-                console.log('load');
+                // console.log('load');
                 _this.handleChartZoom(start, end);
             }
             if (prevDiff >= 2 && newDiff < 2) {
-                console.log('load');
+                // console.log('load');
                 _this.handleChartZoom(start, end);
             }
             prevDiff = newDiff;
@@ -89,7 +73,7 @@ export const createLineChart = (_this, data, selectedDevices) => {
                 }
                 radius = 5;
             }
-            chartData.push({['date']: new Date(mes.ts), ['value' + i]: value, status, radius, color});
+            chartData.push({date: new Date(mes.ts), ['value' + i]: value, status, radius, color});
         });
 
         let valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
@@ -126,7 +110,6 @@ export const createLineChart = (_this, data, selectedDevices) => {
     chartData.sort((a, b) => {
         return a.date - b.date
     });
-    localStorage.setItem('chartData', JSON.stringify(chartData));
     chart.data = chartData;
     chart.scrollbarX = new am4core.Scrollbar();
 

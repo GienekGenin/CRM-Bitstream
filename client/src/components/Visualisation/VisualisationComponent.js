@@ -4,7 +4,6 @@ import * as dotenv from 'dotenv';
 import DateFnsUtils from "@date-io/date-fns";
 import _ from "lodash";
 import * as d3 from "d3";
-import * as moment from 'moment';
 
 //Material
 import {theme} from "../material.theme";
@@ -26,7 +25,7 @@ import ViewColumnIcon from '@material-ui/icons/ViewColumn';
 import TimelineIcon from '@material-ui/icons/Timeline';
 import {Grid, MuiThemeProvider} from '@material-ui/core';
 import MaterialTable from 'material-table';
-import {DatePicker, MuiPickersUtilsProvider, DateTimePicker} from "material-ui-pickers";
+import {MuiPickersUtilsProvider, DateTimePicker} from "material-ui-pickers";
 
 // Redux
 import {connect} from "react-redux";
@@ -36,7 +35,7 @@ import {getMinMaxTimeRequest, getDataRequest} from "../../redux/actions";
 import {dataService} from "../../redux/services/data";
 
 // Components
-import './visualisation.scss';
+import './Visualisation.scss';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import MapGL, {Marker} from 'react-map-gl';
 import Pin from '../UI/map/pin/PinComponent';
@@ -104,6 +103,7 @@ class Visualisation extends React.Component {
         this.createDragPhyidPie = createDragPhyidPie.bind(this);
         this.resetSelected = this.resetSelected.bind(this);
         this.handleChartZoom = this.handleChartZoom.bind(this);
+        this.resetChartData = this.resetChartData.bind(this);
     }
 
     handleClickMenu = event => {
@@ -148,6 +148,7 @@ class Visualisation extends React.Component {
     }
 
     componentDidMount() {
+        localStorage.removeItem('chartData');
         let {selectedDevices} = this.props;
         selectedDevices = selectedDevices.map(el => _.omit(el, ['action', 'tableData']));
         const sids = selectedDevices.map(el => el.sid);
@@ -159,7 +160,8 @@ class Visualisation extends React.Component {
 
         this.unsubscribe = store.subscribe(() => {
 
-            const {linearData, locationData, timeDialog} = this.state;
+            // locationData
+            const {linearData, timeDialog} = this.state;
             this.setState({loading: true});
             if (store.getState().dataReducer.data.length) {
                 const reduxData = store.getState().dataReducer.data;
@@ -183,7 +185,12 @@ class Visualisation extends React.Component {
                     d3.select('#lineChart').remove();
                     d3.select('#parent-line-chart').append('div').attr("id", 'lineChart');
                     !this.timeDialog && createLineChart(this, reduxLinearData, selectedDevices);
-                    this.setState({linearData: reduxLinearData})
+                    let startData = JSON.parse(localStorage.getItem('chartData'));
+                    if(!startData){
+                        console.log(true);
+                        localStorage.setItem('chartData', JSON.stringify(reduxLinearData));
+                    }
+                    this.setState({linearData: reduxLinearData});
                 }
                 if (reduxLocationData.length) {
                     this.setState({locationData: reduxLocationData})

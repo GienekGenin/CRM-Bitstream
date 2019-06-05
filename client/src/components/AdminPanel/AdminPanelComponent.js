@@ -18,7 +18,7 @@ import {checkAccess} from "../privateRoute";
 // Components
 import './adminPanel.scss';
 import UserAdminComponent from '../../components/UserAdministration/UserAdminComponent';
-import FirmDevicesComponent from "../FirmDevicesComponent/FirmDevicesComponent";
+import FirmDevicesComponent from "../FirmDevices/FirmDevicesComponent";
 import FirmAdministrationComponent from "../FirmAdministration/FirmAdministrationComponent";
 import VisualisationComponent from '../Visualisation/VisualisationComponent';
 import {deviceTypesService} from "../../redux/services/device_types";

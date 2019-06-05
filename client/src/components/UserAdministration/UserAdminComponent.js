@@ -21,8 +21,8 @@ import {
 import {tokenService} from "../../redux/services/token";
 
 // Components
-import './userAdmin.scss';
-import UserToolBarComponent from './UserToolBarComponent';
+import './UserAdmin.scss';
+import UserToolBar from './UserToolBar';
 
 const theme = createMuiTheme({
     palette: {
@@ -146,7 +146,7 @@ class UserAdminComponent extends React.Component {
                                 components={{
                                     Toolbar: props => (
                                         <div className={'custom-toolbar'}>
-                                            <UserToolBarComponent
+                                            <UserToolBar
                                                 selected={selectedUsers.length === 1 ? selectedUsers[0] : null}
                                                 resetSelected={this.resetSelected}
                                                 loading={loading}

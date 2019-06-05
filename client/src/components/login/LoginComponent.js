@@ -16,7 +16,7 @@ import store from '../../redux/store/index'
 import {loginRequest, changePassRequest} from "../../redux/actions/index";
 
 // Components
-import './login.scss';
+import './Login.scss';
 import {animate} from "../Home/landingAnimation";
 
 const mapDispatchToProps = (dispatch) => {
