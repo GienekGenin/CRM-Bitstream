@@ -16,7 +16,7 @@ import store from '../../redux/store'
 import {checkAccess} from "../privateRoute";
 
 // Components
-import './adminPanel.scss';
+import './AdminPanel.scss';
 import UserAdminComponent from '../../components/UserAdministration/UserAdminComponent';
 import FirmDevicesComponent from "../FirmDevices/FirmDevicesComponent";
 import FirmAdministrationComponent from "../FirmAdministration/FirmAdministrationComponent";
