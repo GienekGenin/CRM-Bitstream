@@ -1,6 +1,6 @@
 import React from "react";
 import Iframe from 'react-iframe';
-import './home.scss';
+import './Home.scss';
 import {animate} from "./landingAnimation";
 
 export default class HomeComponent extends React.Component {

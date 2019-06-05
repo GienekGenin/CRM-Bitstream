@@ -187,7 +187,6 @@ class Visualisation extends React.Component {
                     !this.timeDialog && createLineChart(this, reduxLinearData, selectedDevices);
                     let startData = JSON.parse(localStorage.getItem('chartData'));
                     if(!startData){
-                        console.log(true);
                         localStorage.setItem('chartData', JSON.stringify(reduxLinearData));
                     }
                     this.setState({linearData: reduxLinearData});

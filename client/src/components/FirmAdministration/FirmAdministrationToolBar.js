@@ -28,7 +28,7 @@ import {connect} from "react-redux";
 import {addFirmRequest, deleteFirmRequest, firmsRequest, updateFirmRequest} from "../../redux/actions";
 
 // Components
-import './firmToolBar.scss'
+import './FirmToolBar.scss'
 
 const mapDispatchToProps = (dispatch) => {
     return {

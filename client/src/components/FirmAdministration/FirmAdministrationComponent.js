@@ -14,7 +14,7 @@ import store from "../../redux/store";
 import {addFirmRequest, deleteFirmRequest, updateFirmRequest} from "../../redux/actions";
 
 // Components
-import './firmAdministration.scss';
+import './FirmAdministration.scss';
 import FirmAdministrationToolBar from './FirmAdministrationToolBar';
 
 const mapDispatchToProps = (dispatch) => {
