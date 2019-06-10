@@ -16,9 +16,7 @@ const data_10Schema = new mongoose.Schema({
     }
 }, {versionKey: false, collection: 'data_10'});
 
-data_10Schema.index({ttl: 1});
-
-data_10Schema.indexes().forEach(el => console.log(el));
+data_10Schema.index({device_id: 1, ts: 1}, {unique: true});
 
 export const data_10Model = mongoose.model('Data_10', data_10Schema);
 
