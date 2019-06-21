@@ -13,9 +13,6 @@ import Drawer from '@material-ui/core/Drawer';
 import List from '@material-ui/core/List';
 import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
-import MenuIcon from '@material-ui/icons/Menu';
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import ListItem from '@material-ui/core/ListItem';
 import HomeIcon from '@material-ui/icons/Home';
 import DashboardIcon from '@material-ui/icons/Dashboard';
@@ -23,6 +20,9 @@ import AccountIcon from '@material-ui/icons/AccountCircle';
 import {withStyles} from "@material-ui/core";
 import {SnackbarProvider} from "notistack";
 import {PopupComponent} from "../UI/material/PopupComponent/PopupComponent";
+import MoreVertIcon from "@material-ui/icons/MoreVert";
+import ViewListIcon from "@material-ui/icons/ViewList";
+
 
 // Redux
 import {history} from '../../redux/services/history';
@@ -55,9 +55,12 @@ const styles = theme => ({
         // two indexes within its tonal palette.
         // E.g., shift from Red 500 to Red 300 or Red 700.
         tonalOffset: 0.2,
-    },
+		},
+		root: {
+			display: 'flex 0 0',
+		},
     typography: {
-        useNextVariants: true,
+				useNextVariants: true,
     },
     appBar: {
         zIndex: theme.zIndex.drawer + 1,
@@ -67,17 +70,18 @@ const styles = theme => ({
         }),
     },
     appBarShift: {
-        marginLeft: 260,
-        width: `calc(100% - ${260}px)`,
+				marginLeft: 260,
+        width: `calc(100% - ${200}px)`,
         transition: theme.transitions.create(['width', 'margin'], {
             easing: theme.transitions.easing.sharp,
             duration: theme.transitions.duration.enteringScreen,
         }),
     },
     menuButton: {
-        marginLeft: 12,
-        marginRight: 36,
-    },
+        marginLeft: 15,
+				marginRight: 36,
+		},
+		
     hide: {
         display: 'none',
     },
@@ -87,23 +91,23 @@ const styles = theme => ({
         flexShrink: 0,
         whiteSpace: 'nowrap',
         background: `url('https://pp.userapi.com/c852024/v852024335/10bfc4/Tj8lq3nMO-U.jpg') no-repeat right top`,
-        backgroundSize: '300px 1100px',
+				backgroundSize: '300px 1100px',
     },
     drawerOpen: {
         width: 260,
         transition: theme.transitions.create('width', {
             easing: theme.transitions.easing.sharp,
-            duration: 1000,
+            duration: 500,
         }),
         background: `url('https://pp.userapi.com/c852024/v852024335/10bfc4/Tj8lq3nMO-U.jpg') no-repeat right top`,
         backgroundSize: '300px 1100px',
         overflowX: 'hidden'
 
-    },
+		},
     drawerClose: {
         transition: theme.transitions.create('width', {
             easing: theme.transitions.easing.sharp,
-            duration: 1000,
+            duration: 500,
         }),
         overflowX: 'hidden',
         width: theme.spacing.unit * 7 + 1,
@@ -117,9 +121,9 @@ const styles = theme => ({
     },
     toolbar: {
         display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'flex-end',
-        padding: '0 8px',
+        // alignItems: 'center',
+        // justifyContent: 'flex-end',
+				marginLeft: '15px',
         ...theme.mixins.toolbar,
         background: `url('https://bitstream.pl/wp-content/uploads/2019/04/Logo-Bitstream-4-01.png') no-repeat`,
         backgroundPosition: 'center center',
@@ -127,8 +131,8 @@ const styles = theme => ({
     },
     content: {
         flexGrow: 1,
-        // padding: theme.spacing.unit * 3,
-    },
+				// padding: theme.spacing.unit * 3,
+		},
 });
 
 const mapDispatchToProps = (dispatch) => {
@@ -143,27 +147,45 @@ const mapStateToProps = state => {
 };
 
 class AppComponent extends Component {
+	constructor(props) {
+		super(props);
 
-    state = {
-        open: false,
-    };
+		this.state = {
+			divOpen: false,
+			open: false
+		}
 
-    handleDrawerOpen = () => {
-        this.setState({open: true});
-    };
+		this.handleOpenDiv = this.handleOpenDiv.bind(this);
+	};
+    
 
-    handleDrawerClose = () => {
-        this.setState({open: false});
-    };
+    // handleDrawerOpen = () => {
+    //     this.setState({open: true});
+    // };
 
+    // handleDrawerClose = () => {
+    //     this.setState({open: false});
+		// };
+		
+		handleDrawerToggle = () => {
+			let {open} = this.state;
+			this.setState( {open: !open } );
+		};
     componentWillMount() {
         if (tokenService.verifyToken()) {
             const {user, firm} = tokenService.verifyToken();
             this.props.setUser({user, firm});
         }
-    }
+		}
+
+		handleOpenDiv() {
+			let {divOpen} = this.state;
+			this.setState({ divOpen: !divOpen });
+			console.log('lol');
+		}
 
     render() {
+				const {divOpen} = this.state;
         const {classes, theme} = this.props;
         const {user} = this.props;
         return (
@@ -171,6 +193,10 @@ class AppComponent extends Component {
                 <MuiThemeProvider theme={theme}>
                     <div className={'root'}>
                         <div>
+														<button onClick={ () => this.handleOpenDiv()}>click</button>
+													{ divOpen && <div>
+														show
+													</div> }
                             <Drawer
                                 variant="permanent"
                                 className={classNames(classes.drawer, {
@@ -189,21 +215,20 @@ class AppComponent extends Component {
                                     {/*<div className={'logo'}>*/}
                                     {/*<img src="https://bitstream.pl/wp-content/uploads/2019/04/Logo-Bitstream-4-01.png" alt=""/>*/}
                                     {/*</div>*/}
-                                    <IconButton onClick={this.handleDrawerClose}>
-                                        {theme.direction === 'rtl' ? <ChevronRightIcon color='primary'/> :
-                                            <ChevronLeftIcon color='primary'/>}
+                                    <IconButton onClick={this.handleDrawerToggle}>
+																						<MoreVertIcon />
                                     </IconButton>
                                 </div>}
                                 {!this.state.open && <Toolbar disableGutters={!this.state.open}>
                                     <IconButton
                                         color="inherit"
                                         aria-label="Open drawer"
-                                        onClick={this.handleDrawerOpen}
+                                        onClick={this.handleDrawerToggle}
                                         className={classNames(classes.menuButton, {
                                             [classes.hide]: this.state.open,
                                         })}
                                     >
-                                        <MenuIcon/>
+                                        <ViewListIcon />
                                     </IconButton>
                                 </Toolbar>}
                                 <Divider light/>
@@ -238,7 +263,7 @@ class AppComponent extends Component {
                                         </ListItem></Link> :
                                         <Link to={'/login'}><ListItem button>
                                             <AccountIcon/><Typography variant="h6" color="inherit"> Login</Typography>
-                                        </ListItem></Link>}
+																				</ListItem></Link>}
                                 </List>
                             </Drawer>
                         </div>
@@ -251,6 +276,7 @@ class AppComponent extends Component {
                             </Switch>
                         </main>
                     </div>
+										
                     <SnackbarProvider maxSnack={5}>
                         <PopupComponent/>
                     </SnackbarProvider>

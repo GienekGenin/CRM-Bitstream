@@ -33,7 +33,7 @@ a {
     }
 
     &::-webkit-scrollbar-thumb:active {
-      background: linear-gradient(to left, #22ADD4, #1E98BA);
+			background: linear-gradient(to left, #22ADD4, #1E98BA);
     }
   }
 }
@@ -48,9 +48,10 @@ a {
   }
 }
 
+
 .logo {
   display: inherit;
-  width: 100px;
+	width: 100px;
 }
 
 .root {
@@ -59,7 +60,8 @@ a {
   height: 100%;
 
   & > div > div > div > div {
-    min-height: 64px;
+		min-height: 64px;
+		justify-content: flex-start;
   }
 }
 

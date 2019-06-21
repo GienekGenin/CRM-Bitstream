@@ -17,6 +17,7 @@ import {checkAccess} from "../privateRoute";
 
 // Components
 import './AdminPanel.scss';
+import '../App/AppComponent';
 import UserAdminComponent from '../../components/UserAdministration/UserAdminComponent';
 import FirmDevicesComponent from "../FirmDevices/FirmDevicesComponent";
 import FirmAdministrationComponent from "../FirmAdministration/FirmAdministrationComponent";
@@ -153,7 +154,7 @@ class AdminPanel extends React.Component {
         }
         deviceTypesService.getDeviceTypes().then(deviceTypes => {
             this.setState({deviceTypes});
-        }).catch(e => console.log(e))
+        }).catch(e => console.log(e));
     }
 
     componentWillUnmount() {
