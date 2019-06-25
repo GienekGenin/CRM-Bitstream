@@ -39,23 +39,6 @@ import AdminPanelComponent from "../AdminPanel/AdminPanelComponent";
 import DashboardComponent from '../../components/Dashboard/DashboardComponent';
 
 const styles = theme => ({
-    palette: {
-        primary: {
-            light: '#757ce8',
-            main: '#212121',
-            dark: '#002884',
-            contrastText: '#fff',
-        },
-        secondary: '#e3f2fd',
-        error: red,
-        // Used by `getContrastText()` to maximize the contrast between the background and
-        // the text.
-        contrastThreshold: 3,
-        // Used to shift a color's luminance by approximately
-        // two indexes within its tonal palette.
-        // E.g., shift from Red 500 to Red 300 or Red 700.
-        tonalOffset: 0.2,
-		},
 		root: {
 			display: 'flex 0 0',
 		},
@@ -70,7 +53,7 @@ const styles = theme => ({
         }),
     },
     appBarShift: {
-				marginLeft: 260,
+				marginLeft: 230,
         width: `calc(100% - ${200}px)`,
         transition: theme.transitions.create(['width', 'margin'], {
             easing: theme.transitions.easing.sharp,
@@ -79,14 +62,13 @@ const styles = theme => ({
     },
     menuButton: {
         marginLeft: 15,
-				marginRight: 36,
 		},
 		
     hide: {
         display: 'none',
     },
     drawer: {
-        width: 260,
+        width: 230,
         minWidth: 75,
         flexShrink: 0,
         whiteSpace: 'nowrap',
@@ -94,7 +76,7 @@ const styles = theme => ({
 				backgroundSize: '300px 1100px',
     },
     drawerOpen: {
-        width: 260,
+				width: 230,
         transition: theme.transitions.create('width', {
             easing: theme.transitions.easing.sharp,
             duration: 500,
@@ -121,14 +103,14 @@ const styles = theme => ({
     },
     toolbar: {
         display: 'flex',
-        // alignItems: 'center',
-        // justifyContent: 'flex-end',
-				marginLeft: '15px',
-        ...theme.mixins.toolbar,
-        background: `url('https://bitstream.pl/wp-content/uploads/2019/04/Logo-Bitstream-4-01.png') no-repeat`,
-        backgroundPosition: 'center center',
-        backgroundSize: '160px 30px'
-    },
+    //     // alignItems: 'center',
+    //     // justifyContent: 'flex-end',
+		 		marginLeft: '15px',
+    //     ...theme.mixins.toolbar,
+    //     // background: `url('https://bitstream.pl/wp-content/uploads/2019/04/Logo-Bitstream-4-01.png') no-repeat`,
+    //     backgroundPosition: 'center center',
+    //     backgroundSize: '160px 30px'
+     },
     content: {
         flexGrow: 1,
 				// padding: theme.spacing.unit * 3,
@@ -151,11 +133,10 @@ class AppComponent extends Component {
 		super(props);
 
 		this.state = {
-			divOpen: false,
-			open: false
+			open: false,
+			animations: false 
 		}
-
-		this.handleOpenDiv = this.handleOpenDiv.bind(this);
+		// this.handleDrawerToggle = this.handleDrawerToggle.bind(this);
 	};
     
 
@@ -169,8 +150,9 @@ class AppComponent extends Component {
 		
 		handleDrawerToggle = () => {
 			let {open} = this.state;
-			this.setState( {open: !open } );
+			this.setState( {open: !open , animations: true} );
 		};
+		
     componentWillMount() {
         if (tokenService.verifyToken()) {
             const {user, firm} = tokenService.verifyToken();
@@ -178,14 +160,8 @@ class AppComponent extends Component {
         }
 		}
 
-		handleOpenDiv() {
-			let {divOpen} = this.state;
-			this.setState({ divOpen: !divOpen });
-			console.log('lol');
-		}
-
     render() {
-				const {divOpen} = this.state;
+				const {open, animations} = this.state;
         const {classes, theme} = this.props;
         const {user} = this.props;
         return (
@@ -193,76 +169,92 @@ class AppComponent extends Component {
                 <MuiThemeProvider theme={theme}>
                     <div className={'root'}>
                         <div>
-														<button onClick={ () => this.handleOpenDiv()}>click</button>
-													{ divOpen && <div>
-														show
-													</div> }
                             <Drawer
                                 variant="permanent"
                                 className={classNames(classes.drawer, {
-                                    [classes.drawerOpen]: this.state.open,
-                                    [classes.drawerClose]: !this.state.open,
+                                    [classes.drawerOpen]: open,
+                                    [classes.drawerClose]: !open,
                                 })}
                                 classes={{
                                     paper: classNames({
-                                        [classes.drawerOpen]: this.state.open,
-                                        [classes.drawerClose]: !this.state.open,
+                                        [classes.drawerOpen]: open,
+                                        [classes.drawerClose]: !open,
                                     }),
                                 }}
-                                open={this.state.open}
+                                open={open}
                             >
-                                {this.state.open && <div className={classes.toolbar}>
-                                    {/*<div className={'logo'}>*/}
-                                    {/*<img src="https://bitstream.pl/wp-content/uploads/2019/04/Logo-Bitstream-4-01.png" alt=""/>*/}
-                                    {/*</div>*/}
-                                    <IconButton onClick={this.handleDrawerToggle}>
+                                {open && <div className={classes.toolbar}>
+																		<IconButton 
+																			onClick={this.handleDrawerToggle}
+																		>
 																						<MoreVertIcon />
                                     </IconButton>
+																		<div className={ classNames('company-logo', ( animations ? (open ? 'fade-left' : 'fade-right') : '')) }>
+																			<img 
+																				src="https://bitstream.pl/wp-content/uploads/2019/04/Logo-Bitstream-4-01.png" alt=""/>
+																		</div>
                                 </div>}
-                                {!this.state.open && <Toolbar disableGutters={!this.state.open}>
+                                {!open && <Toolbar disableGutters={!open}>
                                     <IconButton
                                         color="inherit"
                                         aria-label="Open drawer"
                                         onClick={this.handleDrawerToggle}
                                         className={classNames(classes.menuButton, {
-                                            [classes.hide]: this.state.open,
-                                        })}
+																						[classes.hide]: open,
+																				})}
                                     >
                                         <ViewListIcon />
                                     </IconButton>
+																		<div className={ classNames('company-logo', ( animations ? (open ? 'fade-left' : 'fade-right') : '') ) }>
+																				<img 
+																				src="https://bitstream.pl/wp-content/uploads/2019/04/Logo-Bitstream-4-01.png" alt=""/>														
+																		</div>
                                 </Toolbar>}
                                 <Divider light/>
                                 <List>
                                     <Link to={'/'}><ListItem button>
                                         <HomeIcon/>
-                                        <Typography variant="h6" color="inherit">
+																				<Typography variant="h6" color="inherit" 
+																					className={classNames( animations ? (open ? 'fade-left' : 'fade-right') : '') }
+																						>
                                             Home
                                         </Typography>
                                     </ListItem></Link>
                                     {checkAccess('/dashboard') && <Link to={'/dashboard'}><ListItem button>
                                         <DashboardIcon/>
-                                        <Typography variant="h6" color="inherit">
+                                        <Typography variant="h6" color="inherit"
+																					className={classNames( animations ? (open ? 'fade-left' : 'fade-right') : '') }
+																				>
                                             Dashboard
                                         </Typography>
                                     </ListItem></Link>}
                                     {checkAccess('/admin_panel') && <Link to={'/admin_panel'}><ListItem button>
                                         <DashboardIcon/>
-                                        <Typography variant="h6" color="inherit">
+                                        <Typography variant="h6" color="inherit"
+																					className={classNames( animations ? (open ? 'fade-left' : 'fade-right') : '') }
+																					>
                                             Admin Panel
                                         </Typography>
                                     </ListItem></Link>}
                                     {checkAccess('/devices') && <Link to={'/devices'}><ListItem button>
-                                        <Typography variant="h6" color="inherit">
+                                        <Typography variant="h6" color="inherit"
+																					className={classNames( animations ? (open ? 'fade-left' : 'fade-right') : '') }
+																					>
                                             Devices
                                         </Typography>
                                     </ListItem></Link>}
                                     {user ?
                                         <Link to={'/login'}><ListItem button onClick={this.props.logoutRequest}>
-                                            <AccountIcon/><Typography variant="h6" color="inherit">
+                                            <AccountIcon/><Typography variant="h6" color="inherit"
+																							className={classNames( animations ? (open ? 'fade-left' : 'fade-right') : '') }
+																							>
                                             Logout </Typography>
                                         </ListItem></Link> :
                                         <Link to={'/login'}><ListItem button>
-                                            <AccountIcon/><Typography variant="h6" color="inherit"> Login</Typography>
+																						<AccountIcon/><Typography variant="h6" color="inherit"
+																							className={classNames( animations ? (open ? 'fade-left' : 'fade-right') : '') }
+																						>
+																							 Login</Typography>
 																				</ListItem></Link>}
                                 </List>
                             </Drawer>

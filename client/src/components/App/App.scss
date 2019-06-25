@@ -62,7 +62,60 @@ a {
   & > div > div > div > div {
 		min-height: 64px;
 		justify-content: flex-start;
-  }
+		
+	}
+	.company-logo {
+		width: 100%;
+		margin-top: 20px;
+		margin-left: 10px;
+	}
+	.company-logo img {
+		object-fit: contain;
+		width: 80%;
+		margin: 0 auto;
+   
+		// animation: fadeIn ease-in-out 1s;
+	}
+		.fade-left {
+			animation: fadeOutLeft ease 2s;
+		}
+
+		.fade-right {
+			// margin-top: 3px;
+			animation: fadeInRight ease 1s;
+		}
+
+			@keyframes fadeInRight {
+			0% {
+				opacity:1;
+				 transform: translateX(0);
+			}
+			50% {
+				opacity:0;  
+				 transform: translateX(-30px);
+			}
+			100% {
+				opacity:0;  
+				 transform: translateX(-50px);
+			}
+		}
+
+		@keyframes fadeOutLeft {
+			0% {
+				opacity:0;
+				transform: translateX(-30px);
+			}
+			100% {
+			 opacity:1;
+				transform: translateX(0);
+			}
+		}
+		
+
+
+	
+	
+
 }
 
 #root > div > div > div > div > ul > a > div > svg {
@@ -87,3 +140,4 @@ a {
 #root > div > div > div > div > hr {
   background-color: rgba(255, 255, 255, 0.12);
 }
+
