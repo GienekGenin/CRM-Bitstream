@@ -1,5 +1,3 @@
-const token = localStorage.getItem('token');
-
 export const errorParser = (err) => {
     let errorPayload = '';
     if (typeof err === 'string') {
@@ -11,6 +9,7 @@ export const errorParser = (err) => {
 };
 
 export const postRequest = (url, body) => {
+    const token = localStorage.getItem('token');
     const requestOptions = {
         method: 'POST',
         headers: {
@@ -24,6 +23,7 @@ export const postRequest = (url, body) => {
 };
 
 export const getRequest = (url) => {
+    const token = localStorage.getItem('token');
     const requestOptions = {
         method: 'GET',
         headers: {
@@ -35,6 +35,7 @@ export const getRequest = (url) => {
 };
 
 export const putRequest = (url, body) => {
+    const token = localStorage.getItem('token');
     const requestOptions = {
         method: 'PUT',
         headers: {
@@ -47,6 +48,7 @@ export const putRequest = (url, body) => {
 };
 
 export const deleteRequest = (url, body) => {
+    const token = localStorage.getItem('token');
     const requestOptions = {
         method: 'DELETE',
         headers: {
