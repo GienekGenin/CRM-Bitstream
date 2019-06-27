@@ -74,8 +74,8 @@ class FirmDevicesComponent extends React.Component {
         this.selectAllDevices = this.selectAllDevices.bind(this);
         this.forcedTree = forcedTree.bind(this);
         this.createPie = createPie.bind(this);
-        this.createPiePhyid = createPiePhyid.bind(this);
-        this.createPieGroup = createPieGroup.bind(this);
+        // this.createPiePhyid = createPiePhyid.bind(this);
+        // this.createPieGroup = createPieGroup.bind(this);
     }
 
     componentDidMount() {
@@ -103,7 +103,7 @@ class FirmDevicesComponent extends React.Component {
             this.setState({selectedUsers: [selectedUser]});
             const {parentDevices} = this.props;
             if (!parentDevices) {
-                this.props.userDevicesRequest(selectedUser._id);
+                this.props.userDevicesRequest([selectedUser._id]);
             } else {
                 this.createPie(parentDevices, this);
                 // this.createPiePhyid(parentDevices, this);
