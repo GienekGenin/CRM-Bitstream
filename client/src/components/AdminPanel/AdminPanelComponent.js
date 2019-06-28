@@ -24,6 +24,7 @@ import FirmAdministrationComponent from "../FirmAdministration/FirmAdministratio
 import VisualisationComponent from '../Visualisation/VisualisationComponent';
 import {deviceTypesService} from "../../redux/services/device_types";
 
+
 const mapDispatchToProps = (dispatch) => {
     return {
         firmRequest: () => dispatch(firmsRequest()),

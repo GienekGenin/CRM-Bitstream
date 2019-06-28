@@ -8,7 +8,6 @@ import classNames from 'classnames';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import {MuiThemeProvider} from '@material-ui/core/styles';
-import red from '@material-ui/core/colors/red';
 import Drawer from '@material-ui/core/Drawer';
 import List from '@material-ui/core/List';
 import Divider from '@material-ui/core/Divider';
@@ -37,6 +36,7 @@ import LoginForm from '../Login/LoginComponent';
 import HomeComponent from "../Home/HomeComponent";
 import AdminPanelComponent from "../AdminPanel/AdminPanelComponent";
 import DashboardComponent from '../../components/Dashboard/DashboardComponent';
+// import Fade from 'react-reveal/Fade';
 
 const styles = theme => ({
 		root: {
@@ -44,7 +44,7 @@ const styles = theme => ({
 		},
     typography: {
 				useNextVariants: true,
-    },
+		},
     appBar: {
         zIndex: theme.zIndex.drawer + 1,
         transition: theme.transitions.create(['width', 'margin'], {
@@ -100,7 +100,7 @@ const styles = theme => ({
         background: `url('https://pp.userapi.com/c852024/v852024335/10bfc4/Tj8lq3nMO-U.jpg') no-repeat right top`,
         backgroundSize: '300px 1100px'
 
-    },
+		},
     toolbar: {
         display: 'flex',
     //     // alignItems: 'center',
@@ -115,6 +115,14 @@ const styles = theme => ({
         flexGrow: 1,
 				// padding: theme.spacing.unit * 3,
 		},
+		// listItem: {
+		// 	'&:hover': {
+		// 		backgroundColor: 'rgba(200, 200, 200, 0.7)!important'
+		// 	}		
+		// }
+		active: {
+			backgroundColor: 'tomato'
+		}
 });
 
 const mapDispatchToProps = (dispatch) => {
@@ -134,9 +142,8 @@ class AppComponent extends Component {
 
 		this.state = {
 			open: false,
-			animations: false 
+			animations: false,
 		}
-		// this.handleDrawerToggle = this.handleDrawerToggle.bind(this);
 	};
     
 
@@ -153,17 +160,21 @@ class AppComponent extends Component {
 			this.setState( {open: !open , animations: true} );
 		};
 		
-    componentWillMount() {
+    componentWillMount = () => {
         if (tokenService.verifyToken()) {
             const {user, firm} = tokenService.verifyToken();
             this.props.setUser({user, firm});
         }
 		}
 
+
     render() {
-				const {open, animations} = this.state;
+				const {open, animations } = this.state;
         const {classes, theme} = this.props;
-        const {user} = this.props;
+				const {user} = this.props;
+				
+			//  let styleHover = styles(theme).listItem;
+
         return (
             <Router history={history}>
                 <MuiThemeProvider theme={theme}>
@@ -205,57 +216,86 @@ class AppComponent extends Component {
                                     >
                                         <ViewListIcon />
                                     </IconButton>
-																		<div className={ classNames('company-logo', ( animations ? (open ? 'fade-left' : 'fade-right') : '') ) }>
-																				<img 
-																				src="https://bitstream.pl/wp-content/uploads/2019/04/Logo-Bitstream-4-01.png" alt=""/>														
+																		<div className={ classNames('company-logo', ( animations ? (open ? 'fade-left' : 'fade-right') : '')) }>
+																			<img className="fixed-height"
+																				src="https://bitstream.pl/wp-content/uploads/2019/04/Logo-Bitstream-4-01.png" alt=""/>													
 																		</div>
                                 </Toolbar>}
                                 <Divider light/>
                                 <List>
-                                    <Link to={'/'}><ListItem button>
+                                    <Link to={'/'}>
+																			<ListItem 
+																				button
+																				className={'hoverClass'}
+																			>
                                         <HomeIcon/>
 																				<Typography variant="h6" color="inherit" 
 																					className={classNames( animations ? (open ? 'fade-left' : 'fade-right') : '') }
 																						>
                                             Home
                                         </Typography>
-                                    </ListItem></Link>
-                                    {checkAccess('/dashboard') && <Link to={'/dashboard'}><ListItem button>
+                                    	</ListItem>
+																		</Link>
+                                    {checkAccess('/dashboard') && <Link to={'/dashboard'}>
+																			<ListItem 
+																				button
+																				className={'hoverClass'}
+																			>
                                         <DashboardIcon/>
                                         <Typography variant="h6" color="inherit"
 																					className={classNames( animations ? (open ? 'fade-left' : 'fade-right') : '') }
 																				>
                                             Dashboard
                                         </Typography>
-                                    </ListItem></Link>}
-                                    {checkAccess('/admin_panel') && <Link to={'/admin_panel'}><ListItem button>
+                                    	</ListItem>
+																		</Link>}
+                                    {checkAccess('/admin_panel') && <Link to={'/admin_panel'}>
+																		<ListItem 
+																				button
+																				className={'hoverClass'}
+																			>
                                         <DashboardIcon/>
                                         <Typography variant="h6" color="inherit"
 																					className={classNames( animations ? (open ? 'fade-left' : 'fade-right') : '') }
 																					>
                                             Admin Panel
                                         </Typography>
-                                    </ListItem></Link>}
-                                    {checkAccess('/devices') && <Link to={'/devices'}><ListItem button>
+                                    	</ListItem>
+																		</Link>}
+                                    {checkAccess('/devices') && <Link to={'/devices'}>
+																		<ListItem 
+																				button
+																				className={'hoverClass'}
+																			>
                                         <Typography variant="h6" color="inherit"
 																					className={classNames( animations ? (open ? 'fade-left' : 'fade-right') : '') }
 																					>
                                             Devices
                                         </Typography>
-                                    </ListItem></Link>}
-                                    {user ?
-                                        <Link to={'/login'}><ListItem button onClick={this.props.logoutRequest}>
+                                   	 </ListItem>
+																		</Link>}
+                                    {user ? <Link to={'/login'}>
+																					<ListItem 
+																						button 
+																						className={'hoverClass'}
+																						onClick={this.props.logoutRequest}>
                                             <AccountIcon/><Typography variant="h6" color="inherit"
 																							className={classNames( animations ? (open ? 'fade-left' : 'fade-right') : '') }
 																							>
                                             Logout </Typography>
-                                        </ListItem></Link> :
-                                        <Link to={'/login'}><ListItem button>
+                                        	</ListItem>
+																				</Link> :
+                                        <Link to={'/login'}>
+																					<ListItem 
+																						button
+																						className={'hoverClass'}
+																					>
 																						<AccountIcon/><Typography variant="h6" color="inherit"
 																							className={classNames( animations ? (open ? 'fade-left' : 'fade-right') : '') }
 																						>
 																							 Login</Typography>
-																				</ListItem></Link>}
+																				</ListItem>
+																			</Link>}
                                 </List>
                             </Drawer>
                         </div>

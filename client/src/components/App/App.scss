@@ -81,7 +81,7 @@ a {
 		}
 
 		.fade-right {
-			// margin-top: 3px;
+			// 	margin-top: 3px;
 			animation: fadeInRight ease 1s;
 		}
 
@@ -141,3 +141,22 @@ a {
   background-color: rgba(255, 255, 255, 0.12);
 }
 
+
+ .active {
+//     box-shadow: 0 12px 20px -10px rgba(0, 172, 193,.28), 0 4px 20px 0 rgba(0, 0, 0,.12), 0 7px 8px -5px rgba(0, 172, 193,.2);
+     background-color: #00acc1!important;
+ }
+
+.fixed-height {
+	margin-bottom: 17px!important;
+}
+
+.hoverClass {
+	// border-radius: 4px!important;
+
+	&:hover {
+		background-color: rgba(200, 200, 200, 0.6) !important;
+		color: #fff;
+		transition: all 400ms linear;
+	}
+}
