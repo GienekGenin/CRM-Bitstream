@@ -23,6 +23,7 @@ import FirmAdministrationComponent from "../FirmAdministration/FirmAdministratio
 import VisualisationComponent from '../Visualisation/VisualisationComponent';
 import {deviceTypesService} from "../../redux/services/device_types";
 
+
 const mapDispatchToProps = (dispatch) => {
     return {
         firmRequest: () => dispatch(firmsRequest()),
@@ -153,7 +154,7 @@ class AdminPanel extends React.Component {
         }
         deviceTypesService.getDeviceTypes().then(deviceTypes => {
             this.setState({deviceTypes});
-        }).catch(e => console.log(e))
+        }).catch(e => console.log(e));
     }
 
     componentWillUnmount() {

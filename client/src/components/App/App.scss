@@ -33,7 +33,7 @@ a {
     }
 
     &::-webkit-scrollbar-thumb:active {
-      background: linear-gradient(to left, #22ADD4, #1E98BA);
+			background: linear-gradient(to left, #22ADD4, #1E98BA);
     }
   }
 }
@@ -48,9 +48,10 @@ a {
   }
 }
 
+
 .logo {
   display: inherit;
-  width: 100px;
+	width: 100px;
 }
 
 .root {
@@ -59,8 +60,62 @@ a {
   height: 100%;
 
   & > div > div > div > div {
-    min-height: 64px;
-  }
+		min-height: 64px;
+		justify-content: flex-start;
+		
+	}
+	.company-logo {
+		width: 100%;
+		margin-top: 20px;
+		margin-left: 10px;
+	}
+	.company-logo img {
+		object-fit: contain;
+		width: 80%;
+		margin: 0 auto;
+   
+		// animation: fadeIn ease-in-out 1s;
+	}
+		.fade-left {
+			animation: fadeOutLeft ease 2s;
+		}
+
+		.fade-right {
+			// 	margin-top: 3px;
+			animation: fadeInRight ease 1s;
+		}
+
+			@keyframes fadeInRight {
+			0% {
+				opacity:1;
+				 transform: translateX(0);
+			}
+			50% {
+				opacity:0;  
+				 transform: translateX(-30px);
+			}
+			100% {
+				opacity:0;  
+				 transform: translateX(-50px);
+			}
+		}
+
+		@keyframes fadeOutLeft {
+			0% {
+				opacity:0;
+				transform: translateX(-30px);
+			}
+			100% {
+			 opacity:1;
+				transform: translateX(0);
+			}
+		}
+		
+
+
+	
+	
+
 }
 
 #root > div > div > div > div > ul > a > div > svg {
@@ -84,4 +139,24 @@ a {
 
 #root > div > div > div > div > hr {
   background-color: rgba(255, 255, 255, 0.12);
+}
+
+
+ .active {
+//     box-shadow: 0 12px 20px -10px rgba(0, 172, 193,.28), 0 4px 20px 0 rgba(0, 0, 0,.12), 0 7px 8px -5px rgba(0, 172, 193,.2);
+     background-color: #00acc1!important;
+ }
+
+.fixed-height {
+	margin-bottom: 17px!important;
+}
+
+.hoverClass {
+	// border-radius: 4px!important;
+
+	&:hover {
+		background-color: rgba(200, 200, 200, 0.6) !important;
+		color: #fff;
+		transition: all 400ms linear;
+	}
 }
