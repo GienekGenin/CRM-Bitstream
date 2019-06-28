@@ -17,7 +17,6 @@ import {checkAccess} from "../privateRoute";
 
 // Components
 import './AdminPanel.scss';
-import '../App/AppComponent';
 import UserAdminComponent from '../../components/UserAdministration/UserAdminComponent';
 import FirmDevicesComponent from "../FirmDevices/FirmDevicesComponent";
 import FirmAdministrationComponent from "../FirmAdministration/FirmAdministrationComponent";
