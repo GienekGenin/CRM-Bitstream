@@ -40,12 +40,12 @@ import DashboardComponent from '../../components/Dashboard/DashboardComponent';
 // import Fade from 'react-reveal/Fade';
 
 const styles = theme => ({
-		root: {
-			display: 'flex 0 0',
-		},
+    root: {
+        display: 'flex 0 0',
+    },
     typography: {
-				useNextVariants: true,
-		},
+        useNextVariants: true,
+    },
     appBar: {
         zIndex: theme.zIndex.drawer + 1,
         transition: theme.transitions.create(['width', 'margin'], {
@@ -54,7 +54,7 @@ const styles = theme => ({
         }),
     },
     appBarShift: {
-				marginLeft: 230,
+        marginLeft: 230,
         width: `calc(100% - ${200}px)`,
         transition: theme.transitions.create(['width', 'margin'], {
             easing: theme.transitions.easing.sharp,
@@ -63,8 +63,8 @@ const styles = theme => ({
     },
     menuButton: {
         marginLeft: 15,
-		},
-		
+    },
+
     hide: {
         display: 'none',
     },
@@ -74,10 +74,10 @@ const styles = theme => ({
         flexShrink: 0,
         whiteSpace: 'nowrap',
         background: `url('https://pp.userapi.com/c852024/v852024335/10bfc4/Tj8lq3nMO-U.jpg') no-repeat right top`,
-				backgroundSize: '300px 1100px',
+        backgroundSize: '300px 1100px',
     },
     drawerOpen: {
-				width: 230,
+        width: 230,
         transition: theme.transitions.create('width', {
             easing: theme.transitions.easing.sharp,
             duration: 500,
@@ -86,7 +86,7 @@ const styles = theme => ({
         backgroundSize: '300px 1100px',
         overflowX: 'hidden'
 
-		},
+    },
     drawerClose: {
         transition: theme.transitions.create('width', {
             easing: theme.transitions.easing.sharp,
@@ -101,29 +101,17 @@ const styles = theme => ({
         background: `url('https://pp.userapi.com/c852024/v852024335/10bfc4/Tj8lq3nMO-U.jpg') no-repeat right top`,
         backgroundSize: '300px 1100px'
 
-		},
+    },
     toolbar: {
         display: 'flex',
-    //     // alignItems: 'center',
-    //     // justifyContent: 'flex-end',
-		 		marginLeft: '15px',
-    //     ...theme.mixins.toolbar,
-    //     // background: `url('https://bitstream.pl/wp-content/uploads/2019/04/Logo-Bitstream-4-01.png') no-repeat`,
-    //     backgroundPosition: 'center center',
-    //     backgroundSize: '160px 30px'
-     },
+        marginLeft: '15px',
+    },
     content: {
         flexGrow: 1,
-				// padding: theme.spacing.unit * 3,
-		},
-		// listItem: {
-		// 	'&:hover': {
-		// 		backgroundColor: 'rgba(200, 200, 200, 0.7)!important'
-		// 	}		
-		// }
-		active: {
-			backgroundColor: 'tomato'
-		}
+    },
+    active: {
+        backgroundColor: 'tomato'
+    }
 });
 
 const mapDispatchToProps = (dispatch) => {
@@ -138,42 +126,31 @@ const mapStateToProps = state => {
 };
 
 class AppComponent extends Component {
-	constructor(props) {
-		super(props);
+    constructor(props) {
+        super(props);
 
-		this.state = {
-			open: false,
-			animations: false,
-		}
-	};
-    
+        this.state = {
+            open: false,
+            animations: false,
+        }
+    };
 
-    // handleDrawerOpen = () => {
-    //     this.setState({open: true});
-    // };
+    handleDrawerToggle = () => {
+        let {open} = this.state;
+        this.setState({open: !open, animations: true});
+    };
 
-    // handleDrawerClose = () => {
-    //     this.setState({open: false});
-		// };
-		
-		handleDrawerToggle = () => {
-			let {open} = this.state;
-			this.setState( {open: !open , animations: true} );
-		};
-		
     componentWillMount = () => {
         if (tokenService.verifyToken()) {
             const {user, firm} = tokenService.verifyToken();
             this.props.setUser({user, firm});
         }
-		}
+    };
 
 
     render() {
-				const {open, animations } = this.state;
+        const {open, animations} = this.state;
         const {classes, theme, userInfo} = this.props;
-				
-			//  let styleHover = styles(theme).listItem;
 
         return (
             <Router history={history}>
@@ -194,17 +171,19 @@ class AppComponent extends Component {
                                 }}
                                 open={open}
                             >
-								
+
                                 {open && <div className={classes.toolbar}>
-																		<IconButton 
-																			onClick={this.handleDrawerToggle}
-																		>
-																						<MoreVertIcon />
+                                    <IconButton
+                                        onClick={this.handleDrawerToggle}
+                                    >
+                                        <MoreVertIcon/>
                                     </IconButton>
-																		<div className={ classNames('company-logo', ( animations ? (open ? 'fade-left' : 'fade-right') : '')) }>
-																			<img 
-																				src="https://bitstream.pl/wp-content/uploads/2019/04/Logo-Bitstream-4-01.png" alt=""/>
-																		</div>
+                                    <div
+                                        className={classNames('company-logo', (animations ? (open ? 'fade-left' : 'fade-right') : ''))}>
+                                        <img
+                                            src="https://bitstream.pl/wp-content/uploads/2019/04/Logo-Bitstream-4-01.png"
+                                            alt=""/>
+                                    </div>
                                 </div>}
                                 {!open && <Toolbar disableGutters={!open}>
                                     <IconButton
@@ -212,105 +191,106 @@ class AppComponent extends Component {
                                         aria-label="Open drawer"
                                         onClick={this.handleDrawerToggle}
                                         className={classNames(classes.menuButton, {
-																						[classes.hide]: open,
-																				})}
+                                            [classes.hide]: open,
+                                        })}
                                     >
-                                        <ViewListIcon />
+                                        <ViewListIcon/>
                                     </IconButton>
-																		<div className={ classNames('company-logo', ( animations ? (open ? 'fade-left' : 'fade-right') : '')) }>
-																			<img className="fixed-height"
-																				src="https://bitstream.pl/wp-content/uploads/2019/04/Logo-Bitstream-4-01.png" alt=""/>													
-																		</div>
+                                    <div
+                                        className={classNames('company-logo', (animations ? (open ? 'fade-left' : 'fade-right') : ''))}>
+                                        <img className="fixed-height"
+                                             src="https://bitstream.pl/wp-content/uploads/2019/04/Logo-Bitstream-4-01.png"
+                                             alt=""/>
+                                    </div>
                                 </Toolbar>}
                                 <Divider light/>
                                 <List>
-																	<Link>
-																	{ userInfo && <ListItem button className={'hoverClass'}>
-																		<PersonIcon/>
-																		<Typography 
-																				variant="h6" color="inherit"
-																				className={classNames( animations ? (open ? 'fade-left' : 'fade-right') : '')}
-																			>
-																				{ userInfo.name }
-																			</Typography>	
-																			
-																		</ListItem>}
-																	</Link>
-																	
+                                    <Link to={""}>
+                                        {userInfo && <ListItem button className={'hoverClass'}>
+                                            <PersonIcon/>
+                                            <Typography
+                                                variant="h6" color="inherit"
+                                                className={classNames(animations ? (open ? 'fade-left' : 'fade-right') : '')}
+                                            >
+                                                {userInfo.user.name}
+                                            </Typography>
+
+                                        </ListItem>}
+                                    </Link>
                                     <Link to={'/'}>
-																			<ListItem 
-																				button
-																				className={'hoverClass'}
-																			>
-                                        <HomeIcon/>
-																				<Typography 
-																					variant="h6" color="inherit" 
-																					className={classNames( animations ? (open ? 'fade-left' : 'fade-right') : '') }
-																						>
-                                            Home
-                                        </Typography>
-                                    	</ListItem>
-																		</Link>
+                                        <ListItem
+                                            button
+                                            className={'hoverClass'}
+                                        >
+                                            <HomeIcon/>
+                                            <Typography
+                                                variant="h6" color="inherit"
+                                                className={classNames(animations ? (open ? 'fade-left' : 'fade-right') : '')}
+                                            >
+                                                Home
+                                            </Typography>
+                                        </ListItem>
+                                    </Link>
                                     {checkAccess('/dashboard') && <Link to={'/dashboard'}>
-																			<ListItem 
-																				button
-																				className={'hoverClass'}
-																			>
-                                        <DashboardIcon/>
-                                        <Typography variant="h6" color="inherit"
-																					className={classNames( animations ? (open ? 'fade-left' : 'fade-right') : '') }
-																				>
-                                            Dashboard
-                                        </Typography>
-                                    	</ListItem>
-																		</Link>}
+                                        <ListItem
+                                            button
+                                            className={'hoverClass'}
+                                        >
+                                            <DashboardIcon/>
+                                            <Typography variant="h6" color="inherit"
+                                                        className={classNames(animations ? (open ? 'fade-left' : 'fade-right') : '')}
+                                            >
+                                                Dashboard
+                                            </Typography>
+                                        </ListItem>
+                                    </Link>}
                                     {checkAccess('/admin_panel') && <Link to={'/admin_panel'}>
-																		<ListItem 
-																				button
-																				className={'hoverClass'}
-																			>
-                                        <DashboardIcon/>
-                                        <Typography variant="h6" color="inherit"
-																					className={classNames( animations ? (open ? 'fade-left' : 'fade-right') : '') }
-																					>
-                                            Admin Panel
-                                        </Typography>
-                                    	</ListItem>
-																		</Link>}
+                                        <ListItem
+                                            button
+                                            className={'hoverClass'}
+                                        >
+                                            <DashboardIcon/>
+                                            <Typography variant="h6" color="inherit"
+                                                        className={classNames(animations ? (open ? 'fade-left' : 'fade-right') : '')}
+                                            >
+                                                Admin Panel
+                                            </Typography>
+                                        </ListItem>
+                                    </Link>}
                                     {checkAccess('/devices') && <Link to={'/devices'}>
-																		<ListItem 
-																				button
-																				className={'hoverClass'}
-																			>
-                                        <Typography variant="h6" color="inherit"
-																					className={classNames( animations ? (open ? 'fade-left' : 'fade-right') : '') }
-																					>
-                                            Devices
-                                        </Typography>
-                                   	 </ListItem>
-																		</Link>}
+                                        <ListItem
+                                            button
+                                            className={'hoverClass'}
+                                        >
+                                            <Typography variant="h6" color="inherit"
+                                                        className={classNames(animations ? (open ? 'fade-left' : 'fade-right') : '')}
+                                            >
+                                                Devices
+                                            </Typography>
+                                        </ListItem>
+                                    </Link>}
                                     {userInfo ? <Link to={'/login'}>
-																					<ListItem 
-																						button 
-																						className={'hoverClass'}
-																						onClick={this.props.logoutRequest}>
-                                            <AccountIcon/><Typography variant="h6" color="inherit"
-																							className={classNames( animations ? (open ? 'fade-left' : 'fade-right') : '') }
-																							>
-                                            Logout </Typography>
-                                        	</ListItem>
-																				</Link> :
+                                            <ListItem
+                                                button
+                                                className={'hoverClass'}
+                                                onClick={this.props.logoutRequest}>
+                                                <AccountIcon/><Typography variant="h6" color="inherit"
+                                                                          className={classNames(animations ? (open ? 'fade-left' : 'fade-right') : '')}
+                                            >
+                                                Logout </Typography>
+                                            </ListItem>
+                                        </Link> :
                                         <Link to={'/login'}>
-																					<ListItem 
-																						button
-																						className={'hoverClass'}
-																					>
-																						<AccountIcon/><Typography variant="h6" color="inherit"
-																							className={classNames( animations ? (open ? 'fade-left' : 'fade-right') : '') }
-																						>
-																							 Login</Typography>
-																				</ListItem>
-																			</Link>}
+                                            <ListItem
+                                                button
+                                                className={'hoverClass'}
+                                            >
+                                                <AccountIcon/><Typography variant="h6" color="inherit"
+                                                                          className={classNames(animations ? (open ? 'fade-left' : 'fade-right') : '')}
+                                            >
+                                                Login</Typography>
+                                            </ListItem>
+                                        </Link>}
                                 </List>
                             </Drawer>
                         </div>
@@ -323,7 +303,7 @@ class AppComponent extends Component {
                             </Switch>
                         </main>
                     </div>
-										
+
                     <SnackbarProvider maxSnack={5}>
                         <PopupComponent/>
                     </SnackbarProvider>
