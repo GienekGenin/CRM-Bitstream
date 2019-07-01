@@ -181,6 +181,8 @@ export const createPie = (data, _this) => {
 
         chart.legend = new am4charts.Legend();
         chart.data = chartdata;
+
+        piePlaceHolder("pie-group", "No groups available");
     } else {
         piePlaceHolder('device-types-chart', 'No devices available');
         createPieGroup(data, _this);
@@ -397,6 +399,7 @@ const chartSelectTypes = (_this) => {
         let devices = sortByType(reduxDevices, selectedTypes);
         _this.setState({devices, selectedGroups: new Set(), selectedPhyids: new Set()});
         createPieGroup(devices, _this);
+        piePlaceHolder("pie-phyid", "No types available");
     }
     _this.resetSelected();
     _this.props.resetSelectedDeviceParent();
