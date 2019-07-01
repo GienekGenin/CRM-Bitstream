@@ -21,6 +21,7 @@ import {SnackbarProvider} from "notistack";
 import {PopupComponent} from "../UI/material/PopupComponent/PopupComponent";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
 import ViewListIcon from "@material-ui/icons/ViewList";
+import PersonIcon from "@material-ui/icons/Person";
 
 
 // Redux
@@ -133,7 +134,7 @@ const mapDispatchToProps = (dispatch) => {
 };
 
 const mapStateToProps = state => {
-    return {user: state.loginReducer.user};
+    return {userInfo: state.loginReducer.user};
 };
 
 class AppComponent extends Component {
@@ -170,8 +171,7 @@ class AppComponent extends Component {
 
     render() {
 				const {open, animations } = this.state;
-        const {classes, theme} = this.props;
-				const {user} = this.props;
+        const {classes, theme, userInfo} = this.props;
 				
 			//  let styleHover = styles(theme).listItem;
 
@@ -194,6 +194,7 @@ class AppComponent extends Component {
                                 }}
                                 open={open}
                             >
+								
                                 {open && <div className={classes.toolbar}>
 																		<IconButton 
 																			onClick={this.handleDrawerToggle}
@@ -223,13 +224,27 @@ class AppComponent extends Component {
                                 </Toolbar>}
                                 <Divider light/>
                                 <List>
+																	<Link>
+																	{ userInfo && <ListItem button className={'hoverClass'}>
+																		<PersonIcon/>
+																		<Typography 
+																				variant="h6" color="inherit"
+																				className={classNames( animations ? (open ? 'fade-left' : 'fade-right') : '')}
+																			>
+																				{ userInfo.name }
+																			</Typography>	
+																			
+																		</ListItem>}
+																	</Link>
+																	
                                     <Link to={'/'}>
 																			<ListItem 
 																				button
 																				className={'hoverClass'}
 																			>
                                         <HomeIcon/>
-																				<Typography variant="h6" color="inherit" 
+																				<Typography 
+																					variant="h6" color="inherit" 
 																					className={classNames( animations ? (open ? 'fade-left' : 'fade-right') : '') }
 																						>
                                             Home
@@ -274,7 +289,7 @@ class AppComponent extends Component {
                                         </Typography>
                                    	 </ListItem>
 																		</Link>}
-                                    {user ? <Link to={'/login'}>
+                                    {userInfo ? <Link to={'/login'}>
 																					<ListItem 
 																						button 
 																						className={'hoverClass'}

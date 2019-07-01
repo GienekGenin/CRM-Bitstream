@@ -114,6 +114,7 @@ export const forcedTree = (parent, stateDevices) => {
 };
 
 export const createPie = (data, _this) => {
+	console.log('cp');
     const types = _this.props.deviceTypes;
     let parsedData = [];
     let chartdata = [];
@@ -194,6 +195,7 @@ export const createPie = (data, _this) => {
 };
 
 export const createPiePhyid = (data, _this) => {
+	console.log('ph');
     let parsedData = [];
     let chartdata = [];
     let phyidSet = new Set();

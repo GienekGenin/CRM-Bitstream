@@ -11,6 +11,8 @@ import {Grid, MuiThemeProvider} from '@material-ui/core';
 import Paper from '@material-ui/core/Paper';
 import MaterialTable from 'material-table';
 import {theme} from "../material.theme";
+import CircularProgress from '@material-ui/core/CircularProgress';
+
 
 // Redux
 import store from "../../redux/store";
@@ -21,7 +23,7 @@ import {tokenService} from "../../redux/services/token";
 // Components
 import './FirmDevices.scss';
 import FirmDevicesToolBar from "./FirmDevicesToolBar";
-
+import classes from 'classnames';
 // Services
 import {forcedTree, createPie, piePlaceHolder} from "./chart.service";
 
@@ -75,7 +77,7 @@ class FirmDevicesComponent extends React.Component {
         this.forcedTree = forcedTree.bind(this);
         this.createPie = createPie.bind(this);
     }
-
+		
     componentDidMount() {
         this._isMounted = true;
         this.setState({loading: true});
@@ -209,7 +211,7 @@ class FirmDevicesComponent extends React.Component {
 
     render() {
         const {loading, devices, selectedDevices, selectedDeviceIds, selectedUserIds, selectedFirm, columns, rowsPerPage, page} = this.state;
-        const {deviceTypes} = this.props;
+				const {deviceTypes} = this.props;
         devices && devices.map((el, i, arr) => arr[i] = Object.assign(el, {
             action: (
                 <div>
@@ -224,7 +226,6 @@ class FirmDevicesComponent extends React.Component {
                         <Grid
                             container
                             spacing={40}
-
                         >
                             <Grid item xs={12} sm={12} md={12} lg={4}>
                                 <Paper className={'chart-container'}>
@@ -232,30 +233,44 @@ class FirmDevicesComponent extends React.Component {
                                         <h3>
                                             Device types
                                         </h3>
-                                    </div>
-                                    <div id={'device-types-chart'}>
+                                    </div>																		
+                                    <div id={'device-types-chart'} style={{position: 'relative'}}>
+																			{loading && <CircularProgress
+																				style={{width: '250px', height: '250px', color: '#2196f3', position: "absolute", top:'20%', left: "20%"}} 
+																				className={classes.progress}
+																			/>}
                                     </div>
                                 </Paper>
                             </Grid>
                             <Grid item xs={12} sm={12} md={12} lg={4}>
-                                <Paper className={'chart-container'}>
-                                    <div className={'chart-toolbar'}>
+                                <Paper className={'chart-container'} >
+                                    <div className={'chart-toolbar'} >
                                         <h3>
                                             Phyid groups
-                                        </h3>
-                                    </div>
-                                    <div id='pie-group'>
+                                        </h3>																			
+                                    </div>																	
+																		<div id='pie-group' style={{position: 'relative'}}>
+																		{loading && <CircularProgress
+																				style={{width: '250px', height: '250px', color: '#2196f3', position: "absolute", top:'20%', left: "20%"}} 
+																				className={classes.progress}
+																			/>}
                                     </div>
                                 </Paper>
                             </Grid>
                             <Grid item xs={12} sm={12} md={12} lg={4}>
-                                <Paper className={'chart-container'}>
+																<Paper 
+																	className={'chart-container'}
+																	>
                                     <div className={'chart-toolbar'}>
                                         <h3>
                                             Phyid types
                                         </h3>
-                                    </div>
-                                    <div id='pie-phyid'>
+                                    </div>																																	
+                                    <div id='pie-phyid' style={{position: 'relative'}}>
+																			{loading && <CircularProgress
+																				style={{width: '250px', height: '250px', color: '#2196f3', position: "absolute", top:'20%', left: "20%"}} 
+																				className={classes.progress}
+																			/>}	
                                     </div>
                                 </Paper>
                             </Grid>
@@ -321,7 +336,7 @@ FirmDevicesComponent.propTypes = {
     handleSetDevices: PropTypes.func,
     parentDevices: PropTypes.array,
     deviceTypes: PropTypes.array,
-    selectedUsers: PropTypes.array
+		selectedUsers: PropTypes.array,
 };
 
 const FirmDevicesWithProps = connect(mapStateToProps, mapDispatchToProps)(FirmDevicesComponent);
