@@ -12,7 +12,7 @@ import Paper from '@material-ui/core/Paper';
 import MaterialTable from 'material-table';
 import {theme} from "../material.theme";
 import CircularProgress from '@material-ui/core/CircularProgress';
-import classes from 'classnames';
+
 
 // Redux
 import store from "../../redux/store";
@@ -23,7 +23,7 @@ import {tokenService} from "../../redux/services/token";
 // Components
 import './FirmDevices.scss';
 import FirmDevicesToolBar from "./FirmDevicesToolBar";
-
+import classes from 'classnames';
 // Services
 import {forcedTree, createPie } from "./chart.service";
 import { width } from "@amcharts/amcharts4/.internal/core/utils/Utils";
@@ -225,7 +225,6 @@ class FirmDevicesComponent extends React.Component {
                         <Grid
                             container
                             spacing={40}
-
                         >
                             <Grid item xs={12} sm={12} md={12} lg={4}>
                                 <Paper className={'chart-container'}>

@@ -26,6 +26,8 @@ import TimelineIcon from '@material-ui/icons/Timeline';
 import {Grid, MuiThemeProvider} from '@material-ui/core';
 import MaterialTable from 'material-table';
 import {MuiPickersUtilsProvider, DateTimePicker} from "material-ui-pickers";
+import CircularProgress from '@material-ui/core/CircularProgress';
+
 
 // Redux
 import {connect} from "react-redux";
@@ -39,6 +41,7 @@ import './Visualisation.scss';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import MapGL, {Marker} from 'react-map-gl';
 import Pin from '../UI/map/pin/PinComponent';
+import classes from 'classnames';
 
 //Services
 import {createLineChart, createDragPhyidPie} from "./chart.service";
@@ -148,6 +151,7 @@ class Visualisation extends React.Component {
     }
 
     componentDidMount() {
+				this.setState({loading: true});
         localStorage.removeItem('chartData');
         let {selectedDevices} = this.props;
         selectedDevices = selectedDevices.map(el => _.omit(el, ['action', 'tableData']));
@@ -249,12 +253,16 @@ class Visualisation extends React.Component {
                     >
                         <Grid item xs={12} sm={12} md={12} lg={12}>
                             <Paper>
-                                <div className={'chart-toolbar'}>
+                                <div className={'chart-toolbar'} >																
                                     <h3>
                                         Drag to select devices
-                                    </h3>
+                                    </h3>																																	
                                 </div>
-                                <div id={'pie-phyid-vis'}>
+                                <div id={'pie-phyid-vis'} style={{position:'relative'}}>
+																	{ loading && <CircularProgress
+																				style={{width: '250px', height: '250px', color: '#2196f3', position: "absolute", top:'10%', left: "42%"}} 
+																				className={classes.progress}
+																			/>}		
                                 </div>
                             </Paper>
                         </Grid>
