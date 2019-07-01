@@ -114,6 +114,7 @@ export const forcedTree = (parent, stateDevices) => {
 };
 
 export const createPie = (data, _this) => {
+	console.log('cp');
     const types = _this.props.deviceTypes;
     let parsedData = [];
     let chartdata = [];
@@ -179,10 +180,11 @@ export const createPie = (data, _this) => {
     }, _this);
 
     chart.legend = new am4charts.Legend();
-    chart.data = chartdata;
+		chart.data = chartdata;
 };
 
 export const createPiePhyid = (data, _this) => {
+	console.log('ph');
     let parsedData = [];
     let chartdata = [];
     let phyidSet = new Set();
@@ -370,7 +372,6 @@ const chartSelectTypes = (_this) => {
     let {selectedTypes} = _this.state;
     if (selectedTypes.size === 0) {
         createPieGroup([], _this);
-        createPiePhyid([], _this);
         _this.setState({devices: reduxDevices, selectedGroups: new Set(), selectedPhyids: new Set()});
     } else {
         let devices = sortByType(reduxDevices, selectedTypes);
@@ -391,7 +392,6 @@ const chartSelectGroup = (_this) => {
     d3.select('#tree').remove();
     let {selectedTypes, selectedGroups} = _this.state;
     if (selectedGroups.size === 0) {
-        createPiePhyid([], _this);
         let renderedDevices = sortByType(reduxDevices, selectedTypes);
         _this.setState({devices: renderedDevices, selectedPhyids: new Set()});
     } else {
