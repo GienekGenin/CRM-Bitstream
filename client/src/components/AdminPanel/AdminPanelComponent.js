@@ -66,7 +66,7 @@ class AdminPanel extends React.Component {
         this.unsubscribe = store.subscribe(() => {
             if (store.getState().firmReducer.firms) {
                 const reduxFirms = store.getState().firmReducer.firms;
-                if (reduxFirms !== this.state.firms && this._isMounted) {
+                if (reduxFirms !== this.state.firms) {
                     this.setState({
                         firms: reduxFirms,
                         users: null,
