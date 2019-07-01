@@ -250,7 +250,7 @@ export const createDragPhyidPie = (devicesToShow, _this) => {
         series2.dataFields.category = "type";
         series2.colors.step = 2;
 
-        series2.alignLabels = false;
+        series2.alignLabels = true;
         series2.labels.template.bent = true;
         series2.labels.template.radius = 3;
         series2.labels.template.padding(0, 0, 0, 0);
@@ -390,6 +390,11 @@ export const createDragPhyidPie = (devicesToShow, _this) => {
             dummyDataItem.hide(0);
             dummyDataItem.slice.draggable = false;
             dummyDataItem.slice.tooltipText = undefined;
+
+            if(chart1.data.length === 1){
+                const dummySlice = series1.dataItems.getIndex(0);
+                dummySlice.show();
+            }
         });
 
     }

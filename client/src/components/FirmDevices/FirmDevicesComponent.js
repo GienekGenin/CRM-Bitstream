@@ -25,8 +25,7 @@ import './FirmDevices.scss';
 import FirmDevicesToolBar from "./FirmDevicesToolBar";
 import classes from 'classnames';
 // Services
-import {forcedTree, createPie } from "./chart.service";
-import { width } from "@amcharts/amcharts4/.internal/core/utils/Utils";
+import {forcedTree, createPie, piePlaceHolder} from "./chart.service";
 
 const mapDispatchToProps = (dispatch) => {
     return {
@@ -77,11 +76,7 @@ class FirmDevicesComponent extends React.Component {
         this.selectAllDevices = this.selectAllDevices.bind(this);
         this.forcedTree = forcedTree.bind(this);
         this.createPie = createPie.bind(this);
-		}
-		
-		
-
-	
+    }
 		
     componentDidMount() {
         this._isMounted = true;
@@ -124,7 +119,13 @@ class FirmDevicesComponent extends React.Component {
             this.setState({loading: store.getState().devicesReducer.loading});
             if (store.getState().devicesReducer.devices) {
                 const devices = store.getState().devicesReducer.devices;
-                this.createPie(devices, this);
+                if(devices.length){
+                    this.createPie(devices, this);
+                } else {
+                    piePlaceHolder('device-types-chart', 'No devices available');
+                    piePlaceHolder("pie-group", "No groups available");
+                    piePlaceHolder("pie-phyid", "No types available");
+                }
                 this.setState({
                     devices,
                     selectedTypes: new Set(),

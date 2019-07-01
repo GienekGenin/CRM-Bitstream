@@ -86,19 +86,17 @@ class FirmAdministrationComponent extends Component {
                 this.setState({firms});
             }
         });
-    }
 
-    componentWillUnmount() {
-        this.unsubscribe();
-    }
-
-    componentWillMount() {
         if (this.props.selectedFirm) {
             this.setState({selectedFirm: this.props.selectedFirm, selectedFirmId: this.props.selectedFirm._id});
         }
         if (this.props.firms) {
             this.setState({firms: this.props.firms})
         }
+    }
+
+    componentWillUnmount() {
+        this.unsubscribe();
     }
 
     onChangePage = (page) => {
@@ -122,7 +120,7 @@ class FirmAdministrationComponent extends Component {
 
     render() {
         let {page, firms, rowsPerPage, loading, selectedFirm, selectedFirmId, columns} = this.state;
-        firms.map((el, i, arr) => arr[i] = Object.assign(el, {
+        firms && firms.map((el, i, arr) => arr[i] = Object.assign(el, {
             action: (
                 <div>
                     <Checkbox value={el._id} checked={selectedFirmId === el._id}/>
