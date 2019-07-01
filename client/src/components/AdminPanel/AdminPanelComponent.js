@@ -22,6 +22,7 @@ import FirmDevicesComponent from "../FirmDevices/FirmDevicesComponent";
 import FirmAdministrationComponent from "../FirmAdministration/FirmAdministrationComponent";
 import VisualisationComponent from '../Visualisation/VisualisationComponent';
 import {deviceTypesService} from "../../redux/services/device_types";
+import {tokenService} from "../../redux/services/token";
 
 
 const mapDispatchToProps = (dispatch) => {
@@ -97,60 +98,49 @@ class AdminPanel extends React.Component {
         this.handleSetDevices = this.handleSetDevices.bind(this);
     }
 
-    _isMounted = false;
-
     handleFirmSelect(selectedFirm) {
-        if (this._isMounted) {
-            this.setState({
-                selectedFirm,
-                users: null,
-                devices: null,
-                selectedUsers: null,
-                selectedDevices: null,
-            });
-        }
+        this.setState({
+            selectedFirm,
+            users: null,
+            devices: null,
+            selectedUsers: null,
+            selectedDevices: null,
+        });
     }
 
     handleUsersSelect(selectedUsers) {
-        if (this._isMounted) {
-            this.setState({selectedUsers, selectedDevices: null, devices: null})
-        }
+        this.setState({selectedUsers, selectedDevices: null, devices: null});
     }
 
     handleDevicesSelect(selectedDevices) {
-        if (this._isMounted) {
-            this.setState({selectedDevices})
-        }
+        this.setState({selectedDevices});
     }
 
     resetSelectedUsers() {
-        if (this._isMounted) {
-            this.setState({selectedUsers: null, selectedDevices: null, devices: null})
-        }
+        this.setState({selectedUsers: null, selectedDevices: null, devices: null});
     }
 
     resetSelectedDevices() {
-        if (this._isMounted) {
-            this.setState({selectedDevices: null})
-        }
+        this.setState({selectedDevices: null});
     }
 
     handleSetUsers(users) {
-        if (this._isMounted) {
-            this.setState({users, selectedUsers: null, selectedDevices: null, devices: null});
-        }
+        this.setState({users, selectedUsers: null, selectedDevices: null, devices: null});
     }
 
     handleSetDevices(devices) {
-        if (this._isMounted) {
-            this.setState({devices, selectedDevices: null,});
-        }
+        this.setState({devices, selectedDevices: null,});
     }
 
     componentDidMount() {
-        this._isMounted = true;
         if (checkAccess('/editFirms')) {
             this.props.firmRequest();
+        }
+        if (!checkAccess('/editFirms') && checkAccess('/users')) {
+            const decoded = tokenService.verifyToken();
+            if (decoded) {
+                this.setState({selectedFirm: decoded.firm});
+            }
         }
         deviceTypesService.getDeviceTypes().then(deviceTypes => {
             this.setState({deviceTypes});
@@ -158,7 +148,6 @@ class AdminPanel extends React.Component {
     }
 
     componentWillUnmount() {
-        this._isMounted = false;
         this.unsubscribe();
     }
 
@@ -184,8 +173,8 @@ class AdminPanel extends React.Component {
                             scrollButtons="on"
                         >
                             {checkAccess('/editFirms') && <Tab label="Firms"/>}
-                            <Tab label="Users" disabled={!selectedFirm && checkAccess('/editFirms')}/>
-                            <Tab label="Devices" disabled={!selectedUsers && checkAccess('/editFirms')}/>
+                            <Tab label="Users" disabled={!selectedFirm && checkAccess('/users')}/>
+                            <Tab label="Devices" disabled={!selectedUsers && checkAccess('/firmDevices')}/>
                             <Tab label="Visualisation" disabled={!selectedDevices}/>
                         </Tabs>
                     </Toolbar>
