@@ -390,6 +390,11 @@ export const createDragPhyidPie = (devicesToShow, _this) => {
             dummyDataItem.hide(0);
             dummyDataItem.slice.draggable = false;
             dummyDataItem.slice.tooltipText = undefined;
+
+            if(chart1.data.length === 1){
+                const dummySlice = series1.dataItems.getIndex(0);
+                dummySlice.show();
+            }
         });
 
     }
