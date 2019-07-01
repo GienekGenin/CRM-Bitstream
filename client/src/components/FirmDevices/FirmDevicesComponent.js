@@ -23,7 +23,7 @@ import './FirmDevices.scss';
 import FirmDevicesToolBar from "./FirmDevicesToolBar";
 
 // Services
-import {forcedTree, createPie, createPiePhyid, createPieGroup} from "./chart.service";
+import {forcedTree, createPie, piePlaceHolder} from "./chart.service";
 
 const mapDispatchToProps = (dispatch) => {
     return {
@@ -74,8 +74,6 @@ class FirmDevicesComponent extends React.Component {
         this.selectAllDevices = this.selectAllDevices.bind(this);
         this.forcedTree = forcedTree.bind(this);
         this.createPie = createPie.bind(this);
-        // this.createPiePhyid = createPiePhyid.bind(this);
-        // this.createPieGroup = createPieGroup.bind(this);
     }
 
     componentDidMount() {
@@ -90,8 +88,6 @@ class FirmDevicesComponent extends React.Component {
                 this.props.userDevicesRequest(selectedUserIds);
             } else {
                 this.createPie(parentDevices, this);
-                // this.createPiePhyid(parentDevices, this);
-                // this.createPieGroup(parentDevices, this);
                 let checked = false;
                 if (selectedDevices && selectedDevices.length === parentDevices.length) {
                     checked = true;
@@ -106,8 +102,6 @@ class FirmDevicesComponent extends React.Component {
                 this.props.userDevicesRequest([selectedUser._id]);
             } else {
                 this.createPie(parentDevices, this);
-                // this.createPiePhyid(parentDevices, this);
-                // this.createPieGroup(parentDevices, this);
                 this.setState({devices: parentDevices, loading: false});
             }
         }
@@ -123,9 +117,13 @@ class FirmDevicesComponent extends React.Component {
             this.setState({loading: store.getState().devicesReducer.loading});
             if (store.getState().devicesReducer.devices) {
                 const devices = store.getState().devicesReducer.devices;
-                this.createPie(devices, this);
-                // this.createPiePhyid(devices, this);
-                // this.createPieGroup(devices, this);
+                if(devices.length){
+                    this.createPie(devices, this);
+                } else {
+                    piePlaceHolder('device-types-chart', 'Create some devices');
+                    piePlaceHolder("pie-group", "No types available");
+                    piePlaceHolder("pie-phyid", "No groups available");
+                }
                 this.setState({
                     devices,
                     selectedTypes: new Set(),
