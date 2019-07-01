@@ -133,56 +133,62 @@ export const createPie = (data, _this) => {
         if (objToChart.count > 0)
             chartdata.push(objToChart);
     }
-    am4core.useTheme(am4themes_animated);
-    const chart = am4core.create("device-types-chart", am4charts.PieChart);
-    const pieSeries = chart.series.push(new am4charts.PieSeries());
-    pieSeries.dataFields.value = "count";
-    pieSeries.dataFields.category = "type";
+    if(chartdata.length){
+        am4core.useTheme(am4themes_animated);
+        const chart = am4core.create("device-types-chart", am4charts.PieChart);
+        const pieSeries = chart.series.push(new am4charts.PieSeries());
+        pieSeries.dataFields.value = "count";
+        pieSeries.dataFields.category = "type";
 
-    chart.innerRadius = am4core.percent(30);
+        chart.innerRadius = am4core.percent(30);
 
-    // Put a thick white border around each Slice
-    pieSeries.slices.template.stroke = am4core.color("#fff");
-    pieSeries.slices.template.strokeWidth = 2;
-    pieSeries.slices.template.strokeOpacity = 1;
-    pieSeries.slices.template
-        // change the cursor on hover to make it apparent the object can be interacted with
-        .cursorOverStyle = [
-        {
-            "property": "cursor",
-            "value": "pointer"
-        }
-    ];
+        // Put a thick white border around each Slice
+        pieSeries.slices.template.stroke = am4core.color("#fff");
+        pieSeries.slices.template.strokeWidth = 2;
+        pieSeries.slices.template.strokeOpacity = 1;
+        pieSeries.slices.template
+            // change the cursor on hover to make it apparent the object can be interacted with
+            .cursorOverStyle = [
+            {
+                "property": "cursor",
+                "value": "pointer"
+            }
+        ];
 
-    pieSeries.alignLabels = false;
-    pieSeries.labels.template.bent = true;
-    pieSeries.labels.template.radius = 3;
-    pieSeries.labels.template.padding(0, 0, 0, 0);
+        pieSeries.alignLabels = false;
+        pieSeries.labels.template.bent = true;
+        pieSeries.labels.template.radius = 3;
+        pieSeries.labels.template.padding(0, 0, 0, 0);
 
-    pieSeries.ticks.template.disabled = true;
-    const shadow = pieSeries.slices.template.filters.push(new am4core.DropShadowFilter());
-    shadow.opacity = 0;
+        pieSeries.ticks.template.disabled = true;
+        const shadow = pieSeries.slices.template.filters.push(new am4core.DropShadowFilter());
+        shadow.opacity = 0;
 
-    const hoverState = pieSeries.slices.template.states.getKey("hover");
-    const hoverShadow = hoverState.filters.push(new am4core.DropShadowFilter());
-    // const activeState =
-    hoverShadow.opacity = 0.7;
-    hoverShadow.blur = 5;
+        const hoverState = pieSeries.slices.template.states.getKey("hover");
+        const hoverShadow = hoverState.filters.push(new am4core.DropShadowFilter());
+        // const activeState =
+        hoverShadow.opacity = 0.7;
+        hoverShadow.blur = 5;
 
-    // todo: change table filters onHit
-    pieSeries.slices.template.events.on("hit", (ev) => {
-        let selectedTypes = _this.state.selectedTypes;
-        let typeClicked = types.filter(el => el.name === ev.target.dataItem.dataContext.type)[0]._id;
-        selectedTypes.has(typeClicked) ? selectedTypes.delete(typeClicked) : selectedTypes.add(typeClicked);
-        _this.setState({selectedTypes});
-        chartSelectTypes(_this);
-    }, _this);
+        // todo: change table filters onHit
+        pieSeries.slices.template.events.on("hit", (ev) => {
+            let selectedTypes = _this.state.selectedTypes;
+            let typeClicked = types.filter(el => el.name === ev.target.dataItem.dataContext.type)[0]._id;
+            selectedTypes.has(typeClicked) ? selectedTypes.delete(typeClicked) : selectedTypes.add(typeClicked);
+            _this.setState({selectedTypes});
+            chartSelectTypes(_this);
+        }, _this);
 
-    chart.legend = new am4charts.Legend();
-    chart.data = chartdata;
-
-    piePlaceHolder("pie-group", "No types available");
-    piePlaceHolder("pie-phyid", "No groups available");
+        chart.legend = new am4charts.Legend();
+        chart.data = chartdata;
+    } else {
+        piePlaceHolder('device-types-chart', 'No devices available');
+        createPieGroup(data, _this);
+    }
+    if(!data.length){
+        piePlaceHolder("pie-group", "No groups available");
+    }
+    piePlaceHolder("pie-phyid", "No types available");
 };
 
 export const createPiePhyid = (data, _this) => {
@@ -250,7 +256,7 @@ export const createPiePhyid = (data, _this) => {
     pieSeries.hiddenState.properties.opacity = 1;
     pieSeries.hiddenState.properties.endAngle = -90;
     pieSeries.hiddenState.properties.startAngle = -90;
-    
+
     const shadow = pieSeries.slices.template.filters.push(new am4core.DropShadowFilter());
     shadow.opacity = 0;
 
@@ -384,8 +390,8 @@ const chartSelectTypes = (_this) => {
     let reduxDevices = store.getState().devicesReducer.devices;
     let {selectedTypes} = _this.state;
     if (selectedTypes.size === 0) {
-        piePlaceHolder("pie-group", "No types available");
-        piePlaceHolder("pie-phyid", "No groups available");
+        piePlaceHolder("pie-group", "No groups available");
+        piePlaceHolder("pie-phyid", "No types available");
         _this.setState({devices: reduxDevices, selectedGroups: new Set(), selectedPhyids: new Set()});
     } else {
         let devices = sortByType(reduxDevices, selectedTypes);
@@ -406,12 +412,15 @@ const chartSelectGroup = (_this) => {
     d3.select('#tree').remove();
     let {selectedTypes, selectedGroups} = _this.state;
     if (selectedGroups.size === 0) {
-        piePlaceHolder("pie-phyid", "No groups available");
+        piePlaceHolder("pie-phyid", "No types available");
         let renderedDevices = sortByType(reduxDevices, selectedTypes);
         _this.setState({devices: renderedDevices, selectedPhyids: new Set()});
     } else {
         let renderedByType = sortByType(reduxDevices, selectedTypes);
         let renderedByGroup = sortByGroup(renderedByType, selectedGroups);
+        if(!renderedByType.length){
+            renderedByGroup = sortByGroup(reduxDevices, selectedGroups);
+        }
         _this.setState({devices: renderedByGroup, selectedPhyids: new Set()});
         createPiePhyid(renderedByGroup, _this);
     }
@@ -435,6 +444,9 @@ const chartSelectPhyid = (_this) => {
     } else {
         let renderedByType = sortByType(reduxDevices, selectedTypes);
         let renderedByGroup = sortByGroup(renderedByType, selectedGroups);
+        if(!renderedByType.length){
+            renderedByGroup = sortByGroup(reduxDevices, selectedGroups);
+        }
         let renderedByPhyid = sortByPhyid(renderedByGroup, selectedPhyids);
         _this.setState({devices: renderedByPhyid});
     }

@@ -247,6 +247,7 @@ class AdminPanel extends React.Component {
                                 selectedFirm={selectedFirm}
                                 parentDevices={devices}
                                 selectedDevices={selectedDevices}
+                                selectedUsers={selectedUsers}
                                 deviceTypes={deviceTypes}
                             />
                         </TabContainer>}

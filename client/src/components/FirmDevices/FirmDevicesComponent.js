@@ -120,9 +120,9 @@ class FirmDevicesComponent extends React.Component {
                 if(devices.length){
                     this.createPie(devices, this);
                 } else {
-                    piePlaceHolder('device-types-chart', 'Create some devices');
-                    piePlaceHolder("pie-group", "No types available");
-                    piePlaceHolder("pie-phyid", "No groups available");
+                    piePlaceHolder('device-types-chart', 'No devices available');
+                    piePlaceHolder("pie-group", "No groups available");
+                    piePlaceHolder("pie-phyid", "No types available");
                 }
                 this.setState({
                     devices,
