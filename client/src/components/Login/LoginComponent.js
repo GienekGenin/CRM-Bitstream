@@ -10,6 +10,15 @@ import CardActions from '@material-ui/core/CardActions';
 import Grow from '@material-ui/core/Grow';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
+import { withStyles } from '@material-ui/core/styles';
+import IconButton from '@material-ui/core/IconButton';
+import InputAdornment from '@material-ui/core/InputAdornment';
+import Visibility from '@material-ui/icons/Visibility';
+import VisibilityOff from '@material-ui/icons/VisibilityOff';
+
+import PropTypes from 'prop-types';
+import classes from 'classnames';
+
 // Redux
 import {connect} from 'react-redux';
 import store from '../../redux/store/index'
@@ -26,20 +35,34 @@ const mapDispatchToProps = (dispatch) => {
     };
 };
 
+const useStyles = withStyles ({
+		// visibilityButton: {
+		// 	root: {
+		// 		position: "absolute",
+		//   	right: "5px",
+		//   	bottom: "12px"
+		// 	}
+		// }
+});
+
 class LoginPage extends React.Component {
+	
     constructor(props) {
         super(props);
 
         this.state = {
             email: '',
             password: '',
-            loading: false
+						loading: false,
+						showPassword: false,
         };
 
-        this.handleChange = this.handleChange.bind(this);
+				this.handleChange = this.handleChange.bind(this);
+				this.handleClickShowPassword = this.handleClickShowPassword.bind(this);
         this.handleLoginSubmit = this.handleLoginSubmit.bind(this);
         this.handleChangePassSubmit = this.handleChangePassSubmit.bind(this);
-    }
+		}
+		
 
     _isMounted = false;
 
@@ -77,10 +100,19 @@ class LoginPage extends React.Component {
         e.preventDefault();
         const {email, password, newPassword} = this.state;
         this.props.changePassRequest({email, password, newPassword});
-    }
+		}
+		
+		
+		handleClickShowPassword(){
+			const { showPassword } = this.state;
+			this.setState({ 
+				showPassword: !showPassword 
+			})
+		};
 
     render() {
-        const {email, password, loading} = this.state;
+				const {email, password, loading, showPassword} = this.state;
+				// const classes = useStyles();
         return (
             <div>
                 <div id='loginContainer'>
@@ -111,16 +143,29 @@ class LoginPage extends React.Component {
                                     <div className={'form-group' + (!password ? ' has-error' : '')}>
                                         <TextField
                                             required
-                                            id="outlined-password-input"
+																						// id="outlined-password-input"
+																						id="adornment-password"
                                             label="Password"
                                             value={password}
                                             name="password"
-                                            type="password"
-                                            onChange={this.handleChange}
+                                            // type="password"
+                                             onChange={this.handleChange}
                                             autoComplete="current-password"
                                             margin="normal"
-                                            variant="outlined"
+																						variant="outlined"
+																						type={showPassword ? 'text' : 'password'}
+																						
                                         />
+																				<InputAdornment>
+																								<IconButton 
+																									className={classes.visabilityButton}
+																									aria-label="Toggle password visibility" 
+																									onClick={this.handleClickShowPassword}
+																									style={{position: "absolute", right: "5px", bottom: "12px"}}
+																									>
+																										{showPassword ? <Visibility /> : <VisibilityOff />}
+																								</IconButton>
+																							</InputAdornment>
                                         {!password &&
                                         <div className="help-block">Password is required</div>
                                         }
@@ -133,8 +178,8 @@ class LoginPage extends React.Component {
                                 </CardContent>
                                 <CardActions>
                                     <div className="loginBtnGroup">
-                                        <Button variant="contained" type='submit' color="inherit"
-                                                disabled={loading}>Submit</Button>
+                                        <Button variant="contained" type='submit' color='primary'
+                                                disabled={loading} size="large">Submit</Button>
                                         {loading && <div id='progressLogin'>
                                             <CircularProgress size={25}/>
                                         </div>}
@@ -150,6 +195,12 @@ class LoginPage extends React.Component {
     }
 }
 
+LoginPage.propTypes = {
+	classes: PropTypes.object.isRequired,
+	theme: PropTypes.object.isRequired,
+};
+
+
 const LoginForm = connect(null, mapDispatchToProps)(LoginPage);
 
-export default LoginForm;
+export default withStyles(useStyles, {withTheme: true})(LoginForm);

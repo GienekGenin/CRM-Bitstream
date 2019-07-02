@@ -42,7 +42,7 @@ import DashboardComponent from '../../components/Dashboard/DashboardComponent';
 const styles = theme => ({
     root: {
         display: 'flex 0 0',
-    },
+		},
     typography: {
         useNextVariants: true,
     },
@@ -62,9 +62,16 @@ const styles = theme => ({
         }),
     },
     menuButton: {
-        marginLeft: 15,
+				marginLeft: 15,
+				"&:hover": {
+					backgroundColor: "transparent"
+				}
     },
-
+		menuButtonOpen: {
+			"&:hover": {
+				backgroundColor: "transparent"
+			}
+		},
     hide: {
         display: 'none',
     },
@@ -85,7 +92,6 @@ const styles = theme => ({
         background: `url('https://pp.userapi.com/c852024/v852024335/10bfc4/Tj8lq3nMO-U.jpg') no-repeat right top`,
         backgroundSize: '300px 1100px',
         overflowX: 'hidden'
-
     },
     drawerClose: {
         transition: theme.transitions.create('width', {
@@ -100,7 +106,6 @@ const styles = theme => ({
         minWidth: 75,
         background: `url('https://pp.userapi.com/c852024/v852024335/10bfc4/Tj8lq3nMO-U.jpg') no-repeat right top`,
         backgroundSize: '300px 1100px'
-
     },
     toolbar: {
         display: 'flex',
@@ -108,10 +113,8 @@ const styles = theme => ({
     },
     content: {
         flexGrow: 1,
-    },
-    active: {
-        backgroundColor: 'tomato'
-    }
+		},
+		
 });
 
 const mapDispatchToProps = (dispatch) => {
@@ -174,7 +177,8 @@ class AppComponent extends Component {
 
                                 {open && <div className={classes.toolbar}>
                                     <IconButton
-                                        onClick={this.handleDrawerToggle}
+																				onClick={this.handleDrawerToggle}
+																				className={classNames(classes.menuButtonOpen)}
                                     >
                                         <MoreVertIcon/>
                                     </IconButton>
@@ -187,7 +191,7 @@ class AppComponent extends Component {
                                 </div>}
                                 {!open && <Toolbar disableGutters={!open}>
                                     <IconButton
-                                        color="inherit"
+																				color="inherit"
                                         aria-label="Open drawer"
                                         onClick={this.handleDrawerToggle}
                                         className={classNames(classes.menuButton, {
@@ -197,7 +201,8 @@ class AppComponent extends Component {
                                         <ViewListIcon/>
                                     </IconButton>
                                     <div
-                                        className={classNames('company-logo', (animations ? (open ? 'fade-left' : 'fade-right') : ''))}>
+                                        className={classNames('company-logo', (animations ? (open ? 'fade-left' : 'fade-right') : ''))}
+																				hover="false">
                                         <img className="fixed-height"
                                              src="https://bitstream.pl/wp-content/uploads/2019/04/Logo-Bitstream-4-01.png"
                                              alt=""/>
