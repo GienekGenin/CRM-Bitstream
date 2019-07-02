@@ -67,7 +67,8 @@ class Visualisation extends React.Component {
         this.state = {
             page: 0,
             rowsPerPage: 5,
-            loading: false,
+            loadingDevices: false,
+            loadingData: false,
             checked: false,
             selectedPhyids: new Set(),
             selectedDevices: [],
@@ -155,18 +156,21 @@ class Visualisation extends React.Component {
         let {selectedDevices} = this.props;
         selectedDevices = selectedDevices.map(el => _.omit(el, ['action', 'tableData']));
         const sids = selectedDevices.map(el => el.sid);
+        this.setState({loadingDevices: true});
         dataService.getDevicesWithData({sids}).then(d => {
-            let sids = d.map(el => el._id.sid);
+            const sids = d.map(el => el._id.sid);
             const devicesWithData = selectedDevices.filter(el => sids.includes(el.sid));
             this.createDragPhyidPie(devicesWithData, this);
-        }).catch(e => console.log(e));
+        }).catch(e => {
+            console.log(e)
+        });
 
         this.unsubscribe = store.subscribe(() => {
 
             // locationData
             const {linearData, timeDialog} = this.state;
-            const loading = store.getState().dataReducer.loading;
-            this.setState({loading});
+            const loadingData = store.getState().dataReducer.loading;
+            this.setState({loadingData});
             if (store.getState().dataReducer.data.length) {
                 const reduxData = store.getState().dataReducer.data;
                 const reduxLinearData = [];
@@ -189,7 +193,7 @@ class Visualisation extends React.Component {
                     d3.select('#lineChart').remove();
                     d3.select('#parent-line-chart').append('div').attr("id", 'lineChart');
                     !this.timeDialog && createLineChart(this, reduxLinearData, selectedDevices);
-                    let startData = JSON.parse(localStorage.getItem('chartData'));
+                    const startData = JSON.parse(localStorage.getItem('chartData'));
                     if (!startData) {
                         localStorage.setItem('chartData', JSON.stringify(reduxLinearData));
                     }
@@ -203,8 +207,7 @@ class Visualisation extends React.Component {
                 const time = store.getState().dataReducer.time;
                 this.setState({
                     minSelectedDate: time.minSelectedDate,
-                    maxSelectedDate: time.maxSelectedDate,
-                    loading: false
+                    maxSelectedDate: time.maxSelectedDate
                 })
             }
             return true;
@@ -242,7 +245,7 @@ class Visualisation extends React.Component {
     render() {
         const {
             devicesToVis, columns, page, rowsPerPage, selectedDevices, columnsDialog, anchorEl,
-            loading, minTime, maxTime, minSelectedDate, maxSelectedDate, locationData, linearData
+            loadingData, loadingDevices, minTime, maxTime, minSelectedDate, maxSelectedDate, locationData, linearData
         } = this.state;
         return (
             <div style={{maxWidth: '100%'}}>
@@ -259,7 +262,7 @@ class Visualisation extends React.Component {
                                     </h3>
                                 </div>
                                 <div id={'pie-phyid-vis'} style={{position: 'relative'}}>
-                                    {loading && <CircularProgress
+                                    {loadingDevices && <CircularProgress
                                         style={{
                                             width: '250px',
                                             height: '250px',
@@ -307,7 +310,7 @@ class Visualisation extends React.Component {
                                                         <DialogContent>
                                                             <div className="picker">
                                                                 <DateTimePicker
-                                                                    disabled={loading}
+                                                                    disabled={loadingData}
                                                                     autoOk
                                                                     ampm={false}
                                                                     value={minSelectedDate}
@@ -320,7 +323,7 @@ class Visualisation extends React.Component {
                                                                 <DateTimePicker
                                                                     autoOk
                                                                     ampm={false}
-                                                                    disabled={loading}
+                                                                    disabled={loadingData}
                                                                     value={maxSelectedDate}
                                                                     maxDate={maxTime}
                                                                     minDate={minSelectedDate}
@@ -333,7 +336,7 @@ class Visualisation extends React.Component {
                                                         <Button
                                                             variant="outlined" color="primary"
                                                             onClick={() => this.handleConfigTime()}
-                                                            disabled={loading}
+                                                            disabled={loadingData}
                                                         >
                                                             Confirm
                                                         </Button>
@@ -347,7 +350,7 @@ class Visualisation extends React.Component {
                                             <Tooltip title={'Show columns'}>
                                                 <div>
                                                     <IconButton variant="outlined" color="primary"
-                                                                disabled={loading}
+                                                                disabled={loadingData}
                                                                 onClick={this.handleClickMenu}>
                                                         <ViewColumnIcon/>
                                                     </IconButton>

@@ -160,6 +160,11 @@ export const createPie = (data, _this) => {
         pieSeries.labels.template.radius = 3;
         pieSeries.labels.template.padding(0, 0, 0, 0);
 
+        // This creates initial animation
+        pieSeries.hiddenState.properties.opacity = 1;
+        pieSeries.hiddenState.properties.endAngle = -90;
+        pieSeries.hiddenState.properties.startAngle = -90;
+
         pieSeries.ticks.template.disabled = true;
         const shadow = pieSeries.slices.template.filters.push(new am4core.DropShadowFilter());
         shadow.opacity = 0;
