@@ -1,11 +1,16 @@
 import React from "react";
+import ReactDOM from "react-dom";
 import * as PropTypes from 'prop-types';
+import _ from "lodash";
 
 // Material
 import {createMuiTheme, MuiThemeProvider, withStyles} from '@material-ui/core/styles';
 import {styles} from '../UI/material/table-styles';
 import {Grid} from "@material-ui/core";
 import MaterialTable from 'material-table';
+import AddBoxIcon from '@material-ui/icons/AddBox';
+import IconButton from "@material-ui/core/IconButton";
+import Checkbox from "@material-ui/core/Checkbox";
 
 // Redux
 import store from "../../redux/store";
@@ -52,19 +57,25 @@ const mapStateToProps = state => {
 
 class UserAdminComponent extends React.Component {
 
-    _isMounted = false;
-
     constructor(props) {
         super(props);
 
         this.state = {
             page: 0,
             rowsPerPage: 5,
+            users: [],
             selectedUsers: [],
             selectedUserIds: [],
             loading: false,
             selectedFirm: null,
             columns: [
+                {
+                    title: 'Select',
+                    field: 'action',
+                    filtering: false,
+                    sorting: false,
+                    hidden: false,
+                },
                 {title: 'Name', field: 'name', hidden: false,},
                 {title: 'Surname', field: 'surname', hidden: false,},
                 {title: 'Email', field: 'email', hidden: false,},
@@ -75,12 +86,13 @@ class UserAdminComponent extends React.Component {
         this.handleUsersSelect = this.handleUsersSelect.bind(this);
         this.resetSelected = this.resetSelected.bind(this);
         this.addRemoveColumn = this.addRemoveColumn.bind(this);
+        this.selectAllUsers = this.selectAllUsers.bind(this);
     }
 
 
     componentDidMount() {
-        this._isMounted = true;
         this.setState({loading: true});
+        this.renderSelectAllCheckBox(false);
         if (this.props.selectedFirm) {
             this.setState({selectedFirm: this.props.selectedFirm});
             if (!this.props.parentUsers) {
@@ -91,13 +103,20 @@ class UserAdminComponent extends React.Component {
             this.setState({selectedFirm});
             if (!this.props.parentUsers) {
                 this.props.usersRequest(selectedFirm._id);
-            } else this.setState({users: this.props.parentUsers, loading: false});
+            } else {
+                this.setState({users: this.props.parentUsers, loading: false});
+            }
         }
 
         if (this.props.selectedUsers) {
             const {selectedUsers} = this.props;
             const selectedUserIds = selectedUsers.map(user => user._id);
             this.setState({selectedUsers, selectedUserIds});
+            if(this.props.parentUsers.length === this.props.selectedUsers.length){
+                this.renderSelectAllCheckBox(false);
+            } else {
+                this.renderSelectAllCheckBox(true);
+            }
         }
 
         this.unsubscribe = store.subscribe(() => {
@@ -112,7 +131,6 @@ class UserAdminComponent extends React.Component {
     }
 
     componentWillUnmount() {
-        this._isMounted = false;
         this.unsubscribe();
     }
 
@@ -125,18 +143,72 @@ class UserAdminComponent extends React.Component {
         this.setState({selectedUsers: [], selectedUserIds: []});
     };
 
-    onSelectionChange = (rows) => {
-        const selectedUserIds = rows.map(el => el._id);
-        this.setState({selectedUsers: rows, selectedUserIds});
-        this.handleUsersSelect(rows);
+    onRowClick = (e, rowData) => {
+        const {users, selectedUserIds} = this.state;
+        let selectedUser = _.omit(users.filter(el => (el._id === rowData._id) ? el : null)[0], 'action');
+        let selectedUsersIdsSet = new Set(selectedUserIds);
+        let id = selectedUser._id;
+        selectedUsersIdsSet.has(id) ? selectedUsersIdsSet.delete(id) : selectedUsersIdsSet.add(id);
+        let selectedUsers = [];
+        [...selectedUsersIdsSet].forEach(id => {
+            users.forEach(user => {
+                if (user._id === id) {
+                    selectedUsers.push(user);
+                }
+            })
+        });
+        let checked = false;
+        if (selectedUsers.length === users.length) {
+            checked = true;
+            this.renderSelectAllCheckBox(checked);
+        } else {
+            this.renderSelectAllCheckBox(checked)
+        }
+        this.setState({selectedUsers, selectedUserIds: [...selectedUsersIdsSet]});
+        this.handleUsersSelect(selectedUsers);
     };
 
     addRemoveColumn = (columns) => {
         this.setState({columns});
     };
 
+    selectAllUsers() {
+        const {users, selectedUsers} = this.state;
+        if (users.length === selectedUsers.length) {
+            this.renderSelectAllCheckBox(false);
+            this.resetSelected();
+        } else {
+            const selectedUserIds = users.map(user => user._id);
+            this.setState({selectedUsers: users, selectedUserIds});
+            this.renderSelectAllCheckBox(true);
+            this.handleUsersSelect(users);
+        }
+    }
+
+    renderSelectAllCheckBox(checked) {
+        let element = <div>
+            <Checkbox value={'1'} checked={checked} onChange={this.selectAllUsers}/>
+        </div>;
+        if(!checked){
+            element = <IconButton onClick={this.selectAllUsers}>
+                <AddBoxIcon />
+            </IconButton>
+        }
+        const container = document.querySelector('#root > div > main > div > div > div > div > div > div > div > ' +
+            'div:nth-child(2) > div > div > table > tbody > tr:nth-child(1) > td:nth-child(1)');
+        if (container)
+            ReactDOM.render(element, container)
+    }
+
     render() {
-        const {rowsPerPage, page, selectedUsers, loading, selectedFirm, users, columns} = this.state;
+        const {rowsPerPage, page, selectedUsers, selectedUserIds, loading, selectedFirm, users, columns} = this.state;
+        users && users.map((el, i, arr) => arr[i] = Object.assign(el, {
+            action: (
+                <div>
+                    <Checkbox value={el._id} checked={selectedUserIds.includes(el._id)}/>
+                </div>
+            )
+        }));
         return (
             <MuiThemeProvider theme={theme}>
                 <div style={{maxWidth: '100%'}}>
@@ -171,9 +243,8 @@ class UserAdminComponent extends React.Component {
                                     pageSize: rowsPerPage,
                                     search: false,
                                     toolbar: true,
-                                    selection: true
                                 }}
-                                onSelectionChange={this.onSelectionChange}
+                                onRowClick={this.onRowClick}
                             />
                         </Grid>
                     </Grid>

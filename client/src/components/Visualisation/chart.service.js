@@ -123,7 +123,7 @@ export const createLineChart = (_this, data, selectedDevices) => {
 
 export const createDragPhyidPie = (devicesToShow, _this) => {
     am4core.useTheme(am4themes_animated);
-
+    _this.setState({loadingDevices: false});
     let {selectedPhyids} = _this.state;
     if (devicesToShow) {
         let parsedData = [];

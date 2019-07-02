@@ -99,9 +99,9 @@ const styles = theme => ({
             duration: 500,
         }),
         overflowX: 'hidden',
-        width: theme.spacing.unit * 7 + 1,
+        width: theme.spacing(7),
         [theme.breakpoints.up('sm')]: {
-            width: theme.spacing.unit * 9 + 1,
+            width: theme.spacing(9),
         },
         minWidth: 75,
         background: `url('https://pp.userapi.com/c852024/v852024335/10bfc4/Tj8lq3nMO-U.jpg') no-repeat right top`,
