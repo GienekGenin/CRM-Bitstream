@@ -93,9 +93,9 @@ class FirmDevicesComponent extends React.Component {
                 let checked = false;
                 if (selectedDevices && selectedDevices.length === parentDevices.length) {
                     checked = true;
-                    this.renderSelectAllCheckBox(checked, false);
+                    this.renderSelectAllCheckBox(checked);
                 } else {
-                    this.renderSelectAllCheckBox(checked, true);
+                    this.renderSelectAllCheckBox(checked);
                 }
                 this.setState({devices: parentDevices, selectedDevices, checked, loading: false});
 
@@ -176,9 +176,9 @@ class FirmDevicesComponent extends React.Component {
         let checked = false;
         if (selectedDevices.length === devices.length) {
             checked = true;
-            this.renderSelectAllCheckBox(checked,  false);
+            this.renderSelectAllCheckBox(checked);
         } else {
-            this.renderSelectAllCheckBox(false,  true)
+            this.renderSelectAllCheckBox(checked)
         }
         this.setState({selectedDevices, selectedDeviceIds: [...selectedDeviceIdsSet]});
         this.handleDeviceSelect(selectedDevices);
@@ -207,11 +207,11 @@ class FirmDevicesComponent extends React.Component {
         }
     }
 
-    renderSelectAllCheckBox(checked, addBox) {
+    renderSelectAllCheckBox(checked) {
         let element = <div>
             <Checkbox value={'1'} checked={checked} onChange={this.selectAllDevices}/>
         </div>;
-        if(addBox){
+        if(!checked){
             element = <IconButton onClick={this.selectAllDevices}>
                 <AddBoxIcon />
             </IconButton>

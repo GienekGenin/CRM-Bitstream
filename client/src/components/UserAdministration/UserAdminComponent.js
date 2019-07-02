@@ -1,11 +1,16 @@
 import React from "react";
+import ReactDOM from "react-dom";
 import * as PropTypes from 'prop-types';
+import _ from "lodash";
 
 // Material
 import {createMuiTheme, MuiThemeProvider, withStyles} from '@material-ui/core/styles';
 import {styles} from '../UI/material/table-styles';
 import {Grid} from "@material-ui/core";
 import MaterialTable from 'material-table';
+import AddBoxIcon from '@material-ui/icons/AddBox';
+import IconButton from "@material-ui/core/IconButton";
+import Checkbox from "@material-ui/core/Checkbox";
 
 // Redux
 import store from "../../redux/store";
@@ -23,9 +28,6 @@ import {tokenService} from "../../redux/services/token";
 // Components
 import './UserAdmin.scss';
 import UserToolBar from './UserToolBar';
-import Checkbox from "@material-ui/core/Checkbox";
-import _ from "lodash";
-import ReactDOM from "react-dom";
 
 const theme = createMuiTheme({
     palette: {
@@ -111,6 +113,8 @@ class UserAdminComponent extends React.Component {
             const selectedUserIds = selectedUsers.map(user => user._id);
             this.setState({selectedUsers, selectedUserIds});
             if(this.props.parentUsers.length === this.props.selectedUsers.length){
+                this.renderSelectAllCheckBox(false);
+            } else {
                 this.renderSelectAllCheckBox(true);
             }
         }
@@ -154,10 +158,14 @@ class UserAdminComponent extends React.Component {
             })
         });
         let checked = false;
-        if (selectedUsers.length === users.length) checked = true;
+        if (selectedUsers.length === users.length) {
+            checked = true;
+            this.renderSelectAllCheckBox(checked);
+        } else {
+            this.renderSelectAllCheckBox(checked)
+        }
         this.setState({selectedUsers, selectedUserIds: [...selectedUsersIdsSet]});
         this.handleUsersSelect(selectedUsers);
-        this.renderSelectAllCheckBox(checked);
     };
 
     addRemoveColumn = (columns) => {
@@ -178,9 +186,14 @@ class UserAdminComponent extends React.Component {
     }
 
     renderSelectAllCheckBox(checked) {
-        const element = <div>
+        let element = <div>
             <Checkbox value={'1'} checked={checked} onChange={this.selectAllUsers}/>
         </div>;
+        if(!checked){
+            element = <IconButton onClick={this.selectAllUsers}>
+                <AddBoxIcon />
+            </IconButton>
+        }
         const container = document.querySelector('#root > div > main > div > div > div > div > div > div > div > ' +
             'div:nth-child(2) > div > div > table > tbody > tr:nth-child(1) > td:nth-child(1)');
         if (container)
