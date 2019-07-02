@@ -39,8 +39,6 @@ const mapStateToProps = state => {
 
 class FirmDevicesComponent extends React.Component {
 
-    _isMounted = false;
-
     constructor(props) {
         super(props);
 
@@ -77,9 +75,9 @@ class FirmDevicesComponent extends React.Component {
         this.forcedTree = forcedTree.bind(this);
         this.createPie = createPie.bind(this);
     }
-		
+
     componentDidMount() {
-        this._isMounted = true;
+        this.renderSelectAllCheckBox(false);
         this.setState({loading: true});
         const {selectedFirm, selectedUsers, parentDevices, selectedDevices} = this.props;
         if (selectedUsers) {
@@ -95,6 +93,7 @@ class FirmDevicesComponent extends React.Component {
                     checked = true;
                 }
                 this.setState({devices: parentDevices, selectedDevices, checked, loading: false});
+                this.renderSelectAllCheckBox(checked);
             }
         } else {
             let selectedUser = tokenService.verifyToken().user;
@@ -119,7 +118,7 @@ class FirmDevicesComponent extends React.Component {
             this.setState({loading: store.getState().devicesReducer.loading});
             if (store.getState().devicesReducer.devices) {
                 const devices = store.getState().devicesReducer.devices;
-                if(devices.length){
+                if (devices.length) {
                     this.createPie(devices, this);
                 } else {
                     piePlaceHolder('device-types-chart', 'No devices available');
@@ -130,21 +129,21 @@ class FirmDevicesComponent extends React.Component {
                     devices,
                     selectedTypes: new Set(),
                     selectedPhyids: new Set(),
-                    selectedGroups: new Set()});
+                    selectedGroups: new Set()
+                });
                 this.props.handleSetDevices(devices);
             }
             return true;
         });
-        this.renderSelectAllCheckBox(false);
     }
 
     componentWillUnmount() {
-        this._isMounted = false;
         this.unsubscribe();
     }
 
     resetSelected = () => {
         this.setState({selectedDeviceIds: [], selectedDevices: []});
+        this.props.onDeviceSelect([]);
     };
 
     onChangePage = (page) => {
@@ -192,7 +191,7 @@ class FirmDevicesComponent extends React.Component {
             this.renderSelectAllCheckBox(false);
             this.resetSelected();
         } else {
-            const selectedDeviceIds = devices.map(devices => devices.sid);
+            const selectedDeviceIds = devices.map(device => device.sid);
             this.setState({selectedDevices: devices, selectedDeviceIds});
             this.renderSelectAllCheckBox(true);
             this.handleDeviceSelect(devices);
@@ -211,7 +210,7 @@ class FirmDevicesComponent extends React.Component {
 
     render() {
         const {loading, devices, selectedDevices, selectedDeviceIds, selectedUserIds, selectedFirm, columns, rowsPerPage, page} = this.state;
-				const {deviceTypes} = this.props;
+        const {deviceTypes} = this.props;
         devices && devices.map((el, i, arr) => arr[i] = Object.assign(el, {
             action: (
                 <div>
@@ -233,44 +232,65 @@ class FirmDevicesComponent extends React.Component {
                                         <h3>
                                             Device types
                                         </h3>
-                                    </div>																		
+                                    </div>
                                     <div id={'device-types-chart'} style={{position: 'relative'}}>
-																			{loading && <CircularProgress
-																				style={{width: '250px', height: '250px', color: '#2196f3', position: "absolute", top:'20%', left: "20%"}} 
-																				className={classes.progress}
-																			/>}
+                                        {loading && <CircularProgress
+                                            style={{
+                                                width: '250px',
+                                                height: '250px',
+                                                color: '#2196f3',
+                                                position: "absolute",
+                                                top: '20%',
+                                                left: "20%"
+                                            }}
+                                            className={classes.progress}
+                                        />}
                                     </div>
                                 </Paper>
                             </Grid>
                             <Grid item xs={12} sm={12} md={12} lg={4}>
-                                <Paper className={'chart-container'} >
-                                    <div className={'chart-toolbar'} >
+                                <Paper className={'chart-container'}>
+                                    <div className={'chart-toolbar'}>
                                         <h3>
                                             Phyid groups
-                                        </h3>																			
-                                    </div>																	
-																		<div id='pie-group' style={{position: 'relative'}}>
-																		{loading && <CircularProgress
-																				style={{width: '250px', height: '250px', color: '#2196f3', position: "absolute", top:'20%', left: "20%"}} 
-																				className={classes.progress}
-																			/>}
+                                        </h3>
+                                    </div>
+                                    <div id='pie-group' style={{position: 'relative'}}>
+                                        {loading && <CircularProgress
+                                            style={{
+                                                width: '250px',
+                                                height: '250px',
+                                                color: '#2196f3',
+                                                position: "absolute",
+                                                top: '20%',
+                                                left: "20%"
+                                            }}
+                                            className={classes.progress}
+                                        />}
                                     </div>
                                 </Paper>
                             </Grid>
                             <Grid item xs={12} sm={12} md={12} lg={4}>
-																<Paper 
-																	className={'chart-container'}
-																	>
+                                <Paper
+                                    className={'chart-container'}
+                                >
                                     <div className={'chart-toolbar'}>
                                         <h3>
                                             Phyid types
                                         </h3>
-                                    </div>																																	
+                                    </div>
                                     <div id='pie-phyid' style={{position: 'relative'}}>
-																			{loading && <CircularProgress
-																				style={{width: '250px', height: '250px', color: '#2196f3', position: "absolute", top:'20%', left: "20%"}} 
-																				className={classes.progress}
-																			/>}	
+                                        {loading && <CircularProgress
+                                            style={{
+                                                width: '250px',
+                                                height: '250px',
+                                                color: '#2196f3',
+                                                position: "absolute",
+                                                top: '20%',
+                                                left: "20%"
+                                            }}
+                                            className={classes.progress}
+                                        />}
                                     </div>
                                 </Paper>
                             </Grid>
@@ -336,7 +356,7 @@ FirmDevicesComponent.propTypes = {
     handleSetDevices: PropTypes.func,
     parentDevices: PropTypes.array,
     deviceTypes: PropTypes.array,
-		selectedUsers: PropTypes.array,
+    selectedUsers: PropTypes.array,
 };
 
 const FirmDevicesWithProps = connect(mapStateToProps, mapDispatchToProps)(FirmDevicesComponent);
