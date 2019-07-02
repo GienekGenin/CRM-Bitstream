@@ -151,7 +151,6 @@ class AppComponent extends Component {
     render() {
         const {open, animations} = this.state;
         const {classes, theme, userInfo} = this.props;
-
         return (
             <Router history={history}>
                 <MuiThemeProvider theme={theme}>
@@ -212,7 +211,7 @@ class AppComponent extends Component {
                                                 variant="h6" color="inherit"
                                                 className={classNames(animations ? (open ? 'fade-left' : 'fade-right') : '')}
                                             >
-                                                {userInfo.user.name}
+                                                {userInfo.name}
                                             </Typography>
 
                                         </ListItem>}
