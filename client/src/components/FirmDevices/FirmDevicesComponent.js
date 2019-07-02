@@ -6,13 +6,14 @@ import _ from "lodash";
 // Material
 import {withStyles} from '@material-ui/core/styles';
 import Checkbox from "@material-ui/core/Checkbox";
+import AddBoxIcon from '@material-ui/icons/AddBox';
 import {styles} from '../UI/material/table-styles';
 import {Grid, MuiThemeProvider} from '@material-ui/core';
 import Paper from '@material-ui/core/Paper';
 import MaterialTable from 'material-table';
 import {theme} from "../material.theme";
 import CircularProgress from '@material-ui/core/CircularProgress';
-
+import IconButton from "@material-ui/core/IconButton";
 
 // Redux
 import store from "../../redux/store";
@@ -92,9 +93,12 @@ class FirmDevicesComponent extends React.Component {
                 let checked = false;
                 if (selectedDevices && selectedDevices.length === parentDevices.length) {
                     checked = true;
+                    this.renderSelectAllCheckBox(checked, false);
+                } else {
+                    this.renderSelectAllCheckBox(checked, true);
                 }
                 this.setState({devices: parentDevices, selectedDevices, checked, loading: false});
-                this.renderSelectAllCheckBox(checked);
+
             }
         } else {
             let selectedUser = tokenService.verifyToken().user;
@@ -170,10 +174,14 @@ class FirmDevicesComponent extends React.Component {
             })
         });
         let checked = false;
-        if (selectedDevices.length === devices.length) checked = true;
+        if (selectedDevices.length === devices.length) {
+            checked = true;
+            this.renderSelectAllCheckBox(checked,  false);
+        } else {
+            this.renderSelectAllCheckBox(false,  true)
+        }
         this.setState({selectedDevices, selectedDeviceIds: [...selectedDeviceIdsSet]});
         this.handleDeviceSelect(selectedDevices);
-        this.renderSelectAllCheckBox(checked);
     };
 
     addRemoveColumn = (columns) => {
@@ -199,10 +207,15 @@ class FirmDevicesComponent extends React.Component {
         }
     }
 
-    renderSelectAllCheckBox(checked) {
-        const element = <div>
+    renderSelectAllCheckBox(checked, addBox) {
+        let element = <div>
             <Checkbox value={'1'} checked={checked} onChange={this.selectAllDevices}/>
         </div>;
+        if(addBox){
+            element = <IconButton onClick={this.selectAllDevices}>
+                <AddBoxIcon />
+            </IconButton>
+        }
         const container = document.querySelector('#root > div > main > div > div > div > div > div:nth-child(1) > div' +
             ' > div > div > div > div:nth-child(2) > div > div > table > tbody > tr:nth-child(1) > td:nth-child(2)');
         if (container)
