@@ -151,7 +151,6 @@ class Visualisation extends React.Component {
     }
 
     componentDidMount() {
-				this.setState({loading: true});
         localStorage.removeItem('chartData');
         let {selectedDevices} = this.props;
         selectedDevices = selectedDevices.map(el => _.omit(el, ['action', 'tableData']));
@@ -166,7 +165,8 @@ class Visualisation extends React.Component {
 
             // locationData
             const {linearData, timeDialog} = this.state;
-            this.setState({loading: true});
+            const loading = store.getState().dataReducer.loading;
+            this.setState({loading});
             if (store.getState().dataReducer.data.length) {
                 const reduxData = store.getState().dataReducer.data;
                 const reduxLinearData = [];
@@ -190,7 +190,7 @@ class Visualisation extends React.Component {
                     d3.select('#parent-line-chart').append('div').attr("id", 'lineChart');
                     !this.timeDialog && createLineChart(this, reduxLinearData, selectedDevices);
                     let startData = JSON.parse(localStorage.getItem('chartData'));
-                    if(!startData){
+                    if (!startData) {
                         localStorage.setItem('chartData', JSON.stringify(reduxLinearData));
                     }
                     this.setState({linearData: reduxLinearData});
@@ -233,7 +233,7 @@ class Visualisation extends React.Component {
         alert(`Device name: ${device.name} \nsid: ${device.sid}`);
     }
 
-    resetChartData(){
+    resetChartData() {
         const {selectedDevices} = this.state;
         let data = JSON.parse(localStorage.getItem('chartData'));
         createLineChart(this, data, selectedDevices);
@@ -253,16 +253,23 @@ class Visualisation extends React.Component {
                     >
                         <Grid item xs={12} sm={12} md={12} lg={12}>
                             <Paper>
-                                <div className={'chart-toolbar'} >																
+                                <div className={'chart-toolbar'}>
                                     <h3>
                                         Drag to select devices
-                                    </h3>																																	
+                                    </h3>
                                 </div>
-                                <div id={'pie-phyid-vis'} style={{position:'relative'}}>
-																	{ loading && <CircularProgress
-																				style={{width: '250px', height: '250px', color: '#2196f3', position: "absolute", top:'10%', left: "42%"}} 
-																				className={classes.progress}
-																			/>}		
+                                <div id={'pie-phyid-vis'} style={{position: 'relative'}}>
+                                    {loading && <CircularProgress
+                                        style={{
+                                            width: '250px',
+                                            height: '250px',
+                                            color: '#2196f3',
+                                            position: "absolute",
+                                            top: '10%',
+                                            left: "42%"
+                                        }}
+                                        className={classes.progress}
+                                    />}
                                 </div>
                             </Paper>
                         </Grid>
