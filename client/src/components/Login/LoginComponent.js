@@ -9,14 +9,11 @@ import Button from '@material-ui/core/Button';
 import CardActions from '@material-ui/core/CardActions';
 import Grow from '@material-ui/core/Grow';
 import CircularProgress from '@material-ui/core/CircularProgress';
-
-import { withStyles } from '@material-ui/core/styles';
 import IconButton from '@material-ui/core/IconButton';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 
-import PropTypes from 'prop-types';
 import classes from 'classnames';
 
 // Redux
@@ -35,15 +32,6 @@ const mapDispatchToProps = (dispatch) => {
     };
 };
 
-const useStyles = withStyles ({
-		// visibilityButton: {
-		// 	root: {
-		// 		position: "absolute",
-		//   	right: "5px",
-		//   	bottom: "12px"
-		// 	}
-		// }
-});
 
 class LoginPage extends React.Component {
 	
@@ -112,7 +100,6 @@ class LoginPage extends React.Component {
 
     render() {
 				const {email, password, loading, showPassword} = this.state;
-				// const classes = useStyles();
         return (
             <div>
                 <div id='loginContainer'>
@@ -158,7 +145,6 @@ class LoginPage extends React.Component {
                                         />
 																				<InputAdornment>
 																								<IconButton 
-																									className={classes.visabilityButton}
 																									aria-label="Toggle password visibility" 
 																									onClick={this.handleClickShowPassword}
 																									style={{position: "absolute", right: "5px", bottom: "12px"}}
@@ -195,12 +181,6 @@ class LoginPage extends React.Component {
     }
 }
 
-LoginPage.propTypes = {
-	classes: PropTypes.object.isRequired,
-	theme: PropTypes.object.isRequired,
-};
-
-
 const LoginForm = connect(null, mapDispatchToProps)(LoginPage);
 
-export default withStyles(useStyles, {withTheme: true})(LoginForm);
+export default LoginForm;
