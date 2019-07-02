@@ -211,7 +211,7 @@ class AppComponent extends Component {
                                                 variant="h6" color="inherit"
                                                 className={classNames(animations ? (open ? 'fade-left' : 'fade-right') : '')}
                                             >
-                                                {userInfo.name}
+                                                {userInfo.user ? userInfo.user.name : userInfo.name}
                                             </Typography>
 
                                         </ListItem>}
