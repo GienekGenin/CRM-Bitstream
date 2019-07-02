@@ -25,7 +25,7 @@ import ViewColumnIcon from '@material-ui/icons/ViewColumn';
 import TimelineIcon from '@material-ui/icons/Timeline';
 import {Grid, MuiThemeProvider} from '@material-ui/core';
 import MaterialTable from 'material-table';
-import {MuiPickersUtilsProvider, DateTimePicker} from "material-ui-pickers";
+import {MuiPickersUtilsProvider, DateTimePicker} from "@material-ui/pickers";
 import CircularProgress from '@material-ui/core/CircularProgress';
 
 
@@ -279,7 +279,6 @@ class Visualisation extends React.Component {
                 <MuiThemeProvider theme={theme}>
                     <Grid
                         container
-                        spacing={40}
                     >
                         <Grid item xs={12} sm={12} md={12} lg={12}>
                             <Paper>
