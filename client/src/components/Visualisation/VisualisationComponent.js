@@ -71,6 +71,7 @@ class Visualisation extends React.Component {
             loadingData: false,
             checked: false,
             selectedPhyids: new Set(),
+            devices: [],
             selectedDevices: [],
             selectedDeviceIds: [],
             devicesToVis: [],
@@ -78,6 +79,13 @@ class Visualisation extends React.Component {
             locationData: [],
             // table
             columns: [
+                {
+                    title: 'Select',
+                    field: 'action',
+                    filtering: false,
+                    sorting: false,
+                    hidden: false,
+                },
                 {title: 'Name', field: 'name', hidden: false,},
                 {title: 'phyid', field: 'phyid', hidden: false,},
                 {title: 'sn', field: 'sn', hidden: true,},
@@ -156,7 +164,7 @@ class Visualisation extends React.Component {
         let {selectedDevices} = this.props;
         selectedDevices = selectedDevices.map(el => _.omit(el, ['action', 'tableData']));
         const sids = selectedDevices.map(el => el.sid);
-        this.setState({loadingDevices: true});
+        this.setState({loadingDevices: true, devices: selectedDevices});
         dataService.getDevicesWithData({sids}).then(d => {
             const sids = d.map(el => el._id.sid);
             const devicesWithData = selectedDevices.filter(el => sids.includes(el.sid));
@@ -218,9 +226,21 @@ class Visualisation extends React.Component {
         this.unsubscribe();
     }
 
-    onSelectionChange = (rows) => {
-        const selectedDeviceIds = rows.map(el => el.sid);
-        this.setState({selectedDevices: rows, selectedDeviceIds});
+    onRowClick = (e, rowData) => {
+        const {devices, selectedDeviceIds} = this.state;
+        let selectedDevice = _.omit(devices.filter(el => (el.sid === rowData.sid) ? el : null)[0], 'action');
+        let selectedDeviceIdsSet = new Set(selectedDeviceIds);
+        let sid = selectedDevice.sid;
+        selectedDeviceIdsSet.has(sid) ? selectedDeviceIdsSet.delete(sid) : selectedDeviceIdsSet.add(sid);
+        let selectedDevices = [];
+        [...selectedDeviceIdsSet].forEach(sid => {
+            devices.forEach(device => {
+                if (device.sid === sid) {
+                    selectedDevices.push(device);
+                }
+            })
+        });
+        this.setState({selectedDevices, selectedDeviceIds: [...selectedDeviceIdsSet]});
     };
 
     resetSelected = () => {
@@ -244,9 +264,16 @@ class Visualisation extends React.Component {
 
     render() {
         const {
-            devicesToVis, columns, page, rowsPerPage, selectedDevices, columnsDialog, anchorEl,
+            devices, selectedDeviceIds, devicesToVis, columns, page, rowsPerPage, selectedDevices, columnsDialog, anchorEl,
             loadingData, loadingDevices, minTime, maxTime, minSelectedDate, maxSelectedDate, locationData, linearData
         } = this.state;
+        devices && devices.map((el, i, arr) => arr[i] = Object.assign(el, {
+            action: (
+                <div>
+                    <Checkbox value={el.sid} checked={selectedDeviceIds.includes(el.sid)}/>
+                </div>
+            )
+        }));
         return (
             <div style={{maxWidth: '100%'}}>
                 <MuiThemeProvider theme={theme}>
@@ -397,10 +424,9 @@ class Visualisation extends React.Component {
                                         pageSize: rowsPerPage,
                                         search: false,
                                         toolbar: false,
-                                        selection: true
                                     }}
                                     parentChildData={(row, rows) => rows.find(a => a.sid === row.parent_id)}
-                                    onSelectionChange={this.onSelectionChange}
+                                    onRowClick={this.onRowClick}
                                 />
                             </Paper>
                         </Grid>

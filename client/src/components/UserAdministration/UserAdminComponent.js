@@ -139,7 +139,7 @@ class UserAdminComponent extends React.Component {
         this.setState({selectedUsers: [], selectedUserIds: []});
     };
 
-    onSelectionChange = (e, rowData) => {
+    onRowClick = (e, rowData) => {
         const {users, selectedUserIds} = this.state;
         let selectedUser = _.omit(users.filter(el => (el._id === rowData._id) ? el : null)[0], 'action');
         let selectedUsersIdsSet = new Set(selectedUserIds);
@@ -230,9 +230,8 @@ class UserAdminComponent extends React.Component {
                                     pageSize: rowsPerPage,
                                     search: false,
                                     toolbar: true,
-                                    // selection: true
                                 }}
-                                onRowClick={this.onSelectionChange}
+                                onRowClick={this.onRowClick}
                             />
                         </Grid>
                     </Grid>

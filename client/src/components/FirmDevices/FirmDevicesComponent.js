@@ -63,6 +63,7 @@ class FirmDevicesComponent extends React.Component {
                 {title: 'user_desc', field: 'user_desc', hidden: false,},
                 {title: 'time', field: 'time', hidden: false,},
                 {title: 'value', field: 'value', hidden: false,},
+                {title: 'sid', field: 'sid', hidden: false,},
             ],
             selectedTypes: new Set(),
             selectedPhyids: new Set(),
