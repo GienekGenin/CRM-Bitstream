@@ -9,6 +9,7 @@ import {styles} from '../UI/material/table-styles';
 import {Grid} from "@material-ui/core";
 import MaterialTable from 'material-table';
 import AddBoxIcon from '@material-ui/icons/AddBox';
+import CheckBoxIcon from '@material-ui/icons/CheckBox';
 import IconButton from "@material-ui/core/IconButton";
 import Checkbox from "@material-ui/core/Checkbox";
 
@@ -184,16 +185,11 @@ class UserAdminComponent extends React.Component {
             this.handleUsersSelect(users);
         }
     }
-
+// <Checkbox value={'1'} checked={checked} onChange={this.selectAllUsers}/>
     renderSelectAllCheckBox(checked) {
-        let element = <div>
-            <Checkbox value={'1'} checked={checked} onChange={this.selectAllUsers}/>
-        </div>;
-        if(!checked){
-            element = <IconButton onClick={this.selectAllUsers}>
-                <AddBoxIcon />
-            </IconButton>
-        }
+        let element = <IconButton onClick={this.selectAllUsers}>
+            {checked ? <CheckBoxIcon /> : <AddBoxIcon />}
+        </IconButton>;
         const container = document.querySelector('#root > div > main > div > div > div > div > div > div > div > ' +
             'div:nth-child(2) > div > div > table > tbody > tr:nth-child(1) > td:nth-child(1)');
         if (container)
