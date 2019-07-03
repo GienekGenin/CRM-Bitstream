@@ -88,6 +88,15 @@ class FirmDevicesToolBar extends React.Component {
         if (state === 'editDialog') {
             this.setState({newFirmDevice: this.props.selected})
         }
+        if(state === 'addDialog'){
+            if (this.props.deviceTypes) {
+                this.setState({deviceTypes: this.props.deviceTypes, loading: false});
+            } else {
+                deviceTypesService.getDeviceTypes().then(deviceTypes => {
+                    this.setState({deviceTypes, loading: false});
+                }).catch(e => console.log(e))
+            }
+        }
         if (state === 'addDialog' || state === 'configUsersDialog') {
             this.setState({loading: true});
             userService.getAllByFirmId(this.props.selectedFirmId).then(dbUsers => {
@@ -218,13 +227,6 @@ class FirmDevicesToolBar extends React.Component {
 
     componentDidMount() {
         this.setState({loading: true});
-        if (this.props.deviceTypes) {
-            this.setState({deviceTypes: this.props.deviceTypes, loading: false});
-        } else {
-            deviceTypesService.getDeviceTypes().then(deviceTypes => {
-                this.setState({deviceTypes, loading: false});
-            }).catch(e => console.log(e))
-        }
     }
 
     render() {
