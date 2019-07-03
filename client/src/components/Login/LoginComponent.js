@@ -14,8 +14,6 @@ import InputAdornment from '@material-ui/core/InputAdornment';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 
-import classes from 'classnames';
-
 // Redux
 import {connect} from 'react-redux';
 import store from '../../redux/store/index'
