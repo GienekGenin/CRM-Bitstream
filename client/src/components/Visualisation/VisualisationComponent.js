@@ -426,14 +426,26 @@ class Visualisation extends React.Component {
                                 />
                             </Paper>
                         </Grid>
-                        <Grid item xs={12} sm={12} md={12} lg={12} className={'chart'}>
+                        <Grid item xs={12} sm={12} md={12} lg={12} className={'chart'} style={{ position: 'relative'}}>
                             <Paper>
                                 {linearData && !linearData.length && <div className={'chart_' + linearData ? (linearData.length ? 'show' : 'hide') : 'show'}
                                      style={{textAlign: 'center'}}
                                 >
                                     <span style={{fontWeight: "bold"}}>Here will be your chart</span>
-                                </div>}
-                                <div id={'lineChart'}>
+																</div>}
+																{ loadingData &&  <CircularProgress
+                                        style={{
+                                            width: '250px',
+                                            height: '250px',
+                                            color: '#2196f3',
+                                            position: "absolute",
+                                            top: '25%',
+																						left: "42%",
+                                        }}
+                                        className={classes.progress}
+                                    />}
+                                <div id={'lineChart'} >
+																	
                                 </div>
                                 <Button onClick={this.resetChartData} disabled={linearData ? !linearData.length : false}>
                                     Return
