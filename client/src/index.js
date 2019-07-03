@@ -11,6 +11,7 @@ const socket = socketIOClient(process.env.REACT_APP_SOCKET);
 
 socket.on('Roles', rolesPayload => {
     localStorage.setItem('roles', JSON.stringify(rolesPayload));
+    localStorage.setItem('mainRoles', JSON.stringify(rolesPayload.filter(el=> el.name!=='Super Admin')));
     ReactDOM.render(
         <Provider store={store}>
             <App/>
