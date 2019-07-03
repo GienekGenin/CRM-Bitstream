@@ -114,7 +114,6 @@ export const forcedTree = (parent, stateDevices) => {
 };
 
 export const createPie = (data, _this) => {
-	console.log('cp');
     const types = _this.props.deviceTypes;
     let parsedData = [];
     let chartdata = [];
@@ -161,6 +160,11 @@ export const createPie = (data, _this) => {
         pieSeries.labels.template.radius = 3;
         pieSeries.labels.template.padding(0, 0, 0, 0);
 
+        // This creates initial animation
+        pieSeries.hiddenState.properties.opacity = 1;
+        pieSeries.hiddenState.properties.endAngle = -90;
+        pieSeries.hiddenState.properties.startAngle = -90;
+
         pieSeries.ticks.template.disabled = true;
         const shadow = pieSeries.slices.template.filters.push(new am4core.DropShadowFilter());
         shadow.opacity = 0;
@@ -195,7 +199,6 @@ export const createPie = (data, _this) => {
 };
 
 export const createPiePhyid = (data, _this) => {
-	console.log('ph');
     let parsedData = [];
     let chartdata = [];
     let phyidSet = new Set();

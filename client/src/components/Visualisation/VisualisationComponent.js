@@ -25,7 +25,7 @@ import ViewColumnIcon from '@material-ui/icons/ViewColumn';
 import TimelineIcon from '@material-ui/icons/Timeline';
 import {Grid, MuiThemeProvider} from '@material-ui/core';
 import MaterialTable from 'material-table';
-import {MuiPickersUtilsProvider, DateTimePicker} from "material-ui-pickers";
+import {MuiPickersUtilsProvider, DateTimePicker} from "@material-ui/pickers";
 import CircularProgress from '@material-ui/core/CircularProgress';
 
 
@@ -44,7 +44,7 @@ import Pin from '../UI/map/pin/PinComponent';
 import classes from 'classnames';
 
 //Services
-import {createLineChart, createDragPhyidPie} from "./chart.service";
+import {createLineChart, createDragPhyidPie, lineChartPlaceHolder} from "./chart.service";
 /* eslint-disable import/first */
 dotenv.config({path: '../../../.env.local'});
 
@@ -67,9 +67,11 @@ class Visualisation extends React.Component {
         this.state = {
             page: 0,
             rowsPerPage: 5,
-            loading: false,
+            loadingDevices: false,
+            loadingData: false,
             checked: false,
             selectedPhyids: new Set(),
+            devices: [],
             selectedDevices: [],
             selectedDeviceIds: [],
             devicesToVis: [],
@@ -77,6 +79,13 @@ class Visualisation extends React.Component {
             locationData: [],
             // table
             columns: [
+                {
+                    title: 'Select',
+                    field: 'action',
+                    filtering: false,
+                    sorting: false,
+                    hidden: false,
+                },
                 {title: 'Name', field: 'name', hidden: false,},
                 {title: 'phyid', field: 'phyid', hidden: false,},
                 {title: 'sn', field: 'sn', hidden: true,},
@@ -151,22 +160,26 @@ class Visualisation extends React.Component {
     }
 
     componentDidMount() {
-				this.setState({loading: true});
         localStorage.removeItem('chartData');
+        lineChartPlaceHolder();
         let {selectedDevices} = this.props;
         selectedDevices = selectedDevices.map(el => _.omit(el, ['action', 'tableData']));
         const sids = selectedDevices.map(el => el.sid);
+        this.setState({loadingDevices: true, devices: selectedDevices});
         dataService.getDevicesWithData({sids}).then(d => {
-            let sids = d.map(el => el._id.sid);
+            const sids = d.map(el => el._id.sid);
             const devicesWithData = selectedDevices.filter(el => sids.includes(el.sid));
             this.createDragPhyidPie(devicesWithData, this);
-        }).catch(e => console.log(e));
+        }).catch(e => {
+            console.log(e)
+        });
 
         this.unsubscribe = store.subscribe(() => {
 
             // locationData
             const {linearData, timeDialog} = this.state;
-            this.setState({loading: true});
+            const loadingData = store.getState().dataReducer.loading;
+            this.setState({loadingData});
             if (store.getState().dataReducer.data.length) {
                 const reduxData = store.getState().dataReducer.data;
                 const reduxLinearData = [];
@@ -189,8 +202,8 @@ class Visualisation extends React.Component {
                     d3.select('#lineChart').remove();
                     d3.select('#parent-line-chart').append('div').attr("id", 'lineChart');
                     !this.timeDialog && createLineChart(this, reduxLinearData, selectedDevices);
-                    let startData = JSON.parse(localStorage.getItem('chartData'));
-                    if(!startData){
+                    const startData = JSON.parse(localStorage.getItem('chartData'));
+                    if (!startData) {
                         localStorage.setItem('chartData', JSON.stringify(reduxLinearData));
                     }
                     this.setState({linearData: reduxLinearData});
@@ -203,8 +216,7 @@ class Visualisation extends React.Component {
                 const time = store.getState().dataReducer.time;
                 this.setState({
                     minSelectedDate: time.minSelectedDate,
-                    maxSelectedDate: time.maxSelectedDate,
-                    loading: false
+                    maxSelectedDate: time.maxSelectedDate
                 })
             }
             return true;
@@ -215,9 +227,21 @@ class Visualisation extends React.Component {
         this.unsubscribe();
     }
 
-    onSelectionChange = (rows) => {
-        const selectedDeviceIds = rows.map(el => el.sid);
-        this.setState({selectedDevices: rows, selectedDeviceIds});
+    onRowClick = (e, rowData) => {
+        const {devices, selectedDeviceIds} = this.state;
+        let selectedDevice = _.omit(devices.filter(el => (el.sid === rowData.sid) ? el : null)[0], 'action');
+        let selectedDeviceIdsSet = new Set(selectedDeviceIds);
+        let sid = selectedDevice.sid;
+        selectedDeviceIdsSet.has(sid) ? selectedDeviceIdsSet.delete(sid) : selectedDeviceIdsSet.add(sid);
+        let selectedDevices = [];
+        [...selectedDeviceIdsSet].forEach(sid => {
+            devices.forEach(device => {
+                if (device.sid === sid) {
+                    selectedDevices.push(device);
+                }
+            })
+        });
+        this.setState({selectedDevices, selectedDeviceIds: [...selectedDeviceIdsSet]});
     };
 
     resetSelected = () => {
@@ -233,7 +257,7 @@ class Visualisation extends React.Component {
         alert(`Device name: ${device.name} \nsid: ${device.sid}`);
     }
 
-    resetChartData(){
+    resetChartData() {
         const {selectedDevices} = this.state;
         let data = JSON.parse(localStorage.getItem('chartData'));
         createLineChart(this, data, selectedDevices);
@@ -241,28 +265,42 @@ class Visualisation extends React.Component {
 
     render() {
         const {
-            devicesToVis, columns, page, rowsPerPage, selectedDevices, columnsDialog, anchorEl,
-            loading, minTime, maxTime, minSelectedDate, maxSelectedDate, locationData, linearData
+            devices, selectedDeviceIds, devicesToVis, columns, page, rowsPerPage, selectedDevices, columnsDialog, anchorEl,
+            loadingData, loadingDevices, minTime, maxTime, minSelectedDate, maxSelectedDate, locationData, linearData
         } = this.state;
+        devices && devices.map((el, i, arr) => arr[i] = Object.assign(el, {
+            action: (
+                <div>
+                    <Checkbox value={el.sid} checked={selectedDeviceIds.includes(el.sid)}/>
+                </div>
+            )
+        }));
         return (
             <div style={{maxWidth: '100%'}}>
                 <MuiThemeProvider theme={theme}>
                     <Grid
                         container
-                        spacing={40}
+                        spacing={3}
                     >
                         <Grid item xs={12} sm={12} md={12} lg={12}>
                             <Paper>
-                                <div className={'chart-toolbar'} >																
+                                <div className={'chart-toolbar'}>
                                     <h3>
                                         Drag to select devices
-                                    </h3>																																	
+                                    </h3>
                                 </div>
-                                <div id={'pie-phyid-vis'} style={{position:'relative'}}>
-																	{ loading && <CircularProgress
-																				style={{width: '250px', height: '250px', color: '#2196f3', position: "absolute", top:'10%', left: "42%"}} 
-																				className={classes.progress}
-																			/>}		
+                                <div id={'pie-phyid-vis'} style={{position: 'relative'}}>
+                                    {loadingDevices && <CircularProgress
+                                        style={{
+                                            width: '250px',
+                                            height: '250px',
+                                            color: '#2196f3',
+                                            position: "absolute",
+                                            top: '10%',
+                                            left: "42%"
+                                        }}
+                                        className={classes.progress}
+                                    />}
                                 </div>
                             </Paper>
                         </Grid>
@@ -280,7 +318,7 @@ class Visualisation extends React.Component {
                                                 <Tooltip title={'Select time'}>
                                                     <div>
                                                         <IconButton
-                                                            disabled={!selectedDevices.length}
+                                                            disabled={!selectedDevices.length || loadingData}
                                                             variant="contained"
                                                             color="primary"
                                                             onClick={() => this.handleClickOpen('timeDialog')}>
@@ -300,7 +338,7 @@ class Visualisation extends React.Component {
                                                         <DialogContent>
                                                             <div className="picker">
                                                                 <DateTimePicker
-                                                                    disabled={loading}
+                                                                    disabled={loadingData}
                                                                     autoOk
                                                                     ampm={false}
                                                                     value={minSelectedDate}
@@ -313,7 +351,7 @@ class Visualisation extends React.Component {
                                                                 <DateTimePicker
                                                                     autoOk
                                                                     ampm={false}
-                                                                    disabled={loading}
+                                                                    disabled={loadingData}
                                                                     value={maxSelectedDate}
                                                                     maxDate={maxTime}
                                                                     minDate={minSelectedDate}
@@ -326,7 +364,7 @@ class Visualisation extends React.Component {
                                                         <Button
                                                             variant="outlined" color="primary"
                                                             onClick={() => this.handleConfigTime()}
-                                                            disabled={loading}
+                                                            disabled={loadingData}
                                                         >
                                                             Confirm
                                                         </Button>
@@ -340,7 +378,7 @@ class Visualisation extends React.Component {
                                             <Tooltip title={'Show columns'}>
                                                 <div>
                                                     <IconButton variant="outlined" color="primary"
-                                                                disabled={loading}
+                                                                disabled={loadingData}
                                                                 onClick={this.handleClickMenu}>
                                                         <ViewColumnIcon/>
                                                     </IconButton>
@@ -387,24 +425,24 @@ class Visualisation extends React.Component {
                                         pageSize: rowsPerPage,
                                         search: false,
                                         toolbar: false,
-                                        selection: true
                                     }}
                                     parentChildData={(row, rows) => rows.find(a => a.sid === row.parent_id)}
-                                    onSelectionChange={this.onSelectionChange}
+                                    onRowClick={this.onRowClick}
                                 />
                             </Paper>
                         </Grid>
-                        <Grid item xs={12} sm={12} md={12} lg={12}
-                              className={'chart_' + (linearData.length ? 'show' : 'hide')}>
-                            <div>
-                                <Button onClick={this.resetChartData}>
+                        <Grid item xs={12} sm={12} md={12} lg={12} className={'chart'}>
+                            <Paper>
+                                <div className={'chart_' + linearData ? (linearData.length ? 'show' : 'hide') : 'show'}
+                                     style={{textAlign: 'center'}}
+                                >
+                                    <span style={{fontWeight: "bold"}}>Here will be your chart</span>
+                                </div>
+                                <div id={'parent-line-chart'}>
+                                </div>
+                                <Button onClick={this.resetChartData} disabled={linearData ? !linearData.length : false}>
                                     Return
                                 </Button>
-                            </div>
-                            <Paper>
-                                <div id={'parent-line-chart'}>
-
-                                </div>
                             </Paper>
                         </Grid>
                         <Grid item xs={12} sm={12} md={12} lg={12}>

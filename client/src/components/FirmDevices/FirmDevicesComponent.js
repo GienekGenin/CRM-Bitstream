@@ -2,17 +2,20 @@ import React from "react";
 import ReactDOM from "react-dom";
 import * as PropTypes from 'prop-types';
 import _ from "lodash";
+import classes from 'classnames';
 
 // Material
 import {withStyles} from '@material-ui/core/styles';
 import Checkbox from "@material-ui/core/Checkbox";
+import AddBoxIcon from '@material-ui/icons/AddBox';
 import {styles} from '../UI/material/table-styles';
 import {Grid, MuiThemeProvider} from '@material-ui/core';
 import Paper from '@material-ui/core/Paper';
 import MaterialTable from 'material-table';
 import {theme} from "../material.theme";
 import CircularProgress from '@material-ui/core/CircularProgress';
-
+import IconButton from "@material-ui/core/IconButton";
+import CheckBoxIcon from '@material-ui/icons/CheckBox';
 
 // Redux
 import store from "../../redux/store";
@@ -23,7 +26,7 @@ import {tokenService} from "../../redux/services/token";
 // Components
 import './FirmDevices.scss';
 import FirmDevicesToolBar from "./FirmDevicesToolBar";
-import classes from 'classnames';
+
 // Services
 import {forcedTree, createPie, piePlaceHolder} from "./chart.service";
 
@@ -38,8 +41,6 @@ const mapStateToProps = state => {
 };
 
 class FirmDevicesComponent extends React.Component {
-
-    _isMounted = false;
 
     constructor(props) {
         super(props);
@@ -65,6 +66,7 @@ class FirmDevicesComponent extends React.Component {
                 {title: 'user_desc', field: 'user_desc', hidden: false,},
                 {title: 'time', field: 'time', hidden: false,},
                 {title: 'value', field: 'value', hidden: false,},
+                {title: 'sid', field: 'sid', hidden: false,},
             ],
             selectedTypes: new Set(),
             selectedPhyids: new Set(),
@@ -77,9 +79,9 @@ class FirmDevicesComponent extends React.Component {
         this.forcedTree = forcedTree.bind(this);
         this.createPie = createPie.bind(this);
     }
-		
+
     componentDidMount() {
-        this._isMounted = true;
+        this.renderSelectAllCheckBox(false);
         this.setState({loading: true});
         const {selectedFirm, selectedUsers, parentDevices, selectedDevices} = this.props;
         if (selectedUsers) {
@@ -93,8 +95,12 @@ class FirmDevicesComponent extends React.Component {
                 let checked = false;
                 if (selectedDevices && selectedDevices.length === parentDevices.length) {
                     checked = true;
+                    this.renderSelectAllCheckBox(checked);
+                } else {
+                    this.renderSelectAllCheckBox(checked);
                 }
                 this.setState({devices: parentDevices, selectedDevices, checked, loading: false});
+
             }
         } else {
             let selectedUser = tokenService.verifyToken().user;
@@ -119,7 +125,7 @@ class FirmDevicesComponent extends React.Component {
             this.setState({loading: store.getState().devicesReducer.loading});
             if (store.getState().devicesReducer.devices) {
                 const devices = store.getState().devicesReducer.devices;
-                if(devices.length){
+                if (devices.length) {
                     this.createPie(devices, this);
                 } else {
                     piePlaceHolder('device-types-chart', 'No devices available');
@@ -130,21 +136,21 @@ class FirmDevicesComponent extends React.Component {
                     devices,
                     selectedTypes: new Set(),
                     selectedPhyids: new Set(),
-                    selectedGroups: new Set()});
+                    selectedGroups: new Set()
+                });
                 this.props.handleSetDevices(devices);
             }
             return true;
         });
-        this.renderSelectAllCheckBox(false);
     }
 
     componentWillUnmount() {
-        this._isMounted = false;
         this.unsubscribe();
     }
 
     resetSelected = () => {
         this.setState({selectedDeviceIds: [], selectedDevices: []});
+        this.props.onDeviceSelect([]);
     };
 
     onChangePage = (page) => {
@@ -170,10 +176,14 @@ class FirmDevicesComponent extends React.Component {
             })
         });
         let checked = false;
-        if (selectedDevices.length === devices.length) checked = true;
+        if (selectedDevices.length === devices.length) {
+            checked = true;
+            this.renderSelectAllCheckBox(checked);
+        } else {
+            this.renderSelectAllCheckBox(checked)
+        }
         this.setState({selectedDevices, selectedDeviceIds: [...selectedDeviceIdsSet]});
         this.handleDeviceSelect(selectedDevices);
-        this.renderSelectAllCheckBox(checked);
     };
 
     addRemoveColumn = (columns) => {
@@ -192,7 +202,7 @@ class FirmDevicesComponent extends React.Component {
             this.renderSelectAllCheckBox(false);
             this.resetSelected();
         } else {
-            const selectedDeviceIds = devices.map(devices => devices.sid);
+            const selectedDeviceIds = devices.map(device => device.sid);
             this.setState({selectedDevices: devices, selectedDeviceIds});
             this.renderSelectAllCheckBox(true);
             this.handleDeviceSelect(devices);
@@ -200,9 +210,9 @@ class FirmDevicesComponent extends React.Component {
     }
 
     renderSelectAllCheckBox(checked) {
-        const element = <div>
-            <Checkbox value={'1'} checked={checked} onChange={this.selectAllDevices}/>
-        </div>;
+        let element = <IconButton onClick={this.selectAllDevices}>
+            {checked ? <CheckBoxIcon /> : <AddBoxIcon />}
+        </IconButton>;
         const container = document.querySelector('#root > div > main > div > div > div > div > div:nth-child(1) > div' +
             ' > div > div > div > div:nth-child(2) > div > div > table > tbody > tr:nth-child(1) > td:nth-child(2)');
         if (container)
@@ -211,7 +221,7 @@ class FirmDevicesComponent extends React.Component {
 
     render() {
         const {loading, devices, selectedDevices, selectedDeviceIds, selectedUserIds, selectedFirm, columns, rowsPerPage, page} = this.state;
-				const {deviceTypes} = this.props;
+        const {deviceTypes} = this.props;
         devices && devices.map((el, i, arr) => arr[i] = Object.assign(el, {
             action: (
                 <div>
@@ -224,53 +234,74 @@ class FirmDevicesComponent extends React.Component {
                 <MuiThemeProvider theme={theme}>
                     <div style={{maxWidth: '100%'}}>
                         <Grid
-                            container
-                            spacing={40}
+														container
+														spacing={5}														
                         >
-                            <Grid item xs={12} sm={12} md={12} lg={4}>
+                            <Grid item xs={12} sm={12} md={12} lg={4} >
                                 <Paper className={'chart-container'}>
                                     <div className={'chart-toolbar'}>
                                         <h3>
                                             Device types
                                         </h3>
-                                    </div>																		
+                                    </div>
                                     <div id={'device-types-chart'} style={{position: 'relative'}}>
-																			{loading && <CircularProgress
-																				style={{width: '250px', height: '250px', color: '#2196f3', position: "absolute", top:'20%', left: "20%"}} 
-																				className={classes.progress}
-																			/>}
+                                        {loading && <CircularProgress
+                                            style={{
+                                                width: '250px',
+                                                height: '250px',
+                                                color: '#2196f3',
+                                                position: "absolute",
+                                                top: '20%',
+                                                left: "18%"
+                                            }}
+                                            className={classes.progress}
+                                        />}
                                     </div>
                                 </Paper>
                             </Grid>
                             <Grid item xs={12} sm={12} md={12} lg={4}>
-                                <Paper className={'chart-container'} >
-                                    <div className={'chart-toolbar'} >
+                                <Paper className={'chart-container'}>
+                                    <div className={'chart-toolbar'}>
                                         <h3>
                                             Phyid groups
-                                        </h3>																			
-                                    </div>																	
-																		<div id='pie-group' style={{position: 'relative'}}>
-																		{loading && <CircularProgress
-																				style={{width: '250px', height: '250px', color: '#2196f3', position: "absolute", top:'20%', left: "20%"}} 
-																				className={classes.progress}
-																			/>}
+                                        </h3>
+                                    </div>
+                                    <div id='pie-group' style={{position: 'relative'}}>
+                                        {loading && <CircularProgress
+                                            style={{
+                                                width: '250px',
+                                                height: '250px',
+                                                color: '#2196f3',
+                                                position: "absolute",
+                                                top: '20%',
+                                                left: "18%"
+                                            }}
+                                            className={classes.progress}
+                                        />}
                                     </div>
                                 </Paper>
                             </Grid>
                             <Grid item xs={12} sm={12} md={12} lg={4}>
-																<Paper 
-																	className={'chart-container'}
-																	>
+                                <Paper
+                                    className={'chart-container'}
+                                >
                                     <div className={'chart-toolbar'}>
                                         <h3>
                                             Phyid types
                                         </h3>
-                                    </div>																																	
+                                    </div>
                                     <div id='pie-phyid' style={{position: 'relative'}}>
-																			{loading && <CircularProgress
-																				style={{width: '250px', height: '250px', color: '#2196f3', position: "absolute", top:'20%', left: "20%"}} 
-																				className={classes.progress}
-																			/>}	
+                                        {loading && <CircularProgress
+                                            style={{
+                                                width: '250px',
+                                                height: '250px',
+                                                color: '#2196f3',
+                                                position: "absolute",
+                                                top: '20%',
+                                                left: "18%"
+                                            }}
+                                            className={classes.progress}
+                                        />}
                                     </div>
                                 </Paper>
                             </Grid>
@@ -336,7 +367,7 @@ FirmDevicesComponent.propTypes = {
     handleSetDevices: PropTypes.func,
     parentDevices: PropTypes.array,
     deviceTypes: PropTypes.array,
-		selectedUsers: PropTypes.array,
+    selectedUsers: PropTypes.array,
 };
 
 const FirmDevicesWithProps = connect(mapStateToProps, mapDispatchToProps)(FirmDevicesComponent);
