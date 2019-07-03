@@ -237,9 +237,10 @@ class FirmDevicesComponent extends React.Component {
                 <MuiThemeProvider theme={theme}>
                     <div style={{maxWidth: '100%'}}>
                         <Grid
-                            container
+														container
+														spacing={5}														
                         >
-                            <Grid item xs={12} sm={12} md={12} lg={4}>
+                            <Grid item xs={12} sm={12} md={12} lg={4} >
                                 <Paper className={'chart-container'}>
                                     <div className={'chart-toolbar'}>
                                         <h3>
@@ -254,7 +255,7 @@ class FirmDevicesComponent extends React.Component {
                                                 color: '#2196f3',
                                                 position: "absolute",
                                                 top: '20%',
-                                                left: "20%"
+                                                left: "18%"
                                             }}
                                             className={classes.progress}
                                         />}
@@ -276,7 +277,7 @@ class FirmDevicesComponent extends React.Component {
                                                 color: '#2196f3',
                                                 position: "absolute",
                                                 top: '20%',
-                                                left: "20%"
+                                                left: "18%"
                                             }}
                                             className={classes.progress}
                                         />}
@@ -300,7 +301,7 @@ class FirmDevicesComponent extends React.Component {
                                                 color: '#2196f3',
                                                 position: "absolute",
                                                 top: '20%',
-                                                left: "20%"
+                                                left: "18%"
                                             }}
                                             className={classes.progress}
                                         />}

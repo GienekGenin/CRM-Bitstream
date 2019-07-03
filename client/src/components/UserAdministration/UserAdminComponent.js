@@ -190,7 +190,7 @@ class UserAdminComponent extends React.Component {
             <Checkbox value={'1'} checked={checked} onChange={this.selectAllUsers}/>
         </div>;
         if(!checked){
-            element = <IconButton onClick={this.selectAllUsers}>
+            element = <IconButton onClick={this.selectAllUsers} id="addAll">
                 <AddBoxIcon />
             </IconButton>
         }
