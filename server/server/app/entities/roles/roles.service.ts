@@ -9,7 +9,17 @@ class RolesService {
 	}
 
 	getAll() {
-		return this.rolesRepository.getAll();
+		return new Promise(((resolve, reject) => {
+			this.rolesRepository.getAll().then(roles=>{
+				const payload = [];
+				roles.forEach(role=>{
+					if(role._doc.name!=='Super Admin'){
+						payload.push(role._doc);
+					}
+				});
+				resolve(payload);
+			}).catch(e=>(reject(e)));
+		}))
 	}
 
 	findById(id: Types.ObjectId) {

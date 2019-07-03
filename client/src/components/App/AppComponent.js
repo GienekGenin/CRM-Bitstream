@@ -36,7 +36,6 @@ import './App.scss';
 import LoginForm from '../Login/LoginComponent';
 import HomeComponent from "../Home/HomeComponent";
 import AdminPanelComponent from "../AdminPanel/AdminPanelComponent";
-import DashboardComponent from '../../components/Dashboard/DashboardComponent';
 // import Fade from 'react-reveal/Fade';
 
 const styles = theme => ({
@@ -244,7 +243,7 @@ class AppComponent extends Component {
                                             <Typography variant="h6" color="inherit"
                                                         className={classNames(animations ? (open ? 'fade-left' : 'fade-right') : '')}
                                             >
-                                                Admin Panel
+                                                Dashboard
                                             </Typography>
                                         </ListItem>
                                     </Link>}
@@ -289,7 +288,6 @@ class AppComponent extends Component {
                             <Switch history={history}>
                                 <Route exact path='/' component={HomeComponent}/>
                                 <PrivateRoute exact path='/admin_panel' component={AdminPanelComponent}/>
-                                <PrivateRoute exact path='/dashboard' component={DashboardComponent}/>
                                 <Route exact path='/login' component={LoginForm}/>
                             </Switch>
                         </main>
