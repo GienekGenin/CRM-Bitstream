@@ -2,6 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 import * as PropTypes from 'prop-types';
 import _ from "lodash";
+import classes from 'classnames';
 
 // Material
 import {withStyles} from '@material-ui/core/styles';
@@ -14,6 +15,7 @@ import MaterialTable from 'material-table';
 import {theme} from "../material.theme";
 import CircularProgress from '@material-ui/core/CircularProgress';
 import IconButton from "@material-ui/core/IconButton";
+import CheckBoxIcon from '@material-ui/icons/CheckBox';
 
 // Redux
 import store from "../../redux/store";
@@ -24,7 +26,7 @@ import {tokenService} from "../../redux/services/token";
 // Components
 import './FirmDevices.scss';
 import FirmDevicesToolBar from "./FirmDevicesToolBar";
-import classes from 'classnames';
+
 // Services
 import {forcedTree, createPie, piePlaceHolder} from "./chart.service";
 
@@ -208,14 +210,9 @@ class FirmDevicesComponent extends React.Component {
     }
 
     renderSelectAllCheckBox(checked) {
-        let element = <div>
-            <Checkbox value={'1'} checked={checked} onChange={this.selectAllDevices}/>
-        </div>;
-        if(!checked){
-            element = <IconButton onClick={this.selectAllDevices}>
-                <AddBoxIcon />
-            </IconButton>
-        }
+        let element = <IconButton onClick={this.selectAllDevices}>
+            {checked ? <CheckBoxIcon /> : <AddBoxIcon />}
+        </IconButton>;
         const container = document.querySelector('#root > div > main > div > div > div > div > div:nth-child(1) > div' +
             ' > div > div > div > div:nth-child(2) > div > div > table > tbody > tr:nth-child(1) > td:nth-child(2)');
         if (container)
