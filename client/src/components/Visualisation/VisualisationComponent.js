@@ -44,7 +44,7 @@ import Pin from '../UI/map/pin/PinComponent';
 import classes from 'classnames';
 
 //Services
-import {createLineChart, createDragPhyidPie} from "./chart.service";
+import {createLineChart, createDragPhyidPie, lineChartPlaceHolder} from "./chart.service";
 /* eslint-disable import/first */
 dotenv.config({path: '../../../.env.local'});
 
@@ -161,6 +161,7 @@ class Visualisation extends React.Component {
 
     componentDidMount() {
         localStorage.removeItem('chartData');
+        lineChartPlaceHolder();
         let {selectedDevices} = this.props;
         selectedDevices = selectedDevices.map(el => _.omit(el, ['action', 'tableData']));
         const sids = selectedDevices.map(el => el.sid);
@@ -279,6 +280,7 @@ class Visualisation extends React.Component {
                 <MuiThemeProvider theme={theme}>
                     <Grid
                         container
+                        spacing={3}
                     >
                         <Grid item xs={12} sm={12} md={12} lg={12}>
                             <Paper>
@@ -316,7 +318,7 @@ class Visualisation extends React.Component {
                                                 <Tooltip title={'Select time'}>
                                                     <div>
                                                         <IconButton
-                                                            disabled={!selectedDevices.length}
+                                                            disabled={!selectedDevices.length || loadingData}
                                                             variant="contained"
                                                             color="primary"
                                                             onClick={() => this.handleClickOpen('timeDialog')}>
@@ -429,17 +431,18 @@ class Visualisation extends React.Component {
                                 />
                             </Paper>
                         </Grid>
-                        <Grid item xs={12} sm={12} md={12} lg={12}
-                              className={'chart_' + (linearData.length ? 'show' : 'hide')}>
-                            <div>
-                                <Button onClick={this.resetChartData}>
+                        <Grid item xs={12} sm={12} md={12} lg={12} className={'chart'}>
+                            <Paper>
+                                <div className={'chart_' + linearData ? (linearData.length ? 'show' : 'hide') : 'show'}
+                                     style={{textAlign: 'center'}}
+                                >
+                                    <span style={{fontWeight: "bold"}}>Here will be your chart</span>
+                                </div>
+                                <div id={'parent-line-chart'}>
+                                </div>
+                                <Button onClick={this.resetChartData} disabled={linearData ? !linearData.length : false}>
                                     Return
                                 </Button>
-                            </div>
-                            <Paper>
-                                <div id={'parent-line-chart'}>
-
-                                </div>
                             </Paper>
                         </Grid>
                         <Grid item xs={12} sm={12} md={12} lg={12}>

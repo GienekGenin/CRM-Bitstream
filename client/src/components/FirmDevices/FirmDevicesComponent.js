@@ -235,6 +235,7 @@ class FirmDevicesComponent extends React.Component {
                     <div style={{maxWidth: '100%'}}>
                         <Grid
                             container
+                            spacing={3}
                         >
                             <Grid item xs={12} sm={12} md={12} lg={4}>
                                 <Paper className={'chart-container'}>

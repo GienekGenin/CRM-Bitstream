@@ -24,8 +24,22 @@ div.mapboxgl-map {
   }
 }
 
+.chart{
+  width: 100%;
+  height: 100%;
+}
+
+#parent-line-chart{
+  width: 100%;
+  height: 500px;
+}
+
 .chart_hide {
   display: none;
+}
+
+.chart_show{
+  text-align: center;
 }
 
 #root > div > main > div > div > div > div > div > div:nth-child(2) > div > div {
