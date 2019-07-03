@@ -165,7 +165,7 @@ class LoginPage extends React.Component {
                                         <Button variant="contained" type='submit' color='primary'
                                                 disabled={loading} size="large">Submit</Button>
                                         {loading && <div id='progressLogin'>
-                                            <CircularProgress size={25}/>
+                                            <CircularProgress size={30} style={{ marginTop: '15px' }}/>
                                         </div>}
                                     </div>
                                 </CardActions>
