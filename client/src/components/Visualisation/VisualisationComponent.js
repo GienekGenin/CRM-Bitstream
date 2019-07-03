@@ -3,7 +3,6 @@ import * as PropTypes from 'prop-types';
 import * as dotenv from 'dotenv';
 import DateFnsUtils from "@date-io/date-fns";
 import _ from "lodash";
-import * as d3 from "d3";
 
 //Material
 import {theme} from "../material.theme";
@@ -193,14 +192,10 @@ class Visualisation extends React.Component {
                 });
                 if (linearData.length) {
                     if (reduxLinearData.length && linearData[0].data.length !== reduxLinearData[0].data.length) {
-                        d3.select('#lineChart').remove();
-                        d3.select('#parent-line-chart').append('div').attr("id", 'lineChart');
                         !timeDialog && createLineChart(this, reduxLinearData, selectedDevices);
                         this.setState({linearData: reduxLinearData})
                     }
                 } else {
-                    d3.select('#lineChart').remove();
-                    d3.select('#parent-line-chart').append('div').attr("id", 'lineChart');
                     !this.timeDialog && createLineChart(this, reduxLinearData, selectedDevices);
                     const startData = JSON.parse(localStorage.getItem('chartData'));
                     if (!startData) {
@@ -433,12 +428,12 @@ class Visualisation extends React.Component {
                         </Grid>
                         <Grid item xs={12} sm={12} md={12} lg={12} className={'chart'}>
                             <Paper>
-                                <div className={'chart_' + linearData ? (linearData.length ? 'show' : 'hide') : 'show'}
+                                {linearData && !linearData.length && <div className={'chart_' + linearData ? (linearData.length ? 'show' : 'hide') : 'show'}
                                      style={{textAlign: 'center'}}
                                 >
                                     <span style={{fontWeight: "bold"}}>Here will be your chart</span>
-                                </div>
-                                <div id={'parent-line-chart'}>
+                                </div>}
+                                <div id={'lineChart'}>
                                 </div>
                                 <Button onClick={this.resetChartData} disabled={linearData ? !linearData.length : false}>
                                     Return
