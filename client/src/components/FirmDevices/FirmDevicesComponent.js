@@ -211,7 +211,7 @@ class FirmDevicesComponent extends React.Component {
 
     renderSelectAllCheckBox(checked) {
         let element = <IconButton onClick={this.selectAllDevices}>
-            {checked ? <CheckBoxIcon /> : <AddBoxIcon />}
+            {checked ? <CheckBoxIcon/> : <AddBoxIcon/>}
         </IconButton>;
         const container = document.querySelector('#root > div > main > div > div > div > div > div:nth-child(1) > div' +
             ' > div > div > div > div:nth-child(2) > div > div > table > tbody > tr:nth-child(1) > td:nth-child(2)');
@@ -234,10 +234,10 @@ class FirmDevicesComponent extends React.Component {
                 <MuiThemeProvider theme={theme}>
                     <div style={{maxWidth: '100%'}}>
                         <Grid
-														container
-														spacing={5}														
+                            container
+                            spacing={5}
                         >
-                            <Grid item xs={12} sm={12} md={12} lg={4} >
+                            <Grid item xs={12} sm={12} md={12} lg={4}>
                                 <Paper className={'chart-container'}>
                                     <div className={'chart-toolbar'}>
                                         <h3>

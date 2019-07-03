@@ -58,6 +58,7 @@ class AdminPanel extends React.Component {
         selectedUsers: null,
         selectedDevice: null,
         selectedUsersDevice: null,
+        level: null
     };
 
     constructor() {
@@ -132,16 +133,32 @@ class AdminPanel extends React.Component {
         this.setState({devices, selectedDevices: null,});
     }
 
-    componentDidMount() {
+    userLevel() {
+        let level;
         if (checkAccess('/editFirms')) {
-            this.props.firmRequest();
-        }
-        if (!checkAccess('/editFirms') && checkAccess('/users')) {
+            level = 'SuperAdmin';
+        } else if (checkAccess('/users')) {
+            level = 'FirmAdmin';
             const decoded = tokenService.verifyToken();
             if (decoded) {
                 this.setState({selectedFirm: decoded.firm});
             }
+        } else if ('/firmDevices') {
+            level = 'User';
+            const decoded = tokenService.verifyToken();
+            if (decoded) {
+                this.setState({selectedUsers: [decoded.user]});
+            }
         }
+        this.setState({level});
+    }
+
+    componentDidMount() {
+        this.userLevel();
+        if (checkAccess('/editFirms')) {
+            this.props.firmRequest();
+        }
+        localStorage.removeItem('chartData');
         deviceTypesService.getDeviceTypes().then(deviceTypes => {
             this.setState({deviceTypes});
         }).catch(e => console.log(e));
@@ -158,12 +175,13 @@ class AdminPanel extends React.Component {
     render() {
         const {
             value, firms, selectedFirm, selectedUsers, selectedDevices,
-            users, devices, deviceTypes
+            users, devices, deviceTypes, level
         } = this.state;
         return (
             <div className={'admin-panel'}>
                 <AppBar position="static" color="default">
                     <Toolbar>
+                        {level === 'SuperAdmin' &&
                         <Tabs
                             value={value}
                             onChange={this.handleChange}
@@ -172,14 +190,42 @@ class AdminPanel extends React.Component {
                             variant="scrollable"
                             scrollButtons="on"
                         >
-                            {checkAccess('/editFirms') && <Tab label="Firms"/>}
-                            <Tab label="Users" disabled={!selectedFirm && checkAccess('/users')}/>
-                            <Tab label="Devices" disabled={!selectedUsers && checkAccess('/firmDevices')}/>
+                            <Tab label="Firms"/>
+                            <Tab label="Users" disabled={!selectedFirm}/>
+                            <Tab label="Devices" disabled={!selectedUsers }/>
                             <Tab label="Visualisation" disabled={selectedDevices ? !selectedDevices.length : true}/>
                         </Tabs>
+                        }
+                        {level === 'FirmAdmin' &&
+                        <Tabs
+                            value={value}
+                            onChange={this.handleChange}
+                            indicatorColor="primary"
+                            textColor="primary"
+                            variant="scrollable"
+                            scrollButtons="on"
+                        >
+                            <Tab label="Users" disabled={!selectedFirm}/>
+                            <Tab label="Devices" disabled={!selectedUsers}/>
+                            <Tab label="Visualisation" disabled={selectedDevices ? !selectedDevices.length : true}/>
+                        </Tabs>
+                        }
+                        {level === 'User' &&
+                        <Tabs
+                            value={value}
+                            onChange={this.handleChange}
+                            indicatorColor="primary"
+                            textColor="primary"
+                            variant="scrollable"
+                            scrollButtons="on"
+                        >
+                            <Tab label="Devices" disabled={!selectedUsers}/>
+                            <Tab label="Visualisation" disabled={selectedDevices ? !selectedDevices.length : true}/>
+                        </Tabs>
+                        }
                     </Toolbar>
                 </AppBar>
-                {checkAccess('/editFirms') ?
+                {level === 'SuperAdmin' &&
                     <div>
                         {value === 0 && firms && <TabContainer>
                             <FirmAdministrationComponent
@@ -216,38 +262,61 @@ class AdminPanel extends React.Component {
                                 parentDevices={devices}
                             />
                         </TabContainer>}
-                    </div> :
-                    <div>
-                        {value === 0 && <TabContainer>
-                            <UserAdminComponent
-                                handleSetUsers={this.handleSetUsers}
-                                resetSelectedUsers={this.resetSelectedUsers}
-                                onUsersSelect={this.handleUsersSelect}
-                                selectedFirm={selectedFirm}
-                                selectedUsers={selectedUsers}
-                                parentUsers={users}
-                            />
-                        </TabContainer>}
-                        {value === 1 && <TabContainer>
-                            <FirmDevicesComponent
-                                handleSetDevices={this.handleSetDevices}
-                                resetSelectedDeviceParent={this.resetSelectedDevices}
-                                onDeviceSelect={this.handleDevicesSelect}
-                                selectedFirm={selectedFirm}
-                                parentDevices={devices}
-                                selectedDevices={selectedDevices}
-                                selectedUsers={selectedUsers}
-                                deviceTypes={deviceTypes}
-                            />
-                        </TabContainer>}
-                        {value === 2 && <TabContainer>
-                            <VisualisationComponent
-                                selectedDevices={selectedDevices}
-                                parentDevices={devices}
-                            />
-                        </TabContainer>}
                     </div>}
-
+                {level === 'FirmAdmin' &&
+                <div>
+                    {value === 0 && <TabContainer>
+                        <UserAdminComponent
+                            handleSetUsers={this.handleSetUsers}
+                            resetSelectedUsers={this.resetSelectedUsers}
+                            onUsersSelect={this.handleUsersSelect}
+                            selectedFirm={selectedFirm}
+                            selectedUsers={selectedUsers}
+                            parentUsers={users}
+                        />
+                    </TabContainer>}
+                    {value === 1 && <TabContainer>
+                        <FirmDevicesComponent
+                            handleSetDevices={this.handleSetDevices}
+                            resetSelectedDeviceParent={this.resetSelectedDevices}
+                            onDeviceSelect={this.handleDevicesSelect}
+                            selectedFirm={selectedFirm}
+                            parentDevices={devices}
+                            selectedDevices={selectedDevices}
+                            selectedUsers={selectedUsers}
+                            deviceTypes={deviceTypes}
+                        />
+                    </TabContainer>}
+                    {value === 2 && <TabContainer>
+                        <VisualisationComponent
+                            selectedDevices={selectedDevices}
+                            parentDevices={devices}
+                        />
+                    </TabContainer>}
+                </div>
+                }
+                {level === 'User' &&
+                <div>
+                    {value === 0 && <TabContainer>
+                        <FirmDevicesComponent
+                            handleSetDevices={this.handleSetDevices}
+                            resetSelectedDeviceParent={this.resetSelectedDevices}
+                            onDeviceSelect={this.handleDevicesSelect}
+                            selectedFirm={selectedFirm}
+                            parentDevices={devices}
+                            selectedDevices={selectedDevices}
+                            selectedUsers={selectedUsers}
+                            deviceTypes={deviceTypes}
+                        />
+                    </TabContainer>}
+                    {value === 1 && <TabContainer>
+                        <VisualisationComponent
+                            selectedDevices={selectedDevices}
+                            parentDevices={devices}
+                        />
+                    </TabContainer>}
+                </div>
+                }
             </div>
         );
     }

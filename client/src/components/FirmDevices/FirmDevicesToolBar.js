@@ -45,6 +45,7 @@ import {
 import {deviceTypesService} from '../../redux/services/device_types';
 import {userService} from '../../redux/services/user';
 import {devicesService} from '../../redux/services/devices';
+import {checkAccess} from "../privateRoute";
 
 const mapDispatchToProps = (dispatch) => {
     return {
@@ -459,7 +460,7 @@ class FirmDevicesToolBar extends React.Component {
                             >
                                 <div>
                                     <IconButton variant="outlined" color="primary"
-                                                disabled={this.props.loading || !this.props.selected}
+                                                disabled={this.props.loading || !this.props.selected || !checkAccess('/users')}
                                                 onClick={() => this.handleClickOpen('configUsersDialog')}>
                                         <AssignmentIndIcon/>
                                     </IconButton>

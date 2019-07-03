@@ -42,7 +42,7 @@ import DashboardComponent from '../../components/Dashboard/DashboardComponent';
 const styles = theme => ({
     root: {
         display: 'flex 0 0',
-		},
+    },
     typography: {
         useNextVariants: true,
     },
@@ -62,16 +62,16 @@ const styles = theme => ({
         }),
     },
     menuButton: {
-				marginLeft: 15,
-				"&:hover": {
-					backgroundColor: "transparent"
-				}
+        marginLeft: 15,
+        "&:hover": {
+            backgroundColor: "transparent"
+        }
     },
-		menuButtonOpen: {
-			"&:hover": {
-				backgroundColor: "transparent"
-			}
-		},
+    menuButtonOpen: {
+        "&:hover": {
+            backgroundColor: "transparent"
+        }
+    },
     hide: {
         display: 'none',
     },
@@ -113,8 +113,8 @@ const styles = theme => ({
     },
     content: {
         flexGrow: 1,
-		},
-		
+    },
+
 });
 
 const mapDispatchToProps = (dispatch) => {
@@ -176,8 +176,8 @@ class AppComponent extends Component {
 
                                 {open && <div className={classes.toolbar}>
                                     <IconButton
-																				onClick={this.handleDrawerToggle}
-																				className={classNames(classes.menuButtonOpen)}
+                                        onClick={this.handleDrawerToggle}
+                                        className={classNames(classes.menuButtonOpen)}
                                     >
                                         <MoreVertIcon/>
                                     </IconButton>
@@ -190,7 +190,7 @@ class AppComponent extends Component {
                                 </div>}
                                 {!open && <Toolbar disableGutters={!open}>
                                     <IconButton
-																				color="inherit"
+                                        color="inherit"
                                         aria-label="Open drawer"
                                         onClick={this.handleDrawerToggle}
                                         className={classNames(classes.menuButton, {
@@ -201,7 +201,7 @@ class AppComponent extends Component {
                                     </IconButton>
                                     <div
                                         className={classNames('company-logo', (animations ? (open ? 'fade-left' : 'fade-right') : ''))}
-																				hover="false">
+                                        hover="false">
                                         <img className="fixed-height"
                                              src="https://bitstream.pl/wp-content/uploads/2019/04/Logo-Bitstream-4-01.png"
                                              alt=""/>
@@ -235,19 +235,6 @@ class AppComponent extends Component {
                                             </Typography>
                                         </ListItem>
                                     </Link>
-                                    {checkAccess('/dashboard') && <Link to={'/dashboard'}>
-                                        <ListItem
-                                            button
-                                            className={'hoverClass'}
-                                        >
-                                            <DashboardIcon/>
-                                            <Typography variant="h6" color="inherit"
-                                                        className={classNames(animations ? (open ? 'fade-left' : 'fade-right') : '')}
-                                            >
-                                                Dashboard
-                                            </Typography>
-                                        </ListItem>
-                                    </Link>}
                                     {checkAccess('/admin_panel') && <Link to={'/admin_panel'}>
                                         <ListItem
                                             button

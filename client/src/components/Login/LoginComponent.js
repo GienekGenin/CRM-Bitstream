@@ -32,23 +32,23 @@ const mapDispatchToProps = (dispatch) => {
 
 
 class LoginPage extends React.Component {
-	
+
     constructor(props) {
         super(props);
 
         this.state = {
             email: '',
             password: '',
-						loading: false,
-						showPassword: false,
+            loading: false,
+            showPassword: false,
         };
 
-				this.handleChange = this.handleChange.bind(this);
-				this.handleClickShowPassword = this.handleClickShowPassword.bind(this);
+        this.handleChange = this.handleChange.bind(this);
+        this.handleClickShowPassword = this.handleClickShowPassword.bind(this);
         this.handleLoginSubmit = this.handleLoginSubmit.bind(this);
         this.handleChangePassSubmit = this.handleChangePassSubmit.bind(this);
-		}
-		
+    }
+
 
     _isMounted = false;
 
@@ -86,18 +86,18 @@ class LoginPage extends React.Component {
         e.preventDefault();
         const {email, password, newPassword} = this.state;
         this.props.changePassRequest({email, password, newPassword});
-		}
-		
-		
-		handleClickShowPassword(){
-			const { showPassword } = this.state;
-			this.setState({ 
-				showPassword: !showPassword 
-			})
-		};
+    }
+
+
+    handleClickShowPassword() {
+        const {showPassword} = this.state;
+        this.setState({
+            showPassword: !showPassword
+        })
+    };
 
     render() {
-				const {email, password, loading, showPassword} = this.state;
+        const {email, password, loading, showPassword} = this.state;
         return (
             <div>
                 <div id='loginContainer'>
@@ -128,28 +128,28 @@ class LoginPage extends React.Component {
                                     <div className={'form-group' + (!password ? ' has-error' : '')}>
                                         <TextField
                                             required
-																						// id="outlined-password-input"
-																						id="adornment-password"
+                                            // id="outlined-password-input"
+                                            id="adornment-password"
                                             label="Password"
                                             value={password}
                                             name="password"
                                             // type="password"
-                                             onChange={this.handleChange}
+                                            onChange={this.handleChange}
                                             autoComplete="current-password"
                                             margin="normal"
-																						variant="outlined"
-																						type={showPassword ? 'text' : 'password'}
-																						
+                                            variant="outlined"
+                                            type={showPassword ? 'text' : 'password'}
+
                                         />
-																				<InputAdornment>
-																								<IconButton 
-																									aria-label="Toggle password visibility" 
-																									onClick={this.handleClickShowPassword}
-																									style={{position: "absolute", right: "5px", bottom: "12px"}}
-																									>
-																										{showPassword ? <Visibility /> : <VisibilityOff />}
-																								</IconButton>
-																							</InputAdornment>
+                                        <InputAdornment>
+                                            <IconButton
+                                                aria-label="Toggle password visibility"
+                                                onClick={this.handleClickShowPassword}
+                                                style={{position: "absolute", right: "5px", bottom: "12px"}}
+                                            >
+                                                {showPassword ? <Visibility/> : <VisibilityOff/>}
+                                            </IconButton>
+                                        </InputAdornment>
                                         {!password &&
                                         <div className="help-block">Password is required</div>
                                         }
@@ -165,7 +165,7 @@ class LoginPage extends React.Component {
                                         <Button variant="contained" type='submit' color='primary'
                                                 disabled={loading} size="large">Submit</Button>
                                         {loading && <div id='progressLogin'>
-                                            <CircularProgress size={30} style={{ marginTop: '15px' }}/>
+                                            <CircularProgress size={30} style={{marginTop: '15px'}}/>
                                         </div>}
                                     </div>
                                 </CardActions>
