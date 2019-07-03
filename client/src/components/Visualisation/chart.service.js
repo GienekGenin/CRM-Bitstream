@@ -406,7 +406,7 @@ export const lineChartPlaceHolder = () => {
 // Themes end
 
 // Create chart instance
-    const chart = am4core.create("parent-line-chart", am4charts.XYChart);
+    const chart = am4core.create("lineChart", am4charts.XYChart);
 
 // Increase contrast by taking evey second color
     chart.colors.step = 2;
