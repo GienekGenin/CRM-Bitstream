@@ -444,9 +444,7 @@ class Visualisation extends React.Component {
                                         }}
                                         className={classes.progress}
                                     />}
-                                <div id={'lineChart'} >
-																	
-                                </div>
+                                <div id={'lineChart'}></div>
                                 <Button onClick={this.resetChartData} disabled={linearData ? !linearData.length : false}>
                                     Return
                                 </Button>

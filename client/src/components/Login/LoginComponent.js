@@ -41,12 +41,15 @@ class LoginPage extends React.Component {
             password: '',
 						loading: false,
 						showPassword: false,
+						emailValid: false,
+						passwordValid: false,
+						formValid: false,
         };
 
 				this.handleChange = this.handleChange.bind(this);
 				this.handleClickShowPassword = this.handleClickShowPassword.bind(this);
         this.handleLoginSubmit = this.handleLoginSubmit.bind(this);
-        this.handleChangePassSubmit = this.handleChangePassSubmit.bind(this);
+        // this.handleChangePassSubmit = this.handleChangePassSubmit.bind(this);
 		}
 		
 
@@ -69,24 +72,54 @@ class LoginPage extends React.Component {
     componentWillUnmount() {
         this._isMounted = false;
         this.unsubscribe();
-    }
-
-    handleChange(e) {
-        const {name, value} = e.target;
-        this.setState({[name]: value});
-    }
-
-    handleLoginSubmit(e) {
+		}
+		
+		handleLoginSubmit(e) {
         e.preventDefault();
         const {email, password} = this.state;
         this.props.loginRequest({email, password});
     }
 
-    handleChangePassSubmit(e) {
-        e.preventDefault();
-        const {email, password, newPassword} = this.state;
-        this.props.changePassRequest({email, password, newPassword});
+    handleChange(e) {
+        const {name, value} = e.target;
+				this.setState({[name]: value},
+											() => { this.validateField(name, value) });
+    }
+
+    validateField(fieldName, value) {
+			let emailValid = this.state.emailValid;
+			let passwordValid = this.state.passwordValid;
+
+			switch(fieldName) {
+				case 'email':
+					emailValid = value.match(/^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i);
+					break;
+				case 'password':
+					passwordValid = value.length >= 5;
+					break;
+				default:
+					break;	
+			}
+			this.setState({
+				emailValid: emailValid,
+				passwordValid: passwordValid
+			}, this.validateForm);
 		}
+
+		validateForm() {
+			let emailValid = this.state.emailValid;
+			let passwordValid = this.state.passwordValid;
+
+			this.setState({
+				formValid: emailValid && passwordValid
+			});
+		}
+
+    // handleChangePassSubmit(e) {
+    //     e.preventDefault();
+    //     const {email, password, newPassword} = this.state;
+    //     this.props.changePassRequest({email, password, newPassword});
+		// }
 		
 		
 		handleClickShowPassword(){
@@ -97,7 +130,7 @@ class LoginPage extends React.Component {
 		};
 
     render() {
-				const {email, password, loading, showPassword} = this.state;
+				const {email, password, loading, showPassword, formValid, emailValid} = this.state;
         return (
             <div>
                 <div id='loginContainer'>
@@ -123,6 +156,10 @@ class LoginPage extends React.Component {
                                         />
                                         {!email &&
                                         <div className="help-block">Email is required</div>
+																				}
+																				 {
+                                            email && !emailValid &&
+                                            <div className="help-block">Incorrect email</div>
                                         }
                                     </div>
                                     <div className={'form-group' + (!password ? ' has-error' : '')}>
@@ -163,7 +200,7 @@ class LoginPage extends React.Component {
                                 <CardActions>
                                     <div className="loginBtnGroup">
                                         <Button variant="contained" type='submit' color='primary'
-                                                disabled={loading} size="large">Submit</Button>
+                                                disabled={!formValid} size="large">Submit</Button>
                                         {loading && <div id='progressLogin'>
                                             <CircularProgress size={30} style={{ marginTop: '15px' }}/>
                                         </div>}

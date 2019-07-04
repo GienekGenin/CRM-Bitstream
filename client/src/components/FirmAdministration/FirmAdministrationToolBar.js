@@ -56,7 +56,7 @@ class TestToolBar extends React.Component {
                 email: '',
                 tel: '',
                 nip: ''
-            }
+						}
         };
     }
 
@@ -95,7 +95,7 @@ class TestToolBar extends React.Component {
         });
     };
 
-    handleAddDevice = () => {
+    handleAddFirm = () => {
         this.props.addFirmRequest(this.state.newFirm);
         this.setState({
             addDialog: false,
@@ -119,19 +119,18 @@ class TestToolBar extends React.Component {
         this.handleClose('confirmDeleteDialog');
     }
 
-    handleUpdateFirm() {
-        this.props.updateFirmRequest(this.state.newFirm);
-        this.props.resetSelected();
-        this.handleClose('editDialog');
-    }
-
     handleRefresh() {
         this.props.firmRequest();
         this.props.resetSelected();
-    }
+		}
+		handleUpdateFirm(e) {
+        this.props.updateFirmRequest(this.state.newFirm);
+        this.props.resetSelected();
+				this.handleClose('editDialog');
+		}
 
     render() {
-        let {columns, anchorEl, columnsDialog} = this.state;
+        let {columns, anchorEl, columnsDialog, newFirm} = this.state;
         return (
             <div>
                 <div className="firm-toolbar">
@@ -158,58 +157,58 @@ class TestToolBar extends React.Component {
                             >
                                 <DialogTitle id="alert-dialog-title">Edit firm</DialogTitle>
                                 <DialogContent>
-                                    <TextField
+																	<TextField
                                         autoFocus
                                         margin="dense"
                                         id="firm-name"
                                         label="Firm name"
                                         type="text"
                                         required={true}
-                                        value={this.state.newFirm.name}
+                                        value={newFirm.name}
                                         onChange={(e) => this.updateNewFirm(e, 'name')}
                                         fullWidth
                                     />
-                                    <TextField
+																	<TextField
                                         autoFocus
                                         margin="dense"
                                         id="firm-address"
                                         label="Firms address"
                                         type="text"
                                         required={true}
-                                        value={this.state.newFirm.address}
+                                        value={newFirm.address}
                                         onChange={(e) => this.updateNewFirm(e, 'address')}
                                         fullWidth
                                     />
-                                    <TextField
+																	<TextField
                                         autoFocus
                                         margin="dense"
                                         id="firm-email"
                                         label="Firm email"
                                         type="text"
                                         required={true}
-                                        value={this.state.newFirm.email}
+                                        value={newFirm.email}
                                         onChange={(e) => this.updateNewFirm(e, 'email')}
                                         fullWidth
                                     />
-                                    <TextField
+																	<TextField
                                         autoFocus
                                         margin="dense"
                                         id="firm-tel"
                                         label="Firm contact number"
                                         type="text"
                                         required={true}
-                                        value={this.state.newFirm.tel}
+                                        value={newFirm.tel}
                                         onChange={(e) => this.updateNewFirm(e, 'tel')}
                                         fullWidth
                                     />
-                                    <TextField
+																	<TextField
                                         autoFocus
                                         margin="dense"
                                         id="firm-nip"
                                         label="NIP"
                                         type="text"
                                         required={true}
-                                        value={this.state.newFirm.nip}
+                                        value={newFirm.nip}
                                         onChange={(e) => this.updateNewFirm(e, 'nip')}
                                         fullWidth
                                     />
@@ -287,7 +286,7 @@ class TestToolBar extends React.Component {
                                         margin="dense"
                                         id="firm-tel"
                                         label="Firm contact number"
-                                        type="text"
+                                        type="tel"
                                         required={true}
                                         value={this.state.newFirm.tel}
                                         onChange={(e) => this.updateNewFirm(e, 'tel')}
@@ -314,7 +313,7 @@ class TestToolBar extends React.Component {
                                                 !this.state.newFirm.tel ||
                                                 !this.state.newFirm.nip
                                             }
-                                            onClick={() => this.handleAddDevice()}>
+                                            onClick={() => this.handleAddFirm()}>
                                         Add
                                     </Button>
                                     <Button onClick={() => this.handleClose('addDialog')} color="primary">
