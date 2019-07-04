@@ -31,4 +31,8 @@ export class Repository {
             _id: id
         }, obj);
     }
+
+    countAll(){
+        return this.model.estimatedDocumentCount();
+    }
 }

@@ -259,6 +259,10 @@ class UsersService {
 
             })
     }
+
+    countAllUser(){
+        return this.usersRepository.countAll();
+    }
 }
 
 export const usersService = new UsersService();

@@ -11,6 +11,20 @@ users.get('/', TokenValidator.validateToken, (req, res, next) => {
         .catch(next);
 });
 
+users.get('/count-all', TokenValidator.validateToken, (req, res, next) => {
+    usersService
+        .countAllUser()
+        .then(PayloadGeneratorService.nextWithData(next, res))
+        .catch(next);
+});
+
+users.get('/firm/:id', TokenValidator.validateToken, (req, res, next) => {
+    usersService
+        .findByFirmId(req.params.id)
+        .then(PayloadGeneratorService.nextWithData(next, res))
+        .catch(next);
+});
+
 users.post('/', TokenValidator.validateToken, UserPayloadValidator.saveUser, (req, res, next) => {
     usersService
         .save(req.body)
@@ -28,20 +42,6 @@ users.post('/login', UserPayloadValidator.loginUser, (req, res, next) => {
 users.post('/devices', TokenValidator.validateToken, (req, res, next) => {
     usersService
         .getDevicesByUserIds(req.body)
-        .then(PayloadGeneratorService.nextWithData(next, res))
-        .catch(next);
-});
-
-users.get('/:id', TokenValidator.validateToken, (req, res, next) => {
-    usersService
-        .findByFirmId(req.params.id)
-        .then(PayloadGeneratorService.nextWithData(next, res))
-        .catch(next);
-});
-
-users.delete('/', TokenValidator.validateToken, (req, res, next) => {
-    usersService
-        .deleteById(req.body)
         .then(PayloadGeneratorService.nextWithData(next, res))
         .catch(next);
 });
@@ -66,3 +66,11 @@ users.put('/changeEmailAdmin', TokenValidator.validateToken, (req, res, next) =>
         .then(PayloadGeneratorService.nextWithData(next, res))
         .catch(next);
 });
+
+users.delete('/', TokenValidator.validateToken, (req, res, next) => {
+    usersService
+        .deleteById(req.body)
+        .then(PayloadGeneratorService.nextWithData(next, res))
+        .catch(next);
+});
+
