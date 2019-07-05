@@ -53,7 +53,7 @@ const mapDispatchToProps = (dispatch) => {
         deleteFirmDeviceRequest: (payload) => dispatch(deleteFirmDeviceRequest(payload)),
         updateFirmDevice: (payload) => dispatch(updateFirmDevice(payload)),
         userDevicesRequest: (coid) => dispatch(userDevicesRequest(coid)),
-        updateDeviceUsersRequest: (sid, coid) => dispatch(updateDeviceUsersRequest(sid, coid)),
+        updateDeviceUsersRequest: (sid, coid, selectedUserIds) => dispatch(updateDeviceUsersRequest(sid, coid, selectedUserIds)),
     };
 };
 
@@ -205,7 +205,7 @@ class FirmDevicesToolBar extends React.Component {
         d3.select('#tree').remove();
         const ids = this.state.newFirmDevice.coid.map(el => el._id);
         if (ids.length > 0) {
-            this.props.updateDeviceUsersRequest(this.state.newFirmDevice.sid, ids);
+            this.props.updateDeviceUsersRequest(this.state.newFirmDevice.sid, ids, this.props.selectedUserIds);
         }
         this.props.resetSelected();
         this.handleClose('configUsersDialog');

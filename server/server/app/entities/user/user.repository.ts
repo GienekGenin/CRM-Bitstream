@@ -34,4 +34,31 @@ export class UserRepository extends Repository {
     updateEmail(payload){
         return this.model.updateOne({email: payload.email}, {email: payload.newEmail});
     }
+
+    groupByFirm(){
+        return this.model.aggregate([
+            {
+                '$match': {
+                    'deleted': false
+                }
+            }, {
+                '$group': {
+                    '_id': {
+                        'firm_id': '$firm_id'
+                    },
+                    'coids': {
+                        '$push': {
+                            'coid': '$_id'
+                        }
+                    }
+                }
+            }, {
+                '$project': {
+                    '_id': 0,
+                    'firm_id': '$_id.firm_id',
+                    'coids': 1
+                }
+            }
+        ])
+    }
 }

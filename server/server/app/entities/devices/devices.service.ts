@@ -57,7 +57,6 @@ class DeviceService {
                     (deviceToDb, callback) => {
                         this.deviceRepository.save(deviceToDb)
                             .then(d => {
-                                console.log(deviceToDb);
                                 callback(null, d['_doc'])
                             })
                             .catch(err => {
@@ -147,7 +146,6 @@ class DeviceService {
         return new Promise(((resolve, reject) => {
             this.deviceRepository.fakeDeleteStructure(sid)
                 .then(d => {
-                    console.log(d);
                     if (d['nModified'] === 0) {
                         reject(new Error('Unable to delete devices'));
                     }
@@ -158,7 +156,11 @@ class DeviceService {
     }
 
     getDevicesByUserIds(ids) {
-        return this.deviceRepository.getDevicesByUserIds(ids);
+        return this.deviceRepository.getDevicesByUserIds(ids)
+            .then(d=>{
+                return d;
+            })
+            .catch(e=>e);
     }
 
     createStructure(structure) {
@@ -211,7 +213,7 @@ class DeviceService {
                         }
                     },
                     (sid, callback) => {
-                        this.deviceRepository.findAllBySid(sid)
+                        this.getDevicesByUserIds(payload.selectedUserIds)
                             .then(d => callback(null, d))
                             .catch(e => callback(e));
                     }
@@ -265,6 +267,18 @@ class DeviceService {
         const sids = body.sids;
         const status = body.status;
         return DeviceRegistryService.changeActivity(sids, status);
+    }
+
+    countAllDevices(){
+        return this.deviceRepository.countAll();
+    }
+
+    groupParents(){
+        return this.deviceRepository.groupParents();
+    }
+
+    groupByUsers(){
+        return this.deviceRepository.groupByUsers();
     }
 }
 

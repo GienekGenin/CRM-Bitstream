@@ -157,6 +157,10 @@ class DeviceTypesService {
     getDevicesWithData(body) {
         return this.dataRepository.getDevicesWithData(body);
     }
+
+    countAllData(){
+        return this.dataRepository.countAll();
+    }
 }
 
 export const dataService = new DeviceTypesService();
