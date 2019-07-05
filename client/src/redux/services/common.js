@@ -79,7 +79,6 @@ const handleResponse = (response) => {
             const error = data.errors;
             return Promise.reject(error);
         }
-        console.log(data.payload.length);
         return data.payload;
     });
 };

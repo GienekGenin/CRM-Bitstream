@@ -19,6 +19,7 @@ import FirmAdministrationToolBar from './FirmAdministrationToolBar';
 
 // Services
 import {firmService} from "../../redux/services/firm";
+import {mixedService} from "../../redux/services/mixed";
 import {buildFirmsInfo} from "./chart.service";
 import Paper from "@material-ui/core/Paper";
 
@@ -67,7 +68,8 @@ class FirmAdministrationComponent extends Component {
                 {title: 'Email', field: 'email', hidden: false,},
                 {title: 'tel', field: 'tel', hidden: false,},
                 {title: 'nip', field: 'nip', hidden: false,},
-            ]
+            ],
+            basicInfo: null
         };
 
         this.resetSelected = this.resetSelected.bind(this);
@@ -86,7 +88,10 @@ class FirmAdministrationComponent extends Component {
     componentDidMount() {
         firmService.firmsInfo().then(firmsInfo => {
             buildFirmsInfo(firmsInfo);
-        }).catch(e => console.log(e));
+        }).catch(e => e);
+        mixedService.getBasicInfo().then(basicInfo => {
+            this.setState({basicInfo});
+        }).catch(e => e);
         this.unsubscribe = store.subscribe(() => {
             this.setState({loading: store.getState().firmReducer.loading});
             if (store.getState().firmReducer.firms) {
@@ -127,7 +132,8 @@ class FirmAdministrationComponent extends Component {
     };
 
     render() {
-        let {page, firms, rowsPerPage, loading, selectedFirm, selectedFirmId, columns} = this.state;
+        let {page, firms, rowsPerPage, loading, selectedFirm, selectedFirmId, columns,
+        basicInfo} = this.state;
         firms && firms.map((el, i, arr) => arr[i] = Object.assign(el, {
             action: (
                 <div>
@@ -175,10 +181,14 @@ class FirmAdministrationComponent extends Component {
                         </Grid>
                         <Grid item xs={6}>
                             <Paper className={'chart-container'}>
-                                Test
+                                {basicInfo && Object.getOwnPropertyNames(basicInfo).map(propName=>(
+                                    <div key={propName}>
+                                        {propName} : {basicInfo[propName]}, 
+                                    </div>
+                                ))}
                             </Paper>
                         </Grid>
-                        <Grid item xs={6} >
+                        <Grid item xs={6}>
                             <Paper className={'chart-container'}>
                                 <div id={'firms-info'}>
                                 </div>

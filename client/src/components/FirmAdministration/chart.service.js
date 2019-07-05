@@ -27,7 +27,8 @@ export const buildFirmsInfo = (firmsInfo) => {
     categoryAxis.tooltip.label.verticalCenter = "middle";
 
     const valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
-
+    valueAxis.renderer.line.strokeOpacity = 0.2;
+    valueAxis.renderer.line.strokeWidth = 1;
 
 // Create series
     const series = chart.series.push(new am4charts.ColumnSeries3D());

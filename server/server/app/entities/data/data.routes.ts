@@ -3,13 +3,6 @@ import {dataService} from './data.service';
 import {PayloadGeneratorService} from '../../common/services/request-services/payload-generator.service';
 import {TokenValidator} from '../../common/middleware/request-validation/token.validator';
 
-data.get('/count-all', TokenValidator.validateToken, (req, res, next) => {
-    dataService
-        .countAllData()
-        .then(PayloadGeneratorService.nextWithData(next, res))
-        .catch(next);
-});
-
 data.post('/time', TokenValidator.validateToken, (req, res, next) => {
     dataService.getMinMaxTime(req.body)
         .then(PayloadGeneratorService.nextWithData(next, res))

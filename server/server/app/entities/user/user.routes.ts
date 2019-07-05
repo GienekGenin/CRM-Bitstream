@@ -11,13 +11,6 @@ users.get('/', TokenValidator.validateToken, (req, res, next) => {
         .catch(next);
 });
 
-users.get('/count-all', TokenValidator.validateToken, (req, res, next) => {
-    usersService
-        .countAllUsers()
-        .then(PayloadGeneratorService.nextWithData(next, res))
-        .catch(next);
-});
-
 users.get('/info-firm', TokenValidator.validateToken, (req, res, next) => {
     usersService
         .infoByFirm()

@@ -10,12 +10,6 @@ devices.get('/', TokenValidator.validateToken, (req, res, next) => {
         .catch(next);
 });
 
-devices.get('/count-all', TokenValidator.validateToken, (req, res, next) => {
-    deviceService.countAllDevices()
-        .then(PayloadGeneratorService.nextWithData(next, res))
-        .catch(next);
-});
-
 devices.get('/group-all', TokenValidator.validateToken, (req, res, next) => {
     deviceService.groupParents()
         .then(PayloadGeneratorService.nextWithData(next, res))
