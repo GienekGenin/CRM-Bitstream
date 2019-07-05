@@ -17,6 +17,11 @@ import {addFirmRequest, deleteFirmRequest, updateFirmRequest} from "../../redux/
 import './FirmAdministration.scss';
 import FirmAdministrationToolBar from './FirmAdministrationToolBar';
 
+// Services
+import {firmService} from "../../redux/services/firm";
+import {buildFirmsInfo} from "./chart.service";
+import Paper from "@material-ui/core/Paper";
+
 const mapDispatchToProps = (dispatch) => {
     return {
         addFirmRequest: (payload) => dispatch(addFirmRequest(payload)),
@@ -79,6 +84,9 @@ class FirmAdministrationComponent extends Component {
     };
 
     componentDidMount() {
+        firmService.firmsInfo().then(firmsInfo => {
+            buildFirmsInfo(firmsInfo);
+        }).catch(e => console.log(e));
         this.unsubscribe = store.subscribe(() => {
             this.setState({loading: store.getState().firmReducer.loading});
             if (store.getState().firmReducer.firms) {
@@ -130,7 +138,7 @@ class FirmAdministrationComponent extends Component {
         return (
             <MuiThemeProvider theme={theme}>
                 <div style={{maxWidth: '100%'}}>
-                    <Grid container>
+                    <Grid container spacing={5}>
                         <Grid item xs={12}>
                             <MaterialTable
                                 components={{
@@ -164,6 +172,17 @@ class FirmAdministrationComponent extends Component {
                                 onChangeRowsPerPage={(props, e) => this.onChangeRowsPerPage(props, e)}
                                 onRowClick={this.onRowClick}
                             />
+                        </Grid>
+                        <Grid item xs={6}>
+                            <Paper className={'chart-container'}>
+                                Test
+                            </Paper>
+                        </Grid>
+                        <Grid item xs={6} >
+                            <Paper className={'chart-container'}>
+                                <div id={'firms-info'}>
+                                </div>
+                            </Paper>
                         </Grid>
                     </Grid>
                 </div>

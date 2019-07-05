@@ -24,7 +24,6 @@ import VisualisationComponent from '../Visualisation/VisualisationComponent';
 import {deviceTypesService} from "../../redux/services/device_types";
 import {tokenService} from "../../redux/services/token";
 
-
 const mapDispatchToProps = (dispatch) => {
     return {
         firmRequest: () => dispatch(firmsRequest()),
@@ -192,7 +191,7 @@ class AdminPanel extends React.Component {
                         >
                             <Tab label="Firms"/>
                             <Tab label="Users" disabled={!selectedFirm}/>
-                            <Tab label="Devices" disabled={!selectedUsers }/>
+                            <Tab label="Devices" disabled={!selectedUsers}/>
                             <Tab label="Visualisation" disabled={selectedDevices ? !selectedDevices.length : true}/>
                         </Tabs>
                         }
@@ -226,43 +225,43 @@ class AdminPanel extends React.Component {
                     </Toolbar>
                 </AppBar>
                 {level === 'SuperAdmin' &&
-                    <div>
-                        {value === 0 && firms && <TabContainer>
-                            <FirmAdministrationComponent
-                                firms={firms}
-                                onFirmSelect={this.handleFirmSelect}
-                                selectedFirm={selectedFirm}
-                            />
-                        </TabContainer>}
-                        {value === 1 && <TabContainer>
-                            <UserAdminComponent
-                                handleSetUsers={this.handleSetUsers}
-                                resetSelectedUsers={this.resetSelectedUsers}
-                                onUsersSelect={this.handleUsersSelect}
-                                selectedFirm={selectedFirm}
-                                selectedUsers={selectedUsers}
-                                parentUsers={users}
-                            />
-                        </TabContainer>}
-                        {value === 2 && <TabContainer>
-                            <FirmDevicesComponent
-                                handleSetDevices={this.handleSetDevices}
-                                resetSelectedDeviceParent={this.resetSelectedDevices}
-                                onDeviceSelect={this.handleDevicesSelect}
-                                selectedFirm={selectedFirm}
-                                selectedUsers={selectedUsers}
-                                parentDevices={devices}
-                                selectedDevices={selectedDevices}
-                                deviceTypes={deviceTypes}
-                            />
-                        </TabContainer>}
-                        {value === 3 && <TabContainer>
-                            <VisualisationComponent
-                                selectedDevices={selectedDevices}
-                                parentDevices={devices}
-                            />
-                        </TabContainer>}
-                    </div>}
+                <div>
+                    {value === 0 && firms && <TabContainer>
+                        <FirmAdministrationComponent
+                            firms={firms}
+                            onFirmSelect={this.handleFirmSelect}
+                            selectedFirm={selectedFirm}
+                        />
+                    </TabContainer>}
+                    {value === 1 && <TabContainer>
+                        <UserAdminComponent
+                            handleSetUsers={this.handleSetUsers}
+                            resetSelectedUsers={this.resetSelectedUsers}
+                            onUsersSelect={this.handleUsersSelect}
+                            selectedFirm={selectedFirm}
+                            selectedUsers={selectedUsers}
+                            parentUsers={users}
+                        />
+                    </TabContainer>}
+                    {value === 2 && <TabContainer>
+                        <FirmDevicesComponent
+                            handleSetDevices={this.handleSetDevices}
+                            resetSelectedDeviceParent={this.resetSelectedDevices}
+                            onDeviceSelect={this.handleDevicesSelect}
+                            selectedFirm={selectedFirm}
+                            selectedUsers={selectedUsers}
+                            parentDevices={devices}
+                            selectedDevices={selectedDevices}
+                            deviceTypes={deviceTypes}
+                        />
+                    </TabContainer>}
+                    {value === 3 && <TabContainer>
+                        <VisualisationComponent
+                            selectedDevices={selectedDevices}
+                            parentDevices={devices}
+                        />
+                    </TabContainer>}
+                </div>}
                 {level === 'FirmAdmin' &&
                 <div>
                     {value === 0 && <TabContainer>

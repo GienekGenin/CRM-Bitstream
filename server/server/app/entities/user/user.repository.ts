@@ -58,6 +58,23 @@ export class UserRepository extends Repository {
                     'firm_id': '$_id.firm_id',
                     'coids': 1
                 }
+            }, {
+                '$lookup': {
+                    'from': 'firms',
+                    'localField': 'firm_id',
+                    'foreignField': '_id',
+                    'as': 'firm'
+                }
+            }, {
+                '$unwind': {
+                    'path': '$firm'
+                }
+            }, {
+                '$project': {
+                    'coids': 1,
+                    'firm_id': 1,
+                    'firm_name': '$firm.name'
+                }
             }
         ])
     }

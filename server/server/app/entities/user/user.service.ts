@@ -256,7 +256,6 @@ class UsersService {
                         devicesToUI = devicesToUI.concat(children);
                         return devicesToUI;
                     });
-
             })
     }
 
@@ -274,7 +273,8 @@ class UsersService {
                             usersGroupedByFirm.forEach(firm => {
                                 payload.push({
                                     coids: firm.coids.map(el => el.coid.toString()),
-                                    firm_id: firm.firm_id
+                                    firm_id: firm.firm_id,
+                                    firm_name: firm.firm_name
                                 });
                             });
                             callback(null, payload)
@@ -304,7 +304,8 @@ class UsersService {
                             if (firm.coids.includes(user.coid)) {
                                 firmDevices = firmDevices.concat(user.devices);
                                 tempPayload = Object.assign({}, firm, {
-                                    firmDevices: Array.from(new Set(firmDevices))
+                                    firmDevices: Array.from(new Set(firmDevices)).length,
+                                    coids: firm.coids.length,
                                 })
                             }
                         });
