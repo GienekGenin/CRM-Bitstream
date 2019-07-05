@@ -3,6 +3,7 @@ import {firmService} from "../firm/firm.service";
 import {usersService} from "../user/user.service";
 import {deviceService} from "../devices/devices.service";
 import {dataService} from "../data/data.service";
+import * as _ from 'lodash';
 
 class MixedService {
 
@@ -33,6 +34,40 @@ class MixedService {
                 if (err) {
                     reject(payload);
                 }
+                resolve(payload);
+            })
+        }))
+    }
+
+    getBasicFirmInfo(firm_id) {
+        return new Promise(((resolve, reject) => {
+            async.waterfall([
+                callback => {
+                    usersService.findByFirmId(firm_id)
+                        .then(users => callback(null, users.map(user => ({_id: user._id, email: user.email}))))
+                        .catch(e => callback(e));
+                },
+                (usersPayload, callback) => {
+                const coids = usersPayload.map(el=>el._id);
+                    deviceService.groupByCoid(coids)
+                        .then(devicesPayload => {
+                            const payload = [];
+                            usersPayload.forEach(user=>{
+                                devicesPayload.forEach(device=>{
+                                    if(user._id.toString() === device.coid.toString()){
+                                        const devicePayload = _.omit(device, ['coid']);
+                                        const userPayload = _.omit(user, ['_id']);
+                                        payload.push(Object.assign(userPayload, devicePayload));
+                                    }
+                                })
+                            });
+                            callback(null, payload);
+                        })
+                        .catch(e => callback(e));
+                }
+            ], (err, payload) => {
+                if (err)
+                    reject(err);
                 resolve(payload);
             })
         }))

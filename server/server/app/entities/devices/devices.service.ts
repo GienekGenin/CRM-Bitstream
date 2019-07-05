@@ -280,6 +280,10 @@ class DeviceService {
     groupByUsers(){
         return this.deviceRepository.groupByUsers();
     }
+
+    groupByCoid(coids){
+        return this.deviceRepository.groupByCoid(coids);
+    }
 }
 
 export const deviceService = new DeviceService();

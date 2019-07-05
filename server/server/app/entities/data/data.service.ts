@@ -161,6 +161,10 @@ class DeviceTypesService {
     countAllData(){
         return this.dataRepository.countAll();
     }
+
+    countByDeviceIds(sids){
+        return this.dataRepository.countByDeviceIds(sids);
+    }
 }
 
 export const dataService = new DeviceTypesService();

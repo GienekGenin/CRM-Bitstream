@@ -30,6 +30,10 @@ import {tokenService} from "../../redux/services/token";
 import './UserAdmin.scss';
 import UserToolBar from './UserToolBar';
 
+// Services
+import {mixedService} from "../../redux/services/mixed";
+import {buildFirmInfo} from "./chart.service";
+
 const theme = createMuiTheme({
     palette: {
         type: 'light'
@@ -94,13 +98,15 @@ class UserAdminComponent extends React.Component {
     componentDidMount() {
         this.setState({loading: true});
         this.renderSelectAllCheckBox(false);
+        let selectedFirm = null;
         if (this.props.selectedFirm) {
-            this.setState({selectedFirm: this.props.selectedFirm});
+            selectedFirm = this.props.selectedFirm;
+            this.setState({selectedFirm});
             if (!this.props.parentUsers) {
-                this.props.usersRequest(this.props.selectedFirm._id);
+                this.props.usersRequest(selectedFirm._id);
             } else this.setState({users: this.props.parentUsers, loading: false});
         } else {
-            let selectedFirm = tokenService.verifyToken().firm;
+            selectedFirm = tokenService.verifyToken().firm;
             this.setState({selectedFirm});
             if (!this.props.parentUsers) {
                 this.props.usersRequest(selectedFirm._id);
@@ -109,11 +115,16 @@ class UserAdminComponent extends React.Component {
             }
         }
 
+        mixedService.getBasicFirmInfo(selectedFirm._id)
+            .then(firmInfo => {
+                buildFirmInfo(firmInfo);
+            }).catch(e => console.log(e));
+
         if (this.props.selectedUsers) {
             const {selectedUsers} = this.props;
             const selectedUserIds = selectedUsers.map(user => user._id);
             this.setState({selectedUsers, selectedUserIds});
-            if(this.props.parentUsers.length === this.props.selectedUsers.length){
+            if (this.props.parentUsers.length === this.props.selectedUsers.length) {
                 this.renderSelectAllCheckBox(false);
             } else {
                 this.renderSelectAllCheckBox(true);
@@ -185,10 +196,11 @@ class UserAdminComponent extends React.Component {
             this.handleUsersSelect(users);
         }
     }
+
 // <Checkbox value={'1'} checked={checked} onChange={this.selectAllUsers}/>
     renderSelectAllCheckBox(checked) {
         let element = <IconButton onClick={this.selectAllUsers}>
-            {checked ? <CheckBoxIcon /> : <AddBoxIcon />}
+            {checked ? <CheckBoxIcon/> : <AddBoxIcon/>}
         </IconButton>;
         const container = document.querySelector('#root > div > main > div > div > div > div > div > div > div > ' +
             'div:nth-child(2) > div > div > table > tbody > tr:nth-child(1) > td:nth-child(1)');
@@ -242,6 +254,10 @@ class UserAdminComponent extends React.Component {
                                 }}
                                 onRowClick={this.onRowClick}
                             />
+                        </Grid>
+                        <Grid item xs={12} className={'chart-container'}>
+                            <div id={'firm-info-chart'}>
+                            </div>
                         </Grid>
                     </Grid>
                 </div>

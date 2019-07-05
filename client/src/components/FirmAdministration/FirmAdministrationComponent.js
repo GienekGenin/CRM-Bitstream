@@ -183,7 +183,7 @@ class FirmAdministrationComponent extends Component {
                             <Paper className={'chart-container'}>
                                 {basicInfo && Object.getOwnPropertyNames(basicInfo).map(propName=>(
                                     <div key={propName}>
-                                        {propName} : {basicInfo[propName]}, 
+                                        {propName} : {basicInfo[propName]},
                                     </div>
                                 ))}
                             </Paper>

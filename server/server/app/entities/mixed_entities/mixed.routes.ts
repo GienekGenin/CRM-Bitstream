@@ -9,3 +9,10 @@ mixed.get('/basic-info', TokenValidator.validateToken, (req, res, next) => {
         .then(PayloadGeneratorService.nextWithData(next, res))
         .catch(next);
 });
+
+mixed.post('/basic-firm-info', TokenValidator.validateToken, (req, res, next) => {
+    mixedService
+        .getBasicFirmInfo(req.body.firm_id)
+        .then(PayloadGeneratorService.nextWithData(next, res))
+        .catch(next);
+});
