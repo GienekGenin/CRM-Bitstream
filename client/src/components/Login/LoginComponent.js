@@ -82,8 +82,8 @@ class LoginPage extends React.Component {
 
     handleChange(e) {
         const {name, value} = e.target;
-				this.setState({[name]: value},
-											() => { this.validateField(name, value) });
+				this.setState({[name]: value},() => { this.validateField(name, value) });
+											
     }
 
     validateField(fieldName, value) {
@@ -171,7 +171,7 @@ class LoginPage extends React.Component {
                                             value={password}
                                             name="password"
                                             // type="password"
-                                             onChange={this.handleChange}
+                                            onChange={this.handleChange}
                                             autoComplete="current-password"
                                             margin="normal"
 																						variant="outlined"

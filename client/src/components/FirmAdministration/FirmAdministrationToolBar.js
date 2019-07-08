@@ -56,8 +56,14 @@ class TestToolBar extends React.Component {
                 email: '',
                 tel: '',
                 nip: ''
-						}
-        };
+						},
+						nameValid: false,
+						addressValid: false,
+						emailValid: false,
+						telValid: false,
+						nipValid: false
+				};
+				this.updateNewFirm = this.updateNewFirm.bind(this);
     }
 
     handleClickMenu = event => {
@@ -109,9 +115,18 @@ class TestToolBar extends React.Component {
         });
     };
 
-    updateNewFirm(e, param) {
-        this.setState({newFirm: Object.assign({}, this.state.newFirm, {[param]: e.target.value})})
-    }
+    // updateNewFirm(e, param) {
+    //     this.setState({
+		// 			newFirm: Object.assign({}, this.state.newFirm, {[param]: e.target.value})})
+		// }
+		updateNewFirm = (e, type) => {
+			const { name, value } = e.target;
+			const { newFirm } = this.state;
+			this.setState({
+				newFirm: Object.assign({}, { [name]: value })
+			}, () => { this.validateField(newFirm[name], value); });
+		};
+
 
     handleDeleteDevice() {
         this.props.deleteFirmRequest(this.props.selected._id);
@@ -123,11 +138,52 @@ class TestToolBar extends React.Component {
         this.props.firmRequest();
         this.props.resetSelected();
 		}
+
 		handleUpdateFirm(e) {
         this.props.updateFirmRequest(this.state.newFirm);
         this.props.resetSelected();
 				this.handleClose('editDialog');
 		}
+
+		validateField = (fieldName, value) => {
+			const { nameValid, addressValid, emailValid, telValid, nipValid } = this.state;
+			switch (fieldName) {
+				case 'name':
+					nameValid = value.length >= 5;
+					break;
+				case 'address':
+					addressValid = value.length >= 5;
+					break;
+				case 'email':
+					emailValid = value.match(/^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i);
+					break;
+				case 'tel':
+					telValid = value.length >= 9;
+					break;
+				case 'nip':
+					nipValid = value.length >= 6;
+					break;
+				default:
+					break;
+			};
+			
+			this.setState({
+				nameValid: nameValid,
+				addressValid: addressValid,
+				emailValid: emailValid,
+				telValid: telValid,
+				nipValid: nipValid
+			}, this.validateForm);
+		};
+		
+		validateForm = () => {
+			let { nameValid, addressValid, emailValid, telValid, nipValid } = this.state;
+			this.setState({
+				formValid: nameValid & addressValid & emailValid & telValid & nipValid
+			});
+		};
+
+
 
     render() {
         let {columns, anchorEl, columnsDialog, newFirm} = this.state;
