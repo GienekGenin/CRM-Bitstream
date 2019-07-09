@@ -45,6 +45,7 @@ import {
 import {deviceTypesService} from '../../redux/services/device_types';
 import {userService} from '../../redux/services/user';
 import {devicesService} from '../../redux/services/devices';
+import {checkAccess} from "../privateRoute";
 
 const mapDispatchToProps = (dispatch) => {
     return {
@@ -52,7 +53,7 @@ const mapDispatchToProps = (dispatch) => {
         deleteFirmDeviceRequest: (payload) => dispatch(deleteFirmDeviceRequest(payload)),
         updateFirmDevice: (payload) => dispatch(updateFirmDevice(payload)),
         userDevicesRequest: (coid) => dispatch(userDevicesRequest(coid)),
-        updateDeviceUsersRequest: (sid, coid) => dispatch(updateDeviceUsersRequest(sid, coid)),
+        updateDeviceUsersRequest: (sid, coid, selectedUserIds) => dispatch(updateDeviceUsersRequest(sid, coid, selectedUserIds)),
     };
 };
 
@@ -86,6 +87,15 @@ class FirmDevicesToolBar extends React.Component {
         this.setState({[state]: true});
         if (state === 'editDialog') {
             this.setState({newFirmDevice: this.props.selected})
+        }
+        if(state === 'addDialog'){
+            if (this.props.deviceTypes) {
+                this.setState({deviceTypes: this.props.deviceTypes, loading: false});
+            } else {
+                deviceTypesService.getDeviceTypes().then(deviceTypes => {
+                    this.setState({deviceTypes, loading: false});
+                }).catch(e => console.log(e))
+            }
         }
         if (state === 'addDialog' || state === 'configUsersDialog') {
             this.setState({loading: true});
@@ -195,7 +205,7 @@ class FirmDevicesToolBar extends React.Component {
         d3.select('#tree').remove();
         const ids = this.state.newFirmDevice.coid.map(el => el._id);
         if (ids.length > 0) {
-            this.props.updateDeviceUsersRequest(this.state.newFirmDevice.sid, ids);
+            this.props.updateDeviceUsersRequest(this.state.newFirmDevice.sid, ids, this.props.selectedUserIds);
         }
         this.props.resetSelected();
         this.handleClose('configUsersDialog');
@@ -217,13 +227,6 @@ class FirmDevicesToolBar extends React.Component {
 
     componentDidMount() {
         this.setState({loading: true});
-        if (this.props.deviceTypes) {
-            this.setState({deviceTypes: this.props.deviceTypes, loading: false});
-        } else {
-            deviceTypesService.getDeviceTypes().then(deviceTypes => {
-                this.setState({deviceTypes, loading: false});
-            }).catch(e => console.log(e))
-        }
     }
 
     render() {
@@ -459,7 +462,7 @@ class FirmDevicesToolBar extends React.Component {
                             >
                                 <div>
                                     <IconButton variant="outlined" color="primary"
-                                                disabled={this.props.loading || !this.props.selected}
+                                                disabled={this.props.loading || !this.props.selected || !checkAccess('/users')}
                                                 onClick={() => this.handleClickOpen('configUsersDialog')}>
                                         <AssignmentIndIcon/>
                                     </IconButton>

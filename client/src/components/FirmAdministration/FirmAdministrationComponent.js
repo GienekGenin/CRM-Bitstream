@@ -1,12 +1,18 @@
 import React, {Component} from 'react';
 import * as PropTypes from "prop-types";
 import _ from 'lodash';
+import classes from 'classnames';
 
 // Material
 import Checkbox from "@material-ui/core/Checkbox";
 import {Grid, MuiThemeProvider} from '@material-ui/core';
 import {createMuiTheme} from '@material-ui/core/styles';
 import MaterialTable from 'material-table';
+import Alarm from '@material-ui/icons/Alarm';
+import Room from '@material-ui/icons/Room';
+import Toll from '@material-ui/icons/Toll';
+import Timeline from '@material-ui/icons/Timeline';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 // Redux
 import {connect} from "react-redux";
@@ -16,6 +22,12 @@ import {addFirmRequest, deleteFirmRequest, updateFirmRequest} from "../../redux/
 // Components
 import './FirmAdministration.scss';
 import FirmAdministrationToolBar from './FirmAdministrationToolBar';
+
+// Services
+import {firmService} from "../../redux/services/firm";
+import {mixedService} from "../../redux/services/mixed";
+import {buildFirmsInfo} from "./chart.service";
+import Paper from "@material-ui/core/Paper";
 
 const mapDispatchToProps = (dispatch) => {
     return {
@@ -31,7 +43,7 @@ const theme = createMuiTheme({
     },
     typography: {
         useNextVariants: true,
-    },
+		},
 });
 
 class FirmAdministrationComponent extends Component {
@@ -62,8 +74,9 @@ class FirmAdministrationComponent extends Component {
                 {title: 'Email', field: 'email', hidden: false,},
                 {title: 'tel', field: 'tel', hidden: false,},
                 {title: 'nip', field: 'nip', hidden: false,},
-            ]
-        };
+            ],
+						basicInfo: null,								
+				};
 
         this.resetSelected = this.resetSelected.bind(this);
 
@@ -79,6 +92,12 @@ class FirmAdministrationComponent extends Component {
     };
 
     componentDidMount() {
+        firmService.firmsInfo().then(firmsInfo => {
+            buildFirmsInfo(firmsInfo);
+        }).catch(e => e);
+        mixedService.getBasicInfo().then(basicInfo => {
+            this.setState({basicInfo});
+        }).catch(e => e);
         this.unsubscribe = store.subscribe(() => {
             this.setState({loading: store.getState().firmReducer.loading});
             if (store.getState().firmReducer.firms) {
@@ -117,20 +136,42 @@ class FirmAdministrationComponent extends Component {
             this.props.onFirmSelect(selectedFirm);
         }
     };
-
     render() {
-        let {page, firms, rowsPerPage, loading, selectedFirm, selectedFirmId, columns} = this.state;
+        let {page, firms, rowsPerPage, loading, selectedFirm, selectedFirmId, columns,
+				basicInfo} = this.state;
         firms && firms.map((el, i, arr) => arr[i] = Object.assign(el, {
             action: (
                 <div>
                     <Checkbox value={el._id} checked={selectedFirmId === el._id}/>
                 </div>
             )
-        }));
+				}));
+
+				let icons = {
+					"numOfFirms": {
+						icon: (<Alarm className={'firm-info'} />),
+						text: (<div>Firms: </div>)
+					},
+					"numOfUsers": {
+						icon: (<Room className={'user-info'} /> ),
+						text: (<div>Users: </div>) 
+					},
+					"numOfDevices": {
+						icon: (<Toll className={'devices-info'} />),
+						text: (<div>Devices: </div>)
+					},
+					"numOfDocs": {
+						icon: (<Timeline className={'docs-info'} />),
+						text: (<div>Docs: </div>)
+					}
+				}
+
+				basicInfo && Object.getOwnPropertyNames(basicInfo).forEach( props => icons[props].icon )
+
         return (
             <MuiThemeProvider theme={theme}>
                 <div style={{maxWidth: '100%'}}>
-                    <Grid container>
+                    <Grid container spacing={5}>
                         <Grid item xs={12}>
                             <MaterialTable
                                 components={{
@@ -165,6 +206,57 @@ class FirmAdministrationComponent extends Component {
                                 onRowClick={this.onRowClick}
                             />
                         </Grid>
+													<Grid item sm={12} md={5}>
+																										
+															<Paper className={'chart-container'}>
+															<div className={'firms-title'}>Title Firm</div>
+															{loading && <CircularProgress
+																			style={{
+																					width: '200px',
+																					height: '200px',
+																					color: '#2196f3',
+																					position: "absolute",
+																					top: '20%',
+																					left: '24%',
+																					zIndex: 9999,
+																			}}
+																			className={classes.progress}
+																		/>}	
+																 {basicInfo && Object.getOwnPropertyNames(basicInfo).map(propName=>(
+																			<Grid item xs={6} key={propName}>
+																				<div className={'base-info'}>																		
+																					<div className={'base-info-content'}>
+																						{/* <Room className={ this.state.iconList }/> */}
+																						{ icons[propName].icon }
+																						<div className={'content-text'}>
+																							{ icons[propName].text } 
+																							{ basicInfo[propName] }
+																						</div>
+																					</div>
+																				</div>
+																			</Grid>																			
+																	))} 
+															</Paper>
+													</Grid>
+													<Grid item sm={12} md={7}>
+															<Paper className={'chart-container'}>
+																<div className={'firms-title'}>Title Graph</div>
+																 <div id={'firms-info'}>
+																		{loading && <CircularProgress
+																			style={{
+																					width: '250px',
+																					height: '250px',
+																					color: '#2196f3',
+																					position: "absolute",
+																					top: '30%',
+																					left: "34%",
+																					zIndex: 9999
+																			}}
+																			className={classes.progress}
+																		/>}
+																	</div>					
+															</Paper>
+													</Grid>											
                     </Grid>
                 </div>
             </MuiThemeProvider>

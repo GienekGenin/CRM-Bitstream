@@ -3,7 +3,7 @@ import {getRequest, postRequest, deleteRequest, putRequest} from "./common";
 const apiBase = process.env.REACT_APP_API_BASE;
 
 const getAllByFirmId = (firmId) => {
-    const url = `${apiBase}users/${firmId}`;
+    const url = `${apiBase}users/firm/${firmId}`;
     return getRequest(url);
 };
 

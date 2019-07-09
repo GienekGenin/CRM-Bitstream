@@ -21,19 +21,9 @@ export const devicesReducer = (state = initialState, action) => {
             }
         }
         case devicesConstants.UPDATE_DEVICE_USERS_SUCCESS: {
-            let newDevices = [];
-            state.devices.forEach(device => {
-                action.payload.forEach(updatedDevice => {
-                    if (device.sid === updatedDevice.sid) {
-                        newDevices.push(updatedDevice);
-                    } else {
-                        newDevices.push(device);
-                    }
-                })
-            });
             return {
                 ...state,
-                devices: newDevices,
+                devices: action.payload,
                 loading: false,
                 success: 'Device users were successfully updated'
             }

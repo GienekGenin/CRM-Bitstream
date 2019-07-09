@@ -13,3 +13,97 @@
   padding-right: 20px;
 }
 
+.base-info {
+	display: flex;
+	position: relative;
+	padding: 2.5rem 0;
+	margin-top: 3rem;
+	font-size: .875rem;
+  min-width: 0;
+  word-wrap: break-word;
+  background: #FFF;
+  box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.44); 
+  border-radius: 6px;
+	flex-direction: column;
+	margin-left: 10px;
+	margin-right: 10px;
+}
+@media screen and (max-width: 959px) {
+			.base-info {
+				margin-left: 50px;
+				margin-right: 50px;
+			}
+	}
+
+ .base-info-content {
+	width: 200px;
+	height: 100px;
+		// margin-top: 30px;
+		// // margin-bottom: 30px;
+		// padding-top: 30px;
+
+	 svg {
+		position: absolute;
+		font-size: 4em;
+		fill: #fff;
+		left: 50%;
+		top: -20px;
+		padding: 20px 30px;
+		border-radius: 4px;
+		box-shadow: 0 4px 20px 0 rgba(0, 0, 0,.14);
+		transform: translateX(-50%);
+
+		
+		&.firm-info {
+			background: linear-gradient(60deg, #ffa726, #fb8c00);
+			box-shadow: 0 7px 10px -5px rgba(255, 152, 0,.4);
+		}
+
+		&.user-info {
+			background: linear-gradient(60deg, #66bb6a, #43a047);
+    	box-shadow: 0 7px 10px -5px rgba(76, 175, 80,.4);
+		}
+
+		&.devices-info {
+			background: linear-gradient(60deg, #ef5350, #e53935);
+			box-shadow: 0 7px 10px -5px rgba(244, 67, 54,.4);
+		}
+
+		&.docs-info {
+			background: linear-gradient(60deg, #26c6da, #00acc1);
+    	box-shadow: 0 7px 10px -5px rgba(0, 172, 193,.4);
+		}
+	}
+
+	.content-text {
+			position: absolute;
+			display: flex;
+			flex-direction: row;
+			font-size: 3.5vmin;
+			color: #3C4858;
+			font-weight: 300;
+			flex-wrap: wrap;
+			top: 50%;
+			left: 50%;
+			transform: translateX(-50%);
+
+			div {
+				padding-right: 10px;
+			}
+		}		
+}
+
+.chart-container {
+	position: relative;
+	padding-top: 20px;
+}
+
+.firms-title {
+	position: absolute;
+	font-size: 19px;
+	font-weight: 300;
+	top: 0;
+	left: 50%;
+	transform: translateX(-50%);
+}
+

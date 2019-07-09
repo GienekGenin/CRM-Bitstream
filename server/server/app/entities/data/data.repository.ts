@@ -261,4 +261,33 @@ export class DataRepository extends Repository {
             }
         ])
     }
+
+    countByDeviceIds(sids){
+        return this.model.aggregate([
+            {
+                $match: {
+                    device_id: {
+                        $in: sids
+                    }
+                }
+            },
+            {
+                $group: {
+                    _id: {
+                        sid: '$device_id'
+                    },
+                    count: {
+                        $sum: 1
+                    }
+                }
+            },
+            {
+                $project: {
+                    sid: '$_id.sid',
+                    count: 1,
+                    _id: 0
+                }
+            }
+        ])
+    }
 }

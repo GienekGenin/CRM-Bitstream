@@ -58,8 +58,6 @@ const mapDispatchToProps = (dispatch) => {
 
 class UserToolBar extends React.Component {
 
-    _isMounted = false;
-
     constructor(props) {
         super(props);
         this.state = {
@@ -85,7 +83,7 @@ class UserToolBar extends React.Component {
     }
 
     componentWillMount() {
-        const roles = JSON.parse(localStorage.getItem('roles'));
+        const roles = JSON.parse(localStorage.getItem('mainRoles'));
         this.setState({roles});
     }
 
@@ -209,14 +207,6 @@ class UserToolBar extends React.Component {
                 return 'Incorrect email'
             } else return '';
         }
-    }
-
-    componentDidMount() {
-        this._isMounted = true;
-    }
-
-    componentWillUnmount() {
-        this._isMounted = false;
     }
 
     handleRefresh() {

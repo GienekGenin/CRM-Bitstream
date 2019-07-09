@@ -89,6 +89,10 @@ class FirmService {
             })
         }))
     }
+
+    countAllFirms(){
+        return this.firmRepository.countAll();
+    }
 }
 
 export const firmService = new FirmService();

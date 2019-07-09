@@ -115,8 +115,8 @@ class TestToolBar extends React.Component {
 					break;
 				default:
 					break;
-			}
-			;
+			};
+			
 			this.setState({
 				nameValid: nameValid,
 				addressValid: addressValid,
@@ -125,6 +125,7 @@ class TestToolBar extends React.Component {
 				nipValid: nipValid
 			}, this.validateForm);
 		};
+		
 		validateForm = () => {
 			let { nameValid, addressValid, emailValid, telValid, nipValid } = this.state;
 			this.setState({

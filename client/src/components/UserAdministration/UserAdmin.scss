@@ -1,0 +1,18 @@
+
+#addAll {
+	background-color: transparent;
+	padding: 0;
+	margin: 5px;
+	box-sizing: border-box;
+	position: relative;
+	bottom: 0;
+	left: 0;
+
+	&:hover {
+		background-color: none;
+	}
+}
+
+#firm-info-chart{
+	width: 100%;
+}

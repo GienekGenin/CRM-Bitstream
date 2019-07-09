@@ -22,9 +22,15 @@ const updateFirm = (payload) => {
     return putRequest(url, payload);
 };
 
+const firmsInfo = () => {
+    const url = `${apiBase}users/info-firm`;
+    return getRequest(url);
+};
+
 export const firmService = {
     getAll,
     addFirm,
     deleteFirm,
-    updateFirm
+    updateFirm,
+    firmsInfo
 };

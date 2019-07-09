@@ -256,8 +256,73 @@ class UsersService {
                         devicesToUI = devicesToUI.concat(children);
                         return devicesToUI;
                     });
-
             })
+    }
+
+    countAllUsers() {
+        return this.usersRepository.countAll();
+    }
+
+    infoByFirm() {
+        return new Promise(((resolve, reject) => {
+            async.waterfall([
+                callback => {
+                    this.usersRepository.groupByFirm()
+                        .then(usersGroupedByFirm => {
+                            const payload = [];
+                            usersGroupedByFirm.forEach(firm => {
+                                payload.push({
+                                    coids: firm.coids.map(el => el.coid.toString()),
+                                    firm_id: firm.firm_id,
+                                    firm_name: firm.firm_name
+                                });
+                            });
+                            callback(null, payload)
+                        })
+                        .catch(e => callback(e));
+                },
+                (groupedUsers, callback) => {
+                    const payload = [];
+                    deviceService.groupByUsers()
+                        .then(groupedByUsers => {
+                            groupedByUsers.forEach(user => {
+                                payload.push({
+                                    devices: user.devices.map(device => device.sid),
+                                    coid: user.coid.toString()
+                                })
+                            });
+                            callback(null, groupedUsers, payload);
+                        })
+                        .catch(e => callback(e));
+                },
+                (groupedUsers, devicesByUsers, callback) => {
+                    let payload = [];
+                    groupedUsers.forEach((firm, i) => {
+                        let firmDevices = [];
+                        let tempPayload = null;
+                        devicesByUsers.forEach(user => {
+                            if (firm.coids.includes(user.coid)) {
+                                firmDevices = firmDevices.concat(user.devices);
+                                tempPayload = Object.assign({}, firm, {
+                                    firmDevices: Array.from(new Set(firmDevices)).length,
+                                    coids: firm.coids.length,
+                                })
+                            }
+                        });
+                        if (tempPayload) {
+                            payload.push(tempPayload)
+                        }
+                    });
+
+                    callback(null, payload)
+                }
+            ], (err, payload) => {
+                if (err) {
+                    reject(err);
+                }
+                resolve(payload);
+            })
+        }))
     }
 }
 

@@ -32,7 +32,7 @@ const mapDispatchToProps = (dispatch) => {
 
 
 class LoginPage extends React.Component {
-	
+
     constructor(props) {
         super(props);
 
@@ -44,10 +44,11 @@ class LoginPage extends React.Component {
 						emailValid: false,
 						passwordValid: false,
 						formValid: false,
+
         };
 
-				this.handleChange = this.handleChange.bind(this);
-				this.handleClickShowPassword = this.handleClickShowPassword.bind(this);
+        this.handleChange = this.handleChange.bind(this);
+        this.handleClickShowPassword = this.handleClickShowPassword.bind(this);
         this.handleLoginSubmit = this.handleLoginSubmit.bind(this);
         // this.handleChangePassSubmit = this.handleChangePassSubmit.bind(this);
 		}
@@ -131,6 +132,7 @@ class LoginPage extends React.Component {
 
     render() {
 				const {email, password, loading, showPassword, formValid, emailValid} = this.state;
+
         return (
             <div>
                 <div id='loginContainer'>
@@ -165,8 +167,8 @@ class LoginPage extends React.Component {
                                     <div className={'form-group' + (!password ? ' has-error' : '')}>
                                         <TextField
                                             required
-																						// id="outlined-password-input"
-																						id="adornment-password"
+                                            // id="outlined-password-input"
+                                            id="adornment-password"
                                             label="Password"
                                             value={password}
                                             name="password"
@@ -174,19 +176,19 @@ class LoginPage extends React.Component {
                                             onChange={this.handleChange}
                                             autoComplete="current-password"
                                             margin="normal"
-																						variant="outlined"
-																						type={showPassword ? 'text' : 'password'}
-																						
+                                            variant="outlined"
+                                            type={showPassword ? 'text' : 'password'}
+
                                         />
-																				<InputAdornment>
-																								<IconButton 
-																									aria-label="Toggle password visibility" 
-																									onClick={this.handleClickShowPassword}
-																									style={{position: "absolute", right: "5px", bottom: "12px"}}
-																									>
-																										{showPassword ? <Visibility /> : <VisibilityOff />}
-																								</IconButton>
-																							</InputAdornment>
+                                        <InputAdornment>
+                                            <IconButton
+                                                aria-label="Toggle password visibility"
+                                                onClick={this.handleClickShowPassword}
+                                                style={{position: "absolute", right: "5px", bottom: "12px"}}
+                                            >
+                                                {showPassword ? <Visibility/> : <VisibilityOff/>}
+                                            </IconButton>
+                                        </InputAdornment>
                                         {!password &&
                                         <div className="help-block">Password is required</div>
                                         }
@@ -202,7 +204,7 @@ class LoginPage extends React.Component {
                                         <Button variant="contained" type='submit' color='primary'
                                                 disabled={!formValid} size="large">Submit</Button>
                                         {loading && <div id='progressLogin'>
-                                            <CircularProgress size={30} style={{ marginTop: '15px' }}/>
+                                            <CircularProgress size={30} style={{marginTop: '15px'}}/>
                                         </div>}
                                     </div>
                                 </CardActions>

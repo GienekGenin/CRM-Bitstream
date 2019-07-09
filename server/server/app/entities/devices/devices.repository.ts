@@ -95,6 +95,93 @@ export class DeviceRepository extends Repository {
                 },
             }, {deleted: true});
     }
+
+    groupParents(){
+        return this.model.aggregate([
+            {
+                '$match': {
+                    'parent_id': '0'
+                }
+            }, {
+                '$group': {
+                    '_id': {
+                        'class': '$type'
+                    },
+                    count: {
+                        $sum: 1
+                    }
+                }
+            }
+        ])
+    }
+
+    // for all firms
+    groupByUsers(){
+        return this.model.aggregate([
+            {
+                '$match': {
+                    'deleted': false
+                }
+            },
+            {
+                '$unwind': {
+                    'path': '$coid'
+                }
+            }, {
+                '$group': {
+                    '_id': {
+                        'coid': '$coid'
+                    },
+                    'devices': {
+                        '$push': {
+                            'sid': '$sid'
+                        }
+                    }
+                }
+            }, {
+                '$project': {
+                    '_id': 0,
+                    'coid': '$_id.coid',
+                    'devices': 1
+                }
+            }
+        ]);
+    }
+
+    // for one firm
+    groupByCoid(coids){
+        return this.model.aggregate([
+            {
+                '$match': {
+                    'deleted': false,
+                    coid: {
+                        $in: coids
+                    }
+                }
+            },
+            {
+                '$unwind': {
+                    'path': '$coid'
+                }
+            }, {
+                '$group': {
+                    '_id': {
+                        'coid': '$coid'
+                    },
+                    'count': {
+                        '$sum': 1
+                    }
+                }
+            }, {
+                '$project': {
+                    '_id': 0,
+                    'coid': '$_id.coid',
+                    'devices': 1,
+                    count: 1
+                }
+            }
+        ]);
+    }
 }
 
 deviceModel.updateMany({deleted: true}, {deleted: false}).then(d => console.log(d)).catch(e => console.log(e));
