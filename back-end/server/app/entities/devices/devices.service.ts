@@ -15,6 +15,11 @@ class DeviceService {
         return this.deviceRepository.getAll();
     }
 
+    /**
+     * Groups devices pre user
+     * @param device: string[]
+     * @return Object[]
+     */
     save(device) {
         return new Promise((resolve, reject) => {
             async.waterfall(
@@ -64,6 +69,11 @@ class DeviceService {
         return this.deviceRepository.getDevicesByUsersArray(usersIds);
     }
 
+    /**
+     * Groups devices pre user
+     * @param sid: string
+     * @return Promise
+     */
     fakeDeleteStructure(sid) {
         return new Promise(((resolve, reject) => {
             this.deviceRepository.fakeDeleteStructure(sid)
@@ -77,6 +87,11 @@ class DeviceService {
         }))
     }
 
+    /**
+     * Returns all devices for selected userIds
+     * @param ids: string[]
+     * @return Object[]
+     */
     getDevicesByUserIds(ids) {
         return this.deviceRepository.getDevicesByUserIds(ids)
             .then(d=>{
@@ -85,6 +100,11 @@ class DeviceService {
             .catch(e=>e);
     }
 
+    /**
+     * Returns updated devices
+     * @param payload: Object
+     * @return Object[]
+     */
     updateDeviceUsers(payload) {
         return new Promise((resolve, reject) => {
             async.waterfall(
@@ -141,6 +161,11 @@ class DeviceService {
         })
     }
 
+    /**
+     * Updates given device
+     * @param device: Object
+     * @return Object
+     */
     updateDevice(device) {
         return new Promise(((resolve, reject) => {
             async.waterfall([

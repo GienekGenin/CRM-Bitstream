@@ -43,6 +43,12 @@ export class DeviceRepository extends Repository {
         })
     }
 
+    /**
+     * Removes users from devices
+     * @param sid: string
+     * @param coid: string
+     * @return Object[]
+     */
     updateRemoveDeviceUsers(sid, coid) {
         return this.model.updateMany(
             {
@@ -53,6 +59,12 @@ export class DeviceRepository extends Repository {
             }, {$pullAll: {coid}});
     }
 
+    /**
+     * Adds users to devices
+     * @param sid: string
+     * @param coid: string
+     * @return Object[]
+     */
     updateAddDeviceUsers(sid, coid) {
         return this.model.updateMany(
             {
@@ -80,6 +92,10 @@ export class DeviceRepository extends Repository {
             }, {deleted: true});
     }
 
+    /**
+     * Selects parents, groups and counts by type
+     * @return Object[]
+     */
     groupParents(){
         return this.model.aggregate([
             {
@@ -99,7 +115,10 @@ export class DeviceRepository extends Repository {
         ])
     }
 
-    // for all firms
+    /**
+     * Groups devices pre user
+     * @return Object[]
+     */
     groupByUsers(){
         return this.model.aggregate([
             {
@@ -132,7 +151,11 @@ export class DeviceRepository extends Repository {
         ]);
     }
 
-    // for one firm
+    /**
+     * Groups devices pre user
+     * @param coids: string[]
+     * @return Object[]
+     */
     groupByCoid(coids){
         return this.model.aggregate([
             {
