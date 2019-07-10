@@ -64,20 +64,32 @@ export class DeviceRegistryService {
         });
     }
 
+    /**
+     * Returns devices CS from IoT-Hub
+     * @param sid: string
+     * @return CS: string
+     */
     static getDeviceCSFromRegistry(sid) {
         const registry = Registry.fromConnectionString(DeviceRegistryService.connectionString);
         return new Promise((resolve, reject) => {
             registry.get(sid)
                 .then(payload => {
                     const device = payload.responseBody;
-                    const key = device.authentication ? device.authentication.symmetricKey.primaryKey : '<no primary key>';
-                    const CS = process.env.IOTHUB_HOST_NAME + `DeviceId=${sid};SharedAccessKey=${key}`;
+                    const key = device.authentication ?
+                        device.authentication.symmetricKey.primaryKey : '<no primary key>';
+                    const CS = `${process.env.IOTHUB_HOST_NAME}DeviceId=${sid};SharedAccessKey=${key}`;
                     resolve(CS);
                 })
                 .catch(e => reject(e));
         })
     }
 
+    /**
+     * Enables or disables devices on Azure
+     * @param sids: string[]
+     * @param status: string
+     * @return azure success payload
+     */
     static changeActivity(sids, status) {
         const registry = Registry.fromConnectionString(DeviceRegistryService.connectionString);
         return new Promise(((resolve, reject) => {
@@ -114,6 +126,11 @@ export class DeviceRegistryService {
         }))
     }
 
+    /**
+     * Enables or disables devices on Azure
+     * @param sids: string[]
+     * @return returns devices with activity
+     */
     static getActivity(sids) {
         const registry = Registry.fromConnectionString(DeviceRegistryService.connectionString);
         return new Promise(((resolve, reject) => {

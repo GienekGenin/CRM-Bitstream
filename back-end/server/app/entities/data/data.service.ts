@@ -9,6 +9,12 @@ class DeviceTypesService {
         this.dataRepository = new DataRepository();
     }
 
+    /** diff between two dates in hours
+     * Create device in IoTHub and insert it into the db
+     * @param minSelectedDate: date string
+     * @param maxSelectedDate: date string
+     * @return number
+     */
     diffInHours(minSelectedDate, maxSelectedDate) {
         const minDate = moment(new Date(minSelectedDate), 'DD/MM/YYYY HH:mm:ss:Z');
         const maxDate = moment(new Date(maxSelectedDate), 'DD/MM/YYYY HH:mm:ss:Z');
@@ -16,6 +22,11 @@ class DeviceTypesService {
         return Math.abs(hours);
     }
 
+    /** Time for earliest and latest data records
+     * Create device in IoTHub and insert it into the db
+     * @param deviceIds: string[]
+     * @return {minTime: string, maxTime: string}
+     */
     getMinMaxTime(deviceIds) {
         return new Promise(((resolve, reject) => {
             async.waterfall([
@@ -51,16 +62,21 @@ class DeviceTypesService {
         }))
     }
 
+    /**
+     * Returns docs for selected sids and time
+     * @param body: Object
+     * @return Object[]
+     */
     getData(body) {
-        let diff = this.diffInHours(body.minSelectedDate, body.maxSelectedDate);
+        const diff = this.diffInHours(body.minSelectedDate, body.maxSelectedDate);
         return new Promise(((resolve, reject) => {
             if (diff > 48) {
                 async.waterfall([
                     callback => {
                         this.dataRepository.countDataByDevice(body)
                             .then(counter => {
-                                let zoomedIndexes = [];
-                                let allIndexes = [];
+                                const zoomedIndexes = [];
+                                const allIndexes = [];
                                 counter.forEach(el => {
                                     if (el.count > 5000) {
                                         zoomedIndexes.push(el.sid);
@@ -105,8 +121,8 @@ class DeviceTypesService {
                         callback => {
                             this.dataRepository.countDataByDevice(body)
                                 .then(counter => {
-                                    let zoomedIndexes = [];
-                                    let allIndexes = [];
+                                    const zoomedIndexes = [];
+                                    const allIndexes = [];
                                     counter.forEach(el => {
                                         if (el.count > 5000) {
                                             zoomedIndexes.push(el.sid);
@@ -154,14 +170,28 @@ class DeviceTypesService {
         }))
     }
 
+    /**
+     * Returns docs for selected sids and time
+     * @param body: Object
+     * @return Object[]
+     */
     getDevicesWithData(body) {
         return this.dataRepository.getDevicesWithData(body);
     }
 
+    /**
+     * Returns number of docs in collection
+     * @return number
+     */
     countAllData(){
         return this.dataRepository.countAll();
     }
 
+    /**
+     * Counts data docs by each device
+     * @param sids: stings[]
+     * @return Object[]
+     */
     countByDeviceIds(sids){
         return this.dataRepository.countByDeviceIds(sids);
     }
