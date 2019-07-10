@@ -3,22 +3,8 @@ import {deviceService} from './devices.service';
 import {PayloadGeneratorService} from '../../common/services/request-services/payload-generator.service';
 import {TokenValidator} from '../../common/middleware/request-validation/token.validator';
 
-// todo: possibly not used
-devices.get('/', TokenValidator.validateToken, (req, res, next) => {
-    deviceService.getAll()
-        .then(PayloadGeneratorService.nextWithData(next, res))
-        .catch(next);
-});
-
 devices.get('/group-all', TokenValidator.validateToken, (req, res, next) => {
     deviceService.groupParents()
-        .then(PayloadGeneratorService.nextWithData(next, res))
-        .catch(next);
-});
-
-// todo: possibly not used
-devices.get('/id/:id', TokenValidator.validateToken, (req, res, next) => {
-    deviceService.findById(req.params.id)
         .then(PayloadGeneratorService.nextWithData(next, res))
         .catch(next);
 });
@@ -31,20 +17,6 @@ devices.post('/', TokenValidator.validateToken, (req, res, next) => {
 
 devices.post('/key', TokenValidator.validateToken, (req, res, next) => {
     deviceService.getDeviceCS(req.body)
-        .then(PayloadGeneratorService.nextWithData(next, res))
-        .catch(next);
-});
-
-// todo: test api for creating data sources
-devices.post('/source', TokenValidator.validateToken, (req, res, next) => {
-    deviceService.createDataSource(req.body)
-        .then(PayloadGeneratorService.nextWithData(next, res))
-        .catch(next);
-});
-
-// todo: for tests
-devices.post('/structure', TokenValidator.validateToken, (req, res, next) => {
-    deviceService.createStructure(req.body)
         .then(PayloadGeneratorService.nextWithData(next, res))
         .catch(next);
 });
@@ -69,12 +41,6 @@ devices.put('/users', TokenValidator.validateToken, (req, res, next) => {
 
 devices.delete('/', TokenValidator.validateToken, (req, res, next) => {
     deviceService.fakeDeleteStructure(req.body.sid)
-        .then(PayloadGeneratorService.nextWithData(next, res))
-        .catch(next);
-});
-
-devices.delete('/structure', TokenValidator.validateToken, (req, res, next) => {
-    deviceService.deleteStructure(req.body.base)
         .then(PayloadGeneratorService.nextWithData(next, res))
         .catch(next);
 });

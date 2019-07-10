@@ -15,21 +15,6 @@ class DeviceService {
         return this.deviceRepository.getAll();
     }
 
-    findById(id) {
-        return this.deviceRepository.findById(id);
-    }
-
-    findBySid(sid) {
-        return this.deviceRepository.findBySid(sid);
-    }
-
-    validateBySid(sid) {
-        if (sid === '0') {
-            return Promise.resolve(true);
-        }
-        return deviceService.findBySid(sid);
-    }
-
     save(device) {
         return new Promise((resolve, reject) => {
             async.waterfall(
@@ -75,71 +60,8 @@ class DeviceService {
         })
     }
 
-    // todo: for tests
-    createDataSource(device) {
-        return new Promise((resolve, reject) => {
-            async.waterfall(
-                [
-                    callback => {
-                        this.findBySid(device.parent_id)
-                            .then(d => {
-                                if (d) {
-                                    return callback(null, d.lvl);
-                                }
-                                callback(new Error('Parent device not found'));
-                            })
-                            .catch(e => {
-                                callback(e);
-                            });
-                    },
-                    (parentLvl, callback) => {
-                        const source = Object.assign({}, device, {lvl: parentLvl + 1});
-                        this.deviceRepository.save(source)
-                            .then(d => callback(null, d))
-                            .catch(e => callback(e));
-                    }
-                ],
-                (err, payload) => {
-                    if (err) {
-                        reject(err);
-                    }
-                    resolve(payload);
-                })
-        })
-    }
-
     getDevicesByUsersArray(usersIds) {
         return this.deviceRepository.getDevicesByUsersArray(usersIds);
-    }
-
-    // todo: true delete from db and azure
-    deleteParent(sid) {
-        return new Promise((resolve, reject) => {
-            async.waterfall(
-                [
-                    callback => {
-                        DeviceRegistryService.deleteDevice(sid)
-                            .then(() => callback(null))
-                            .catch(e => callback(e));
-                    },
-                    callback => {
-                        this.deviceRepository.deleteParent(sid)
-                            .then(d => {
-                                if (d['deletedCount'] === 0) {
-                                    callback(new Error(`CosmosDB error: Unable to delete ${sid}`));
-                                }
-                                callback(null, `${sid} was deleted`);
-                            })
-                            .catch(e => callback(e));
-                    }
-                ],
-                (err, payload) => {
-                    if (err) {
-                        reject(err);
-                    }
-                    resolve(payload);
-                })
-        })
     }
 
     fakeDeleteStructure(sid) {
@@ -163,14 +85,6 @@ class DeviceService {
             .catch(e=>e);
     }
 
-    createStructure(structure) {
-        return this.deviceRepository.createStructure(structure);
-    }
-
-    deleteStructure(base) {
-        return this.deviceRepository.deleteStructure(base);
-    }
-
     updateDeviceUsers(payload) {
         return new Promise((resolve, reject) => {
             async.waterfall(
@@ -182,14 +96,14 @@ class DeviceService {
                     },
                     (device, callback) => {
                         const diff = (A, B) => {
-                            return A.filter(function (a) {
-                                return B.indexOf(a) == -1;
+                            return A.filter( (a) => {
+                                return B.indexOf(a) === -1;
                             });
                         };
                         let diffIds = [];
-                        let currentCoid = device.coid.map(id => id.toString());
+                        const currentCoid = device.coid.map(id => id.toString());
                         if (currentCoid.length === payload.coid.length) {
-                            let diffToAdd, diffToRemove;
+                            let diffToAdd; let diffToRemove;
                             diffToAdd = diff(payload.coid, currentCoid);
                             diffToRemove = diff(currentCoid, payload.coid);
                             diffToAdd.forEach((el, i, arr) => arr[i] = Types.ObjectId(el));

@@ -11,15 +11,11 @@ export class DeviceRepository extends Repository {
         return this.model.findOne({sid})
     }
 
-    findAllBySid(sid){
-        return this.model.find({
-            sid: {
-                '$regex': sid,
-            },
-
-        })
-    }
-
+    /**
+     * Returns all devices for selected userIds
+     * @param usersIds: string[]
+     * @return Object[]
+     */
     getDevicesByUsersArray(usersIds) {
         return this.model.aggregate([
             {
@@ -33,29 +29,17 @@ export class DeviceRepository extends Repository {
         ])
     }
 
-    deleteParent(sid) {
-        return this.model.deleteOne({sid});
-    }
-
+    /**
+     * Returns all devices for selected userIds
+     * @param ids: string[]
+     * @return Object[]
+     */
     getDevicesByUserIds(ids) {
         return this.model.find({
             'coid': {
                 '$in': ids
             },
             deleted: {$ne: true}
-        })
-    }
-
-    createStructure(structure) {
-        return this.model.insertMany(structure);
-    }
-
-    deleteStructure(base) {
-        return this.model.deleteMany({
-            sid: {
-                '$regex': base
-            }
-
         })
     }
 
@@ -183,7 +167,4 @@ export class DeviceRepository extends Repository {
         ]);
     }
 }
-
-deviceModel.updateMany({deleted: true}, {deleted: false}).then(d => console.log(d)).catch(e => console.log(e));
-
 
