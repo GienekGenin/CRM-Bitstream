@@ -146,6 +146,8 @@ class AppComponent extends Component {
         if (tokenService.verifyToken()) {
             const {user, firm} = tokenService.verifyToken();
             this.props.setUser({user, firm});
+        } else {
+            localStorage.clear();
         }
     };
 
