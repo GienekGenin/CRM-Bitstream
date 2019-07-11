@@ -13,6 +13,7 @@ import CheckBoxIcon from '@material-ui/icons/CheckBox';
 import IconButton from "@material-ui/core/IconButton";
 import Checkbox from "@material-ui/core/Checkbox";
 import Paper from "@material-ui/core/Paper";
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 // Redux
 import store from "../../redux/store";
@@ -72,7 +73,7 @@ class UserAdminComponent extends React.Component {
             users: [],
             selectedUsers: [],
             selectedUserIds: [],
-            loading: false,
+						loading: false,
             selectedFirm: null,
             columns: [
                 {
@@ -208,7 +209,7 @@ class UserAdminComponent extends React.Component {
         if (container)
             ReactDOM.render(element, container)
     }
-
+		
     render() {
         const {rowsPerPage, page, selectedUsers, selectedUserIds, loading, selectedFirm, users, columns} = this.state;
         users && users.map((el, i, arr) => arr[i] = Object.assign(el, {
@@ -217,7 +218,7 @@ class UserAdminComponent extends React.Component {
                     <Checkbox value={el._id} checked={selectedUserIds.includes(el._id)}/>
                 </div>
             )
-        }));
+				}));
         return (
             <MuiThemeProvider theme={theme}>
                 <div style={{maxWidth: '100%'}}>
@@ -256,8 +257,21 @@ class UserAdminComponent extends React.Component {
                                 onRowClick={this.onRowClick}
                             />
                         </Grid>
-                        <Grid item xs={12} className={'chart-container'} >
-                            <Paper id={'firm-info-chart'} style={{marginTop: '40px'}}>
+                        <Grid item xs={12} className={'user-container'}>
+												<div className={'user-title'}>User devices</div>
+												{loading && <CircularProgress
+																style={{
+																		width: '250px',
+																		height: '250px',
+																		color: '#2196f3',
+																		position: "absolute",
+																		top: '35%',
+																		left: "43%",
+																		zIndex: 9999
+																}}
+															/>}
+                            <Paper className={'chart-container'}>
+															<div id={'firm-info-chart'}></div>
                             </Paper>
                         </Grid>
                     </Grid>

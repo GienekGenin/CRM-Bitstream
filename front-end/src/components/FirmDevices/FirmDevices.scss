@@ -79,9 +79,16 @@ circle {
 .chart-toolbar {
   display: flex;
   padding-top: 10px;
-  height: 53px;
+  //  height: 55px;
   justify-content: center;
   width: 100%;
+}
+
+.chart-toolbar h3 {
+	text-transform: uppercase;
+	background: linear-gradient(45deg, #0B2349 33%, #0D61BC 66%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 #tree > svg {
@@ -105,4 +112,11 @@ circle {
 	height:  250px;
 	color: #2196f3; 
 	position: absolute, 
+}
+
+.device-toolbar {
+	text-transform: uppercase;
+	background: linear-gradient(45deg, #0B2349 33%, #0D61BC 66%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }

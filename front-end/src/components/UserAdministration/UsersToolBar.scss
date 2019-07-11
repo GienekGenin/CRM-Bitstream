@@ -1,7 +1,11 @@
 .users-toolbar {
   display: flex;
   width: 100%;
-  justify-content: space-between;
+	justify-content: space-between;
+	text-transform: uppercase;
+	background: linear-gradient(45deg, #0B2349 33%, #0D61BC 66%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 
   & .title {
     padding-left: 20px;
