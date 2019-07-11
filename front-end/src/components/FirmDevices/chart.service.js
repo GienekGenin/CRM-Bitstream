@@ -30,9 +30,6 @@ export const forcedTree = (parent, stateDevices) => {
         return tree;
     };
 
-    d3.select('#forcedTree').remove();
-    d3.select('#parent').append('div').attr("id", 'forcedTree');
-
     let Parent = Object.assign({}, parent);
     let devices = [...stateDevices];
     let arr = [];
@@ -77,6 +74,8 @@ export const forcedTree = (parent, stateDevices) => {
     if (arr.length === 0 || arr.length === 1) {
         return false
     }
+    d3.select('#forcedTree').remove();
+    d3.select('#parent').append('div').attr("id", 'forcedTree');
     let treeData = [unflatten(arr)[0]];
     // Themes begin
     am4core.useTheme(am4themes_animated);
@@ -133,7 +132,7 @@ export const createPie = (data, _this) => {
         if (objToChart.count > 0)
             chartdata.push(objToChart);
     }
-    if(chartdata.length){
+    if (chartdata.length) {
         am4core.useTheme(am4themes_animated);
         const chart = am4core.create("device-types-chart", am4charts.PieChart);
         const pieSeries = chart.series.push(new am4charts.PieSeries());
@@ -192,7 +191,7 @@ export const createPie = (data, _this) => {
         piePlaceHolder('device-types-chart', 'No devices available');
         createPieGroup(data, _this);
     }
-    if(!data.length){
+    if (!data.length) {
         piePlaceHolder("pie-group", "No groups available");
     }
     piePlaceHolder("pie-phyid", "No types available");
@@ -223,7 +222,7 @@ export const createPiePhyid = (data, _this) => {
     }
     am4core.useTheme(am4themes_animated);
 
-    // cointainer to hold both charts
+    // container to hold both charts
     const container = am4core.create("pie-phyid", am4core.Container);
     container.width = am4core.percent(100);
     container.height = am4core.percent(100);
@@ -426,7 +425,7 @@ const chartSelectGroup = (_this) => {
     } else {
         let renderedByType = sortByType(reduxDevices, selectedTypes);
         let renderedByGroup = sortByGroup(renderedByType, selectedGroups);
-        if(!renderedByType.length){
+        if (!renderedByType.length) {
             renderedByGroup = sortByGroup(reduxDevices, selectedGroups);
         }
         _this.setState({devices: renderedByGroup, selectedPhyids: new Set()});
@@ -452,7 +451,7 @@ const chartSelectPhyid = (_this) => {
     } else {
         let renderedByType = sortByType(reduxDevices, selectedTypes);
         let renderedByGroup = sortByGroup(renderedByType, selectedGroups);
-        if(!renderedByType.length){
+        if (!renderedByType.length) {
             renderedByGroup = sortByGroup(reduxDevices, selectedGroups);
         }
         let renderedByPhyid = sortByPhyid(renderedByGroup, selectedPhyids);
@@ -508,4 +507,131 @@ export const piePlaceHolder = (divId, label) => {
     var slice = pieSeries.slices.template;
     slice.states.getKey("hover").properties.scale = 1;
     slice.states.getKey("active").properties.shiftRadius = 0;
+};
+
+export const treePlaceHolder = () => {
+    d3.select('#forcedTree').remove();
+    d3.select('#parent').append('div').attr("id", 'forcedTree');
+
+    const chart = am4core.create("forcedTree", am4plugins_forceDirected.ForceDirectedTree);
+    chart.legend = new am4charts.Legend();
+
+    const networkSeries = chart.series.push(new am4plugins_forceDirected.ForceDirectedSeries());
+
+    networkSeries.data = [{
+        name: 'Stratus',
+        children: [
+            {
+                name: 'child', value: 1
+            }, {
+                name: 'child',
+                children: [{
+                    name: 'child', value: 1
+                }, {
+                    name: 'child', value: 1
+                }, {
+                    name: 'child', value: 1
+                }]
+            }]
+    }, {
+        name: 'Hyperyon',
+        children: [
+            {
+                name: 'child',
+                children: [{
+                    name: 'child', value: 1
+                }, {
+                    name: 'child', value: 1
+                }, {
+                    name: 'child', value: 1
+                }, {
+                    name: 'child', value: 1
+                }]
+            }, {
+                name: 'child',
+                children: [{
+                    name: 'child', value: 1
+                }, {
+                    name: 'child', value: 1
+                }]
+            }, {
+                name: 'child',
+                children: [
+                    {
+                        name: 'child', value: 1
+                    }, {
+                        name: 'child', value: 1
+                    }, {
+                        name: 'child', value: 1
+                    }, {
+                        name: 'child', value: 1
+                    }, {
+                        name: 'child', value: 1
+                    }, {
+                        name: 'child', value: 1
+                    }, {
+                        name: 'child', value: 1
+                    }, {
+                        name: 'child', value: 1
+                    }]
+            }, {
+                name: 'child',
+                children: [{
+                    name: 'child', value: 1
+                }, {
+                    name: 'child', value: 1
+                }, {
+                    name: 'child', value: 1
+                }, {
+                    name: 'child', value: 1
+                }]
+            }]
+    }, {
+        name: 'Setebos',
+        children: [
+            {
+                name: 'child',
+                children: [{
+                    name: 'child', value: 1
+                }, {
+                    name: 'child', value: 1
+                }, {
+                    name: 'child', value: 1
+                }, {
+                    name: 'child', value: 1
+                }, {
+                    name: 'child', value: 1
+                }, {
+                    name: 'child', value: 1
+                }]
+            }, {
+                name: 'child',
+                children: [{
+                    name: 'child', value: 1
+                }, {
+                    name: 'child', value: 1
+                }, {
+                    name: 'child', value: 1
+                }, {
+                    name: 'child', value: 1
+                }]
+            }]
+    }];
+
+    networkSeries.dataFields.linkWith = "linkWith";
+    networkSeries.dataFields.name = "name";
+    networkSeries.dataFields.id = "name";
+    networkSeries.dataFields.value = "value";
+    networkSeries.dataFields.children = "children";
+
+    networkSeries.nodes.template.tooltipText = "{name}";
+    networkSeries.nodes.template.fillOpacity = 1;
+
+    networkSeries.nodes.template.label.text = "{name}";
+    networkSeries.fontSize = 8;
+    networkSeries.maxLevels = 2;
+    networkSeries.maxRadius = am4core.percent(6);
+    networkSeries.manyBodyStrength = -16;
+    networkSeries.nodes.template.label.hideOversized = true;
+    networkSeries.nodes.template.label.truncate = true;
 };

@@ -12,6 +12,11 @@ class RolesService {
         return this.rolesRepository.getAll();
     }
 
+    /**
+     * Returns role
+     * @param id: ObjectId
+     * @return Object
+     */
     findById(id: Types.ObjectId) {
         return this.rolesRepository.findById(id);
     }

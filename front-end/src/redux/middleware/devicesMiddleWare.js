@@ -30,8 +30,8 @@ export const devicesMiddleWare = ({dispatch}) => {
             }
             if (action.type === devicesConstants.DELETE_FIRM_DEVICE_REQUEST) {
                 devicesService.deleteDevice(action.payload)
-                    .then(deviceId => {
-                        return dispatch({type: devicesConstants.DELETE_FIRM_DEVICE_SUCCESS, payload: deviceId})
+                    .then(() => {
+                        return dispatch({type: devicesConstants.DELETE_FIRM_DEVICE_SUCCESS, payload: action.payload})
                     })
                     .catch(err => {
                         dispatch({type: devicesConstants.DELETE_DEVICE_FAILURE, payload: errorParser(err)})

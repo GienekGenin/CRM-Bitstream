@@ -6,8 +6,8 @@ import * as Ajv from 'ajv';
  * @return Array: errors || null
  */
 export const validate = (obj, schema) => {
-	const ajv = new Ajv({ allErrors: true });
-	const testObj = ajv.compile(schema);
-	testObj(obj);
-	return testObj.errors;
+    const ajv = new Ajv({allErrors: true});
+    const testObj = ajv.compile(schema);
+    testObj(obj);
+    return testObj.errors;
 };

@@ -1,8 +1,8 @@
 import * as async from 'async';
-import {firmService} from "../firm/firm.service";
-import {usersService} from "../user/user.service";
-import {deviceService} from "../devices/devices.service";
-import {dataService} from "../data/data.service";
+import {firmService} from '../firm/firm.service';
+import {usersService} from '../user/user.service';
+import {deviceService} from '../devices/devices.service';
+import {dataService} from '../data/data.service';
 import * as _ from 'lodash';
 
 class MixedService {
@@ -39,22 +39,22 @@ class MixedService {
         }))
     }
 
-    getBasicFirmInfo(firm_id) {
+    getBasicFirmInfo(firmId) {
         return new Promise(((resolve, reject) => {
             async.waterfall([
                 callback => {
-                    usersService.findByFirmId(firm_id)
+                    usersService.findByFirmId(firmId)
                         .then(users => callback(null, users.map(user => ({_id: user._id, email: user.email}))))
                         .catch(e => callback(e));
                 },
                 (usersPayload, callback) => {
-                const coids = usersPayload.map(el=>el._id);
+                    const coids = usersPayload.map(el => el._id);
                     deviceService.groupByCoid(coids)
                         .then(devicesPayload => {
                             const payload = [];
-                            usersPayload.forEach(user=>{
-                                devicesPayload.forEach(device=>{
-                                    if(user._id.toString() === device.coid.toString()){
+                            usersPayload.forEach(user => {
+                                devicesPayload.forEach(device => {
+                                    if (user._id.toString() === device.coid.toString()) {
                                         const devicePayload = _.omit(device, ['coid']);
                                         const userPayload = _.omit(user, ['_id']);
                                         payload.push(Object.assign(userPayload, devicePayload));
@@ -66,8 +66,9 @@ class MixedService {
                         .catch(e => callback(e));
                 }
             ], (err, payload) => {
-                if (err)
+                if (err) {
                     reject(err);
+                }
                 resolve(payload);
             })
         }))

@@ -170,7 +170,8 @@ class Visualisation extends React.Component {
             const devicesWithData = selectedDevices.filter(el => sids.includes(el.sid));
             this.createDragPhyidPie(devicesWithData, this);
         }).catch(e => {
-            console.log(e)
+            this.setState({loadingDevices: true});
+            console.log(e);
         });
 
         this.unsubscribe = store.subscribe(() => {

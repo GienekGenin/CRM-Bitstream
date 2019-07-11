@@ -11,15 +11,11 @@ export class DeviceRepository extends Repository {
         return this.model.findOne({sid})
     }
 
-    findAllBySid(sid){
-        return this.model.find({
-            sid: {
-                '$regex': sid,
-            },
-
-        })
-    }
-
+    /**
+     * Returns all devices for selected userIds
+     * @param usersIds: string[]
+     * @return Object[]
+     */
     getDevicesByUsersArray(usersIds) {
         return this.model.aggregate([
             {
@@ -33,10 +29,11 @@ export class DeviceRepository extends Repository {
         ])
     }
 
-    deleteParent(sid) {
-        return this.model.deleteOne({sid});
-    }
-
+    /**
+     * Returns all devices for selected userIds
+     * @param ids: string[]
+     * @return Object[]
+     */
     getDevicesByUserIds(ids) {
         return this.model.find({
             'coid': {
@@ -46,19 +43,12 @@ export class DeviceRepository extends Repository {
         })
     }
 
-    createStructure(structure) {
-        return this.model.insertMany(structure);
-    }
-
-    deleteStructure(base) {
-        return this.model.deleteMany({
-            sid: {
-                '$regex': base
-            }
-
-        })
-    }
-
+    /**
+     * Removes users from devices
+     * @param sid: string
+     * @param coid: string
+     * @return Object[]
+     */
     updateRemoveDeviceUsers(sid, coid) {
         return this.model.updateMany(
             {
@@ -69,6 +59,12 @@ export class DeviceRepository extends Repository {
             }, {$pullAll: {coid}});
     }
 
+    /**
+     * Adds users to devices
+     * @param sid: string
+     * @param coid: string
+     * @return Object[]
+     */
     updateAddDeviceUsers(sid, coid) {
         return this.model.updateMany(
             {
@@ -96,7 +92,11 @@ export class DeviceRepository extends Repository {
             }, {deleted: true});
     }
 
-    groupParents(){
+    /**
+     * Selects parents, groups and counts by type
+     * @return Object[]
+     */
+    groupParents() {
         return this.model.aggregate([
             {
                 '$match': {
@@ -115,8 +115,11 @@ export class DeviceRepository extends Repository {
         ])
     }
 
-    // for all firms
-    groupByUsers(){
+    /**
+     * Groups devices pre user
+     * @return Object[]
+     */
+    groupByUsers() {
         return this.model.aggregate([
             {
                 '$match': {
@@ -148,8 +151,12 @@ export class DeviceRepository extends Repository {
         ]);
     }
 
-    // for one firm
-    groupByCoid(coids){
+    /**
+     * Groups devices pre user
+     * @param coids: string[]
+     * @return Object[]
+     */
+    groupByCoid(coids) {
         return this.model.aggregate([
             {
                 '$match': {
@@ -183,7 +190,4 @@ export class DeviceRepository extends Repository {
         ]);
     }
 }
-
-deviceModel.updateMany({deleted: true}, {deleted: false}).then(d => console.log(d)).catch(e => console.log(e));
-
 

@@ -43,7 +43,7 @@ const theme = createMuiTheme({
     },
     typography: {
         useNextVariants: true,
-		},
+    },
 });
 
 class FirmAdministrationComponent extends Component {
@@ -56,8 +56,9 @@ class FirmAdministrationComponent extends Component {
             selectedFirmId: '',
             page: 0,
             rowsPerPage: 5,
-						loading: false,
-						infoLoading: false,
+            loading: false,
+            infoLoading: false,
+            basicLoading: false,
             columns: [
                 {
                     title: 'Select',
@@ -76,8 +77,8 @@ class FirmAdministrationComponent extends Component {
                 {title: 'tel', field: 'tel', hidden: false,},
                 {title: 'nip', field: 'nip', hidden: false,},
             ],
-						basicInfo: null,								
-				};
+            basicInfo: null,
+        };
 
         this.resetSelected = this.resetSelected.bind(this);
 
@@ -93,21 +94,38 @@ class FirmAdministrationComponent extends Component {
     };
 
     componentDidMount() {
-			this.setState({infoLoading: true});
-        firmService.firmsInfo().then(firmsInfo => {
-						buildFirmsInfo(firmsInfo);
-						this.setState({infoLoading: false});
-        }).catch(e => {
-					this.setState({infoLoading: false});
-				});
-        mixedService.getBasicInfo().then(basicInfo => {
-            this.setState({basicInfo});
-        }).catch(e => e);
+        const storageFirmInfo = JSON.parse(localStorage.getItem('firmsInfo'));
+        if(!storageFirmInfo){
+            this.setState({infoLoading: true});
+            firmService.firmsInfo().then(firmsInfo => {
+                localStorage.setItem('firmsInfo', JSON.stringify(firmsInfo));
+                buildFirmsInfo(firmsInfo);
+                this.setState({infoLoading: false});
+            }).catch(e => {
+                this.setState({infoLoading: false});
+            });
+        } else {
+            buildFirmsInfo(storageFirmInfo);
+        }
+
+        const storageBasicInfo = JSON.parse(localStorage.getItem('basicInfo'));
+        if(!storageBasicInfo){
+            this.setState({basicLoading: true});
+            mixedService.getBasicInfo().then(basicInfo => {
+                localStorage.setItem('basicInfo', JSON.stringify(basicInfo));
+                this.setState({basicInfo, basicLoading: false});
+            }).catch(e => {
+                this.setState({basicLoading: false});
+            });
+        } else {
+            this.setState({basicInfo: storageBasicInfo});
+        }
+
         this.unsubscribe = store.subscribe(() => {
-            this.setState({loading: store.getState().firmReducer.loading });
+            this.setState({loading: store.getState().firmReducer.loading});
             if (store.getState().firmReducer.firms) {
-								const firms = store.getState().firmReducer.firms;
-								this.setState({firms});
+                const firms = store.getState().firmReducer.firms;
+                this.setState({firms});
             }
         });
 
@@ -141,37 +159,39 @@ class FirmAdministrationComponent extends Component {
             this.props.onFirmSelect(selectedFirm);
         }
     };
+
     render() {
-        let {page, firms, rowsPerPage, loading, selectedFirm, selectedFirmId, columns,
-				basicInfo, infoLoading} = this.state;
+        let {
+            page, firms, rowsPerPage, loading, selectedFirm, selectedFirmId, columns,
+            basicInfo, infoLoading, basicLoading
+        } = this.state;
         firms && firms.map((el, i, arr) => arr[i] = Object.assign(el, {
             action: (
                 <div>
                     <Checkbox value={el._id} checked={selectedFirmId === el._id}/>
                 </div>
             )
-				}));
+        }));
 
-				let icons = {
-					"numOfFirms": {
-						icon: (<Alarm className={'firm-info'} />),
-						text: (<div>Firms: </div>)
-					},
-					"numOfUsers": {
-						icon: (<Room className={'user-info'} /> ),
-						text: (<div>Users: </div>) 
-					},
-					"numOfDevices": {
-						icon: (<Toll className={'devices-info'} />),
-						text: (<div>Devices: </div>)
-					},
-					"numOfDocs": {
-						icon: (<Timeline className={'docs-info'} />),
-						text: (<div>Docs: </div>)
-					}
-				}
-
-				basicInfo && Object.getOwnPropertyNames(basicInfo).forEach( props => icons[props].icon )
+        const icons = {
+            "numOfFirms": {
+                icon: (<Alarm className={'firm-info'}/>),
+                text: (<div>Firms: </div>)
+            },
+            "numOfUsers": {
+                icon: (<Room className={'user-info'}/>),
+                text: (<div>Users: </div>)
+            },
+            "numOfDevices": {
+                icon: (<Toll className={'devices-info'}/>),
+                text: (<div>Devices: </div>)
+            },
+            "numOfDocs": {
+                icon: (<Timeline className={'docs-info'}/>),
+                text: (<div>Docs: </div>)
+            }
+        };
+        basicInfo && Object.getOwnPropertyNames(basicInfo).forEach(props => icons[props].icon);
         return (
             <MuiThemeProvider theme={theme}>
                 <div style={{maxWidth: '100%'}}>
@@ -211,10 +231,9 @@ class FirmAdministrationComponent extends Component {
                             />
                         </Grid>
 													<Grid item sm={12} md={5}>
-																										
 															<Paper className={'firm-container'}>
 															<div className={'firms-title'}>Application state</div>
-															{infoLoading && <CircularProgress
+															{basicLoading && <CircularProgress
 																			style={{
 																					width: '200px',
 																					height: '200px',
@@ -252,13 +271,12 @@ class FirmAdministrationComponent extends Component {
 																					left: "34%",
 																					zIndex: 9999
 																			}}
-
-																		/>}
-																<div className={'firms-title'}>Info about firms</div>
-																 <div id={'firms-info'} style={{position: 'relative'}}>
-																	</div>					
-															</Paper>
-													</Grid>											
+                                />}
+                                <div className={'firms-title'}>Info about firms</div>
+                                <div id={'firms-info'} style={{position: 'relative'}}>
+                                </div>
+                            </Paper>
+                        </Grid>
                     </Grid>
                 </div>
             </MuiThemeProvider>

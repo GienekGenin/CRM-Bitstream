@@ -7,18 +7,33 @@ export class DataRepository extends Repository {
         this.model = dataModel;
     }
 
+    /**
+     * Returns latest data record
+     * @param deviceIds: string[]
+     * @return Object
+     */
     getMaxTime(deviceIds) {
         return this.model.findOne({
             device_id: {$in: deviceIds}
         }).sort({ts: -1}).select({ts: 1, _id: 0});
     }
 
+    /**
+     * Returns the earliest data record
+     * @param deviceIds: string[]
+     * @return Object
+     */
     getMinTime(deviceIds) {
         return this.model.findOne({
             device_id: {$in: deviceIds}
         }).sort({ts: 1}).select({ts: 1, _id: 0});
     }
 
+    /**
+     * Returns grouped data by deviceId
+     * @param body: Object
+     * @return Object[]
+     */
     getAllData(body) {
         return this.model.aggregate([
             {
@@ -67,6 +82,12 @@ export class DataRepository extends Repository {
         ])
     }
 
+    /**
+     * Returns reduced and grouped data by deviceIds
+     * @param body: Object
+     * @param zoom: number
+     * @return Object[]
+     */
     getDataWithZoom(body, zoom) {
         return this.model.aggregate([
             {
@@ -182,6 +203,11 @@ export class DataRepository extends Repository {
         ])
     }
 
+    /**
+     * Returns number of docs by each device
+     * @param body: Object
+     * @return Object[]
+     */
     countDataByDevice(body) {
         return this.model.aggregate([
             {
@@ -234,6 +260,11 @@ export class DataRepository extends Repository {
         ])
     }
 
+    /**
+     * Returns grouped data by deviceId
+     * @param body: Object
+     * @return Object[]
+     */
     getDevicesWithData(body) {
         return this.model.aggregate([
             {
@@ -262,7 +293,12 @@ export class DataRepository extends Repository {
         ])
     }
 
-    countByDeviceIds(sids){
+    /**
+     * Returns number docs by each device
+     * @param sids: string[]
+     * @return Object[]
+     */
+    countByDeviceIds(sids) {
         return this.model.aggregate([
             {
                 $match: {
