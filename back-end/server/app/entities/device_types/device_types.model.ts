@@ -23,7 +23,3 @@ const deviceTypesSchema = new mongoose.Schema({
 }, {versionKey: false, collection: 'device_types'});
 
 export const deviceTypesModel = mongoose.model('DeviceTypes', deviceTypesSchema);
-
-
-
-

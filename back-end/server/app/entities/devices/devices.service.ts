@@ -94,10 +94,10 @@ class DeviceService {
      */
     getDevicesByUserIds(ids) {
         return this.deviceRepository.getDevicesByUserIds(ids)
-            .then(d=>{
+            .then(d => {
                 return d;
             })
-            .catch(e=>e);
+            .catch(e => e);
     }
 
     /**
@@ -116,14 +116,15 @@ class DeviceService {
                     },
                     (device, callback) => {
                         const diff = (A, B) => {
-                            return A.filter( (a) => {
+                            return A.filter((a) => {
                                 return B.indexOf(a) === -1;
                             });
                         };
                         let diffIds = [];
                         const currentCoid = device.coid.map(id => id.toString());
                         if (currentCoid.length === payload.coid.length) {
-                            let diffToAdd; let diffToRemove;
+                            let diffToAdd;
+                            let diffToRemove;
                             diffToAdd = diff(payload.coid, currentCoid);
                             diffToRemove = diff(currentCoid, payload.coid);
                             diffToAdd.forEach((el, i, arr) => arr[i] = Types.ObjectId(el));
@@ -208,19 +209,19 @@ class DeviceService {
         return DeviceRegistryService.changeActivity(sids, status);
     }
 
-    countAllDevices(){
+    countAllDevices() {
         return this.deviceRepository.countAll();
     }
 
-    groupParents(){
+    groupParents() {
         return this.deviceRepository.groupParents();
     }
 
-    groupByUsers(){
+    groupByUsers() {
         return this.deviceRepository.groupByUsers();
     }
 
-    groupByCoid(coids){
+    groupByCoid(coids) {
         return this.deviceRepository.groupByCoid(coids);
     }
 }

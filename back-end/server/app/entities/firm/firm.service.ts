@@ -18,6 +18,11 @@ class FirmService {
         return this.firmRepository.findById(id);
     }
 
+    /**
+     * removes firm by firmId
+     * @param id: string
+     * @return Object
+     */
     removeById(id) {
         return new Promise(((resolve, reject) => {
             this.firmRepository.removeById(id)
@@ -31,11 +36,17 @@ class FirmService {
         }))
     }
 
-    updateById(id, obj) {
+    /**
+     * removes firm by firmId
+     * @param id: string
+     * @param firm: Object
+     * @return Object[]
+     */
+    updateById(id, firm) {
         return new Promise(((resolve, reject) => {
             async.waterfall([
                 callback => {
-                    this.firmRepository.update(id, obj)
+                    this.firmRepository.update(id, firm)
                         .then(d => {
                             if (d['nModified'] === 0) {
                                 callback(new Error('Unable to update'));
@@ -62,13 +73,18 @@ class FirmService {
         return this.firmRepository.save(firm);
     }
 
+    /**
+     * Returns firm devices
+     * @param firmId: string
+     * @return Object[]
+     */
     getFirmDevices(firmId) {
         return new Promise(((resolve, reject) => {
             async.waterfall([
                 callback => {
                     this.firmRepository.getFirmUsers(firmId)
                         .then(d => {
-                            if(!(d[0].firm_users)){
+                            if (!(d[0].firm_users)) {
                                 callback(new Error('Firm has no users'));
                             } else {
                                 callback(null, d[0].firm_users)
@@ -90,7 +106,11 @@ class FirmService {
         }))
     }
 
-    countAllFirms(){
+    /**
+     * Counts all firms
+     * @return Object[]
+     */
+    countAllFirms() {
         return this.firmRepository.countAll();
     }
 }

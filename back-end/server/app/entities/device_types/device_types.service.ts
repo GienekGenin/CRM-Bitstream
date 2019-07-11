@@ -11,7 +11,7 @@ class DeviceTypesService {
         return this.deviceTypesRepository.getAllToUI();
     }
 
-    findById(id){
+    findById(id) {
         return this.deviceTypesRepository.findById(id);
     }
 }

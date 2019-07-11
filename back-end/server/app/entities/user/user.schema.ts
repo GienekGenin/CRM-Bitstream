@@ -9,7 +9,7 @@ class UsersSchema {
     userSchema = {
         type: 'object',
         additionalProperties: true,
-        required: ['name','surname','role_id','firm_id', 'email', 'password', 'tel'],
+        required: ['name', 'surname', 'role_id', 'firm_id', 'email', 'password', 'tel'],
         properties: {
             name: {
                 type: 'string',

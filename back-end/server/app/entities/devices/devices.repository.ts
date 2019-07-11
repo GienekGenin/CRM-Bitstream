@@ -96,7 +96,7 @@ export class DeviceRepository extends Repository {
      * Selects parents, groups and counts by type
      * @return Object[]
      */
-    groupParents(){
+    groupParents() {
         return this.model.aggregate([
             {
                 '$match': {
@@ -119,7 +119,7 @@ export class DeviceRepository extends Repository {
      * Groups devices pre user
      * @return Object[]
      */
-    groupByUsers(){
+    groupByUsers() {
         return this.model.aggregate([
             {
                 '$match': {
@@ -156,7 +156,7 @@ export class DeviceRepository extends Repository {
      * @param coids: string[]
      * @return Object[]
      */
-    groupByCoid(coids){
+    groupByCoid(coids) {
         return this.model.aggregate([
             {
                 '$match': {

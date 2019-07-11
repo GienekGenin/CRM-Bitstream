@@ -15,10 +15,6 @@ export class UserRepository extends Repository {
         return this.model.find({firm_id: firmId, deleted: {$ne: true}});
     }
 
-    deleteByEmail(email) {
-        return this.model.updateOne({email}, {deleted: true});
-    }
-
     deleteById(id) {
         return this.model.updateOne({_id: id}, {deleted: true});
     }
@@ -31,11 +27,15 @@ export class UserRepository extends Repository {
         return this.model.updateOne({email: credential.email}, {password: credential.password});
     }
 
-    updateEmail(payload){
+    updateEmail(payload) {
         return this.model.updateOne({email: payload.email}, {email: payload.newEmail});
     }
 
-    groupByFirm(){
+    /**
+     * Groups users by each firm
+     * @return Object[]
+     */
+    groupByFirm() {
         return this.model.aggregate([
             {
                 '$match': {

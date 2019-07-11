@@ -183,7 +183,7 @@ class DeviceTypesService {
      * Returns number of docs in collection
      * @return number
      */
-    countAllData(){
+    countAllData() {
         return this.dataRepository.countAll();
     }
 
@@ -192,7 +192,7 @@ class DeviceTypesService {
      * @param sids: stings[]
      * @return Object[]
      */
-    countByDeviceIds(sids){
+    countByDeviceIds(sids) {
         return this.dataRepository.countByDeviceIds(sids);
     }
 }

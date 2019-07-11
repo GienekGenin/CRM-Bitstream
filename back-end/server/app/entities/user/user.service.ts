@@ -19,10 +19,6 @@ class UsersService {
         return _.omit(user, ['password']);
     }
 
-    getAll() {
-        return this.usersRepository.getAll();
-    }
-
     findById(id: Types.ObjectId) {
         return this.usersRepository.findById(id);
     }
@@ -32,7 +28,9 @@ class UsersService {
     }
 
     /**
-     * @param payload.id, payload.adminId
+     * Removes user and assigns his devices to another user
+     * @param payload: Object
+     * @return Object
      */
     deleteById(payload) {
         return new Promise(((resolve, reject) => {
@@ -62,6 +60,11 @@ class UsersService {
         }));
     }
 
+    /**
+     * Updates user
+     * @param user: Object
+     * @return Object
+     */
     updateByEmail(user) {
         return new Promise(((resolve, reject) => {
             async.waterfall([
@@ -89,6 +92,11 @@ class UsersService {
         }))
     }
 
+    /**
+     * Saves user
+     * @param user: Object
+     * @return Object
+     */
     save(user) {
         return new Promise((resolve, reject) => {
             async.waterfall(
@@ -116,6 +124,11 @@ class UsersService {
         });
     }
 
+    /**
+     * Checks access for a user
+     * @param userCredentials: Object
+     * @return Object
+     */
     login(userCredentials) {
         return new Promise((resolve, reject) => {
             async.waterfall(
@@ -162,6 +175,11 @@ class UsersService {
         })
     }
 
+    /**
+     * Changes pass for user
+     * @param credential: Object
+     * @return Object
+     */
     changePassAdmin(credential) {
         return new Promise((resolve, reject) => {
             async.waterfall(
@@ -199,6 +217,11 @@ class UsersService {
         });
     }
 
+    /**
+     * Changes email for user
+     * @param payload: Object
+     * @return Object
+     */
     changeEmailAdmin(payload) {
         return new Promise((resolve, reject) => {
             async.waterfall(
@@ -238,6 +261,11 @@ class UsersService {
         });
     }
 
+    /**
+     * Returns user devices
+     * @param id: Object
+     * @return Object[]
+     */
     getDevicesByUserIds(id) {
         return deviceService.getDevicesByUserIds(id)
             .then(devices => {
@@ -245,14 +273,14 @@ class UsersService {
                 let devicesToUI = [];
                 return DeviceRegistryService.getActivity(sids)
                     .then(twins => {
-                        for (let twinsKey in twins) {
+                        for (const twinsKey in twins) {
                             devices.forEach(device => {
                                 if (device._doc.sid === twins[twinsKey]['deviceId']) {
                                     devicesToUI.push(Object.assign({}, device._doc, {azure: twins[twinsKey]['status']}))
                                 }
                             })
                         }
-                        let children = devices.filter(el => el.parent_id !== '0');
+                        const children = devices.filter(el => el.parent_id !== '0');
                         devicesToUI = devicesToUI.concat(children);
                         return devicesToUI;
                     });
@@ -263,6 +291,10 @@ class UsersService {
         return this.usersRepository.countAll();
     }
 
+    /**
+     * Returns info about every firm
+     * @return Object[]
+     */
     infoByFirm() {
         return new Promise(((resolve, reject) => {
             async.waterfall([
@@ -296,7 +328,7 @@ class UsersService {
                         .catch(e => callback(e));
                 },
                 (groupedUsers, devicesByUsers, callback) => {
-                    let payload = [];
+                    const payload = [];
                     groupedUsers.forEach((firm, i) => {
                         let firmDevices = [];
                         let tempPayload = null;

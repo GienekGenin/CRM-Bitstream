@@ -7,7 +7,7 @@ export class DeviceTypesRepository extends Repository {
         this.model = deviceTypesModel;
     }
 
-    getAllToUI(){
+    getAllToUI() {
         return this.model.find().select(['_id', 'name']);
     }
 }

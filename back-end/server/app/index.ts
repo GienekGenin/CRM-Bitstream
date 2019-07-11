@@ -4,8 +4,8 @@ import * as logger from 'morgan';
 import * as bodyParser from 'body-parser';
 import {initializeAPIRoutes} from './routes';
 import {
-	successOrEmptyPayload,
-	errorPayload
+    successOrEmptyPayload,
+    errorPayload
 } from './common/middleware/payload.middleware';
 import {dbConnectionService} from '../db/connect';
 
@@ -29,5 +29,5 @@ app.use(successOrEmptyPayload);
 app.use(errorPayload);
 
 app.get('/express_backend', (req, res) => {
-	res.send({express: 'EXPRESS BACKEND IS CONNECTED TO REACT'});
+    res.send({express: 'EXPRESS BACKEND IS CONNECTED TO REACT'});
 });

@@ -298,7 +298,7 @@ export class DataRepository extends Repository {
      * @param sids: string[]
      * @return Object[]
      */
-    countByDeviceIds(sids){
+    countByDeviceIds(sids) {
         return this.model.aggregate([
             {
                 $match: {

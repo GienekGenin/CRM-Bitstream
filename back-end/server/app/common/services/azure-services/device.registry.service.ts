@@ -41,7 +41,7 @@ export class DeviceRegistryService {
     }
 
     /**
-     * Removes device from the iothub and from the db
+     * Removes device from the IoT-Hub and from the db
      * @param deviceId: string
      * @return Promise
      */

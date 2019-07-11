@@ -4,13 +4,6 @@ import {PayloadGeneratorService} from '../../common/services/request-services/pa
 import {UserPayloadValidator} from '../../common/middleware/request-validation/user.validator';
 import {TokenValidator} from '../../common/middleware/request-validation/token.validator';
 
-users.get('/', TokenValidator.validateToken, (req, res, next) => {
-    usersService
-        .getAll()
-        .then(PayloadGeneratorService.nextWithData(next, res))
-        .catch(next);
-});
-
 users.get('/info-firm', TokenValidator.validateToken, (req, res, next) => {
     usersService
         .infoByFirm()
