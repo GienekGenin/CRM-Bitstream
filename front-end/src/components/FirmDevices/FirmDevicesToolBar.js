@@ -431,7 +431,7 @@ class FirmDevicesToolBar extends React.Component {
                                                 disabled={
                                                     this.props.selected ?
                                                         !(this.props.selected.parent_id === '0')
-                                                        : loading}
+                                                        : true}
                                                 onClick={() => this.handleClickOpen('confirmDeleteDialog')}>
                                         <DeleteIcon/>
                                     </IconButton>

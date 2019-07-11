@@ -28,7 +28,7 @@ import './FirmDevices.scss';
 import FirmDevicesToolBar from "./FirmDevicesToolBar";
 
 // Services
-import {forcedTree, createPie, piePlaceHolder} from "./chart.service";
+import {forcedTree, createPie, piePlaceHolder, treePlaceHolder} from "./chart.service";
 
 const mapDispatchToProps = (dispatch) => {
     return {
@@ -81,6 +81,7 @@ class FirmDevicesComponent extends React.Component {
     }
 
     componentDidMount() {
+        treePlaceHolder();
         this.renderSelectAllCheckBox(false);
         this.setState({loading: true});
         const {selectedFirm, selectedUsers, parentDevices, selectedDevices} = this.props;
@@ -351,6 +352,7 @@ class FirmDevicesComponent extends React.Component {
                 </MuiThemeProvider>
                 <Paper>
                     <div id='parent'>
+                        <div>Device tree map</div>
                     </div>
                 </Paper>
             </div>
