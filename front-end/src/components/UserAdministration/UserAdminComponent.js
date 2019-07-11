@@ -257,7 +257,7 @@ class UserAdminComponent extends React.Component {
                                 onRowClick={this.onRowClick}
                             />
                         </Grid>
-                        <Grid item xs={12} className={'user-container'}>
+                        <Grid item xs={12} className={'user-wrap'}>
 												<div className={'user-title'}>User devices</div>
 												{loading && <CircularProgress
 																style={{
@@ -270,7 +270,7 @@ class UserAdminComponent extends React.Component {
 																		zIndex: 9999
 																}}
 															/>}
-                            <Paper className={'chart-container'}>
+                            <Paper className={'user-container'}>
 															<div id={'firm-info-chart'}></div>
                             </Paper>
                         </Grid>

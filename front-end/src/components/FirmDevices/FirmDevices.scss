@@ -45,8 +45,7 @@ circle {
   display: flex;
   flex-wrap: wrap;
 	justify-content: center;
-	padding-top: 0;
-	margin-top: 20px;
+	// padding-top: 0!important;
 }
 
 #device-types-chart, #pie-phyid, #pie-group {

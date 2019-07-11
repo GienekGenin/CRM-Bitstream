@@ -212,7 +212,7 @@ class FirmAdministrationComponent extends Component {
                         </Grid>
 													<Grid item sm={12} md={5}>
 																										
-															<Paper className={'chart-container'}>
+															<Paper className={'firm-container'}>
 															<div className={'firms-title'}>Application state</div>
 															{infoLoading && <CircularProgress
 																			style={{
@@ -241,7 +241,7 @@ class FirmAdministrationComponent extends Component {
 															</Paper>
 													</Grid>
 													<Grid item sm={12} md={7}>
-															<Paper className={'chart-container'}>
+															<Paper className={'firm-container'}>
 															{infoLoading && <CircularProgress
 																			style={{
 																					width: '250px',
