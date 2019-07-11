@@ -42,7 +42,7 @@ const theme = createMuiTheme({
     },
     typography: {
         useNextVariants: true,
-		},
+    },
 });
 
 const mapDispatchToProps = (dispatch) => {
@@ -73,7 +73,8 @@ class UserAdminComponent extends React.Component {
             users: [],
             selectedUsers: [],
             selectedUserIds: [],
-						loading: false,
+            loading: false,
+            firmInfoLoading: false,
             selectedFirm: null,
             columns: [
                 {
@@ -117,11 +118,17 @@ class UserAdminComponent extends React.Component {
             }
         }
 
-        mixedService.getBasicFirmInfo(selectedFirm._id)
-            .then(firmInfo => {
-                buildFirmInfo(firmInfo);
-            }).catch(e => console.log(e));
-
+        const storageFirmInfo = JSON.parse(localStorage.getItem('firmInfo'));
+        if (!storageFirmInfo) {
+            this.setState({firmInfoLoading: true});
+            mixedService.getBasicFirmInfo(selectedFirm._id)
+                .then(firmInfo => {
+                    this.setState({firmInfoLoading: false});
+                    buildFirmInfo(firmInfo);
+                }).catch(e => this.setState({firmInfoLoading: false}));
+        } else {
+            buildFirmInfo(storageFirmInfo);
+        }
         if (this.props.selectedUsers) {
             const {selectedUsers} = this.props;
             const selectedUserIds = selectedUsers.map(user => user._id);
@@ -209,16 +216,17 @@ class UserAdminComponent extends React.Component {
         if (container)
             ReactDOM.render(element, container)
     }
-		
+
     render() {
-        const {rowsPerPage, page, selectedUsers, selectedUserIds, loading, selectedFirm, users, columns} = this.state;
+        const {rowsPerPage, page, selectedUsers, selectedUserIds, loading,
+            selectedFirm, users, columns, firmInfoLoading} = this.state;
         users && users.map((el, i, arr) => arr[i] = Object.assign(el, {
             action: (
                 <div>
                     <Checkbox value={el._id} checked={selectedUserIds.includes(el._id)}/>
                 </div>
             )
-				}));
+        }));
         return (
             <MuiThemeProvider theme={theme}>
                 <div style={{maxWidth: '100%'}}>
@@ -258,20 +266,31 @@ class UserAdminComponent extends React.Component {
                             />
                         </Grid>
                         <Grid item xs={12} className={'user-container'}>
-												<div className={'user-title'}>User devices</div>
-												{loading && <CircularProgress
-																style={{
-																		width: '250px',
-																		height: '250px',
-																		color: '#2196f3',
-																		position: "absolute",
-																		top: '35%',
-																		left: "43%",
-																		zIndex: 9999
-																}}
-															/>}
+                            <div className={'user-title'}>User devices</div>
+                            {loading && <CircularProgress
+                                style={{
+                                    width: '250px',
+                                    height: '250px',
+                                    color: '#2196f3',
+                                    position: "absolute",
+                                    top: '35%',
+                                    left: "43%",
+                                    zIndex: 9999
+                                }}
+                            />}
                             <Paper className={'chart-container'}>
-															<div id={'firm-info-chart'}></div>
+                                {firmInfoLoading && <CircularProgress
+                                    style={{
+                                        width: '250px',
+                                        height: '250px',
+                                        color: '#2196f3',
+                                        position: "absolute",
+                                        top: '35%',
+                                        left: "43%",
+                                        zIndex: 9999
+                                    }}
+                                />}
+                                <div id={'firm-info-chart'}></div>
                             </Paper>
                         </Grid>
                     </Grid>

@@ -58,6 +58,7 @@ class FirmAdministrationComponent extends Component {
             rowsPerPage: 5,
             loading: false,
             infoLoading: false,
+            basicLoading: false,
             columns: [
                 {
                     title: 'Select',
@@ -93,16 +94,33 @@ class FirmAdministrationComponent extends Component {
     };
 
     componentDidMount() {
-        this.setState({infoLoading: true});
-        firmService.firmsInfo().then(firmsInfo => {
-            buildFirmsInfo(firmsInfo);
-            this.setState({infoLoading: false});
-        }).catch(e => {
-            this.setState({infoLoading: false});
-        });
-        mixedService.getBasicInfo().then(basicInfo => {
-            this.setState({basicInfo});
-        }).catch(e => e);
+        const storageFirmInfo = JSON.parse(localStorage.getItem('firmsInfo'));
+        if(!storageFirmInfo){
+            this.setState({infoLoading: true});
+            firmService.firmsInfo().then(firmsInfo => {
+                localStorage.setItem('firmsInfo', JSON.stringify(firmsInfo));
+                buildFirmsInfo(firmsInfo);
+                this.setState({infoLoading: false});
+            }).catch(e => {
+                this.setState({infoLoading: false});
+            });
+        } else {
+            buildFirmsInfo(storageFirmInfo);
+        }
+
+        const storageBasicInfo = JSON.parse(localStorage.getItem('basicInfo'));
+        if(!storageBasicInfo){
+            this.setState({basicLoading: true});
+            mixedService.getBasicInfo().then(basicInfo => {
+                localStorage.setItem('basicInfo', JSON.stringify(basicInfo));
+                this.setState({basicInfo, basicLoading: false});
+            }).catch(e => {
+                this.setState({basicLoading: false});
+            });
+        } else {
+            this.setState({basicInfo: storageBasicInfo});
+        }
+
         this.unsubscribe = store.subscribe(() => {
             this.setState({loading: store.getState().firmReducer.loading});
             if (store.getState().firmReducer.firms) {
@@ -145,7 +163,7 @@ class FirmAdministrationComponent extends Component {
     render() {
         let {
             page, firms, rowsPerPage, loading, selectedFirm, selectedFirmId, columns,
-            basicInfo, infoLoading
+            basicInfo, infoLoading, basicLoading
         } = this.state;
         firms && firms.map((el, i, arr) => arr[i] = Object.assign(el, {
             action: (
@@ -155,7 +173,7 @@ class FirmAdministrationComponent extends Component {
             )
         }));
 
-        let icons = {
+        const icons = {
             "numOfFirms": {
                 icon: (<Alarm className={'firm-info'}/>),
                 text: (<div>Firms: </div>)
@@ -216,7 +234,7 @@ class FirmAdministrationComponent extends Component {
 
                             <Paper className={'chart-container'}>
                                 <div className={'firms-title'}>Application state</div>
-                                {infoLoading && <CircularProgress
+                                {basicLoading && <CircularProgress
                                     style={{
                                         width: '200px',
                                         height: '200px',

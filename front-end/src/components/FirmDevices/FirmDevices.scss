@@ -44,9 +44,9 @@ circle {
   min-height: 575px;
   display: flex;
   flex-wrap: wrap;
-	justify-content: center;
-	padding-top: 0;
-	margin-top: 20px;
+  justify-content: center;
+  padding-top: 0;
+  margin-top: 20px;
 }
 
 #device-types-chart, #pie-phyid, #pie-group {
@@ -87,8 +87,8 @@ circle {
 }
 
 .chart-toolbar h3 {
-	text-transform: uppercase;
-	background: linear-gradient(45deg, #0B2349 33%, #0D61BC 66%);
+  text-transform: uppercase;
+  background: linear-gradient(45deg, #0B2349 33%, #0D61BC 66%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
@@ -110,15 +110,15 @@ circle {
 }
 
 #device-types-chart .progress {
-	width: 250px;
-	height:  250px;
-	color: #2196f3; 
-	position: absolute, 
+  width: 250px;
+  height: 250px;
+  color: #2196f3;
+  position: absolute
 }
 
 .device-toolbar {
-	text-transform: uppercase;
-	background: linear-gradient(45deg, #0B2349 33%, #0D61BC 66%);
+  text-transform: uppercase;
+  background: linear-gradient(45deg, #0B2349 33%, #0D61BC 66%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }

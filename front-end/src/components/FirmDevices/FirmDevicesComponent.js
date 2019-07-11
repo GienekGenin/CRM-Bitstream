@@ -352,7 +352,7 @@ class FirmDevicesComponent extends React.Component {
                 </MuiThemeProvider>
                 <Paper>
                     <div id='parent'>
-                        <div>Device tree map</div>
+                        <div className="device-toolbar"><h3 className={'title'}>Device tree map</h3></div>
                     </div>
                 </Paper>
             </div>
