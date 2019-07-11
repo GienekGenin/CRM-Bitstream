@@ -88,7 +88,7 @@ class FirmDevicesToolBar extends React.Component {
         if (state === 'editDialog') {
             this.setState({newFirmDevice: this.props.selected})
         }
-        if(state === 'addDialog'){
+        if (state === 'addDialog') {
             if (this.props.deviceTypes) {
                 this.setState({deviceTypes: this.props.deviceTypes, loading: false});
             } else {
@@ -220,13 +220,22 @@ class FirmDevicesToolBar extends React.Component {
         const parentDeviceIds = this.props.selectedDevices
             .filter(el => el.parent_id === '0')
             .map(el => el.sid);
-        devicesService.changeActivity(parentDeviceIds, activity)
-            .then(d => console.log(d))
-            .catch(e => console.log(e));
+        if (parentDeviceIds.length > 0) {
+            this.setState({loading: true});
+            devicesService.changeActivity(parentDeviceIds, activity)
+                .then(() => {
+                    this.setState({loading: false});
+                })
+                .catch(() => {
+                    this.setState({loading: false});
+                });
+        } else {
+            alert('No gateways were selected');
+        }
+
     };
 
     componentDidMount() {
-        this.setState({loading: true});
     }
 
     render() {
@@ -244,7 +253,7 @@ class FirmDevicesToolBar extends React.Component {
                             <Tooltip title={'Device CS'}>
                                 <div>
                                     <IconButton
-                                        disabled={this.props.selected ? (this.props.selected.parent_id !== '0') : true}
+                                        disabled={this.props.selected ? (this.props.selected.parent_id !== '0') : true || loading}
                                         variant="contained" color="primary"
                                         onClick={() => this.handleClickOpen('CSDialog')}>
                                         <VpnKeyIcon/>
@@ -271,7 +280,8 @@ class FirmDevicesToolBar extends React.Component {
                         <div>
                             <Tooltip title={'Edit selected device'}>
                                 <div>
-                                    <IconButton disabled={!this.props.selected} variant="contained" color="primary"
+                                    <IconButton disabled={!this.props.selected || loading} variant="contained"
+                                                color="primary"
                                                 onClick={() => this.handleClickOpen('editDialog')}>
                                         <EditIcon/>
                                     </IconButton>
@@ -311,7 +321,8 @@ class FirmDevicesToolBar extends React.Component {
                                     </DialogContent>
                                 </DialogContent>
                                 <DialogActions>
-                                    <Button variant="outlined" color="primary" disabled={!this.state.newFirmDevice.name}
+                                    <Button variant="outlined" color="primary"
+                                            disabled={!this.state.newFirmDevice.name || loading}
                                             onClick={() => this.handleUpdateFirmDevice()}>
                                         Update
                                     </Button>
@@ -324,7 +335,8 @@ class FirmDevicesToolBar extends React.Component {
                         <div>
                             <Tooltip title={'Add new device'}>
                                 <div>
-                                    <IconButton variant="outlined" color="primary" disabled={this.props.loading}
+                                    <IconButton variant="outlined" color="primary"
+                                                disabled={this.props.loading || loading}
                                                 onClick={() => this.handleClickOpen('addDialog')}>
                                         <AddIcon/>
                                     </IconButton>
@@ -416,7 +428,10 @@ class FirmDevicesToolBar extends React.Component {
                             <Tooltip title={'Delete device'}>
                                 <div>
                                     <IconButton variant="contained" color="secondary"
-                                                disabled={this.props.selected ? !(this.props.selected.parent_id === '0') : true}
+                                                disabled={
+                                                    this.props.selected ?
+                                                        !(this.props.selected.parent_id === '0')
+                                                        : loading}
                                                 onClick={() => this.handleClickOpen('confirmDeleteDialog')}>
                                         <DeleteIcon/>
                                     </IconButton>
@@ -436,7 +451,8 @@ class FirmDevicesToolBar extends React.Component {
                                     <Button onClick={() => this.handleClose('confirmDeleteDialog')} color="primary">
                                         Close
                                     </Button>
-                                    <Button disabled={!this.props.selected} variant="contained" color="secondary"
+                                    <Button disabled={!this.props.selected || loading} variant="contained"
+                                            color="secondary"
                                             onClick={() => this.handleDeleteFirmDevice()}>
                                         Confirm
                                     </Button>
@@ -445,7 +461,7 @@ class FirmDevicesToolBar extends React.Component {
                         </div>
                         <Tooltip title={'Refresh device list'}>
                             <div>
-                                <IconButton variant="outlined" color="primary" disabled={this.props.loading}
+                                <IconButton variant="outlined" color="primary" disabled={this.props.loading || loading}
                                             onClick={() => this.handleRefresh()}>
                                     <RefreshIcon/>
                                 </IconButton>
@@ -462,7 +478,11 @@ class FirmDevicesToolBar extends React.Component {
                             >
                                 <div>
                                     <IconButton variant="outlined" color="primary"
-                                                disabled={this.props.loading || !this.props.selected || !checkAccess('/users')}
+                                                disabled={
+                                                    this.props.loading ||
+                                                    !this.props.selected ||
+                                                    !checkAccess('/users') ||
+                                                    loading}
                                                 onClick={() => this.handleClickOpen('configUsersDialog')}>
                                         <AssignmentIndIcon/>
                                     </IconButton>
@@ -502,7 +522,7 @@ class FirmDevicesToolBar extends React.Component {
                                 </DialogContent>
                                 <DialogActions>
                                     <Button variant="outlined" color="primary"
-                                            disabled={this.state.newFirmDevice.coid < 1}
+                                            disabled={this.state.newFirmDevice.coid < 1 || loading}
                                             onClick={() => this.handleConfigUsersForDevice()}>
                                         Submit
                                     </Button>
@@ -512,9 +532,36 @@ class FirmDevicesToolBar extends React.Component {
                                 </DialogActions>
                             </Dialog>
                         </div>
+                        <Tooltip title={'Turn on'}>
+                            <div>
+                                <IconButton variant="outlined" color="primary"
+                                            disabled={
+                                                this.props.loading ||
+                                                (this.props.selectedDevices &&
+                                                    !this.props.selectedDevices.length > 0) ||
+                                                loading}
+                                            onClick={() => this.changeDeviceActivity('Enabled')}>
+                                    <RadioButtonCheckedIcon/>
+                                </IconButton>
+                            </div>
+                        </Tooltip>
+                        <Tooltip title={'Turn off'}>
+                            <div>
+                                <IconButton variant="outlined" color="primary"
+                                            disabled={
+                                                this.props.loading ||
+                                                (this.props.selectedDevices &&
+                                                    !this.props.selectedDevices.length > 0) ||
+                                                loading}
+                                            onClick={() => this.changeDeviceActivity('Disabled')}>
+                                    <RadioButtonUncheckedIcon/>
+                                </IconButton>
+                            </div>
+                        </Tooltip>
                         <Tooltip title={'Show columns'}>
                             <div>
-                                <IconButton variant="outlined" color="primary" disabled={this.props.loading}
+                                <IconButton variant="outlined" color="primary" disabled={
+                                    this.props.loading || loading}
                                             onClick={this.handleClickMenu}>
                                     <ViewColumnIcon/>
                                 </IconButton>
@@ -549,25 +596,9 @@ class FirmDevicesToolBar extends React.Component {
                                 </Menu>
                             </div>
                         </Tooltip>
-                        <Tooltip title={'Turn on'}>
-                            <div>
-                                <IconButton variant="outlined" color="primary" disabled={this.props.loading}
-                                            onClick={() => this.changeDeviceActivity('Enabled')}>
-                                    <RadioButtonCheckedIcon/>
-                                </IconButton>
-                            </div>
-                        </Tooltip>
-                        <Tooltip title={'Turn off'}>
-                            <div>
-                                <IconButton variant="outlined" color="primary" disabled={this.props.loading}
-                                            onClick={() => this.changeDeviceActivity('Disabled')}>
-                                    <RadioButtonUncheckedIcon/>
-                                </IconButton>
-                            </div>
-                        </Tooltip>
                     </div>
                 </div>
-                {this.props.loading && <div className={'progress'}>
+                {(this.props.loading || loading) && <div className={'progress'}>
                     <LinearProgress/>
                 </div>}
             </div>
