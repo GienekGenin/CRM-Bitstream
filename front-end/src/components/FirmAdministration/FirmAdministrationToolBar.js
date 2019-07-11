@@ -58,13 +58,7 @@ class TestToolBar extends React.Component {
                 tel: '',
                 nip: ''
 						},
-						// nameValid: false,
-						// addressValid: false,
-						// emailValid: false,
-						// telValid: false,
-						// nipValid: false
 				};
-				// this.updateNewFirm = this.updateNewFirm.bind(this);
     }
 
     handleClickMenu = event => {
@@ -119,16 +113,8 @@ class TestToolBar extends React.Component {
     updateNewFirm(e, param) {
         this.setState({
 					newFirm: Object.assign({}, this.state.newFirm, {[param]: e.target.value})
-				}, this.validateForm)
+				})
 		}
-		// updateNewFirm = (e, type) => {
-		// 	const { name, value } = e.target;
-		// 	const { newFirm } = this.state;
-		// 	this.setState({
-		// 		newFirm: Object.assign({}, { [name]: value })
-		// 	}, () => { this.validateField(newFirm[name], value); });
-		// };
-
 
     handleDeleteDevice() {
         this.props.deleteFirmRequest(this.props.selected._id);
@@ -170,20 +156,16 @@ class TestToolBar extends React.Component {
 		// 	};
 			
 		// 	this.setState({
-		// 		nameValid: nameValid,
-		// 		addressValid: addressValid,
-		// 		emailValid: emailValid,
-		// 		telValid: telValid,
-		// 		nipValid: nipValid
+
 		// 	}, this.validateForm);
 		// };
 		
-		validateForm = () => {
-			let { nameValid, addressValid, emailValid, telValid, nipValid } = this.state;
-			this.setState({
-				formValid: nameValid & addressValid & emailValid & telValid & nipValid
-			});
-		};
+		// validateForm = () => {
+			
+		// 	this.setState({
+				
+		// 	});
+		// };
 
     render() {
         let {columns, anchorEl, columnsDialog, newFirm} = this.state;

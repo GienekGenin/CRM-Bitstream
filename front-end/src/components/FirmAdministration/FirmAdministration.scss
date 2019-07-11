@@ -91,7 +91,7 @@
 			position: absolute;
 			display: flex;
 			flex-direction: row;
-			font-size: 3.5vmin;
+			font-size: 2.5vmin;
 			color: #3C4858;
 			font-weight: 300;
 			flex-wrap: wrap;
@@ -102,7 +102,14 @@
 			div {
 				padding-right: 10px;
 			}
-		}		
+		}	
+		
+		@media screen and (max-width: 700px) {
+			.content-text {
+				font-size: 4vmin;
+			}
+	}
+
 }
 
 .chart-container {
@@ -113,6 +120,8 @@
 .firms-title {
 	position: absolute;
 	font-size: 20px;
+	text-align: center;
+  width: 100%;
 	text-transform: uppercase;
 	font-weight: 800;
 	top: 3%;
