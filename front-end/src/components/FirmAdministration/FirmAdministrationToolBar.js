@@ -23,6 +23,7 @@ import ListItemText from "@material-ui/core/ListItemText";
 import Divider from "@material-ui/core/Divider";
 import LinearProgress from '@material-ui/core/LinearProgress';
 
+
 // Redux
 import {connect} from "react-redux";
 import {addFirmRequest, deleteFirmRequest, firmsRequest, updateFirmRequest} from "../../redux/actions";
@@ -57,13 +58,13 @@ class TestToolBar extends React.Component {
                 tel: '',
                 nip: ''
 						},
-						nameValid: false,
-						addressValid: false,
-						emailValid: false,
-						telValid: false,
-						nipValid: false
+						// nameValid: false,
+						// addressValid: false,
+						// emailValid: false,
+						// telValid: false,
+						// nipValid: false
 				};
-				this.updateNewFirm = this.updateNewFirm.bind(this);
+				// this.updateNewFirm = this.updateNewFirm.bind(this);
     }
 
     handleClickMenu = event => {
@@ -115,17 +116,18 @@ class TestToolBar extends React.Component {
         });
     };
 
-    // updateNewFirm(e, param) {
-    //     this.setState({
-		// 			newFirm: Object.assign({}, this.state.newFirm, {[param]: e.target.value})})
-		// }
-		updateNewFirm = (e, type) => {
-			const { name, value } = e.target;
-			const { newFirm } = this.state;
-			this.setState({
-				newFirm: Object.assign({}, { [name]: value })
-			}, () => { this.validateField(newFirm[name], value); });
-		};
+    updateNewFirm(e, param) {
+        this.setState({
+					newFirm: Object.assign({}, this.state.newFirm, {[param]: e.target.value})
+				}, this.validateForm)
+		}
+		// updateNewFirm = (e, type) => {
+		// 	const { name, value } = e.target;
+		// 	const { newFirm } = this.state;
+		// 	this.setState({
+		// 		newFirm: Object.assign({}, { [name]: value })
+		// 	}, () => { this.validateField(newFirm[name], value); });
+		// };
 
 
     handleDeleteDevice() {
@@ -145,36 +147,36 @@ class TestToolBar extends React.Component {
 				this.handleClose('editDialog');
 		}
 
-		validateField = (fieldName, value) => {
-			const { nameValid, addressValid, emailValid, telValid, nipValid } = this.state;
-			switch (fieldName) {
-				case 'name':
-					nameValid = value.length >= 5;
-					break;
-				case 'address':
-					addressValid = value.length >= 5;
-					break;
-				case 'email':
-					emailValid = value.match(/^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i);
-					break;
-				case 'tel':
-					telValid = value.length >= 9;
-					break;
-				case 'nip':
-					nipValid = value.length >= 6;
-					break;
-				default:
-					break;
-			};
+		// validateField = (fieldName, value) => {
+		// 	const { nameValid, addressValid, emailValid, telValid, nipValid } = this.state;
+		// 	switch (fieldName) {
+		// 		case 'name':
+		// 			nameValid = value.length >= 5;
+		// 			break;
+		// 		case 'address':
+		// 			addressValid = value.length >= 5;
+		// 			break;
+		// 		case 'email':
+		// 			emailValid = value.match(/^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i);
+		// 			break;
+		// 		case 'tel':
+		// 			telValid = value.length >= 9;
+		// 			break;
+		// 		case 'nip':
+		// 			nipValid = value.length >= 6;
+		// 			break;
+		// 		default:
+		// 			break;
+		// 	};
 			
-			this.setState({
-				nameValid: nameValid,
-				addressValid: addressValid,
-				emailValid: emailValid,
-				telValid: telValid,
-				nipValid: nipValid
-			}, this.validateForm);
-		};
+		// 	this.setState({
+		// 		nameValid: nameValid,
+		// 		addressValid: addressValid,
+		// 		emailValid: emailValid,
+		// 		telValid: telValid,
+		// 		nipValid: nipValid
+		// 	}, this.validateForm);
+		// };
 		
 		validateForm = () => {
 			let { nameValid, addressValid, emailValid, telValid, nipValid } = this.state;
@@ -182,8 +184,6 @@ class TestToolBar extends React.Component {
 				formValid: nameValid & addressValid & emailValid & telValid & nipValid
 			});
 		};
-
-
 
     render() {
         let {columns, anchorEl, columnsDialog, newFirm} = this.state;
@@ -268,6 +268,7 @@ class TestToolBar extends React.Component {
                                         onChange={(e) => this.updateNewFirm(e, 'nip')}
                                         fullWidth
                                     />
+																	
                                 </DialogContent>
                                 <DialogActions>
                                     <Button variant="outlined" color="primary"
@@ -304,7 +305,8 @@ class TestToolBar extends React.Component {
                             >
                                 <DialogTitle id="alert-dialog-title-">Add firm</DialogTitle>
                                 <DialogContent>
-                                    <TextField
+
+																	<TextField
                                         autoFocus
                                         margin="dense"
                                         id="firm-name"
@@ -313,7 +315,8 @@ class TestToolBar extends React.Component {
                                         required={true}
                                         value={this.state.newFirm.name}
                                         onChange={(e) => this.updateNewFirm(e, 'name')}
-                                        fullWidth
+																				fullWidth
+																			
                                     />
                                     <TextField
                                         autoFocus
@@ -324,7 +327,8 @@ class TestToolBar extends React.Component {
                                         required={true}
                                         value={this.state.newFirm.address}
                                         onChange={(e) => this.updateNewFirm(e, 'address')}
-                                        fullWidth
+																				fullWidth
+																			
                                     />
                                     <TextField
                                         autoFocus
@@ -335,7 +339,8 @@ class TestToolBar extends React.Component {
                                         required={true}
                                         value={this.state.newFirm.email}
                                         onChange={(e) => this.updateNewFirm(e, 'email')}
-                                        fullWidth
+																				fullWidth
+																			
                                     />
                                     <TextField
                                         autoFocus
@@ -346,7 +351,8 @@ class TestToolBar extends React.Component {
                                         required={true}
                                         value={this.state.newFirm.tel}
                                         onChange={(e) => this.updateNewFirm(e, 'tel')}
-                                        fullWidth
+																				fullWidth
+																				
                                     />
                                     <TextField
                                         autoFocus
@@ -357,8 +363,10 @@ class TestToolBar extends React.Component {
                                         required={true}
                                         value={this.state.newFirm.nip}
                                         onChange={(e) => this.updateNewFirm(e, 'nip')}
-                                        fullWidth
+																				fullWidth
+														
                                     />
+                                    
                                 </DialogContent>
                                 <DialogActions>
                                     <Button variant="outlined" color="primary"

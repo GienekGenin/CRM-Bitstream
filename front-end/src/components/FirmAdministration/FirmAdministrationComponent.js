@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import * as PropTypes from "prop-types";
 import _ from 'lodash';
-import classes from 'classnames';
+// import classes from 'classnames';
 
 // Material
 import Checkbox from "@material-ui/core/Checkbox";
@@ -57,6 +57,7 @@ class FirmAdministrationComponent extends Component {
             page: 0,
             rowsPerPage: 5,
             loading: false,
+            infoLoading: false,
             columns: [
                 {
                     title: 'Select',
@@ -92,9 +93,13 @@ class FirmAdministrationComponent extends Component {
     };
 
     componentDidMount() {
+        this.setState({infoLoading: true});
         firmService.firmsInfo().then(firmsInfo => {
             buildFirmsInfo(firmsInfo);
-        }).catch(e => e);
+            this.setState({infoLoading: false});
+        }).catch(e => {
+            this.setState({infoLoading: false});
+        });
         mixedService.getBasicInfo().then(basicInfo => {
             this.setState({basicInfo});
         }).catch(e => e);
@@ -140,7 +145,7 @@ class FirmAdministrationComponent extends Component {
     render() {
         let {
             page, firms, rowsPerPage, loading, selectedFirm, selectedFirmId, columns,
-            basicInfo
+            basicInfo, infoLoading
         } = this.state;
         firms && firms.map((el, i, arr) => arr[i] = Object.assign(el, {
             action: (
@@ -167,10 +172,8 @@ class FirmAdministrationComponent extends Component {
                 icon: (<Timeline className={'docs-info'}/>),
                 text: (<div>Docs: </div>)
             }
-        }
-
-        basicInfo && Object.getOwnPropertyNames(basicInfo).forEach(props => icons[props].icon)
-
+        };
+        basicInfo && Object.getOwnPropertyNames(basicInfo).forEach(props => icons[props].icon);
         return (
             <MuiThemeProvider theme={theme}>
                 <div style={{maxWidth: '100%'}}>
@@ -212,24 +215,22 @@ class FirmAdministrationComponent extends Component {
                         <Grid item sm={12} md={5}>
 
                             <Paper className={'chart-container'}>
-                                <div className={'firms-title'}>Title Firm</div>
-                                {loading && <CircularProgress
+                                <div className={'firms-title'}>Application state</div>
+                                {infoLoading && <CircularProgress
                                     style={{
                                         width: '200px',
                                         height: '200px',
                                         color: '#2196f3',
                                         position: "absolute",
-                                        top: '20%',
-                                        left: '24%',
-                                        zIndex: 9999,
+                                        top: '30%',
+                                        left: "30%",
+                                        zIndex: 9999
                                     }}
-                                    className={classes.progress}
                                 />}
                                 {basicInfo && Object.getOwnPropertyNames(basicInfo).map(propName => (
                                     <Grid item xs={6} key={propName}>
                                         <div className={'base-info'}>
                                             <div className={'base-info-content'}>
-                                                {/* <Room className={ this.state.iconList }/> */}
                                                 {icons[propName].icon}
                                                 <div className={'content-text'}>
                                                     {icons[propName].text}
@@ -243,20 +244,20 @@ class FirmAdministrationComponent extends Component {
                         </Grid>
                         <Grid item sm={12} md={7}>
                             <Paper className={'chart-container'}>
-                                <div className={'firms-title'}>Title Graph</div>
-                                <div id={'firms-info'}>
-                                    {loading && <CircularProgress
-                                        style={{
-                                            width: '250px',
-                                            height: '250px',
-                                            color: '#2196f3',
-                                            position: "absolute",
-                                            top: '30%',
-                                            left: "34%",
-                                            zIndex: 9999
-                                        }}
-                                        className={classes.progress}
-                                    />}
+                                {infoLoading && <CircularProgress
+                                    style={{
+                                        width: '250px',
+                                        height: '250px',
+                                        color: '#2196f3',
+                                        position: "absolute",
+                                        top: '30%',
+                                        left: "34%",
+                                        zIndex: 9999
+                                    }}
+
+                                />}
+                                <div className={'firms-title'}>Info about firms</div>
+                                <div id={'firms-info'} style={{position: 'relative'}}>
                                 </div>
                             </Paper>
                         </Grid>
