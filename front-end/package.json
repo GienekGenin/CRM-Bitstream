@@ -20,7 +20,7 @@
     "formik": "^1.5.7",
     "history": "^4.9.0",
     "jsonwebtoken": "^8.5.1",
-    "lodash": "^4.17.11",
+    "lodash": "^4.17.14",
     "mapbox-gl": "^0.53.1",
     "material-table": "1.39.0",
     "moment": "^2.24.0",
