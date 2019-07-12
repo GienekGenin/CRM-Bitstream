@@ -160,7 +160,7 @@ class TestToolBar extends React.Component {
                 this.setState({addressValid: value.length >= 5}, () => this.validateForm());
                 break;
             case 'email':
-                const pattern = new RegExp(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/i);
+                const pattern = new RegExp(/^\w+([-]?\w+)*@\w+([-]?\w+)*(\.\w{2,3})+$/i);
                 this.setState({emailValid: pattern.test(value)}, () => this.validateForm());
                 break;
             case 'tel':
