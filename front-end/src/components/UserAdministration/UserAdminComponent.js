@@ -206,7 +206,6 @@ class UserAdminComponent extends React.Component {
         }
     }
 
-// <Checkbox value={'1'} checked={checked} onChange={this.selectAllUsers}/>
     renderSelectAllCheckBox(checked) {
         let element = <IconButton onClick={this.selectAllUsers}>
             {checked ? <CheckBoxIcon/> : <AddBoxIcon/>}

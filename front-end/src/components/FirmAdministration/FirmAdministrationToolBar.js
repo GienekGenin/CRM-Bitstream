@@ -41,7 +41,6 @@ const mapDispatchToProps = (dispatch) => {
 };
 
 class TestToolBar extends React.Component {
-
     constructor(props) {
         super(props);
         this.state = {
@@ -59,6 +58,9 @@ class TestToolBar extends React.Component {
                 nip: ''
 						},
 				};
+
+				this.validateField = this.validateField.bind(this);
+				this.validateForm = this.validateForm.bind(this);
     }
 
     handleClickMenu = event => {
@@ -106,16 +108,23 @@ class TestToolBar extends React.Component {
                 email: '',
                 tel: '',
                 nip: ''
-            }
+						},
+						nameValid: false,
+						addressValid: false,
+						emailValid: false,
+						telValid: false,
+						nipValid: false,
+						formValid: false
         });
     };
-
-    updateNewFirm(e, param) {
+// ------------------------------------------------------
+    updateNewFirm(e,param) {
+			const { name, value } = e.target;
         this.setState({
-					newFirm: Object.assign({}, this.state.newFirm, {[param]: e.target.value})
-				})
-		}
-
+					newFirm: Object.assign({}, this.state.newFirm, {[param]: value})
+		},() => {this.validateField(name, value) }); 
+	}
+//  -----------------------------------------------------
     handleDeleteDevice() {
         this.props.deleteFirmRequest(this.props.selected._id);
         this.props.resetSelected();
@@ -133,42 +142,47 @@ class TestToolBar extends React.Component {
 				this.handleClose('editDialog');
 		}
 
-		// validateField = (fieldName, value) => {
-		// 	const { nameValid, addressValid, emailValid, telValid, nipValid } = this.state;
-		// 	switch (fieldName) {
-		// 		case 'name':
-		// 			nameValid = value.length >= 5;
-		// 			break;
-		// 		case 'address':
-		// 			addressValid = value.length >= 5;
-		// 			break;
-		// 		case 'email':
-		// 			emailValid = value.match(/^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i);
-		// 			break;
-		// 		case 'tel':
-		// 			telValid = value.length >= 9;
-		// 			break;
-		// 		case 'nip':
-		// 			nipValid = value.length >= 6;
-		// 			break;
-		// 		default:
-		// 			break;
-		// 	};
+		validateField = (fieldName, value) => {
+			let { nameValid, addressValid, emailValid, telValid, nipValid } = this.state;
+			switch (fieldName) {
+				case 'name':
+					nameValid = value.length >= 5;
+					break;
+				case 'address':
+					addressValid = value.length >= 5;
+					break;
+				case 'email':
+					emailValid = value.match(/^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i);
+					break;
+				case 'tel':
+					telValid = value.length >= 9;
+					break;
+				case 'nip':
+					nipValid = value.length >= 6;
+					break;
+				default:
+					break;
+			};
 			
-		// 	this.setState({
-
-		// 	}, this.validateForm);
-		// };
+			this.setState({
+				nameValid,
+				addressValid, 
+				emailValid, 
+				telValid, 
+				nipValid
+			}, this.validateForm);
+		};
 		
-		// validateForm = () => {
-			
-		// 	this.setState({
-				
-		// 	});
-		// };
+		validateForm = () => {
+			let { nameValid, addressValid, emailValid, telValid, nipValid } = this.state;
+			this.setState({
+				formValid: nameValid && addressValid && emailValid && telValid && nipValid
+			});
+		};
 
     render() {
-        let {columns, anchorEl, columnsDialog, newFirm} = this.state;
+				let {columns, anchorEl, columnsDialog, newFirm, nameValid} = this.state;
+				console.log(nameValid);
         return (
             <div>
                 <div className="firm-toolbar">
@@ -255,11 +269,12 @@ class TestToolBar extends React.Component {
                                 <DialogActions>
                                     <Button variant="outlined" color="primary"
                                             disabled={
-                                                !this.state.newFirm.name ||
-                                                !this.state.newFirm.address ||
-                                                !this.state.newFirm.email ||
-                                                !this.state.newFirm.tel ||
-                                                !this.state.newFirm.nip
+                                                // !this.state.newFirm.name ||
+                                                // !this.state.newFirm.address ||
+                                                // !this.state.newFirm.email ||
+                                                // !this.state.newFirm.tel ||
+																								// !this.state.newFirm.nip
+																								!this.state.formValid
                                             }
                                             onClick={() => this.handleUpdateFirm()}>
                                         Update
@@ -353,11 +368,12 @@ class TestToolBar extends React.Component {
                                 <DialogActions>
                                     <Button variant="outlined" color="primary"
                                             disabled={
-                                                !this.state.newFirm.name ||
-                                                !this.state.newFirm.address ||
-                                                !this.state.newFirm.email ||
-                                                !this.state.newFirm.tel ||
-                                                !this.state.newFirm.nip
+                                                // !this.state.newFirm.name ||
+                                                // !this.state.newFirm.address ||
+                                                // !this.state.newFirm.email ||
+                                                // !this.state.newFirm.tel ||
+																								// !this.state.newFirm.nip
+																								!this.state.formValid
                                             }
                                             onClick={() => this.handleAddFirm()}>
                                         Add
