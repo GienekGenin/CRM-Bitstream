@@ -1,0 +1,31 @@
+
+#firm-info-chart{
+	width: 100%;
+	// margin-top: 40px;
+}
+.user-wrap {
+	position: relative;
+}
+
+.user-container {
+	margin-top: 40px;
+	padding-top: 60px;
+	height: 550px;
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+}
+
+.user-title {
+	font-size: 20px;
+	text-transform: uppercase;
+	font-weight: 800;
+	z-index: 999;
+	top: 9%;
+	left: 50%;
+	position: absolute;
+	transform: translateX(-50%);
+	background: linear-gradient(45deg, #0B2349 33%, #0D61BC 66%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
