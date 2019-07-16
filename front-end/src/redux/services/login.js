@@ -1,5 +1,5 @@
 import {history} from "./history";
-import {postRequest} from "./common";
+import {postRequest, putRequest} from "./common";
 
 const apiBase = process.env.REACT_APP_API_BASE;
 
@@ -10,7 +10,7 @@ const login = (email, password) => {
 
 const changePass = (payload) => {
     const url = `${apiBase}users/changePass`;
-    return postRequest(url, payload);
+    return putRequest(url, payload);
 };
 
 const logout = () => {

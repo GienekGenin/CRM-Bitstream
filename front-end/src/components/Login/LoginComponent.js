@@ -1,37 +1,15 @@
 import React from 'react';
 
-// Material
-import TextField from '@material-ui/core/TextField';
-import Card from '@material-ui/core/Card';
-import CardHeader from '@material-ui/core/CardHeader';
-import CardContent from '@material-ui/core/CardContent';
-import Button from '@material-ui/core/Button';
-import CardActions from '@material-ui/core/CardActions';
-import Grow from '@material-ui/core/Grow';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import IconButton from '@material-ui/core/IconButton';
-import InputAdornment from '@material-ui/core/InputAdornment';
-import Visibility from '@material-ui/icons/Visibility';
-import VisibilityOff from '@material-ui/icons/VisibilityOff';
-
 // Redux
-import {connect} from 'react-redux';
 import store from '../../redux/store/index'
-import {loginRequest, changePassRequest} from "../../redux/actions/index";
 
 // Components
+import LoginForm from './LoginForm';
+import ChangePassForm from './ChangePassForm';
 import './Login.scss';
 import {animate} from "../Home/landingAnimation";
 
-const mapDispatchToProps = (dispatch) => {
-    return {
-        loginRequest: (credentials) => dispatch(loginRequest(credentials)),
-        changePassRequest: (credentials) => dispatch(changePassRequest(credentials)),
-    };
-};
-
-
-class LoginPage extends React.Component {
+export default class LoginPage extends React.Component {
 
     constructor(props) {
         super(props);
@@ -39,185 +17,46 @@ class LoginPage extends React.Component {
         this.state = {
             email: '',
             password: '',
-						loading: false,
-						showPassword: false,
-						emailValid: false,
-						passwordValid: false,
-						formValid: false,
-
+            loading: false,
+            showPassword: false,
+            emailValid: false,
+            passwordValid: false,
+            formValid: false,
+            loginForm: true
         };
 
-        this.handleChange = this.handleChange.bind(this);
-        this.handleClickShowPassword = this.handleClickShowPassword.bind(this);
-        this.handleLoginSubmit = this.handleLoginSubmit.bind(this);
-        // this.handleChangePassSubmit = this.handleChangePassSubmit.bind(this);
-		}
-		
-
-    _isMounted = false;
+        this.toggleForm = this.toggleForm.bind(this);
+    }
 
     componentDidMount() {
+        localStorage.removeItem('token');
         animate();
-        this._isMounted = true;
-
         this.unsubscribe = store.subscribe(() => {
             if (store.getState().loginReducer.user) {
                 this.props.history.push('/');
             }
-            if (this._isMounted) {
-                this.setState({loading: store.getState().loginReducer.loading});
-            }
         })
     }
 
+    toggleForm() {
+        const {loginForm} = this.state;
+        this.setState({loginForm: !loginForm});
+    }
+
     componentWillUnmount() {
-        this._isMounted = false;
         this.unsubscribe();
-		}
-		
-		handleLoginSubmit(e) {
-        e.preventDefault();
-        const {email, password} = this.state;
-        this.props.loginRequest({email, password});
     }
-
-    handleChange(e) {
-        const {name, value} = e.target;
-				this.setState({[name]: value},() => { this.validateField(name, value) });
-											
-    }
-
-    validateField(fieldName, value) {
-			let emailValid = this.state.emailValid;
-			let passwordValid = this.state.passwordValid;
-
-			switch(fieldName) {
-				case 'email':
-					emailValid = value.match(/^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i);
-					break;
-				case 'password':
-					passwordValid = value.length >= 5;
-					break;
-				default:
-					break;	
-			}
-			this.setState({
-				emailValid: emailValid,
-				passwordValid: passwordValid
-			}, this.validateForm);
-		}
-
-		validateForm() {
-			let emailValid = this.state.emailValid;
-			let passwordValid = this.state.passwordValid;
-
-			this.setState({
-				formValid: emailValid && passwordValid
-			});
-		}
-
-    // handleChangePassSubmit(e) {
-    //     e.preventDefault();
-    //     const {email, password, newPassword} = this.state;
-    //     this.props.changePassRequest({email, password, newPassword});
-		// }
-		
-		
-		handleClickShowPassword(){
-			const { showPassword } = this.state;
-			this.setState({ 
-				showPassword: !showPassword 
-			})
-		};
 
     render() {
-				const {email, password, loading, showPassword, formValid, emailValid} = this.state;
-
+        const {loginForm} = this.state;
         return (
             <div>
                 <div id='loginContainer'>
-                    <Grow in={true}>
-                        <form name="form" onSubmit={this.handleLoginSubmit}>
-                            <Card className="login">
-                                <CardHeader
-                                    title="Login"
-                                />
-                                <CardContent>
-                                    <div className={'form-group' + (!email ? ' has-error' : '')}>
-                                        <TextField
-                                            required
-                                            id="outlined-email-input"
-                                            label="Email"
-                                            type="email"
-                                            name="email"
-                                            value={email}
-                                            onChange={this.handleChange}
-                                            autoComplete="email"
-                                            margin="normal"
-                                            variant="outlined"
-                                        />
-                                        {!email &&
-                                        <div className="help-block">Email is required</div>
-																				}
-																				 {
-                                            email && !emailValid &&
-                                            <div className="help-block">Incorrect email</div>
-                                        }
-                                    </div>
-                                    <div className={'form-group' + (!password ? ' has-error' : '')}>
-                                        <TextField
-                                            required
-                                            // id="outlined-password-input"
-                                            id="adornment-password"
-                                            label="Password"
-                                            value={password}
-                                            name="password"
-                                            // type="password"
-                                            onChange={this.handleChange}
-                                            autoComplete="current-password"
-                                            margin="normal"
-                                            variant="outlined"
-                                            type={showPassword ? 'text' : 'password'}
-
-                                        />
-                                        <InputAdornment>
-                                            <IconButton
-                                                aria-label="Toggle password visibility"
-                                                onClick={this.handleClickShowPassword}
-                                                style={{position: "absolute", right: "5px", bottom: "12px"}}
-                                            >
-                                                {showPassword ? <Visibility/> : <VisibilityOff/>}
-                                            </IconButton>
-                                        </InputAdornment>
-                                        {!password &&
-                                        <div className="help-block">Password is required</div>
-                                        }
-                                        {
-                                            password && password.length < 5 &&
-                                            <div className="help-block">Password should NOT be shorter that 5
-                                                characters</div>
-                                        }
-                                    </div>
-                                </CardContent>
-                                <CardActions>
-                                    <div className="loginBtnGroup">
-                                        <Button variant="contained" type='submit' color='primary'
-                                                disabled={!formValid} size="large">Submit</Button>
-                                        {loading && <div id='progressLogin'>
-                                            <CircularProgress size={30} style={{marginTop: '15px'}}/>
-                                        </div>}
-                                    </div>
-                                </CardActions>
-                            </Card>
-                        </form>
-                    </Grow>
+                    {loginForm && <LoginForm toggleForm={this.toggleForm}/>}
+                    {!loginForm && <ChangePassForm toggleForm={this.toggleForm}/>}
                 </div>
                 <canvas id="canvas"></canvas>
             </div>
         );
     }
 }
-
-const LoginForm = connect(null, mapDispatchToProps)(LoginPage);
-
-export default LoginForm;

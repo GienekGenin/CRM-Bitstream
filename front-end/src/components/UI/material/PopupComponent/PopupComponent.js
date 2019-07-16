@@ -4,6 +4,7 @@ import * as PropTypes from "prop-types";
 import {withSnackbar} from "notistack";
 import {
     cleanLoginErrors,
+    cleanLoginSuccess,
     cleanFirmsErrors,
     cleanFirmsSuccess,
     cleanUsersErrors,
@@ -18,6 +19,7 @@ import {connect} from "react-redux";
 const mapDispatchToProps = (dispatch) => {
     return {
         cleanLoginErrors: () => dispatch(cleanLoginErrors()),
+        cleanLoginSuccess: () => dispatch(cleanLoginSuccess()),
         cleanFirmsErrors: () => dispatch(cleanFirmsErrors()),
         cleanFirmsSuccess: () => dispatch(cleanFirmsSuccess()),
         cleanUsersErrors: () => dispatch(cleanUsersErrors()),
@@ -38,6 +40,10 @@ class Popup extends React.Component {
             if (store.getState().loginReducer.error) {
                 this.handleClickVariant(store.getState().loginReducer.error, 'warning');
                 this.props.cleanLoginErrors();
+            }
+            if (store.getState().loginReducer.success) {
+                this.handleClickVariant(store.getState().loginReducer.success, 'success');
+                this.props.cleanLoginSuccess();
             }
             if (store.getState().firmReducer.error) {
                 this.handleClickVariant(store.getState().firmReducer.error, 'warning');

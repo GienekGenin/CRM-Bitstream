@@ -19,3 +19,7 @@ export const changePassRequest = (payload) => {
 export const cleanLoginErrors = () => {
     return {type: loginConstants.CLEAN_LOGIN_ERRORS}
 };
+
+export const cleanLoginSuccess = () => {
+    return {type: loginConstants.CLEAN_LOGIN_SUCCESS}
+};

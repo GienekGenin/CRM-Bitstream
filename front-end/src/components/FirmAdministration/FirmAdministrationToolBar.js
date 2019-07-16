@@ -123,7 +123,6 @@ class TestToolBar extends React.Component {
         });
     };
 
-// ------------------------------------------------------
     updateNewFirm(e, param) {
         const {value} = e.target;
         this.setState({
@@ -133,7 +132,6 @@ class TestToolBar extends React.Component {
         });
     }
 
-//  -----------------------------------------------------
     handleDeleteDevice() {
         this.props.deleteFirmRequest(this.props.selected._id);
         this.props.resetSelected();
@@ -160,7 +158,7 @@ class TestToolBar extends React.Component {
                 this.setState({addressValid: value.length >= 5}, () => this.validateForm());
                 break;
             case 'email':
-                const pattern = new RegExp(/^\w+([-]?\w+)*@\w+([-]?\w+)*(\.\w{2,3})+$/i);
+                const pattern = new RegExp(/^(([^<>()\]\\.,;:\s@"]+(\.[^<>()\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3})|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/);
                 this.setState({emailValid: pattern.test(value)}, () => this.validateForm());
                 break;
             case 'tel':
