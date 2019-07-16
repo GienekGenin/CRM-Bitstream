@@ -74,7 +74,8 @@ class TestToolBar extends React.Component {
     };
 
     handleColumnsChange = (title) => {
-        let columns = this.state.columns.map((el, i, arr) => el.title === title ? arr[i] = Object.assign(el, {hidden: !el.hidden}) : el);
+        let columns = this.state.columns.map(
+            (el, i, arr) => el.title === title ? arr[i] = Object.assign(el, {hidden: !el.hidden}) : el);
         this.setState({columns});
     };
 

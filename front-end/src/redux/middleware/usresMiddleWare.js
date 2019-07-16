@@ -1,6 +1,6 @@
 import {userConstants} from '../constants/index';
 import {userService} from "../services/user";
-import {errorParser} from "../services/common";
+import {errorParser} from "../../services/http.service";
 
 export const usersMiddleWare = ({dispatch}) => {
     return (next) => {

@@ -1,6 +1,11 @@
 import React from 'react';
-import {changePassRequest} from "../../redux/actions";
+import * as PropTypes from "prop-types";
+
+// Redux
 import {connect} from 'react-redux';
+import {changePassRequest} from "../../redux/actions";
+
+// Material
 import Card from "@material-ui/core/Card";
 import CardHeader from "@material-ui/core/CardHeader";
 import CardContent from "@material-ui/core/CardContent";
@@ -9,7 +14,6 @@ import CardActions from "@material-ui/core/CardActions";
 import Button from "@material-ui/core/Button";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Grow from "@material-ui/core/Grow";
-import * as PropTypes from "prop-types";
 
 const mapDispatchToProps = (dispatch) => {
     return {

@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import * as PropTypes from "prop-types";
 import _ from 'lodash';
-// import classes from 'classnames';
 
 // Material
 import Checkbox from "@material-ui/core/Checkbox";

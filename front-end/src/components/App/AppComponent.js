@@ -25,8 +25,8 @@ import PersonIcon from "@material-ui/icons/Person";
 
 
 // Redux
-import {history} from '../../redux/services/history';
-import {tokenService} from "../../redux/services/token";
+import {historyService} from '../../services/history.service';
+import {tokenService} from "../../services/token.service";
 import {setUser, logoutRequest} from "../../redux/actions/index";
 import {connect} from "react-redux";
 
@@ -157,7 +157,7 @@ class AppComponent extends Component {
         const {open, animations} = this.state;
         const {classes, theme, userInfo} = this.props;
         return (
-            <Router history={history}>
+            <Router history={historyService}>
                 <MuiThemeProvider theme={theme}>
                     <div className={'root'}>
                         <div>
@@ -299,7 +299,7 @@ class AppComponent extends Component {
                             </Drawer>
                         </div>
                         <main className={classes.content}>
-                            <Switch history={history}>
+                            <Switch history={historyService}>
                                 <Route exact path='/' component={HomeComponent}/>
                                 <PrivateRoute exact path='/admin-panel' component={AdminPanelComponent}/>
                                 <Route exact path='/login' component={LoginForm}/>

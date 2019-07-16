@@ -7,7 +7,7 @@ import store from '../../redux/store/index'
 import LoginForm from './LoginForm';
 import ChangePassForm from './ChangePassForm';
 import './Login.scss';
-import {animate} from "../Home/landingAnimation";
+import {animate} from '../Home/landingAnimation';
 
 export default class LoginPage extends React.Component {
 
@@ -15,13 +15,6 @@ export default class LoginPage extends React.Component {
         super(props);
 
         this.state = {
-            email: '',
-            password: '',
-            loading: false,
-            showPassword: false,
-            emailValid: false,
-            passwordValid: false,
-            formValid: false,
             loginForm: true
         };
 
@@ -29,7 +22,7 @@ export default class LoginPage extends React.Component {
     }
 
     componentDidMount() {
-        localStorage.removeItem('token');
+        localStorage.removeItem('token.service.js');
         animate();
         this.unsubscribe = store.subscribe(() => {
             if (store.getState().loginReducer.user) {

@@ -1,9 +1,12 @@
 import React from 'react';
 import * as PropTypes from 'prop-types';
 
+// Redux
 import {connect} from 'react-redux';
 import {loginRequest} from "../../redux/actions";
+import store from "../../redux/store";
 
+// Material
 import Grow from "@material-ui/core/Grow";
 import Card from "@material-ui/core/Card";
 import CardHeader from "@material-ui/core/CardHeader";
@@ -16,7 +19,9 @@ import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import CardActions from "@material-ui/core/CardActions";
 import Button from "@material-ui/core/Button";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import store from "../../redux/store";
+
+// Services
+import {validateField} from "../../services/validation.service";
 
 const mapDispatchToProps = (dispatch) => {
     return {
@@ -42,6 +47,7 @@ class LoginForm extends React.Component {
         this.handleChange = this.handleChange.bind(this);
         this.handleClickShowPassword = this.handleClickShowPassword.bind(this);
         this.handleLoginSubmit = this.handleLoginSubmit.bind(this);
+        this.validateForm = this.validateForm.bind(this);
     }
 
     componentWillMount() {
@@ -67,28 +73,9 @@ class LoginForm extends React.Component {
     handleChange(e) {
         const {name, value} = e.target;
         this.setState({[name]: value}, () => {
-            this.validateField(name, value)
+            validateField(name, value, this);
         });
-    }
-
-    validateField(fieldName, value) {
-        let {emailValid, passwordValid} = this.state;
-
-        switch (fieldName) {
-            case 'email':
-                const pattern = new RegExp(/^(([^<>()\]\\.,;:\s@"]+(\.[^<>()\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3})|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/);
-                emailValid = pattern.test(value);
-                break;
-            case 'password':
-                passwordValid = value.length >= 5;
-                break;
-            default:
-                break;
-        }
-        this.setState({
-            emailValid,
-            passwordValid
-        }, this.validateForm);
+        this.validateForm();
     }
 
     validateForm() {
@@ -151,7 +138,6 @@ class LoginForm extends React.Component {
                                     margin="normal"
                                     variant="outlined"
                                     type={showPassword ? 'text' : 'password'}
-
                                 />
                                 <InputAdornment>
                                     <IconButton

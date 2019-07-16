@@ -21,7 +21,7 @@ import CheckBoxIcon from '@material-ui/icons/CheckBox';
 import store from "../../redux/store";
 import {connect} from "react-redux";
 import {userDevicesRequest} from "../../redux/actions";
-import {tokenService} from "../../redux/services/token";
+import {tokenService} from "../../services/token.service";
 
 // Components
 import './FirmDevices.scss';
