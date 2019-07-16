@@ -72,8 +72,6 @@ class LoginForm extends React.Component {
 
     handleChange(e) {
         const {name, value} = e.target;
-        console.log(name, value);
-
         this.setState({[name]: value}, () => {
             validateField(name, value, this);
 
@@ -82,11 +80,7 @@ class LoginForm extends React.Component {
     }
 
     validateForm() {
-
-        const {emailValid, password, passwordValid} = this.state;
-        console.log(emailValid, passwordValid, password);
-
-
+        const {emailValid, passwordValid} = this.state;
         this.setState({
             formValid: emailValid && passwordValid
         });
@@ -170,10 +164,16 @@ class LoginForm extends React.Component {
                                         disabled={!formValid} size="large"
                                         onClick={this.handleLoginSubmit}
                                 >Submit</Button>
-                                <Button variant="contained" type='submit' color='primary'
-                                        size="large"
+                                <div type='submit' color='black'
+                                         style={{textDecoration: 'underline',
+                                             display: 'flex',
+                                             flexDirection: 'row',
+                                             textTransform: 'lowercase',
+                                             cursor: 'pointer',
+                                             marginTop: '15px'
+                                         }}
                                         onClick={()=>this.props.toggleForm()}
-                                >Change password</Button>
+                                >Change password</div>
                                 {loading && <div id='progressLogin'>
                                     <CircularProgress size={30} style={{marginTop: '15px'}}/>
                                 </div>}

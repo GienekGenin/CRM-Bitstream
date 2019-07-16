@@ -1,7 +1,6 @@
 @import "../../colors";
 
 $borderColor:  #5c6bc0;
-$outlineColor: #3f51b5;
 $errorColor:  #ec407a;
 
 #loginContainer {
@@ -9,23 +8,22 @@ $errorColor:  #ec407a;
   top: 50%;
   left: 50%;
   width: 25em;
-	transform: translate(-50%, -50%);
-	border: 8px solid $borderColor;
-	// outline: 8px solid $outlineColor;
-	box-sizing: border-box;
+  transform: translate(-50%, -50%);
+  border: 8px solid $borderColor;
+  box-sizing: border-box;
 }
 
 .login > div > div > div {
-	position: relative;
+  position: relative;
   width: 100%;
 }
 
 .loginBtnGroup {
   position: relative;
-  top: 50%;
-	left: 50%;
-	transform: translate(-50%, -50%);
-	padding-top: 2em;
+  top: 75%;
+  left: 50%;
+  transform: translate(-50%, -35%);
+  padding-top: 2em;
 }
 
 #progressLogin {
@@ -49,13 +47,12 @@ $errorColor:  #ec407a;
 }
 
 .login {
-	text-align: center;
-
+  text-align: center;
 }
 
 .help-block {
-	color: $errorColor;
-	font-size: 12px;
-	text-align: left;
-	text-transform: none;
+  color: $errorColor;
+  font-size: 12px;
+  text-align: left;
+  text-transform: none;
 }

@@ -160,10 +160,10 @@ class ChangePassForm extends React.Component {
                         <CardActions>
                             <div className="loginBtnGroup">
                                 <Button variant="contained" type='button' color='primary'
-                                        disabled={!formValid} size="large"
+                                        disabled={!formValid} size="large" style={{marginRight: '25px'}}
                                     onClick={this.handleChangePassSubmit}
                                 >Submit</Button>
-                                <Button variant="contained" type='submit' color='primary'
+                                <Button variant="outlined" type='submit' color='primary'
                                         size="large"
                                         onClick={()=>this.props.toggleForm()}
                                 >Login</Button>
