@@ -1,5 +1,5 @@
-import {history} from "./history";
-import {postRequest} from "./common";
+import {historyService} from "../../services/history.service";
+import {postRequest, putRequest} from "../../services/http.service";
 
 const apiBase = process.env.REACT_APP_API_BASE;
 
@@ -10,12 +10,12 @@ const login = (email, password) => {
 
 const changePass = (payload) => {
     const url = `${apiBase}users/changePass`;
-    return postRequest(url, payload);
+    return putRequest(url, payload);
 };
 
 const logout = () => {
-    history.push('/login');
-    localStorage.removeItem('token');
+    historyService.push('/login');
+    localStorage.removeItem('token.service.js');
 };
 
 export const userService = {

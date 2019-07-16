@@ -9,7 +9,7 @@ export const errorParser = (err) => {
 };
 
 export const postRequest = (url, body) => {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem('token.service.js');
     const requestOptions = {
         method: 'POST',
         headers: {
@@ -23,7 +23,7 @@ export const postRequest = (url, body) => {
 };
 
 export const getRequest = (url) => {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem('token.service.js');
     const requestOptions = {
         method: 'GET',
         headers: {
@@ -35,7 +35,7 @@ export const getRequest = (url) => {
 };
 
 export const putRequest = (url, body) => {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem('token.service.js');
     const requestOptions = {
         method: 'PUT',
         headers: {
@@ -48,7 +48,7 @@ export const putRequest = (url, body) => {
 };
 
 export const deleteRequest = (url, body) => {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem('token.service.js');
     const requestOptions = {
         method: 'DELETE',
         headers: {

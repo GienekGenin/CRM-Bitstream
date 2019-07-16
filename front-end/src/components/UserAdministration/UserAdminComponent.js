@@ -26,7 +26,7 @@ import {
     changePassAdminRequest,
     changeEmailAdminRequest
 } from "../../redux/actions";
-import {tokenService} from "../../redux/services/token";
+import {tokenService} from "../../services/token.service";
 
 // Components
 import './UserAdmin.scss';

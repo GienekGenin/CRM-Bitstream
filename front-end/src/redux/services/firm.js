@@ -1,4 +1,4 @@
-import {postRequest, getRequest, deleteRequest, putRequest} from "./common";
+import {postRequest, getRequest, deleteRequest, putRequest} from "../../services/http.service";
 
 const apiBase = process.env.REACT_APP_API_BASE;
 

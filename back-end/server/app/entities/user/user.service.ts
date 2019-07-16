@@ -276,7 +276,8 @@ class UsersService {
                         for (const twinsKey in twins) {
                             devices.forEach(device => {
                                 if (device._doc.sid === twins[twinsKey]['deviceId']) {
-                                    devicesToUI.push(Object.assign({}, device._doc, {azure: twins[twinsKey]['status']}))
+                                    devicesToUI.push(Object.assign({}, device._doc,
+                                        {azure: twins[twinsKey]['status']}))
                                 }
                             })
                         }
@@ -355,6 +356,75 @@ class UsersService {
                 resolve(payload);
             })
         }))
+    }
+
+    changePass(credentials) {
+        return new Promise((resolve, reject) => {
+            async.waterfall(
+                [
+                    callback => {
+                        this.usersRepository.findByEmail(credentials.email)
+                            .then(user => {
+                                if (user === null) {
+                                    callback(new Error('User did not exist'));
+                                } else if (user._doc.deleted) {
+                                    callback(new Error('User did not exist'));
+                                } else {
+                                    callback(null, user._doc);
+                                }
+                            })
+                            .catch(err => {
+                                callback(err);
+                            });
+                    },
+                    (user, callback) => {
+                        firmService.findById(user.firm_id)
+                            .then(firm => callback(null, {user, firm}))
+                            .catch(e => callback(e));
+                    },
+                    (payload, callback) => {
+                        bcryptjs.compare(credentials.password, payload.user.password)
+                            .then(result => {
+                                if (result === true) {
+                                    bcryptjs.hash(credentials.newPassword, 10)
+                                        .then(hash => {
+                                            const newCred = _.omit(credentials, ['newPassword']);
+                                            callback(null, Object.assign(newCred, {password: hash}), payload.firm);
+                                        })
+                                        .catch(e => callback(e));
+                                } else {
+                                    callback('Wrong password');
+                                }
+                            }).catch(e => callback(e));
+                    },
+                    (credential, firm, callback) => {
+                        this.usersRepository.updatePass(credential)
+                            .then(d => {
+                                if (d['nModified'] === 0) {
+                                    callback(new Error('Unable to change password'));
+                                }
+                                callback(null, credential, firm);
+                            })
+                            .catch(e => callback(e));
+                    },
+                    (credential, firm, callback) => {
+                        this.usersRepository.findByEmail(credential.email)
+                            .then(user => {
+                                const userPayload = UsersService.createUserPayload(user);
+                                callback(null,
+                                    tokenService.createToken({firm, user: userPayload})
+                                );
+                            })
+                            .catch(e => callback(e));
+                    }
+                ],
+                (err, payload) => {
+                    if (err) {
+                        reject(err);
+                    }
+                    resolve(payload);
+                })
+        })
     }
 }
 

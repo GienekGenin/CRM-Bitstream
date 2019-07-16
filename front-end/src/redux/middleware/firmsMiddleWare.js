@@ -1,6 +1,6 @@
 import {firmConstants} from '../constants/index';
 import {firmService} from "../services/firm";
-import {errorParser} from "../services/common";
+import {errorParser} from "../../services/http.service";
 
 export const firmMiddleWare = ({dispatch}) => {
     return (next) => {

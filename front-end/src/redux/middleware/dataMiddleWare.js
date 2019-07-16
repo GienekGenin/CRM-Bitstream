@@ -1,6 +1,6 @@
 import {dataConstants} from '../constants/index';
 import {dataService} from "../services/data";
-import {errorParser} from "../services/common";
+import {errorParser} from "../../services/http.service";
 
 export const dataMiddleWare = ({dispatch}) => {
     return (next) => {

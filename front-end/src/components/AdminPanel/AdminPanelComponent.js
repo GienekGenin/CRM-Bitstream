@@ -22,7 +22,7 @@ import FirmDevicesComponent from "../FirmDevices/FirmDevicesComponent";
 import FirmAdministrationComponent from "../FirmAdministration/FirmAdministrationComponent";
 import VisualisationComponent from '../Visualisation/VisualisationComponent';
 import {deviceTypesService} from "../../redux/services/device_types";
-import {tokenService} from "../../redux/services/token";
+import {tokenService} from "../../services/token.service";
 
 const mapDispatchToProps = (dispatch) => {
     return {

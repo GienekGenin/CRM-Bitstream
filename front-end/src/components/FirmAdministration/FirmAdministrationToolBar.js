@@ -76,7 +76,8 @@ class TestToolBar extends React.Component {
     };
 
     handleColumnsChange = (title) => {
-        let columns = this.state.columns.map((el, i, arr) => el.title === title ? arr[i] = Object.assign(el, {hidden: !el.hidden}) : el);
+        let columns = this.state.columns.map(
+            (el, i, arr) => el.title === title ? arr[i] = Object.assign(el, {hidden: !el.hidden}) : el);
         this.setState({columns});
     };
 
@@ -132,8 +133,8 @@ class TestToolBar extends React.Component {
         }, () => {
             this.validateField(param, value)
         });
-		}
-		
+    }
+
     handleDeleteDevice() {
         this.props.deleteFirmRequest(this.props.selected._id);
         this.props.resetSelected();
@@ -160,7 +161,7 @@ class TestToolBar extends React.Component {
                 this.setState({addressValid: value.length >= 5}, () => this.validateForm());
                 break;
             case 'email':
-                const pattern = new RegExp(/^\w+([-]?\w+)*@\w+([-]?\w+)*(\.\w{2,3})+$/i);
+                const pattern = new RegExp(/^(([^<>()\]\\.,;:\s@"]+(\.[^<>()\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3})|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/);
                 this.setState({emailValid: pattern.test(value)}, () => this.validateForm());
                 break;
             case 'tel':
