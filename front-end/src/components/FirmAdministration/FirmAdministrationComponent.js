@@ -94,7 +94,7 @@ class FirmAdministrationComponent extends Component {
 
     componentDidMount() {
         const storageFirmInfo = JSON.parse(localStorage.getItem('firmsInfo'));
-        if(!storageFirmInfo){
+        if (!storageFirmInfo) {
             this.setState({infoLoading: true});
             firmService.firmsInfo().then(firmsInfo => {
                 localStorage.setItem('firmsInfo', JSON.stringify(firmsInfo));
@@ -103,12 +103,13 @@ class FirmAdministrationComponent extends Component {
             }).catch(e => {
                 this.setState({infoLoading: false});
             });
-        } else {
+        }
+        else {
             buildFirmsInfo(storageFirmInfo);
         }
 
         const storageBasicInfo = JSON.parse(localStorage.getItem('basicInfo'));
-        if(!storageBasicInfo){
+        if (!storageBasicInfo) {
             this.setState({basicLoading: true});
             mixedService.getBasicInfo().then(basicInfo => {
                 localStorage.setItem('basicInfo', JSON.stringify(basicInfo));
@@ -116,7 +117,8 @@ class FirmAdministrationComponent extends Component {
             }).catch(e => {
                 this.setState({basicLoading: false});
             });
-        } else {
+        }
+        else {
             this.setState({basicInfo: storageBasicInfo});
         }
 
@@ -153,7 +155,8 @@ class FirmAdministrationComponent extends Component {
         if (this.state.selectedFirm && this.state.selectedFirm._id === selectedFirm._id) {
             this.setState({selectedFirm: null, selectedFirmId: ''});
             this.props.onFirmSelect(null);
-        } else {
+        }
+        else {
             this.setState({selectedFirm, selectedFirmId: selectedFirm._id});
             this.props.onFirmSelect(selectedFirm);
         }
@@ -229,47 +232,47 @@ class FirmAdministrationComponent extends Component {
                                 onRowClick={this.onRowClick}
                             />
                         </Grid>
-													<Grid item sm={12} md={5}>
-															<Paper className={'firm-container'}>
-															<div className={'firms-title'}>Application state</div>
-															{basicLoading && <CircularProgress
-																			style={{
-																					width: '200px',
-																					height: '200px',
-																					color: '#2196f3',
-																					position: "absolute",
-																					top: '30%',
-																					left: "30%",
-																					zIndex: 9999
-																			}}
-																		/>}
-																 {basicInfo && Object.getOwnPropertyNames(basicInfo).map(propName=>(
-																			<Grid item xs={6} key={propName}>
-																				<div className={'base-info'}>																		
-																					<div className={'base-info-content'}>
-																						{ icons[propName].icon }
-																						<div className={'content-text'}>
-																							{ icons[propName].text } 
-																							{ basicInfo[propName] }
-																						</div>
-																					</div>
-																				</div>
-																			</Grid>																			
-																	))} 
-															</Paper>
-													</Grid>
-													<Grid item sm={12} md={7}>
-															<Paper className={'firm-container'}>
-															{infoLoading && <CircularProgress
-																			style={{
-																					width: '250px',
-																					height: '250px',
-																					color: '#2196f3',
-																					position: "absolute",
-																					top: '30%',
-																					left: "34%",
-																					zIndex: 9999
-																			}}
+                        <Grid item sm={12} md={5}>
+                            <Paper className={'firm-container'}>
+                                <div className={'firms-title'}>Application state</div>
+                                {basicLoading && <CircularProgress
+                                    style={{
+                                        width: '200px',
+                                        height: '200px',
+                                        color: '#2196f3',
+                                        position: "absolute",
+                                        top: '30%',
+                                        left: "30%",
+                                        zIndex: 9999
+                                    }}
+                                />}
+                                {basicInfo && Object.getOwnPropertyNames(basicInfo).map(propName => (
+                                    <Grid item xs={6} key={propName}>
+                                        <div className={'base-info'}>
+                                            <div className={'base-info-content'}>
+                                                {icons[propName].icon}
+                                                <div className={'content-text'}>
+                                                    {icons[propName].text}
+                                                    {basicInfo[propName]}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </Grid>
+                                ))}
+                            </Paper>
+                        </Grid>
+                        <Grid item sm={12} md={7}>
+                            <Paper className={'firm-container'}>
+                                {infoLoading && <CircularProgress
+                                    style={{
+                                        width: '250px',
+                                        height: '250px',
+                                        color: '#2196f3',
+                                        position: "absolute",
+                                        top: '30%',
+                                        left: "34%",
+                                        zIndex: 9999
+                                    }}
                                 />}
                                 <div className={'firms-title'}>Info about firms</div>
                                 <div id={'firms-info'} style={{position: 'relative'}}>
