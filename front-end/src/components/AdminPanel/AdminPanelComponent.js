@@ -14,6 +14,7 @@ import {firmsRequest, usersRequest} from "../../redux/actions/index";
 import {connect} from "react-redux";
 import store from '../../redux/store'
 import {checkAccess} from "../privateRoute";
+import {deviceTypesService} from "../../redux/services/device_types";
 
 // Components
 import './AdminPanel.scss';
@@ -21,7 +22,8 @@ import UserAdminComponent from '../../components/UserAdministration/UserAdminCom
 import FirmDevicesComponent from "../FirmDevices/FirmDevicesComponent";
 import FirmAdministrationComponent from "../FirmAdministration/FirmAdministrationComponent";
 import VisualisationComponent from '../Visualisation/VisualisationComponent';
-import {deviceTypesService} from "../../redux/services/device_types";
+
+// Services
 import {tokenService} from "../../services/token.service";
 
 const mapDispatchToProps = (dispatch) => {

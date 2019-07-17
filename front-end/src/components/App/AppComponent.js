@@ -23,19 +23,19 @@ import MoreVertIcon from "@material-ui/icons/MoreVert";
 import ViewListIcon from "@material-ui/icons/ViewList";
 import PersonIcon from "@material-ui/icons/Person";
 
-
 // Redux
-import {historyService} from '../../services/history.service';
-import {tokenService} from "../../services/token.service";
 import {setUser, logoutRequest} from "../../redux/actions/index";
 import {connect} from "react-redux";
+
+// Services
+import {historyService} from '../../services/history.service';
+import {tokenService} from "../../services/token.service";
 
 // Components
 import './App.scss';
 import LoginForm from '../Login/LoginComponent';
 import HomeComponent from "../Home/HomeComponent";
 import AdminPanelComponent from "../AdminPanel/AdminPanelComponent";
-// import Fade from 'react-reveal/Fade';
 
 const styles = theme => ({
     root: {
@@ -304,7 +304,6 @@ class AppComponent extends Component {
                             </Switch>
                         </main>
                     </div>
-
                     <SnackbarProvider maxSnack={5}>
                         <PopupComponent/>
                     </SnackbarProvider>
