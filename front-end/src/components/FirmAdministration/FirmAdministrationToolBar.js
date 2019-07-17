@@ -30,6 +30,7 @@ import {addFirmRequest, deleteFirmRequest, firmsRequest, updateFirmRequest} from
 
 // Components
 import './FirmToolBar.scss'
+import {validateField} from "../../services/validation1.service";
 // import classes from 'classnames';
 // import { mergeClasses } from "@material-ui/styles";
 
@@ -60,8 +61,12 @@ class TestToolBar extends React.Component {
                 tel: '',
                 nip: ''
             },
+            nameValid: false,
+            addressValid: false,
+            emailValid: false,
+            telValid: false,
+            nipValid: false
         };
-        this.validateField = this.validateField.bind(this);
         this.validateForm = this.validateForm.bind(this);
     }
 
@@ -116,22 +121,16 @@ class TestToolBar extends React.Component {
                 email: '',
                 tel: '',
                 nip: ''
-            },
-            nameValid: false,
-            addressValid: false,
-            emailValid: false,
-            telValid: false,
-            nipValid: false,
-            formValid: false
+            }
         });
     };
 
     updateNewFirm(e, param) {
-        const {value} = e.target;
+        const {value, name} = e.target;
         this.setState({
             newFirm: Object.assign({}, this.state.newFirm, {[param]: value})
         }, () => {
-            this.validateField(param, value)
+            validateField(name, value, this)
         });
     }
 
@@ -151,29 +150,6 @@ class TestToolBar extends React.Component {
         this.props.resetSelected();
         this.handleClose('editDialog');
     }
-
-    validateField = (fieldName, value) => {
-        switch (fieldName) {
-            case 'name':
-                this.setState({nameValid: value.length >= 3}, () => this.validateForm());
-                break;
-            case 'address':
-                this.setState({addressValid: value.length >= 5}, () => this.validateForm());
-                break;
-            case 'email':
-                const pattern = new RegExp(/^(([^<>()\]\\.,;:\s@"]+(\.[^<>()\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3})|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/);
-                this.setState({emailValid: pattern.test(value)}, () => this.validateForm());
-                break;
-            case 'tel':
-                this.setState({telValid: value.length >= 9}, () => this.validateForm());
-                break;
-            case 'nip':
-                this.setState({nipValid: value.length >= 6}, () => this.validateForm());
-                break;
-            default:
-                break;
-        }
-    };
 
     validateForm = () => {
         let {nameValid, addressValid, emailValid, telValid, nipValid} = this.state;
@@ -211,9 +187,9 @@ class TestToolBar extends React.Component {
                                 aria-describedby="alert-dialog-description"
                             >
                                 <DialogTitle id="alert-dialog-title">Edit firm</DialogTitle>
-																<DialogContent style={{background: 'tomato'}}>
+                                <DialogContent>
                                     <TextField
-																				className={'form-group' + (!newFirm.name ? ' has-error' : '')}
+                                        className={'form-group' + (!newFirm.name ? ' has-error' : '')}
                                         autoFocus
                                         margin="dense"
                                         id="firm-name"
@@ -224,16 +200,16 @@ class TestToolBar extends React.Component {
                                         onChange={(e) => this.updateNewFirm(e, 'name')}
                                         fullWidth
                                     />
-																		{
-																			!newFirm.name &&
-                                      <div className="help-block">Name is required</div>
-																		}
-																		{
-                                      newFirm.name && !this.state.nameValid &&
-                                      <div className="help-block">Too short name</div>
+                                    {
+                                        !newFirm.name && null &&
+                                        <div className="help-block">Name is required</div>
+                                    }
+                                    {
+                                        newFirm.name && !this.state.nameValid &&
+                                        <div className="help-block">Too short name</div>
                                     }
                                     <TextField
-																		    className={'form-group' + (!newFirm.address ? ' has-error' : '')}
+                                        className={'form-group' + (!newFirm.address ? ' has-error' : '')}
                                         autoFocus
                                         margin="dense"
                                         id="firm-address"
@@ -244,16 +220,16 @@ class TestToolBar extends React.Component {
                                         onChange={(e) => this.updateNewFirm(e, 'address')}
                                         fullWidth
                                     />
-																		{
-																			!newFirm.address &&
-                                      <div className="help-block">Address is required</div>
-																		}
-																		{
-                                      newFirm.address && !this.state.addressValid &&
-                                      <div className="help-block">Too short adress</div>
+                                    {
+                                        !newFirm.address && null &&
+                                        <div className="help-block">Address is required</div>
+                                    }
+                                    {
+                                        newFirm.address && !this.state.addressValid &&
+                                        <div className="help-block">Too short adress</div>
                                     }
                                     <TextField
-																				className={'form-group' + (!newFirm.email ? ' has-error' : '')}
+                                        className={'form-group' + (!newFirm.email ? ' has-error' : '')}
                                         autoFocus
                                         margin="dense"
                                         id="firm-email"
@@ -264,16 +240,16 @@ class TestToolBar extends React.Component {
                                         onChange={(e) => this.updateNewFirm(e, 'email')}
                                         fullWidth
                                     />
-																		{
-																			!newFirm.email &&
-                                      <div className="help-block">Email is required</div>
-																		}
-																		{
-                                      newFirm.email && !this.state.emailValid &&
-                                      <div className="help-block">Incorrect email</div>
+                                    {
+                                        !newFirm.email && null &&
+                                        <div className="help-block">Email is required</div>
+                                    }
+                                    {
+                                        newFirm.email && !this.state.emailValid &&
+                                        <div className="help-block">Incorrect email</div>
                                     }
                                     <TextField
-																				className={'form-group' + (!newFirm.tel ? ' has-error' : '')}
+                                        className={'form-group' + (!newFirm.tel ? ' has-error' : '')}
                                         autoFocus
                                         margin="dense"
                                         id="firm-tel"
@@ -284,16 +260,16 @@ class TestToolBar extends React.Component {
                                         onChange={(e) => this.updateNewFirm(e, 'tel')}
                                         fullWidth
                                     />
-																		{
-																			!newFirm.tel &&
-                                      <div className="help-block">Number is required</div>
-																		}
-																		{
-                                      newFirm.tel && !this.state.telValid &&
-                                      <div className="help-block">Too short number</div>
+                                    {
+                                        !newFirm.tel && null &&
+                                        <div className="help-block">Number is required</div>
+                                    }
+                                    {
+                                        newFirm.tel && !this.state.telValid &&
+                                        <div className="help-block">Too short number</div>
                                     }
                                     <TextField
-																				className={'form-group' + (!newFirm.nip ? ' has-error' : '')}
+                                        className={'form-group' + (!newFirm.nip ? ' has-error' : '')}
                                         autoFocus
                                         margin="dense"
                                         id="firm-nip"
@@ -304,13 +280,13 @@ class TestToolBar extends React.Component {
                                         onChange={(e) => this.updateNewFirm(e, 'nip')}
                                         fullWidth
                                     />
-																		{
-																			!newFirm.nip &&
-                                      <div className="help-block">Nip is required</div>
-																		}
-																		{
-                                      newFirm.nip && !this.state.nipValid &&
-                                      <div className="help-block">Too short nip</div>
+                                    {
+                                        !newFirm.nip && null &&
+                                        <div className="help-block">Nip is required</div>
+                                    }
+                                    {
+                                        newFirm.nip && !this.state.nipValid &&
+                                        <div className="help-block">Too short nip</div>
                                     }
                                 </DialogContent>
                                 <DialogActions>
@@ -344,8 +320,8 @@ class TestToolBar extends React.Component {
                             >
                                 <DialogTitle id="alert-dialog-title-">Add firm</DialogTitle>
                                 <DialogContent>
-																<TextField
-																				className={'form-group' + (!newFirm.name ? ' has-error' : '')}
+                                    <TextField
+                                        className={'form-group' + (!newFirm.name ? ' has-error' : '')}
                                         autoFocus
                                         margin="dense"
                                         id="firm-name"
@@ -356,16 +332,16 @@ class TestToolBar extends React.Component {
                                         onChange={(e) => this.updateNewFirm(e, 'name')}
                                         fullWidth
                                     />
-																		{
-																			!newFirm.name &&
-                                      <div className="help-block">Name is required</div>
-																		}
-																		{
-                                      newFirm.name && !this.state.nameValid &&
-                                      <div className="help-block">Too short name</div>
+                                    {
+                                        !newFirm.name && null &&
+                                        <div className="help-block">Name is required</div>
+                                    }
+                                    {
+                                        newFirm.name && !this.state.nameValid &&
+                                        <div className="help-block">Too short name</div>
                                     }
                                     <TextField
-																		    className={'form-group' + (!newFirm.address ? ' has-error' : '')}
+                                        className={'form-group' + (!newFirm.address ? ' has-error' : '')}
                                         autoFocus
                                         margin="dense"
                                         id="firm-address"
@@ -376,16 +352,16 @@ class TestToolBar extends React.Component {
                                         onChange={(e) => this.updateNewFirm(e, 'address')}
                                         fullWidth
                                     />
-																		{
-																			!newFirm.address &&
-                                      <div className="help-block">Address is required</div>
-																		}
-																		{
-                                      newFirm.address && !this.state.addressValid &&
-                                      <div className="help-block">Too short adress</div>
+                                    {
+                                        !newFirm.address && null &&
+                                        <div className="help-block">Address is required</div>
+                                    }
+                                    {
+                                        newFirm.address && !this.state.addressValid &&
+                                        <div className="help-block">Too short adress</div>
                                     }
                                     <TextField
-																				className={'form-group' + (!newFirm.email ? ' has-error' : '')}
+                                        className={'form-group' + (!newFirm.email ? ' has-error' : '')}
                                         autoFocus
                                         margin="dense"
                                         id="firm-email"
@@ -396,16 +372,16 @@ class TestToolBar extends React.Component {
                                         onChange={(e) => this.updateNewFirm(e, 'email')}
                                         fullWidth
                                     />
-																		{
-																			!newFirm.email &&
-                                      <div className="help-block">Email is required</div>
-																		}
-																		{
-                                      newFirm.email && !this.state.emailValid &&
-                                      <div className="help-block">Incorrect email</div>
+                                    {
+                                        !newFirm.email && null &&
+                                        <div className="help-block">Email is required</div>
+                                    }
+                                    {
+                                        newFirm.email && !this.state.emailValid &&
+                                        <div className="help-block">Incorrect email</div>
                                     }
                                     <TextField
-																				className={'form-group' + (!newFirm.tel ? ' has-error' : '')}
+                                        className={'form-group' + (!newFirm.tel ? ' has-error' : '')}
                                         autoFocus
                                         margin="dense"
                                         id="firm-tel"
@@ -416,16 +392,16 @@ class TestToolBar extends React.Component {
                                         onChange={(e) => this.updateNewFirm(e, 'tel')}
                                         fullWidth
                                     />
-																		{
-																			!newFirm.tel &&
-                                      <div className="help-block">Number is required</div>
-																		}
-																		{
-                                      newFirm.tel && !this.state.telValid &&
-                                      <div className="help-block">Too short number</div>
+                                    {
+                                        !newFirm.tel && null &&
+                                        <div className="help-block">Number is required</div>
+                                    }
+                                    {
+                                        newFirm.tel && !this.state.telValid &&
+                                        <div className="help-block">Too short number</div>
                                     }
                                     <TextField
-																				className={'form-group' + (!newFirm.nip ? ' has-error' : '')}
+                                        className={'form-group' + (!newFirm.nip ? ' has-error' : '')}
                                         autoFocus
                                         margin="dense"
                                         id="firm-nip"
@@ -436,13 +412,13 @@ class TestToolBar extends React.Component {
                                         onChange={(e) => this.updateNewFirm(e, 'nip')}
                                         fullWidth
                                     />
-																		{
-																			!newFirm.nip &&
-                                      <div className="help-block">Nip is required</div>
-																		}
-																		{
-                                      newFirm.nip && !this.state.nipValid &&
-                                      <div className="help-block">Too short nip</div>
+                                    {
+                                        !newFirm.nip && null &&
+                                        <div className="help-block">Nip is required</div>
+                                    }
+                                    {
+                                        newFirm.nip && !this.state.nipValid &&
+                                        <div className="help-block">Too short nip</div>
                                     }
                                 </DialogContent>
                                 <DialogActions>

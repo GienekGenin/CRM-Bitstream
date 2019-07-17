@@ -80,6 +80,8 @@ class UserToolBar extends React.Component {
             },
             roles: null
         };
+        // this.validateField = this.validateField.bind(this);
+        // this.validateForm = this.validateForm.bind(this);
     }
 
     componentWillMount() {

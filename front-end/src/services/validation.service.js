@@ -11,6 +11,15 @@ export const validateField = (fieldName, value, _this) => {
             case 'password':
                 isValid = value.length >= 5;
                 break;
+            case 'tel':
+                isValid = value.length >= 3;
+                break;
+            case 'address':
+                isValid = value.length >= 5;
+                break;
+            case 'nip':
+                isValid = value.length >= 6;
+                break;
             default:
                 break;
         }
