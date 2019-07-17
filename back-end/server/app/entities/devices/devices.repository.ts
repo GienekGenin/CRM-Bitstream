@@ -80,7 +80,18 @@ export class DeviceRepository extends Repository {
     }
 
     replaceUserForDevices(parentId, adminId) {
-        return this.model.updateMany({coid: parentId}, {$set: {'coid.$': adminId}});
+        return this.model.updateMany({
+            $and: [
+                {
+                    coid: parentId
+                },
+                {
+                    coid: {
+                        $ne: adminId
+                    }
+                }
+            ]
+        }, {$set: {'coid.$': adminId}});
     }
 
     fakeDeleteStructure(sid) {

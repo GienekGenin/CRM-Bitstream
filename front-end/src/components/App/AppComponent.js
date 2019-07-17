@@ -142,13 +142,11 @@ class AppComponent extends Component {
     };
 
     componentDidMount = () => {
+        localStorage.removeItem('firmsInfo');
+        localStorage.removeItem('basicInfo');
         if (tokenService.verifyToken()) {
             const {user, firm} = tokenService.verifyToken();
             this.props.setUser({user, firm});
-        }
-        else {
-            localStorage.removeItem('firmsInfo');
-            localStorage.removeItem('basicInfo');
         }
     };
 

@@ -436,7 +436,10 @@ class UserToolBar extends React.Component {
                             <Tooltip title={'Delete user'}>
                                 <div>
                                     <IconButton variant="outlined" color="secondary"
-                                                disabled={this.props.loading || !this.props.selected}
+                                                disabled={
+                                                    this.props.loading || !this.props.selected ||
+                                                    this.props.users.length <= 1
+                                                }
                                                 onClick={() => this.handleClickOpen('confirmDeleteDialog')}>
                                         <DeleteIcon/>
                                     </IconButton>
