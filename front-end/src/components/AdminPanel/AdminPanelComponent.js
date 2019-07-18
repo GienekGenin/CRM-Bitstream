@@ -174,9 +174,9 @@ class AdminPanel extends React.Component {
     render() {
         const {
             value, firms, selectedFirm, selectedUsers, selectedDevices,
-
             users, devices, deviceTypes, level
         } = this.state;
+        console.log(selectedUsers);
         return (
             <div className={'admin-panel'}>
                 <AppBar position="static" color="default">
@@ -192,7 +192,7 @@ class AdminPanel extends React.Component {
                         >
                             <Tab label="Firms"/>
                             <Tab label="Users" disabled={!selectedFirm}/>
-                            <Tab label="Devices" disabled={!selectedUsers}/>
+                            <Tab label="Devices" disabled={selectedUsers ? !(selectedUsers.length > 0) : true}/>
                             <Tab label="Visualisation" disabled={selectedDevices ? !selectedDevices.length : true}/>
                         </Tabs>
                         }
