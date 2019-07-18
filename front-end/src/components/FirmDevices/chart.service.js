@@ -1,10 +1,10 @@
-import * as am4core from "@amcharts/amcharts4/core";
-import * as am4charts from "@amcharts/amcharts4/charts";
-import am4themes_animated from "@amcharts/amcharts4/themes/animated";
-import _ from "lodash";
-import * as d3 from "d3";
-import * as am4plugins_forceDirected from "@amcharts/amcharts4/plugins/forceDirected";
-import store from "../../redux/store";
+import * as am4core from '@amcharts/amcharts4/core';
+import * as am4charts from '@amcharts/amcharts4/charts';
+import am4themes_animated from '@amcharts/amcharts4/themes/animated';
+import _ from 'lodash';
+import * as d3 from 'd3';
+import * as am4plugins_forceDirected from '@amcharts/amcharts4/plugins/forceDirected';
+import store from '../../redux/store';
 
 export const forcedTree = (parent, stateDevices) => {
 
@@ -19,7 +19,8 @@ export const forcedTree = (parent, stateDevices) => {
         if (!_.isEmpty(children)) {
             if (parent.sid === '0') {
                 tree = children;
-            } else {
+            }
+            else {
                 parent['children'] = children;
             }
             _.each(children, function (child) {
@@ -37,7 +38,8 @@ export const forcedTree = (parent, stateDevices) => {
         if (el.sid.includes(Parent.sid)) {
             if (el.sid === Parent.sid) {
                 arr.push(Parent);
-            } else arr.push(el);
+            }
+            else arr.push(el);
 
         }
     });
@@ -45,7 +47,8 @@ export const forcedTree = (parent, stateDevices) => {
     const getProps = (status) => {
         if (status === 'OFFLINE') {
             return {color: '#616161'};
-        } else {
+        }
+        else {
             return {color: '#257'};
         }
     };
@@ -79,7 +82,6 @@ export const forcedTree = (parent, stateDevices) => {
     let treeData = [unflatten(arr)[0]];
     // Themes begin
     am4core.useTheme(am4themes_animated);
-// Themes end
 
     let chart = am4core.create("forcedTree", am4plugins_forceDirected.ForceDirectedTree);
     let networkSeries = chart.series.push(new am4plugins_forceDirected.ForceDirectedSeries());
@@ -187,7 +189,8 @@ export const createPie = (data, _this) => {
         chart.data = chartdata;
 
         piePlaceHolder("pie-group", "No groups available");
-    } else {
+    }
+    else {
         piePlaceHolder('device-types-chart', 'No devices available');
         createPieGroup(data, _this);
     }
@@ -399,7 +402,8 @@ const chartSelectTypes = (_this) => {
         piePlaceHolder("pie-group", "No groups available");
         piePlaceHolder("pie-phyid", "No types available");
         _this.setState({devices: reduxDevices, selectedGroups: new Set(), selectedPhyids: new Set()});
-    } else {
+    }
+    else {
         let devices = sortByType(reduxDevices, selectedTypes);
         _this.setState({devices, selectedGroups: new Set(), selectedPhyids: new Set()});
         createPieGroup(devices, _this);
@@ -422,7 +426,8 @@ const chartSelectGroup = (_this) => {
         piePlaceHolder("pie-phyid", "No types available");
         let renderedDevices = sortByType(reduxDevices, selectedTypes);
         _this.setState({devices: renderedDevices, selectedPhyids: new Set()});
-    } else {
+    }
+    else {
         let renderedByType = sortByType(reduxDevices, selectedTypes);
         let renderedByGroup = sortByGroup(renderedByType, selectedGroups);
         if (!renderedByType.length) {
@@ -448,7 +453,8 @@ const chartSelectPhyid = (_this) => {
         let renderedByType = sortByType(reduxDevices, selectedTypes);
         let renderedByGroup = sortByGroup(renderedByType, selectedGroups);
         _this.setState({devices: renderedByGroup});
-    } else {
+    }
+    else {
         let renderedByType = sortByType(reduxDevices, selectedTypes);
         let renderedByGroup = sortByGroup(renderedByType, selectedGroups);
         if (!renderedByType.length) {

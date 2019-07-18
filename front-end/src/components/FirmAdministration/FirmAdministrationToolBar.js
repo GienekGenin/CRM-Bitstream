@@ -1,36 +1,37 @@
-import React from "react";
+import React from 'react';
 import * as PropTypes from 'prop-types';
 
 // Material
-import Button from "@material-ui/core/Button";
-import Dialog from "@material-ui/core/Dialog";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogActions from "@material-ui/core/DialogActions";
-import TextField from "@material-ui/core/TextField";
+import Button from '@material-ui/core/Button';
+import Dialog from '@material-ui/core/Dialog';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogActions from '@material-ui/core/DialogActions';
+import TextField from '@material-ui/core/TextField';
 import AddIcon from '@material-ui/icons/Add';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import RefreshIcon from '@material-ui/icons/Refresh';
-import IconButton from "@material-ui/core/IconButton";
+import IconButton from '@material-ui/core/IconButton';
 import ViewColumnIcon from '@material-ui/icons/ViewColumn';
-import Tooltip from "@material-ui/core/Tooltip";
-import Menu from "@material-ui/core/Menu";
-import Checkbox from "@material-ui/core/Checkbox";
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemText from "@material-ui/core/ListItemText";
-import Divider from "@material-ui/core/Divider";
+import Tooltip from '@material-ui/core/Tooltip';
+import Menu from '@material-ui/core/Menu';
+import Checkbox from '@material-ui/core/Checkbox';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
+import Divider from '@material-ui/core/Divider';
 import LinearProgress from '@material-ui/core/LinearProgress';
-// import {styles} from '../UI/material/table-styles';
 
 // Redux
-import {connect} from "react-redux";
-import {addFirmRequest, deleteFirmRequest, firmsRequest, updateFirmRequest} from "../../redux/actions";
+import {connect} from 'react-redux';
+import {addFirmRequest, deleteFirmRequest, firmsRequest, updateFirmRequest} from '../../redux/actions';
 
 // Components
 import './FirmToolBar.scss'
-import {validateField} from "../../services/validation.service";
+
+// Services
+import {validateField} from '../../services/validation.service';
 
 const mapDispatchToProps = (dispatch) => {
     return {
@@ -88,7 +89,7 @@ class TestToolBar extends React.Component {
         this.setState({[state]: true});
         const newFirm = this.props.selected;
         if (state === 'editDialog') {
-            this.setState({newFirm}, ()=> {
+            this.setState({newFirm}, () => {
                 Object.getOwnPropertyNames(newFirm).forEach(propName => {
                     validateField(propName, newFirm[propName], this);
                 })

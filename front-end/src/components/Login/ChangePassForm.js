@@ -1,19 +1,19 @@
 import React from 'react';
-import * as PropTypes from "prop-types";
+import * as PropTypes from 'prop-types';
 
 // Redux
 import {connect} from 'react-redux';
-import {changePassRequest} from "../../redux/actions";
+import {changePassRequest} from '../../redux/actions';
 
 // Material
-import Card from "@material-ui/core/Card";
-import CardHeader from "@material-ui/core/CardHeader";
-import CardContent from "@material-ui/core/CardContent";
-import TextField from "@material-ui/core/TextField";
-import CardActions from "@material-ui/core/CardActions";
-import Button from "@material-ui/core/Button";
-import CircularProgress from "@material-ui/core/CircularProgress";
-import Grow from "@material-ui/core/Grow";
+import Card from '@material-ui/core/Card';
+import CardHeader from '@material-ui/core/CardHeader';
+import CardContent from '@material-ui/core/CardContent';
+import TextField from '@material-ui/core/TextField';
+import CardActions from '@material-ui/core/CardActions';
+import Button from '@material-ui/core/Button';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import Grow from '@material-ui/core/Grow';
 
 const mapDispatchToProps = (dispatch) => {
     return {
@@ -161,11 +161,11 @@ class ChangePassForm extends React.Component {
                             <div className="loginBtnGroup">
                                 <Button variant="contained" type='button' color='primary'
                                         disabled={!formValid} size="large" style={{marginRight: '25px'}}
-                                    onClick={this.handleChangePassSubmit}
+                                        onClick={this.handleChangePassSubmit}
                                 >Submit</Button>
                                 <Button variant="outlined" type='submit' color='primary'
                                         size="large"
-                                        onClick={()=>this.props.toggleForm()}
+                                        onClick={() => this.props.toggleForm()}
                                 >Login</Button>
                                 {loading && <div id='progressLogin'>
                                     <CircularProgress size={30} style={{marginTop: '15px'}}/>

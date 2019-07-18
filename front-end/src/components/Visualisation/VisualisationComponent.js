@@ -1,39 +1,39 @@
-import React from "react";
+import React from 'react';
 import * as PropTypes from 'prop-types';
 import * as dotenv from 'dotenv';
-import DateFnsUtils from "@date-io/date-fns";
-import _ from "lodash";
+import DateFnsUtils from '@date-io/date-fns';
+import _ from 'lodash';
 
 //Material
-import {theme} from "../material.theme";
-import Paper from "@material-ui/core/Paper";
+import {theme} from '../material.theme';
+import Paper from '@material-ui/core/Paper';
 import Tooltip from '@material-ui/core/Tooltip';
-import IconButton from "@material-ui/core/IconButton";
-import Dialog from "@material-ui/core/Dialog";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogActions from "@material-ui/core/DialogActions";
-import Button from "@material-ui/core/Button";
-import Menu from "@material-ui/core/Menu";
-import List from "@material-ui/core/List";
-import Divider from "@material-ui/core/Divider";
-import ListItem from "@material-ui/core/ListItem";
-import Checkbox from "@material-ui/core/Checkbox";
-import ListItemText from "@material-ui/core/ListItemText";
+import IconButton from '@material-ui/core/IconButton';
+import Dialog from '@material-ui/core/Dialog';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogActions from '@material-ui/core/DialogActions';
+import Button from '@material-ui/core/Button';
+import Menu from '@material-ui/core/Menu';
+import List from '@material-ui/core/List';
+import Divider from '@material-ui/core/Divider';
+import ListItem from '@material-ui/core/ListItem';
+import Checkbox from '@material-ui/core/Checkbox';
+import ListItemText from '@material-ui/core/ListItemText';
 import ViewColumnIcon from '@material-ui/icons/ViewColumn';
 import TimelineIcon from '@material-ui/icons/Timeline';
 import {Grid, MuiThemeProvider} from '@material-ui/core';
 import MaterialTable from 'material-table';
-import {MuiPickersUtilsProvider, DateTimePicker} from "@material-ui/pickers";
+import {MuiPickersUtilsProvider, DateTimePicker} from '@material-ui/pickers';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
 
 // Redux
-import {connect} from "react-redux";
+import {connect} from 'react-redux';
 
-import store from "../../redux/store";
-import {getMinMaxTimeRequest, getDataRequest} from "../../redux/actions";
-import {dataService} from "../../redux/services/data";
+import store from '../../redux/store';
+import {getMinMaxTimeRequest, getDataRequest} from '../../redux/actions';
+import {dataService} from '../../redux/services/data';
 
 // Components
 import './Visualisation.scss';
@@ -43,7 +43,7 @@ import Pin from '../UI/map/pin/PinComponent';
 import classes from 'classnames';
 
 //Services
-import {createLineChart, createDragPhyidPie, lineChartPlaceHolder} from "./chart.service";
+import {createLineChart, createDragPhyidPie, lineChartPlaceHolder} from './chart.service';
 /* eslint-disable import/first */
 dotenv.config({path: '../../../.env.local'});
 

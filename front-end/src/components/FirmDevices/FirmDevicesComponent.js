@@ -1,34 +1,34 @@
-import React from "react";
-import ReactDOM from "react-dom";
+import React from 'react';
+import ReactDOM from 'react-dom';
 import * as PropTypes from 'prop-types';
-import _ from "lodash";
+import _ from 'lodash';
 import classes from 'classnames';
 
 // Material
 import {withStyles} from '@material-ui/core/styles';
-import Checkbox from "@material-ui/core/Checkbox";
+import Checkbox from '@material-ui/core/Checkbox';
 import AddBoxIcon from '@material-ui/icons/AddBox';
 import {styles} from '../UI/material/table-styles';
 import {Grid, MuiThemeProvider} from '@material-ui/core';
 import Paper from '@material-ui/core/Paper';
 import MaterialTable from 'material-table';
-import {theme} from "../material.theme";
+import {theme} from '../material.theme';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import IconButton from "@material-ui/core/IconButton";
+import IconButton from '@material-ui/core/IconButton';
 import CheckBoxIcon from '@material-ui/icons/CheckBox';
 
 // Redux
-import store from "../../redux/store";
-import {connect} from "react-redux";
-import {userDevicesRequest} from "../../redux/actions";
-import {tokenService} from "../../services/token.service";
+import store from '../../redux/store';
+import {connect} from 'react-redux';
+import {userDevicesRequest} from '../../redux/actions';
 
 // Components
 import './FirmDevices.scss';
-import FirmDevicesToolBar from "./FirmDevicesToolBar";
+import FirmDevicesToolBar from './FirmDevicesToolBar';
 
 // Services
-import {forcedTree, createPie, piePlaceHolder, treePlaceHolder} from "./chart.service";
+import {tokenService} from '../../services/token.service';
+import {forcedTree, createPie, piePlaceHolder, treePlaceHolder} from './chart.service';
 
 const mapDispatchToProps = (dispatch) => {
     return {
@@ -91,25 +91,29 @@ class FirmDevicesComponent extends React.Component {
             if (!parentDevices) {
                 this.setState({selectedUserIds});
                 this.props.userDevicesRequest(selectedUserIds);
-            } else {
+            }
+            else {
                 this.createPie(parentDevices, this);
                 let checked = false;
                 if (selectedDevices && selectedDevices.length === parentDevices.length) {
                     checked = true;
                     this.renderSelectAllCheckBox(checked);
-                } else {
+                }
+                else {
                     this.renderSelectAllCheckBox(checked);
                 }
                 this.setState({devices: parentDevices, selectedDevices, checked, loading: false});
 
             }
-        } else {
+        }
+        else {
             let selectedUser = tokenService.verifyToken().user;
             this.setState({selectedUsers: [selectedUser]});
             const {parentDevices} = this.props;
             if (!parentDevices) {
                 this.props.userDevicesRequest([selectedUser._id]);
-            } else {
+            }
+            else {
                 this.createPie(parentDevices, this);
                 this.setState({devices: parentDevices, loading: false});
             }
@@ -128,7 +132,8 @@ class FirmDevicesComponent extends React.Component {
                 const devices = store.getState().devicesReducer.devices;
                 if (devices.length) {
                     this.createPie(devices, this);
-                } else {
+                }
+                else {
                     piePlaceHolder('device-types-chart', 'No devices available');
                     piePlaceHolder("pie-group", "No groups available");
                     piePlaceHolder("pie-phyid", "No types available");
@@ -180,7 +185,8 @@ class FirmDevicesComponent extends React.Component {
         if (selectedDevices.length === devices.length) {
             checked = true;
             this.renderSelectAllCheckBox(checked);
-        } else {
+        }
+        else {
             this.renderSelectAllCheckBox(checked)
         }
         this.setState({selectedDevices, selectedDeviceIds: [...selectedDeviceIdsSet]});
@@ -202,7 +208,8 @@ class FirmDevicesComponent extends React.Component {
         if (devices.length === selectedDevices.length) {
             this.renderSelectAllCheckBox(false);
             this.resetSelected();
-        } else {
+        }
+        else {
             const selectedDeviceIds = devices.map(device => device.sid);
             this.setState({selectedDevices: devices, selectedDeviceIds});
             this.renderSelectAllCheckBox(true);

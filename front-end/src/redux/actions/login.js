@@ -1,4 +1,4 @@
-import {loginConstants} from "../constants/index";
+import {loginConstants} from '../constants/index';
 
 export const loginRequest = (payload) => {
     return {type: loginConstants.LOGIN_REQUEST, payload}

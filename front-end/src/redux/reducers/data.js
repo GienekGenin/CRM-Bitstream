@@ -1,4 +1,4 @@
-import {dataConstants} from "../constants/index";
+import {dataConstants} from '../constants/index';
 
 const initialState = {
     time: null,

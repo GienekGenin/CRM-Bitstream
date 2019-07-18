@@ -1,9 +1,9 @@
 import React, {Component} from 'react';
-import * as PropTypes from "prop-types";
+import * as PropTypes from 'prop-types';
 import _ from 'lodash';
 
 // Material
-import Checkbox from "@material-ui/core/Checkbox";
+import Checkbox from '@material-ui/core/Checkbox';
 import {Grid, MuiThemeProvider} from '@material-ui/core';
 import {createMuiTheme} from '@material-ui/core/styles';
 import MaterialTable from 'material-table';
@@ -12,21 +12,22 @@ import Room from '@material-ui/icons/Room';
 import Toll from '@material-ui/icons/Toll';
 import Timeline from '@material-ui/icons/Timeline';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import Paper from '@material-ui/core/Paper';
 
 // Redux
-import {connect} from "react-redux";
-import store from "../../redux/store";
-import {addFirmRequest, deleteFirmRequest, updateFirmRequest} from "../../redux/actions";
+import {connect} from 'react-redux';
+import store from '../../redux/store';
+import {addFirmRequest, deleteFirmRequest, updateFirmRequest} from '../../redux/actions';
 
 // Components
 import './FirmAdministration.scss';
 import FirmAdministrationToolBar from './FirmAdministrationToolBar';
 
 // Services
-import {firmService} from "../../redux/services/firm";
-import {mixedService} from "../../redux/services/mixed";
-import {buildFirmsInfo} from "./chart.service";
-import Paper from "@material-ui/core/Paper";
+import {firmService} from '../../redux/services/firm';
+import {mixedService} from '../../redux/services/mixed';
+import {buildFirmsInfo} from './chart.service';
+
 
 const mapDispatchToProps = (dispatch) => {
     return {

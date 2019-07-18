@@ -1,5 +1,5 @@
-import {historyService} from "../../services/history.service";
-import {postRequest, putRequest} from "../../services/http.service";
+import {historyService} from '../../services/history.service';
+import {postRequest, putRequest} from '../../services/http.service';
 
 const apiBase = process.env.REACT_APP_API_BASE;
 

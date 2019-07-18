@@ -1,7 +1,7 @@
-import React from "react";
+import React from 'react';
 import Iframe from 'react-iframe';
 import './Home.scss';
-import {animate} from "./landingAnimation";
+import {animate} from './landingAnimation';
 
 export default class HomeComponent extends React.Component {
     componentDidMount() {

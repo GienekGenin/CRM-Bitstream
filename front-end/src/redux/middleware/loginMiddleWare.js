@@ -1,7 +1,7 @@
 import {loginConstants} from '../constants/index';
-import {userService} from "../services/login";
-import {tokenService} from "../../services/token.service";
-import {errorParser} from "../../services/http.service";
+import {userService} from '../services/login';
+import {tokenService} from '../../services/token.service';
+import {errorParser} from '../../services/http.service';
 
 export const loginMiddleWare = ({dispatch}) => {
     return (next) => {

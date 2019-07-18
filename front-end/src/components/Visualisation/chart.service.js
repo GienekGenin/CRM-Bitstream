@@ -1,6 +1,6 @@
-import * as am4core from "@amcharts/amcharts4/core";
-import * as am4charts from "@amcharts/amcharts4/charts";
-import am4themes_animated from "@amcharts/amcharts4/themes/animated";
+import * as am4core from '@amcharts/amcharts4/core';
+import * as am4charts from '@amcharts/amcharts4/charts';
+import am4themes_animated from '@amcharts/amcharts4/themes/animated';
 import * as moment from 'moment';
 
 const diffInHours = (minSelectedDate, maxSelectedDate) => {
@@ -15,7 +15,7 @@ export const createLineChart = (_this, data, selectedDevices) => {
     // am4core.useTheme(am4themes_animated);
     // am4core.options.minPolylineStep = 10;
     // series.minBulletDistance = 20;
-    const chart = am4core.create("lineChart", am4charts.XYChart);
+    const chart = am4core.create('lineChart', am4charts.XYChart);
 
     const chartData = [];
 
@@ -41,7 +41,8 @@ export const createLineChart = (_this, data, selectedDevices) => {
             }
             prevDiff = newDiff;
             // console.log("New range: " + start + " -- " + end);
-        } else {
+        }
+        else {
             init = true;
             prevMin = start;
             prevMax = end;
@@ -68,7 +69,8 @@ export const createLineChart = (_this, data, selectedDevices) => {
                 status = mes.status[0];
                 if (status === 'ERROR') {
                     color = '#821';
-                } else {
+                }
+                else {
                     color = '#FF0';
                 }
                 radius = 5;
@@ -271,7 +273,8 @@ export const createDragPhyidPie = (devicesToShow, _this) => {
             if (series1.slices.indexOf(targetSlice) !== -1) {
                 slice1 = targetSlice;
                 slice2 = series2.dataItems.getIndex(targetSlice.dataItem.index).slice;
-            } else if (series2.slices.indexOf(targetSlice) !== -1) {
+            }
+            else if (series2.slices.indexOf(targetSlice) !== -1) {
                 slice1 = series1.dataItems.getIndex(targetSlice.dataItem.index).slice;
                 slice2 = targetSlice;
             }
@@ -311,7 +314,8 @@ export const createDragPhyidPie = (devicesToShow, _this) => {
 
                     dataItem2.show();
                     selectedPhyids.add(toggledType);
-                } else {
+                }
+                else {
                     slice1.animate([{property: "x", to: 0}, {property: "y", to: 0}], 400);
                 }
             }
@@ -334,7 +338,8 @@ export const createDragPhyidPie = (devicesToShow, _this) => {
                     slice1.x = 0;
                     slice1.y = 0;
                     dataItem1.show();
-                } else {
+                }
+                else {
                     slice2.animate([{property: "x", to: 0}, {property: "y", to: 0}], 400);
                 }
             }
@@ -369,7 +374,8 @@ export const createDragPhyidPie = (devicesToShow, _this) => {
             const dummySlice = series.dataItems.getIndex(0);
             if (show) {
                 dummySlice.show();
-            } else {
+            }
+            else {
                 dummySlice.hide();
             }
         };
@@ -391,7 +397,7 @@ export const createDragPhyidPie = (devicesToShow, _this) => {
             dummyDataItem.slice.draggable = false;
             dummyDataItem.slice.tooltipText = undefined;
 
-            if(chart1.data.length === 1){
+            if (chart1.data.length === 1) {
                 const dummySlice = series1.dataItems.getIndex(0);
                 dummySlice.show();
             }
@@ -429,9 +435,9 @@ export const lineChartPlaceHolder = () => {
             const newDate = new Date(firstDate);
             newDate.setDate(newDate.getDate() + i);
 
-            visits += Math.round((Math.random()<0.5?1:-1)*Math.random()*10);
-            hits += Math.round((Math.random()<0.5?1:-1)*Math.random()*10);
-            views += Math.round((Math.random()<0.5?1:-1)*Math.random()*10);
+            visits += Math.round((Math.random() < 0.5 ? 1 : -1) * Math.random() * 10);
+            hits += Math.round((Math.random() < 0.5 ? 1 : -1) * Math.random() * 10);
+            views += Math.round((Math.random() < 0.5 ? 1 : -1) * Math.random() * 10);
 
             chartData.push({
                 date: newDate,
@@ -465,7 +471,7 @@ export const lineChartPlaceHolder = () => {
 
         const interfaceColors = new am4core.InterfaceColorSet();
 
-        switch(bullet) {
+        switch (bullet) {
             case "triangle":
                 bullet = series.bullets.push(new am4charts.Bullet());
                 bullet.width = 12;

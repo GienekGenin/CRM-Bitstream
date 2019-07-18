@@ -1,4 +1,4 @@
-import {loginConstants} from "../constants/index";
+import {loginConstants} from '../constants/index';
 
 const initialState = {
     user: null,
@@ -48,7 +48,8 @@ export const loginReducer = (state = initialState, action) => {
             return Object.assign({}, state, {
                 user: action.payload.user,
                 firm: action.payload.user,
-                loading: false});
+                loading: false
+            });
         }
         case loginConstants.CLEAN_LOGIN_ERRORS: {
             return {

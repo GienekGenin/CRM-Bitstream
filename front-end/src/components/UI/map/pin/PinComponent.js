@@ -1,7 +1,7 @@
-import {PureComponent} from "react";
-import React from "react";
+import React from 'react';
+import {PureComponent} from 'react';
 import './pin.scss';
-import IconButton from "@material-ui/core/IconButton";
+import IconButton from '@material-ui/core/IconButton';
 import LocationOnIcon from '@material-ui/icons/LocationOn';
 
 export default class Pin extends PureComponent {

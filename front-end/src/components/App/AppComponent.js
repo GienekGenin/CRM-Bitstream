@@ -1,6 +1,6 @@
-import React, {Component} from "react";
+import React, {Component} from 'react';
 import {Router, Switch, Route, Link} from 'react-router-dom';
-import {PrivateRoute} from "../privateRoute";
+import {PrivateRoute} from '../privateRoute';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
@@ -16,26 +16,26 @@ import ListItem from '@material-ui/core/ListItem';
 import HomeIcon from '@material-ui/icons/Home';
 import DashboardIcon from '@material-ui/icons/Dashboard';
 import AccountIcon from '@material-ui/icons/AccountCircle';
-import {withStyles} from "@material-ui/core";
-import {SnackbarProvider} from "notistack";
-import {PopupComponent} from "../UI/material/PopupComponent/PopupComponent";
-import MoreVertIcon from "@material-ui/icons/MoreVert";
-import ViewListIcon from "@material-ui/icons/ViewList";
-import PersonIcon from "@material-ui/icons/Person";
-
+import {withStyles} from '@material-ui/core';
+import {SnackbarProvider} from 'notistack';
+import {PopupComponent} from '../UI/material/PopupComponent/PopupComponent';
+import MoreVertIcon from '@material-ui/icons/MoreVert';
+import ViewListIcon from '@material-ui/icons/ViewList';
+import PersonIcon from '@material-ui/icons/Person';
 
 // Redux
-import {historyService} from '../../services/history.service';
-import {tokenService} from "../../services/token.service";
-import {setUser, logoutRequest} from "../../redux/actions/index";
-import {connect} from "react-redux";
+import {setUser, logoutRequest} from '../../redux/actions/index';
+import {connect} from 'react-redux';
 
 // Components
 import './App.scss';
 import LoginForm from '../Login/LoginComponent';
-import HomeComponent from "../Home/HomeComponent";
-import AdminPanelComponent from "../AdminPanel/AdminPanelComponent";
-// import Fade from 'react-reveal/Fade';
+import HomeComponent from '../Home/HomeComponent';
+import AdminPanelComponent from '../AdminPanel/AdminPanelComponent';
+
+// Services
+import {historyService} from '../../services/history.service';
+import {tokenService} from '../../services/token.service';
 
 const styles = theme => ({
     root: {
