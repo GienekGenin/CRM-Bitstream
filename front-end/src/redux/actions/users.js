@@ -1,4 +1,4 @@
-import {userConstants} from "../constants/index";
+import {userConstants} from '../constants/index';
 
 export const usersRequest = (firmId) => {
     return {type: userConstants.USERS_GET_REQUEST, payload: firmId}

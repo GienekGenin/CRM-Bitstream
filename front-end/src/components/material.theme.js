@@ -1,4 +1,4 @@
-import {createMuiTheme} from "@material-ui/core";
+import {createMuiTheme} from '@material-ui/core';
 // import purple from "@material-ui/core/colors/purple";
 
 // Todo: config and use through all components

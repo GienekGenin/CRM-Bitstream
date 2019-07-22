@@ -12,7 +12,7 @@ class TokenService {
      */
     verifyToken() {
         this.tokenSecret = process.env.REACT_APP_JWT;
-        const token = localStorage.getItem('token');
+        const token = localStorage.getItem('token.service.js');
         if (token) {
             return jwt.verify(token, this.tokenSecret, (err, decoded) => {
                 if (err) {
@@ -20,7 +20,8 @@ class TokenService {
                 }
                 return decoded;
             });
-        } else return false;
+        }
+        else return false;
     }
 }
 

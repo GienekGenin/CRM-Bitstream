@@ -5,15 +5,15 @@ import am4themes_animated from "@amcharts/amcharts4/themes/animated";
 export const buildFirmsInfo = (firmsInfo) => {
     // Themes begin
     am4core.useTheme(am4themes_animated);
-// Themes end
+    // Themes end
 
-// Create chart instance
+    // Create chart instance
     const chart = am4core.create("firms-info", am4charts.XYChart3D);
 
-// Add data
+    // Add data
     chart.data = firmsInfo;
 
-// Create axes
+    // Create axes
     const categoryAxis = chart.xAxes.push(new am4charts.CategoryAxis());
     categoryAxis.dataFields.category = "firm_name";
     categoryAxis.renderer.grid.template.location = 0;
@@ -30,7 +30,7 @@ export const buildFirmsInfo = (firmsInfo) => {
     valueAxis.renderer.line.strokeOpacity = 0.2;
     valueAxis.renderer.line.strokeWidth = 1;
 
-// Create series
+    // Create series
     const series = chart.series.push(new am4charts.ColumnSeries3D());
     series.dataFields.valueY = "coids";
     series.dataFields.categoryX = "firm_name";

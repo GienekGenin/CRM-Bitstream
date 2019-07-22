@@ -1,4 +1,4 @@
-import {loginConstants} from "../constants/index";
+import {loginConstants} from '../constants/index';
 
 export const loginRequest = (payload) => {
     return {type: loginConstants.LOGIN_REQUEST, payload}
@@ -18,4 +18,8 @@ export const changePassRequest = (payload) => {
 
 export const cleanLoginErrors = () => {
     return {type: loginConstants.CLEAN_LOGIN_ERRORS}
+};
+
+export const cleanLoginSuccess = () => {
+    return {type: loginConstants.CLEAN_LOGIN_SUCCESS}
 };

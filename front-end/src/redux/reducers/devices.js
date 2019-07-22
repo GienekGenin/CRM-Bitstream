@@ -1,4 +1,4 @@
-import {devicesConstants} from "../constants/index";
+import {devicesConstants} from '../constants/index';
 
 const initialState = {
     devices: null,

@@ -13,8 +13,7 @@ export const animate = () => {
             y: 0
         };  // mouse location
 
-// Push stars to array
-
+    // Push stars to array
     for (let i = 0; i < x; i++) {
         stars.push({
             x: Math.random() * canvas.width,
@@ -25,8 +24,7 @@ export const animate = () => {
         });
     }
 
-// Draw the scene
-
+    // Draw the scene
     const draw = () => {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -74,7 +72,7 @@ export const animate = () => {
         return Math.sqrt(xs + ys);
     };
 
-// Update star locations
+    // Update star locations
     const update = () => {
         for (let i = 0, x = stars.length; i < x; i++) {
             let s = stars[i];
@@ -92,7 +90,7 @@ export const animate = () => {
         mouse.y = e.clientY;
     });
 
-// Update and draw
+    // Update and draw
     const tick = () => {
         draw();
         update();

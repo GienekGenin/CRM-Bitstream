@@ -1,6 +1,6 @@
-import React, {Component} from "react";
+import React, {Component} from 'react';
 import {Router, Switch, Route, Link} from 'react-router-dom';
-import {PrivateRoute} from "../privateRoute";
+import {PrivateRoute} from '../privateRoute';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
@@ -16,27 +16,26 @@ import ListItem from '@material-ui/core/ListItem';
 import HomeIcon from '@material-ui/icons/Home';
 import DashboardIcon from '@material-ui/icons/Dashboard';
 import AccountIcon from '@material-ui/icons/AccountCircle';
-import {withStyles} from "@material-ui/core";
-import {SnackbarProvider} from "notistack";
-import {PopupComponent} from "../UI/material/PopupComponent/PopupComponent";
-import MoreVertIcon from "@material-ui/icons/MoreVert";
-import ViewListIcon from "@material-ui/icons/ViewList";
-import PersonIcon from "@material-ui/icons/Person";
-
+import {withStyles} from '@material-ui/core';
+import {SnackbarProvider} from 'notistack';
+import {PopupComponent} from '../UI/material/PopupComponent/PopupComponent';
+import MoreVertIcon from '@material-ui/icons/MoreVert';
+import ViewListIcon from '@material-ui/icons/ViewList';
+import PersonIcon from '@material-ui/icons/Person';
 
 // Redux
-import {history} from '../../redux/services/history';
-import {tokenService} from "../../redux/services/token";
-import {setUser, logoutRequest} from "../../redux/actions/index";
-import {connect} from "react-redux";
-import {checkAccess} from "../privateRoute";
+import {setUser, logoutRequest} from '../../redux/actions/index';
+import {connect} from 'react-redux';
 
 // Components
 import './App.scss';
 import LoginForm from '../Login/LoginComponent';
-import HomeComponent from "../Home/HomeComponent";
-import AdminPanelComponent from "../AdminPanel/AdminPanelComponent";
-// import Fade from 'react-reveal/Fade';
+import HomeComponent from '../Home/HomeComponent';
+import AdminPanelComponent from '../AdminPanel/AdminPanelComponent';
+
+// Services
+import {historyService} from '../../services/history.service';
+import {tokenService} from '../../services/token.service';
 
 const styles = theme => ({
     root: {
@@ -142,12 +141,14 @@ class AppComponent extends Component {
         this.setState({open: !open, animations: true});
     };
 
-    componentWillMount = () => {
+    componentDidMount = () => {
         if (tokenService.verifyToken()) {
             const {user, firm} = tokenService.verifyToken();
             this.props.setUser({user, firm});
-        } else {
-            localStorage.clear();
+        }
+        else {
+            localStorage.removeItem('firmsInfo');
+            localStorage.removeItem('basicInfo');
         }
     };
 
@@ -156,7 +157,7 @@ class AppComponent extends Component {
         const {open, animations} = this.state;
         const {classes, theme, userInfo} = this.props;
         return (
-            <Router history={history}>
+            <Router history={historyService}>
                 <MuiThemeProvider theme={theme}>
                     <div className={'root'}>
                         <div>
@@ -183,7 +184,9 @@ class AppComponent extends Component {
                                         <MoreVertIcon/>
                                     </IconButton>
                                     <div
-                                        className={classNames('company-logo', (animations ? (open ? 'fade-left' : 'fade-right') : ''))}>
+                                        className={
+                                            classNames('company-logo',
+                                                (animations ? (open ? 'fade-left' : 'fade-right') : ''))}>
                                         <img
                                             src="https://bitstream.pl/wp-content/uploads/2019/04/Logo-Bitstream-4-01.png"
                                             alt=""/>
@@ -201,8 +204,11 @@ class AppComponent extends Component {
                                         <ViewListIcon/>
                                     </IconButton>
                                     <div
-                                        className={classNames('company-logo', (animations ? (open ? 'fade-left' : 'fade-right') : ''))}
-                                        hover="false">
+                                        className={
+                                            classNames('company-logo',
+                                                (animations ? (open ? 'fade-left' : 'fade-right') : ''))}
+                                        hover="false"
+                                    >
                                         <img className="fixed-height"
                                              src="https://bitstream.pl/wp-content/uploads/2019/04/Logo-Bitstream-4-01.png"
                                              alt=""/>
@@ -210,18 +216,20 @@ class AppComponent extends Component {
                                 </Toolbar>}
                                 <Divider light/>
                                 <List>
-                                    <Link to={""}>
-                                        {userInfo && <ListItem button className={'hoverClass'}>
+                                    {userInfo && <Link to={""}>
+                                        <ListItem button className={'hoverClass'}>
                                             <PersonIcon/>
                                             <Typography
                                                 variant="h6" color="inherit"
-                                                className={classNames(animations ? (open ? 'fade-left' : 'fade-right') : '')}
+                                                className={
+                                                    classNames(animations ?
+                                                        (open ? 'fade-left' : 'fade-right') : '')}
                                             >
                                                 {userInfo.user ? userInfo.user.name : userInfo.name}
                                             </Typography>
 
-                                        </ListItem>}
-                                    </Link>
+                                        </ListItem>
+                                    </Link>}
                                     <Link to={'/'}>
                                         <ListItem
                                             button
@@ -230,34 +238,28 @@ class AppComponent extends Component {
                                             <HomeIcon/>
                                             <Typography
                                                 variant="h6" color="inherit"
-                                                className={classNames(animations ? (open ? 'fade-left' : 'fade-right') : '')}
+                                                className={
+                                                    classNames(animations ?
+                                                        (open ? 'fade-left' : 'fade-right') : '')}
                                             >
                                                 Home
                                             </Typography>
                                         </ListItem>
                                     </Link>
-                                    {checkAccess('/admin_panel') && <Link to={'/admin_panel'}>
+                                    {tokenService.verifyToken() && <Link to={'/admin-panel'}>
                                         <ListItem
                                             button
                                             className={'hoverClass'}
                                         >
                                             <DashboardIcon/>
-                                            <Typography variant="h6" color="inherit"
-                                                        className={classNames(animations ? (open ? 'fade-left' : 'fade-right') : '')}
+                                            <Typography
+                                                variant="h6"
+                                                color="inherit"
+                                                className={
+                                                    classNames(animations ?
+                                                        (open ? 'fade-left' : 'fade-right') : '')}
                                             >
                                                 Dashboard
-                                            </Typography>
-                                        </ListItem>
-                                    </Link>}
-                                    {checkAccess('/devices') && <Link to={'/devices'}>
-                                        <ListItem
-                                            button
-                                            className={'hoverClass'}
-                                        >
-                                            <Typography variant="h6" color="inherit"
-                                                        className={classNames(animations ? (open ? 'fade-left' : 'fade-right') : '')}
-                                            >
-                                                Devices
                                             </Typography>
                                         </ListItem>
                                     </Link>}
@@ -266,10 +268,15 @@ class AppComponent extends Component {
                                                 button
                                                 className={'hoverClass'}
                                                 onClick={this.props.logoutRequest}>
-                                                <AccountIcon/><Typography variant="h6" color="inherit"
-                                                                          className={classNames(animations ? (open ? 'fade-left' : 'fade-right') : '')}
-                                            >
-                                                Logout </Typography>
+                                                <AccountIcon/>
+                                                <Typography
+                                                    variant="h6"
+                                                    color="inherit"
+                                                    className={
+                                                        classNames(animations ?
+                                                            (open ? 'fade-left' : 'fade-right') : '')}
+                                                >
+                                                    Logout </Typography>
                                             </ListItem>
                                         </Link> :
                                         <Link to={'/login'}>
@@ -277,19 +284,24 @@ class AppComponent extends Component {
                                                 button
                                                 className={'hoverClass'}
                                             >
-                                                <AccountIcon/><Typography variant="h6" color="inherit"
-                                                                          className={classNames(animations ? (open ? 'fade-left' : 'fade-right') : '')}
-                                            >
-                                                Login</Typography>
+                                                <AccountIcon/>
+                                                <Typography
+                                                    variant="h6"
+                                                    color="inherit"
+                                                    className={
+                                                        classNames(animations ?
+                                                            (open ? 'fade-left' : 'fade-right') : '')}
+                                                >
+                                                    Login</Typography>
                                             </ListItem>
                                         </Link>}
                                 </List>
                             </Drawer>
                         </div>
                         <main className={classes.content}>
-                            <Switch history={history}>
+                            <Switch history={historyService}>
                                 <Route exact path='/' component={HomeComponent}/>
-                                <PrivateRoute exact path='/admin_panel' component={AdminPanelComponent}/>
+                                <PrivateRoute exact path='/admin-panel' component={AdminPanelComponent}/>
                                 <Route exact path='/login' component={LoginForm}/>
                             </Switch>
                         </main>

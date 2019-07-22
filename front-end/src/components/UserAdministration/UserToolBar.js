@@ -1,37 +1,37 @@
-import React from "react";
+import React from 'react';
 import * as PropTypes from 'prop-types';
 import _ from 'lodash';
 
 // Material
-import Button from "@material-ui/core/Button";
-import Dialog from "@material-ui/core/Dialog";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogActions from "@material-ui/core/DialogActions";
-import TextField from "@material-ui/core/TextField";
-import FormControl from "@material-ui/core/FormControl";
-import InputLabel from "@material-ui/core/InputLabel";
-import Select from "@material-ui/core/Select";
-import MenuItem from "@material-ui/core/MenuItem";
+import Button from '@material-ui/core/Button';
+import Dialog from '@material-ui/core/Dialog';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogActions from '@material-ui/core/DialogActions';
+import TextField from '@material-ui/core/TextField';
+import FormControl from '@material-ui/core/FormControl';
+import InputLabel from '@material-ui/core/InputLabel';
+import Select from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
 import AddIcon from '@material-ui/icons/Add';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import RefreshIcon from '@material-ui/icons/Refresh';
-import IconButton from "@material-ui/core/IconButton";
-import Tooltip from "@material-ui/core/Tooltip";
+import IconButton from '@material-ui/core/IconButton';
+import Tooltip from '@material-ui/core/Tooltip';
 import ViewColumnIcon from '@material-ui/icons/ViewColumn';
-import List from "@material-ui/core/List";
-import Divider from "@material-ui/core/Divider";
-import ListItem from "@material-ui/core/ListItem";
-import Checkbox from "@material-ui/core/Checkbox";
-import ListItemText from "@material-ui/core/ListItemText";
-import Menu from "@material-ui/core/Menu";
+import List from '@material-ui/core/List';
+import Divider from '@material-ui/core/Divider';
+import ListItem from '@material-ui/core/ListItem';
+import Checkbox from '@material-ui/core/Checkbox';
+import ListItemText from '@material-ui/core/ListItemText';
+import Menu from '@material-ui/core/Menu';
 import EmailIcon from '@material-ui/icons/Email';
 import LockIcon from '@material-ui/icons/Lock';
-import LinearProgress from "@material-ui/core/LinearProgress";
+import LinearProgress from '@material-ui/core/LinearProgress';
 
 // Redux
-import {connect} from "react-redux";
+import {connect} from 'react-redux';
 import {
     usersRequest,
     addUserRequest,
@@ -39,7 +39,7 @@ import {
     updateUserRequest,
     changePassAdminRequest,
     changeEmailAdminRequest
-} from "../../redux/actions";
+} from '../../redux/actions';
 
 // Components
 import './UsersToolBar.scss';
@@ -80,6 +80,8 @@ class UserToolBar extends React.Component {
             },
             roles: null
         };
+        // this.validateField = this.validateField.bind(this);
+        // this.validateForm = this.validateForm.bind(this);
     }
 
     componentWillMount() {
@@ -176,13 +178,16 @@ class UserToolBar extends React.Component {
         const pass = this.state.newUser.password;
         if (!pass) {
             return 'Password is required'
-        } else {
+        }
+        else {
             if (!passPattern.test(pass)) {
                 return 'Should contain 1 letter and 1 number'
-            } else {
+            }
+            else {
                 if (pass.length < 6) {
                     return 'Should be at least 6 characters long'
-                } else {
+                }
+                else {
                     return '';
                 }
             }
@@ -202,10 +207,12 @@ class UserToolBar extends React.Component {
         const email = this.state.newUser.email;
         if (!email) {
             return 'Email is required'
-        } else {
+        }
+        else {
             if (!emailPattern.test(email)) {
                 return 'Incorrect email'
-            } else return '';
+            }
+            else return '';
         }
     }
 
@@ -228,7 +235,8 @@ class UserToolBar extends React.Component {
                         <div>
                             <Tooltip title={'Edit selected user'}>
                                 <div>
-                                    <IconButton disabled={this.props.loading || !this.props.selected} variant="contained"
+                                    <IconButton disabled={this.props.loading || !this.props.selected}
+                                                variant="contained"
                                                 color="primary"
                                                 onClick={() => this.handleClickOpen('editDialog')}>
                                         <EditIcon/>
@@ -272,7 +280,8 @@ class UserToolBar extends React.Component {
                                             onChange={(e) => this.updateNewUser(e, 'role_id')}
                                             id='role'
                                         >
-                                            {roles.map((el, i) => <MenuItem key={i} value={el._id}>{el.name}</MenuItem>)}
+                                            {roles.map((el, i) => <MenuItem key={i}
+                                                                            value={el._id}>{el.name}</MenuItem>)}
                                         </Select>
                                     </FormControl>
                                     <TextField
@@ -376,7 +385,8 @@ class UserToolBar extends React.Component {
                                             onChange={(e) => this.updateNewUser(e, 'role_id')}
                                             id='role'
                                         >
-                                            {roles.map((el, i) => <MenuItem key={i} value={el._id}>{el.name}</MenuItem>)}
+                                            {roles.map((el, i) => <MenuItem key={i}
+                                                                            value={el._id}>{el.name}</MenuItem>)}
                                         </Select>
                                     </FormControl>
                                     <TextField
@@ -598,7 +608,8 @@ class UserToolBar extends React.Component {
                                                 </ListItem>
                                             </div>
                                         ))}
-                                        <Button fullWidth={true} onClick={this.handleCloseMenu} className={'submit-button'}>
+                                        <Button fullWidth={true} onClick={this.handleCloseMenu}
+                                                className={'submit-button'}>
                                             Submit
                                         </Button>
                                     </List>
@@ -608,7 +619,7 @@ class UserToolBar extends React.Component {
                     </div>
                 </div>
                 {this.props.loading && <div className={'progress'}>
-                    <LinearProgress />
+                    <LinearProgress/>
                 </div>}
             </div>
         )

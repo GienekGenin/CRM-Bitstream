@@ -1,6 +1,6 @@
 import React from 'react';
 import {Route, Redirect} from 'react-router-dom';
-import {tokenService} from "../redux/services/token";
+import {tokenService} from '../services/token.service';
 
 export const PrivateRoute = ({component: Component, ...rest}) => {
     const permission = checkAccess(rest.path);

@@ -1,10 +1,11 @@
-import {loginConstants} from "../constants/index";
+import {loginConstants} from '../constants/index';
 
 const initialState = {
     user: null,
     firm: null,
     loading: false,
-    error: null
+    error: null,
+    success: null
 };
 export const loginReducer = (state = initialState, action) => {
     switch (action.type) {
@@ -26,8 +27,10 @@ export const loginReducer = (state = initialState, action) => {
         }
         case loginConstants.CHANGE_PASS_SUCCESS: {
             return Object.assign({}, state, {
-                user: action.payload,
-                loading: false
+                user: action.payload.user,
+                firm: action.payload.firm,
+                loading: false,
+                success: action.payload.success,
             });
         }
         case loginConstants.LOGIN_FAILURE:
@@ -42,12 +45,22 @@ export const loginReducer = (state = initialState, action) => {
             return Object.assign({}, state, {user: null, firm: null, loading: false});
         }
         case loginConstants.SET_USER: {
-            return Object.assign({}, state, {user: action.payload, firm: action.payload, loading: false});
+            return Object.assign({}, state, {
+                user: action.payload.user,
+                firm: action.payload.user,
+                loading: false
+            });
         }
         case loginConstants.CLEAN_LOGIN_ERRORS: {
             return {
                 ...state,
                 error: null
+            }
+        }
+        case loginConstants.CLEAN_LOGIN_SUCCESS: {
+            return {
+                ...state,
+                success: null
             }
         }
         default:
