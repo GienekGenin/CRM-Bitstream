@@ -1,7 +1,9 @@
 import React from 'react';
 import * as PropTypes from 'prop-types';
-import * as dotenv from 'dotenv';
+import classes from 'classnames';
 import DateFnsUtils from '@date-io/date-fns';
+import MapGL, {Marker} from 'react-map-gl';
+import * as dotenv from 'dotenv';
 import _ from 'lodash';
 
 //Material
@@ -30,7 +32,6 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 
 // Redux
 import {connect} from 'react-redux';
-
 import store from '../../redux/store';
 import {getMinMaxTimeRequest, getDataRequest} from '../../redux/actions';
 import {dataService} from '../../redux/services/data';
@@ -38,9 +39,7 @@ import {dataService} from '../../redux/services/data';
 // Components
 import './Visualisation.scss';
 import 'mapbox-gl/dist/mapbox-gl.css';
-import MapGL, {Marker} from 'react-map-gl';
 import Pin from '../UI/map/pin/PinComponent';
-import classes from 'classnames';
 
 //Services
 import {createLineChart, createDragPhyidPie, lineChartPlaceHolder} from './chart.service';
@@ -187,7 +186,8 @@ class Visualisation extends React.Component {
                 reduxData.forEach(el => {
                     if (Array.isArray(el.data[0].value)) {
                         reduxLocationData.push(el)
-                    } else {
+                    }
+                    else {
                         reduxLinearData.push(el);
                     }
                 });
@@ -196,7 +196,8 @@ class Visualisation extends React.Component {
                         !timeDialog && createLineChart(this, reduxLinearData, selectedDevices);
                         this.setState({linearData: reduxLinearData})
                     }
-                } else {
+                }
+                else {
                     !this.timeDialog && createLineChart(this, reduxLinearData, selectedDevices);
                     const startData = JSON.parse(localStorage.getItem('chartData'));
                     if (!startData) {
@@ -427,26 +428,28 @@ class Visualisation extends React.Component {
                                 />
                             </Paper>
                         </Grid>
-                        <Grid item xs={12} sm={12} md={12} lg={12} className={'chart'} style={{ position: 'relative'}}>
+                        <Grid item xs={12} sm={12} md={12} lg={12} className={'chart'} style={{position: 'relative'}}>
                             <Paper>
-                                {linearData && !linearData.length && <div className={'chart_' + linearData ? (linearData.length ? 'show' : 'hide') : 'show'}
+                                {linearData && !linearData.length &&
+                                <div className={'chart_' + linearData ? (linearData.length ? 'show' : 'hide') : 'show'}
                                      style={{textAlign: 'center'}}
                                 >
                                     <span style={{fontWeight: "bold"}}>Here will be your chart</span>
-																</div>}
-																{ loadingData &&  <CircularProgress
-                                        style={{
-                                            width: '250px',
-                                            height: '250px',
-                                            color: '#2196f3',
-                                            position: "absolute",
-                                            top: '25%',
-																						left: "42%",
-                                        }}
-                                        className={classes.progress}
-                                    />}
+                                </div>}
+                                {loadingData && <CircularProgress
+                                    style={{
+                                        width: '250px',
+                                        height: '250px',
+                                        color: '#2196f3',
+                                        position: "absolute",
+                                        top: '25%',
+                                        left: "42%",
+                                    }}
+                                    className={classes.progress}
+                                />}
                                 <div id={'lineChart'}></div>
-                                <Button onClick={this.resetChartData} disabled={linearData ? !linearData.length : false}>
+                                <Button onClick={this.resetChartData}
+                                        disabled={linearData ? !linearData.length : false}>
                                     Return
                                 </Button>
                             </Paper>
