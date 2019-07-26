@@ -19,7 +19,6 @@ const setUpExpress = async () => {
     /**
      * Event listener for HTTP server "error" event.
      */
-
     const onError = error => {
         if (error.syscall !== 'listen') {
             throw error;
@@ -47,7 +46,6 @@ const setUpExpress = async () => {
     /**
      * Event listener for HTTP server "listening" event.
      */
-
     const onListening = () => {
         const addr = server.address();
         const bind = typeof addr === 'string'

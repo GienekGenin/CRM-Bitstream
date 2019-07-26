@@ -1,9 +1,29 @@
 import {Registry, Device} from 'azure-iothub';
 import * as async from 'async';
 import uuid = require('uuid');
+import {envVarService} from '../keyVault.service';
 
 export class DeviceRegistryService {
-    private static connectionString: string = process.env.IOTHUB_CONNECTION_STRING;
+
+    static async getCS(){
+            let cs;
+            if(!process.env.IOTHUB_CONNECTION_STRING){
+                cs = await envVarService.setUpIoTHubCS();
+            } else {
+                cs = process.env.IOTHUB_CONNECTION_STRING;
+            }
+            return cs;
+    }
+
+    static async getHostName(){
+        let host;
+        if(!process.env.IOTHUB_HOST_NAME){
+            host = await envVarService.setUpIoTHubHost();
+        } else {
+            host = process.env.IOTHUB_HOST_NAME;
+        }
+        return host;
+    }
 
     /**
      * Create device in iothub and insert it into the db
@@ -21,8 +41,9 @@ export class DeviceRegistryService {
                 }
             }
         };
-        const registry = Registry.fromConnectionString(DeviceRegistryService.connectionString);
-        return new Promise((resolve, reject) => {
+        return new Promise(async (resolve, reject) => {
+            const connectionString = await DeviceRegistryService.getCS();
+            const registry = Registry.fromConnectionString(connectionString);
             async.waterfall(
                 [
                     callback => {
@@ -45,8 +66,9 @@ export class DeviceRegistryService {
      * @return Promise
      */
     static deleteDevice(deviceId: string) {
-        const registry = Registry.fromConnectionString(DeviceRegistryService.connectionString);
-        return new Promise((resolve, reject) => {
+        return new Promise(async (resolve, reject) => {
+            const connectionString = await DeviceRegistryService.getCS();
+            const registry = Registry.fromConnectionString(connectionString);
             async.waterfall(
                 [
                     callback => {
@@ -69,14 +91,16 @@ export class DeviceRegistryService {
      * @return CS: string
      */
     static getDeviceCSFromRegistry(sid) {
-        const registry = Registry.fromConnectionString(DeviceRegistryService.connectionString);
-        return new Promise((resolve, reject) => {
+        return new Promise(async (resolve, reject) => {
+            const connectionString = await DeviceRegistryService.getCS();
+            const host = await DeviceRegistryService.getHostName();
+            const registry = Registry.fromConnectionString(connectionString);
             registry.get(sid)
                 .then(payload => {
                     const device = payload.responseBody;
                     const key = device.authentication ?
                         device.authentication.symmetricKey.primaryKey : '<no primary key>';
-                    const CS = `${process.env.IOTHUB_HOST_NAME}DeviceId=${sid};SharedAccessKey=${key}`;
+                    const CS = `${host}DeviceId=${sid};SharedAccessKey=${key}`;
                     resolve(CS);
                 })
                 .catch(e => reject(e));
@@ -90,8 +114,9 @@ export class DeviceRegistryService {
      * @return azure success payload
      */
     static changeActivity(sids, status) {
-        const registry = Registry.fromConnectionString(DeviceRegistryService.connectionString);
-        return new Promise(((resolve, reject) => {
+        return new Promise((async (resolve, reject) => {
+            const connectionString = await DeviceRegistryService.getCS();
+            const registry = Registry.fromConnectionString(connectionString);
             async.waterfall(
                 [
                     callback => {
@@ -131,9 +156,9 @@ export class DeviceRegistryService {
      * @return returns devices with activity
      */
     static getActivity(sids) {
-        console.log('Activity', DeviceRegistryService.connectionString);
-        const registry = Registry.fromConnectionString(DeviceRegistryService.connectionString);
-        return new Promise(((resolve, reject) => {
+        return new Promise((async (resolve, reject) => {
+            const connectionString = await DeviceRegistryService.getCS();
+            const registry = Registry.fromConnectionString(connectionString);
             async.waterfall(
                 [
                     callback => {

@@ -36,21 +36,18 @@ class EnvVarService {
 
             let secretName = keyNames.cs;
             let secretVersion = '';
-            // const secretVersion = '8158d042dd5c43fe85cdef860de9e77c'; // leave this blank to get the latest version;
             await client.getSecret(keyVaultURL, secretName, secretVersion).then((result) => {
                 process.env.DB_CS = result.value;
             }).catch(e => reject(e));
 
             secretName = keyNames.user;
             secretVersion = '';
-            // const secretVersion = '8158d042dd5c43fe85cdef860de9e77c'; // leave this blank to get the latest version;
             await client.getSecret(keyVaultURL, secretName, secretVersion).then((result) => {
                 process.env.DB_USER = result.value;
             }).catch(e => reject(e));
 
             secretName = keyNames.pass;
             secretVersion = '';
-            // const secretVersion = '8158d042dd5c43fe85cdef860de9e77c'; // leave this blank to get the latest version;
             await client.getSecret(keyVaultURL, secretName, secretVersion).then((result) => {
                 process.env.DB_PASS = result.value;
             }).catch(e => reject(e));
@@ -59,7 +56,7 @@ class EnvVarService {
         }))
     }
 
-    setUpIoTHubEnvVar() {
+    setUpIoTHubCS() {
         return new Promise((async (resolve, reject) => {
             const authenticator = this.authenticatorParams;
 
@@ -68,13 +65,30 @@ class EnvVarService {
 
             const keyVaultURL = EnvVarService.keyVaultURL;
 
-            const secretName = 'iothub-CS';
+            const secretName = config.keyVault.keyNames.iothub.cs;
             const secretVersion = '';
-            // const secretVersion = '8158d042dd5c43fe85cdef860de9e77c'; // leave this blank to get the latest version;
             await client.getSecret(keyVaultURL, secretName, secretVersion).then((result) => {
                 process.env.IOTHUB_CONNECTION_STRING = result.value;
+                resolve(process.env.IOTHUB_CONNECTION_STRING);
             }).catch(e => reject(e));
-            resolve(true);
+        }));
+    }
+
+    setUpIoTHubHost() {
+        return new Promise((async (resolve, reject) => {
+            const authenticator = this.authenticatorParams;
+
+            const credentials = new keyVault.KeyVaultCredentials(authenticator);
+            const client = new keyVault.KeyVaultClient(credentials);
+
+            const keyVaultURL = EnvVarService.keyVaultURL;
+
+            const secretName = config.keyVault.keyNames.iothub.host;
+            const secretVersion = '';
+            await client.getSecret(keyVaultURL, secretName, secretVersion).then((result) => {
+                process.env.IOTHUB_HOST_NAME = result.value;
+                resolve(process.env.IOTHUB_HOST_NAME);
+            }).catch(e => reject(e));
         }));
     }
 }

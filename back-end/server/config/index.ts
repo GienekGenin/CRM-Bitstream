@@ -7,16 +7,19 @@ export const config = {
         port: process.env.PORT
     },
 
-    iothub: {
-        cs: process.env.IOTHUB_CONNECTION_STRING
-    },
-
     keyVault: {
         keyNames: {
             db: {
                 user: process.env.DB_USER_KEY,
                 pass: process.env.DB_PASS_KEY,
                 cs: process.env.DB_CS_KEY
+            },
+            iothub: {
+                cs: process.env.IOTHUB_CS_KEY,
+                host: process.env.IOTHUB_HOST_KEY
+            },
+            token: {
+                key: process.env.JWT_KEY
             }
         },
         config: {
