@@ -1,12 +1,16 @@
 import {app} from '../app';
 import * as http from 'http';
 import {config} from '../config';
+import {dbConnectionService} from '../db/connect';
 import {socketService} from '../app/common/services/socket.service';
+import {envVarService} from '../app/common/services/keyVault.service';
 
 /**
  * Setup an express server and define port to listen all incoming requests for this application
  */
-const setUpExpress = () => {
+const setUpExpress = async () => {
+    await envVarService.setUpEnvVars();
+    dbConnectionService.connect();
     const port = normalizePort(config.server.port || '5000');
     app.set('port', port);
 

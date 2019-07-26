@@ -1,13 +1,15 @@
 import * as mongoose from 'mongoose';
-import {config} from '../config';
 
 class DBConnectionHandler {
     public connection: any;
     private state: string;
 
     connect() {
-        this.connection = mongoose.connect(config.db.CS, {
-            auth: config.db.auth
+        this.connection = mongoose.connect(process.env.DB_CS, {
+            auth: {
+                user: process.env.DB_USER,
+                password: process.env.DB_PASS
+            }
         });
 
         mongoose.set('debug', true);

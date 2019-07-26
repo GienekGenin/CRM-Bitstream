@@ -7,11 +7,8 @@ import {
     successOrEmptyPayload,
     errorPayload
 } from './common/middleware/payload.middleware';
-import {dbConnectionService} from '../db/connect';
 
 export const app = express();
-
-dbConnectionService.connect();
 
 app.use(logger('dev'));
 app.use(cors());

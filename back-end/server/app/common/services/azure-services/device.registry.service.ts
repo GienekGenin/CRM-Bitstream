@@ -1,10 +1,9 @@
 import {Registry, Device} from 'azure-iothub';
 import * as async from 'async';
 import uuid = require('uuid');
-import {config} from '../../../../config';
 
 export class DeviceRegistryService {
-    private static connectionString: string = config.iothub.cs;
+    private static connectionString: string = process.env.IOTHUB_CONNECTION_STRING;
 
     /**
      * Create device in iothub and insert it into the db
@@ -132,6 +131,7 @@ export class DeviceRegistryService {
      * @return returns devices with activity
      */
     static getActivity(sids) {
+        console.log('Activity', DeviceRegistryService.connectionString);
         const registry = Registry.fromConnectionString(DeviceRegistryService.connectionString);
         return new Promise(((resolve, reject) => {
             async.waterfall(
