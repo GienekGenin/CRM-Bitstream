@@ -175,7 +175,7 @@ class LoginForm extends React.Component {
                                         onClick={()=>this.props.toggleForm()}
                                 >Change password</div>
                                 {loading && <div id='progressLogin'>
-                                    <CircularProgress size={30} style={{marginTop: '15px'}}/>
+                                    <CircularProgress size={32} />
                                 </div>}
                             </div>
                         </CardActions>
