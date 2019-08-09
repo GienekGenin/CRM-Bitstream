@@ -1,7 +1,8 @@
 import React from 'react';
 import * as PropTypes from 'prop-types';
-import * as _ from 'lodash';
-import * as d3 from 'd3';
+import * as _ from "lodash";
+import * as d3 from "d3";
+import DemoTableSNMP from './DemoTableSNMP';
 
 // Material
 import Button from '@material-ui/core/Button';
@@ -34,6 +35,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import VpnKeyIcon from '@material-ui/icons/VpnKey';
 import RadioButtonCheckedIcon from '@material-ui/icons/RadioButtonChecked';
 import RadioButtonUncheckedIcon from '@material-ui/icons/RadioButtonUnchecked';
+import TheatersButton from '@material-ui/icons/Theaters';
 
 // Redux
 import {connect} from 'react-redux';
@@ -47,7 +49,8 @@ import {
 import {deviceTypesService} from '../../redux/services/device_types';
 import {userService} from '../../redux/services/user';
 import {devicesService} from '../../redux/services/devices';
-import {checkAccess} from '../privateRoute';
+import {checkAccess} from "../privateRoute";
+
 
 const mapDispatchToProps = (dispatch) => {
     return {
@@ -71,6 +74,7 @@ class FirmDevicesToolBar extends React.Component {
             confirmDeleteDialog: false,
             configUsersDialog: false,
             CSDialog: false,
+            demoDialog: false,
             anchorEl: null,
             columns: null,
             columnsDialog: false,
@@ -244,6 +248,7 @@ class FirmDevicesToolBar extends React.Component {
 
     render() {
         let {loading, firmUsers, deviceTypes, anchorEl, columnsDialog, columns} = this.state;
+
         return (
             <div>
                 <div className="device-toolbar">
@@ -253,6 +258,34 @@ class FirmDevicesToolBar extends React.Component {
                         </h3> : <h3>Devices</h3>}
                     </div>
                     <div className={'device-controls'}>
+                        <Tooltip title={'Demo table'}>
+                            <div>
+                                <IconButton
+                                    disabled={this.props.selected ? (this.props.selected.parent_id !== '0') : true || loading}
+                                    variant="contained" color="primary"
+                                    onClick={() => this.handleClickOpen('demoDialog')}>
+                                    <TheatersButton/>
+                                </IconButton>
+                            </div>
+                        </Tooltip>
+                        <Dialog
+                            maxWidth="lg"
+                            open={this.state.demoDialog}
+                            onClose={() => this.handleClose('demoDialog')}
+                            aria-labelledby="key-dialog-title"
+                            aria-describedby="alert-dialog-description"
+                        >
+                            <DialogTitle className='demo-title' id="alert-dialog-title">Demo table</DialogTitle>
+                            <DialogContent >
+                                <DemoTableSNMP />
+                            </DialogContent>
+                            <DialogActions>
+                                <Button onClick={() => this.handleClose('demoDialog')} color="primary" >
+                                    Close
+                                </Button>
+                            </DialogActions>
+                        </Dialog>
+
                         <div>
                             <Tooltip title={'Device CS'}>
                                 <div>
@@ -265,6 +298,7 @@ class FirmDevicesToolBar extends React.Component {
                                 </div>
                             </Tooltip>
                             <Dialog
+
                                 open={this.state.CSDialog}
                                 onClose={() => this.handleClose('CSDialog')}
                                 aria-labelledby="key-dialog-title"

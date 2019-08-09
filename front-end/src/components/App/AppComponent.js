@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {Router, Switch, Route, Link} from 'react-router-dom';
-import {PrivateRoute} from '../privateRoute';
+import StepperDocumentation from "../StepperDocumentation/StepperDocumentationComponent";
+import {PrivateRoute} from "../privateRoute";
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
@@ -16,12 +17,14 @@ import ListItem from '@material-ui/core/ListItem';
 import HomeIcon from '@material-ui/icons/Home';
 import DashboardIcon from '@material-ui/icons/Dashboard';
 import AccountIcon from '@material-ui/icons/AccountCircle';
-import {withStyles} from '@material-ui/core';
-import {SnackbarProvider} from 'notistack';
-import {PopupComponent} from '../UI/material/PopupComponent/PopupComponent';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
-import ViewListIcon from '@material-ui/icons/ViewList';
-import PersonIcon from '@material-ui/icons/Person';
+import {withStyles} from "@material-ui/core";
+import {SnackbarProvider} from "notistack";
+import {PopupComponent} from "../UI/material/PopupComponent/PopupComponent";
+import MoreVertIcon from "@material-ui/icons/MoreVert";
+import ViewListIcon from "@material-ui/icons/ViewList";
+import PersonIcon from "@material-ui/icons/Person";
+import DescriptionIcon from "@material-ui/icons/Description";
+
 
 // Redux
 import {setUser, logoutRequest} from '../../redux/actions/index';
@@ -263,6 +266,24 @@ class AppComponent extends Component {
                                             </Typography>
                                         </ListItem>
                                     </Link>}
+
+                                    {userInfo ? <Link to={'/documentation'}>
+                                        <ListItem
+                                            button
+                                            className={'hoverClass'}
+                                        >
+                                            <DescriptionIcon />
+                                            <Typography
+                                                variant="h6" color="inherit"
+                                                className={
+                                                    classNames(animations ?
+                                                        (open ? 'fade-left' : 'fade-right') : '')}
+                                            >
+                                                Documentation
+                                            </Typography>
+                                        </ListItem>
+                                    </Link> : null }
+
                                     {userInfo ? <Link to={'/login'}>
                                             <ListItem
                                                 button
@@ -302,6 +323,7 @@ class AppComponent extends Component {
                             <Switch history={historyService}>
                                 <Route exact path='/' component={HomeComponent}/>
                                 <PrivateRoute exact path='/admin-panel' component={AdminPanelComponent}/>
+                                <Route path='/documentation' component={StepperDocumentation} />
                                 <Route exact path='/login' component={LoginForm}/>
                             </Switch>
                         </main>
