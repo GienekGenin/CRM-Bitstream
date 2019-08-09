@@ -2,6 +2,7 @@ import * as express from 'express';
 import * as cors from 'cors';
 import * as logger from 'morgan';
 import * as bodyParser from 'body-parser';
+import * as helmet from 'helmet';
 import {initializeAPIRoutes} from './routes';
 import {
     successOrEmptyPayload,
@@ -18,6 +19,8 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.text());
 
 initializeAPIRoutes(app);
+
+app.use(helmet());
 
 // pre-sending middleware
 app.use(successOrEmptyPayload);
