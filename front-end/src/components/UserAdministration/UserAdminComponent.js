@@ -1,23 +1,23 @@
-import React from "react";
-import ReactDOM from "react-dom";
+import React from 'react';
+import ReactDOM from 'react-dom';
 import * as PropTypes from 'prop-types';
-import _ from "lodash";
+import _ from 'lodash';
 
 // Material
 import {createMuiTheme, MuiThemeProvider, withStyles} from '@material-ui/core/styles';
 import {styles} from '../UI/material/table-styles';
-import {Grid} from "@material-ui/core";
+import {Grid} from '@material-ui/core';
 import MaterialTable from 'material-table';
 import AddBoxIcon from '@material-ui/icons/AddBox';
 import CheckBoxIcon from '@material-ui/icons/CheckBox';
-import IconButton from "@material-ui/core/IconButton";
-import Checkbox from "@material-ui/core/Checkbox";
-import Paper from "@material-ui/core/Paper";
+import IconButton from '@material-ui/core/IconButton';
+import Checkbox from '@material-ui/core/Checkbox';
+import Paper from '@material-ui/core/Paper';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
 // Redux
-import store from "../../redux/store";
-import {connect} from "react-redux";
+import store from '../../redux/store';
+import {connect} from 'react-redux';
 import {
     usersRequest,
     addUserRequest,
@@ -25,16 +25,16 @@ import {
     updateUserRequest,
     changePassAdminRequest,
     changeEmailAdminRequest
-} from "../../redux/actions";
-import {tokenService} from "../../services/token.service";
+} from '../../redux/actions';
+import {tokenService} from '../../services/token.service';
 
 // Components
 import './UserAdmin.scss';
 import UserToolBar from './UserToolBar';
 
 // Services
-import {mixedService} from "../../redux/services/mixed";
-import {buildFirmInfo} from "./chart.service";
+import {mixedService} from '../../redux/services/mixed';
+import {buildFirmInfo} from './chart.service';
 
 const theme = createMuiTheme({
     palette: {
@@ -107,13 +107,16 @@ class UserAdminComponent extends React.Component {
             this.setState({selectedFirm});
             if (!this.props.parentUsers) {
                 this.props.usersRequest(selectedFirm._id);
-            } else this.setState({users: this.props.parentUsers, loading: false});
-        } else {
+            }
+            else this.setState({users: this.props.parentUsers, loading: false});
+        }
+        else {
             selectedFirm = tokenService.verifyToken().firm;
             this.setState({selectedFirm});
             if (!this.props.parentUsers) {
                 this.props.usersRequest(selectedFirm._id);
-            } else {
+            }
+            else {
                 this.setState({users: this.props.parentUsers, loading: false});
             }
         }
@@ -126,7 +129,8 @@ class UserAdminComponent extends React.Component {
                     this.setState({firmInfoLoading: false});
                     buildFirmInfo(firmInfo);
                 }).catch(e => this.setState({firmInfoLoading: false}));
-        } else {
+        }
+        else {
             buildFirmInfo(storageFirmInfo);
         }
         if (this.props.selectedUsers) {
@@ -135,7 +139,8 @@ class UserAdminComponent extends React.Component {
             this.setState({selectedUsers, selectedUserIds});
             if (this.props.parentUsers.length === this.props.selectedUsers.length) {
                 this.renderSelectAllCheckBox(false);
-            } else {
+            }
+            else {
                 this.renderSelectAllCheckBox(true);
             }
         }
@@ -182,7 +187,8 @@ class UserAdminComponent extends React.Component {
         if (selectedUsers.length === users.length) {
             checked = true;
             this.renderSelectAllCheckBox(checked);
-        } else {
+        }
+        else {
             this.renderSelectAllCheckBox(checked)
         }
         this.setState({selectedUsers, selectedUserIds: [...selectedUsersIdsSet]});
@@ -198,7 +204,8 @@ class UserAdminComponent extends React.Component {
         if (users.length === selectedUsers.length) {
             this.renderSelectAllCheckBox(false);
             this.resetSelected();
-        } else {
+        }
+        else {
             const selectedUserIds = users.map(user => user._id);
             this.setState({selectedUsers: users, selectedUserIds});
             this.renderSelectAllCheckBox(true);
@@ -217,8 +224,10 @@ class UserAdminComponent extends React.Component {
     }
 
     render() {
-        const {rowsPerPage, page, selectedUsers, selectedUserIds, loading,
-            selectedFirm, users, columns, firmInfoLoading} = this.state;
+        const {
+            rowsPerPage, page, selectedUsers, selectedUserIds, loading,
+            selectedFirm, users, columns, firmInfoLoading
+        } = this.state;
         users && users.map((el, i, arr) => arr[i] = Object.assign(el, {
             action: (
                 <div>

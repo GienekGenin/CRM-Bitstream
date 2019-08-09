@@ -1,4 +1,4 @@
-import React, {Component} from "react";
+import React, {Component} from 'react';
 import {Router, Switch, Route, Link} from 'react-router-dom';
 import StepperDocumentation from "../StepperDocumentation/StepperDocumentationComponent";
 import {PrivateRoute} from "../privateRoute";
@@ -27,17 +27,18 @@ import DescriptionIcon from "@material-ui/icons/Description";
 
 
 // Redux
-import {historyService} from '../../services/history.service';
-import {tokenService} from "../../services/token.service";
-import {setUser, logoutRequest} from "../../redux/actions/index";
-import {connect} from "react-redux";
+import {setUser, logoutRequest} from '../../redux/actions/index';
+import {connect} from 'react-redux';
 
 // Components
 import './App.scss';
 import LoginForm from '../Login/LoginComponent';
-import HomeComponent from "../Home/HomeComponent";
-import AdminPanelComponent from "../AdminPanel/AdminPanelComponent";
-// import Fade from 'react-reveal/Fade';
+import HomeComponent from '../Home/HomeComponent';
+import AdminPanelComponent from '../AdminPanel/AdminPanelComponent';
+
+// Services
+import {historyService} from '../../services/history.service';
+import {tokenService} from '../../services/token.service';
 
 const styles = theme => ({
     root: {

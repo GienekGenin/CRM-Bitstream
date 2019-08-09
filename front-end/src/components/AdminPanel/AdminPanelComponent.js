@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 import PropTypes from 'prop-types';
 
 // Material
@@ -7,22 +7,24 @@ import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Toolbar from '@material-ui/core/Toolbar';
-import {TabContainer} from "../UI/material/TabContainer/TabContainer";
+import {TabContainer} from '../UI/material/TabContainer/TabContainer';
 
 // Redux
-import {firmsRequest, usersRequest} from "../../redux/actions/index";
-import {connect} from "react-redux";
+import {firmsRequest, usersRequest} from '../../redux/actions/index';
+import {connect} from 'react-redux';
 import store from '../../redux/store'
-import {checkAccess} from "../privateRoute";
+import {checkAccess} from '../privateRoute';
 
 // Components
 import './AdminPanel.scss';
 import UserAdminComponent from '../../components/UserAdministration/UserAdminComponent';
-import FirmDevicesComponent from "../FirmDevices/FirmDevicesComponent";
-import FirmAdministrationComponent from "../FirmAdministration/FirmAdministrationComponent";
+import FirmDevicesComponent from '../FirmDevices/FirmDevicesComponent';
+import FirmAdministrationComponent from '../FirmAdministration/FirmAdministrationComponent';
 import VisualisationComponent from '../Visualisation/VisualisationComponent';
-import {deviceTypesService} from "../../redux/services/device_types";
-import {tokenService} from "../../services/token.service";
+
+// Services
+import {deviceTypesService} from '../../redux/services/device_types';
+import {tokenService} from '../../services/token.service';
 
 const mapDispatchToProps = (dispatch) => {
     return {
@@ -136,13 +138,15 @@ class AdminPanel extends React.Component {
         let level;
         if (checkAccess('/editFirms')) {
             level = 'SuperAdmin';
-        } else if (checkAccess('/users')) {
+        }
+        else if (checkAccess('/users')) {
             level = 'FirmAdmin';
             const decoded = tokenService.verifyToken();
             if (decoded) {
                 this.setState({selectedFirm: decoded.firm});
             }
-        } else if ('/firmDevices') {
+        }
+        else if ('/firmDevices') {
             level = 'User';
             const decoded = tokenService.verifyToken();
             if (decoded) {
@@ -174,7 +178,6 @@ class AdminPanel extends React.Component {
     render() {
         const {
             value, firms, selectedFirm, selectedUsers, selectedDevices,
-
             users, devices, deviceTypes, level
         } = this.state;
         return (
@@ -192,7 +195,7 @@ class AdminPanel extends React.Component {
                         >
                             <Tab label="Firms"/>
                             <Tab label="Users" disabled={!selectedFirm}/>
-                            <Tab label="Devices" disabled={!selectedUsers}/>
+                            <Tab label="Devices" disabled={selectedUsers ? !(selectedUsers.length > 0) : true}/>
                             <Tab label="Visualisation" disabled={selectedDevices ? !selectedDevices.length : true}/>
                         </Tabs>
                         }

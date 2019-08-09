@@ -1,39 +1,37 @@
-import React from "react";
+import React from 'react';
 import * as PropTypes from 'prop-types';
 
 // Material
-import Button from "@material-ui/core/Button";
-import Dialog from "@material-ui/core/Dialog";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogActions from "@material-ui/core/DialogActions";
-import TextField from "@material-ui/core/TextField";
+import Button from '@material-ui/core/Button';
+import Dialog from '@material-ui/core/Dialog';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogActions from '@material-ui/core/DialogActions';
+import TextField from '@material-ui/core/TextField';
 import AddIcon from '@material-ui/icons/Add';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import RefreshIcon from '@material-ui/icons/Refresh';
-import IconButton from "@material-ui/core/IconButton";
+import IconButton from '@material-ui/core/IconButton';
 import ViewColumnIcon from '@material-ui/icons/ViewColumn';
-import Tooltip from "@material-ui/core/Tooltip";
-import Menu from "@material-ui/core/Menu";
-import Checkbox from "@material-ui/core/Checkbox";
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemText from "@material-ui/core/ListItemText";
-import Divider from "@material-ui/core/Divider";
+import Tooltip from '@material-ui/core/Tooltip';
+import Menu from '@material-ui/core/Menu';
+import Checkbox from '@material-ui/core/Checkbox';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
+import Divider from '@material-ui/core/Divider';
 import LinearProgress from '@material-ui/core/LinearProgress';
-// import {styles} from '../UI/material/table-styles';
 
 // Redux
-import {connect} from "react-redux";
-import {addFirmRequest, deleteFirmRequest, firmsRequest, updateFirmRequest} from "../../redux/actions";
+import {connect} from 'react-redux';
+import {addFirmRequest, deleteFirmRequest, firmsRequest, updateFirmRequest} from '../../redux/actions';
 
 // Components
 import './FirmToolBar.scss'
-import {validateField} from "../../services/validation1.service";
-// import classes from 'classnames';
-// import { mergeClasses } from "@material-ui/styles";
 
+// Services
+import {validateField} from '../../services/validation.service';
 
 const mapDispatchToProps = (dispatch) => {
     return {
@@ -68,6 +66,7 @@ class TestToolBar extends React.Component {
             nipValid: false
         };
         this.validateForm = this.validateForm.bind(this);
+        this.updateNewFirm = this.updateNewFirm.bind(this);
     }
 
     handleClickMenu = event => {
@@ -88,13 +87,13 @@ class TestToolBar extends React.Component {
 
     handleClickOpen = (state) => {
         this.setState({[state]: true});
-        const selectedFirm = this.props.selected;
+        const newFirm = this.props.selected;
         if (state === 'editDialog') {
-            this.setState({newFirm: selectedFirm});
-            Object.getOwnPropertyNames(selectedFirm).forEach(propName => {
-                this.validateField(propName, selectedFirm[propName]);
-            })
-
+            this.setState({newFirm}, () => {
+                Object.getOwnPropertyNames(newFirm).forEach(propName => {
+                    validateField(propName, newFirm[propName], this);
+                })
+            });
         }
     };
 
@@ -125,10 +124,10 @@ class TestToolBar extends React.Component {
         });
     };
 
-    updateNewFirm(e, param) {
+    updateNewFirm(e) {
         const {value, name} = e.target;
         this.setState({
-            newFirm: Object.assign({}, this.state.newFirm, {[param]: value})
+            newFirm: Object.assign({}, this.state.newFirm, {[name]: value})
         }, () => {
             validateField(name, value, this)
         });
@@ -160,28 +159,30 @@ class TestToolBar extends React.Component {
 
     render() {
         let {
-            columns, anchorEl, columnsDialog, newFirm, formValid
+            columns, anchorEl, columnsDialog, editDialog, nameValid, addressValid,
+            emailValid, newFirm, formValid, telValid, nipValid, addDialog, confirmDeleteDialog
         } = this.state;
+        const {selected, loading} = this.props;
         return (
             <div>
                 <div className="firm-toolbar">
                     <div className={'title'}>
-                        {this.props.selected ? <h3>
-                            Selected {this.props.selected.name}
+                        {selected ? <h3>
+                            Selected {selected.name}
                         </h3> : <h3>Firms</h3>}
                     </div>
                     <div className={'firm-controls'}>
                         <div>
                             <Tooltip title={'Edit selected firm'}>
                                 <div>
-                                    <IconButton disabled={!this.props.selected} variant="contained" color="primary"
+                                    <IconButton disabled={!selected} variant="contained" color="primary"
                                                 onClick={() => this.handleClickOpen('editDialog')}>
                                         <EditIcon/>
                                     </IconButton>
                                 </div>
                             </Tooltip>
                             <Dialog
-                                open={this.state.editDialog}
+                                open={editDialog}
                                 onClose={() => this.handleClose('editDialog')}
                                 aria-labelledby="key-dialog-title"
                                 aria-describedby="alert-dialog-description"
@@ -195,9 +196,10 @@ class TestToolBar extends React.Component {
                                         id="firm-name"
                                         label="Firm name"
                                         type="text"
+                                        name='name'
                                         required={true}
                                         value={newFirm.name}
-                                        onChange={(e) => this.updateNewFirm(e, 'name')}
+                                        onChange={this.updateNewFirm}
                                         fullWidth
                                     />
                                     {
@@ -205,7 +207,7 @@ class TestToolBar extends React.Component {
                                         <div className="help-block">Name is required</div>
                                     }
                                     {
-                                        newFirm.name && !this.state.nameValid &&
+                                        newFirm.name && !nameValid &&
                                         <div className="help-block">Too short name</div>
                                     }
                                     <TextField
@@ -215,9 +217,10 @@ class TestToolBar extends React.Component {
                                         id="firm-address"
                                         label="Firms address"
                                         type="text"
+                                        name='address'
                                         required={true}
                                         value={newFirm.address}
-                                        onChange={(e) => this.updateNewFirm(e, 'address')}
+                                        onChange={this.updateNewFirm}
                                         fullWidth
                                     />
                                     {
@@ -225,7 +228,7 @@ class TestToolBar extends React.Component {
                                         <div className="help-block">Address is required</div>
                                     }
                                     {
-                                        newFirm.address && !this.state.addressValid &&
+                                        newFirm.address && !addressValid &&
                                         <div className="help-block">Too short adress</div>
                                     }
                                     <TextField
@@ -235,9 +238,10 @@ class TestToolBar extends React.Component {
                                         id="firm-email"
                                         label="Firm email"
                                         type="text"
+                                        name='email'
                                         required={true}
                                         value={newFirm.email}
-                                        onChange={(e) => this.updateNewFirm(e, 'email')}
+                                        onChange={this.updateNewFirm}
                                         fullWidth
                                     />
                                     {
@@ -245,7 +249,7 @@ class TestToolBar extends React.Component {
                                         <div className="help-block">Email is required</div>
                                     }
                                     {
-                                        newFirm.email && !this.state.emailValid &&
+                                        newFirm.email && !emailValid &&
                                         <div className="help-block">Incorrect email</div>
                                     }
                                     <TextField
@@ -255,9 +259,10 @@ class TestToolBar extends React.Component {
                                         id="firm-tel"
                                         label="Firm contact number"
                                         type="text"
+                                        name='tel'
                                         required={true}
                                         value={newFirm.tel}
-                                        onChange={(e) => this.updateNewFirm(e, 'tel')}
+                                        onChange={this.updateNewFirm}
                                         fullWidth
                                     />
                                     {
@@ -265,7 +270,7 @@ class TestToolBar extends React.Component {
                                         <div className="help-block">Number is required</div>
                                     }
                                     {
-                                        newFirm.tel && !this.state.telValid &&
+                                        newFirm.tel && !telValid &&
                                         <div className="help-block">Too short number</div>
                                     }
                                     <TextField
@@ -275,9 +280,10 @@ class TestToolBar extends React.Component {
                                         id="firm-nip"
                                         label="NIP"
                                         type="text"
+                                        name='nip'
                                         required={true}
                                         value={newFirm.nip}
-                                        onChange={(e) => this.updateNewFirm(e, 'nip')}
+                                        onChange={this.updateNewFirm}
                                         fullWidth
                                     />
                                     {
@@ -285,7 +291,7 @@ class TestToolBar extends React.Component {
                                         <div className="help-block">Nip is required</div>
                                     }
                                     {
-                                        newFirm.nip && !this.state.nipValid &&
+                                        newFirm.nip && !nipValid &&
                                         <div className="help-block">Too short nip</div>
                                     }
                                 </DialogContent>
@@ -306,14 +312,14 @@ class TestToolBar extends React.Component {
                         <div>
                             <Tooltip title={'Add new firm'}>
                                 <div>
-                                    <IconButton variant="outlined" color="primary" disabled={this.props.loading}
+                                    <IconButton variant="outlined" color="primary" disabled={loading}
                                                 onClick={() => this.handleClickOpen('addDialog')}>
                                         <AddIcon/>
                                     </IconButton>
                                 </div>
                             </Tooltip>
                             <Dialog
-                                open={this.state.addDialog}
+                                open={addDialog}
                                 onClose={() => this.handleClose('addDialog')}
                                 aria-labelledby="alert-dialog-title"
                                 aria-describedby="alert-dialog-description"
@@ -327,9 +333,10 @@ class TestToolBar extends React.Component {
                                         id="firm-name"
                                         label="Firm name"
                                         type="text"
+                                        name='name'
                                         required={true}
                                         value={newFirm.name}
-                                        onChange={(e) => this.updateNewFirm(e, 'name')}
+                                        onChange={this.updateNewFirm}
                                         fullWidth
                                     />
                                     {
@@ -337,7 +344,7 @@ class TestToolBar extends React.Component {
                                         <div className="help-block">Name is required</div>
                                     }
                                     {
-                                        newFirm.name && !this.state.nameValid &&
+                                        newFirm.name && !nameValid &&
                                         <div className="help-block">Too short name</div>
                                     }
                                     <TextField
@@ -347,9 +354,10 @@ class TestToolBar extends React.Component {
                                         id="firm-address"
                                         label="Firms address"
                                         type="text"
+                                        name='address'
                                         required={true}
                                         value={newFirm.address}
-                                        onChange={(e) => this.updateNewFirm(e, 'address')}
+                                        onChange={this.updateNewFirm}
                                         fullWidth
                                     />
                                     {
@@ -357,7 +365,7 @@ class TestToolBar extends React.Component {
                                         <div className="help-block">Address is required</div>
                                     }
                                     {
-                                        newFirm.address && !this.state.addressValid &&
+                                        newFirm.address && !addressValid &&
                                         <div className="help-block">Too short adress</div>
                                     }
                                     <TextField
@@ -367,9 +375,10 @@ class TestToolBar extends React.Component {
                                         id="firm-email"
                                         label="Firm email"
                                         type="text"
+                                        name='email'
                                         required={true}
                                         value={newFirm.email}
-                                        onChange={(e) => this.updateNewFirm(e, 'email')}
+                                        onChange={this.updateNewFirm}
                                         fullWidth
                                     />
                                     {
@@ -377,7 +386,7 @@ class TestToolBar extends React.Component {
                                         <div className="help-block">Email is required</div>
                                     }
                                     {
-                                        newFirm.email && !this.state.emailValid &&
+                                        newFirm.email && !emailValid &&
                                         <div className="help-block">Incorrect email</div>
                                     }
                                     <TextField
@@ -387,9 +396,10 @@ class TestToolBar extends React.Component {
                                         id="firm-tel"
                                         label="Firm contact number"
                                         type="text"
+                                        name='tel'
                                         required={true}
                                         value={newFirm.tel}
-                                        onChange={(e) => this.updateNewFirm(e, 'tel')}
+                                        onChange={this.updateNewFirm}
                                         fullWidth
                                     />
                                     {
@@ -397,7 +407,7 @@ class TestToolBar extends React.Component {
                                         <div className="help-block">Number is required</div>
                                     }
                                     {
-                                        newFirm.tel && !this.state.telValid &&
+                                        newFirm.tel && !telValid &&
                                         <div className="help-block">Too short number</div>
                                     }
                                     <TextField
@@ -407,9 +417,10 @@ class TestToolBar extends React.Component {
                                         id="firm-nip"
                                         label="NIP"
                                         type="text"
+                                        name='nip'
                                         required={true}
                                         value={newFirm.nip}
-                                        onChange={(e) => this.updateNewFirm(e, 'nip')}
+                                        onChange={this.updateNewFirm}
                                         fullWidth
                                     />
                                     {
@@ -417,14 +428,14 @@ class TestToolBar extends React.Component {
                                         <div className="help-block">Nip is required</div>
                                     }
                                     {
-                                        newFirm.nip && !this.state.nipValid &&
+                                        newFirm.nip && !nipValid &&
                                         <div className="help-block">Too short nip</div>
                                     }
                                 </DialogContent>
                                 <DialogActions>
                                     <Button variant="outlined" color="primary"
                                             disabled={
-                                                !this.state.formValid
+                                                !formValid
                                             }
                                             onClick={() => this.handleAddFirm()}>
                                         Add
@@ -436,25 +447,25 @@ class TestToolBar extends React.Component {
                             </Dialog>
                         </div>
                         <div>
-                            <IconButton variant="contained" color="secondary" disabled={!this.props.selected || true}
+                            <IconButton variant="contained" color="secondary" disabled={!selected || true}
                                         onClick={() => this.handleClickOpen('confirmDeleteDialog')}>
                                 <DeleteIcon/>
                             </IconButton>
                             <Dialog
-                                open={this.state.confirmDeleteDialog}
+                                open={confirmDeleteDialog}
                                 onClose={() => this.handleClose('confirmDeleteDialog')}
                                 aria-labelledby="alert-dialog-title"
                                 aria-describedby="alert-dialog-description"
                             >
                                 <DialogTitle id="alert-dialog-title-">Delete firm</DialogTitle>
                                 <DialogContent>
-                                    Confirm deletion of {this.props.selected ? this.props.selected.name : ''}
+                                    Confirm deletion of {selected ? selected.name : ''}
                                 </DialogContent>
                                 <DialogActions>
                                     <Button onClick={() => this.handleClose('confirmDeleteDialog')} color="primary">
                                         Close
                                     </Button>
-                                    <Button disabled={!this.props.selected} variant="contained" color="secondary"
+                                    <Button disabled={!selected} variant="contained" color="secondary"
                                             onClick={() => this.handleDeleteDevice()}>
                                         Confirm
                                     </Button>
@@ -463,7 +474,7 @@ class TestToolBar extends React.Component {
                         </div>
                         <Tooltip title={'Refresh firm list'}>
                             <div>
-                                <IconButton variant="outlined" color="primary" disabled={this.props.loading}
+                                <IconButton variant="outlined" color="primary" disabled={loading}
                                             onClick={() => this.handleRefresh()}>
                                     <RefreshIcon/>
                                 </IconButton>
@@ -471,7 +482,7 @@ class TestToolBar extends React.Component {
                         </Tooltip>
                         <Tooltip title={'Show columns'}>
                             <div>
-                                <IconButton variant="outlined" color="primary" disabled={this.props.loading}
+                                <IconButton variant="outlined" color="primary" disabled={loading}
                                             onClick={this.handleClickMenu}>
                                     <ViewColumnIcon/>
                                 </IconButton>
@@ -508,7 +519,7 @@ class TestToolBar extends React.Component {
                         </Tooltip>
                     </div>
                 </div>
-                {this.props.loading && <div className={'progress'}>
+                {loading && <div className={'progress'}>
                     <LinearProgress/>
                 </div>}
             </div>

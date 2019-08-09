@@ -20,7 +20,8 @@ class TokenService {
                 }
                 return decoded;
             });
-        } else return false;
+        }
+        else return false;
     }
 }
 

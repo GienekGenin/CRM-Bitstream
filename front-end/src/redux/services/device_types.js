@@ -1,4 +1,4 @@
-import {getRequest} from "../../services/http.service";
+import {getRequest} from '../../services/http.service';
 
 const apiBase = process.env.REACT_APP_API_BASE;
 

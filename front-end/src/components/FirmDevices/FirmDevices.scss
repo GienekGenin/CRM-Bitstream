@@ -2,30 +2,14 @@
   margin-top: 40px;
 }
 
-//
-//#tree{
-//  padding-top: 100px;
-//}
-//
 #forcedTree {
   height: 500px;
 }
-
-//
-//#tree > svg{
-//  display: block;
-//  margin: 0 auto;
-//}
 
 .link {
   fill: none;
   stroke: #97a6ff;
   stroke-width: 2px;
-}
-
-circle {
-  //stroke: #3F51B5 !important;
-  //stroke-width: 2px;
 }
 
 #selected {
@@ -43,7 +27,7 @@ circle {
   min-height: 575px;
   display: flex;
   flex-wrap: wrap;
-	justify-content: center;
+  justify-content: center;
 }
 
 #device-types-chart, #pie-phyid, #pie-group {
@@ -78,7 +62,6 @@ circle {
 .chart-toolbar {
   display: flex;
   padding-top: 10px;
-  //  height: 55px;
   justify-content: center;
   width: 100%;
 }

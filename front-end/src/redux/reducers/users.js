@@ -1,4 +1,4 @@
-import {userConstants} from "../constants/index";
+import {userConstants} from '../constants/index';
 
 const initialState = {
     users: null,

@@ -1,4 +1,4 @@
-import {dataConstants} from "../constants/index";
+import {dataConstants} from '../constants/index';
 
 export const getMinMaxTimeRequest = (sids) => {
     return {type: dataConstants.TIME_GET_REQUEST, payload: sids}

@@ -1,55 +1,56 @@
-import React from "react";
+import React from 'react';
 import * as PropTypes from 'prop-types';
 import * as _ from "lodash";
 import * as d3 from "d3";
 import DemoTableSNMP from './DemoTableSNMP';
 
-
 // Material
-import Button from "@material-ui/core/Button";
-import Dialog from "@material-ui/core/Dialog";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogActions from "@material-ui/core/DialogActions";
-import TextField from "@material-ui/core/TextField";
+import Button from '@material-ui/core/Button';
+import Dialog from '@material-ui/core/Dialog';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogActions from '@material-ui/core/DialogActions';
+import TextField from '@material-ui/core/TextField';
 import AddIcon from '@material-ui/icons/Add';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
-import LinearProgress from "@material-ui/core/LinearProgress";
-import FormControl from "@material-ui/core/FormControl";
-import InputLabel from "@material-ui/core/InputLabel";
-import Select from "@material-ui/core/Select";
-import MenuItem from "@material-ui/core/MenuItem";
-import Input from "@material-ui/core/Input";
-import Chip from "@material-ui/core/Chip";
+import LinearProgress from '@material-ui/core/LinearProgress';
+import FormControl from '@material-ui/core/FormControl';
+import InputLabel from '@material-ui/core/InputLabel';
+import Select from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
+import Input from '@material-ui/core/Input';
+import Chip from '@material-ui/core/Chip';
 import Tooltip from '@material-ui/core/Tooltip';
-import IconButton from "@material-ui/core/IconButton";
+import IconButton from '@material-ui/core/IconButton';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import AssignmentIndIcon from '@material-ui/icons/AssignmentInd';
 import ViewColumnIcon from '@material-ui/icons/ViewColumn';
-import Menu from "@material-ui/core/Menu";
-import List from "@material-ui/core/List";
-import Divider from "@material-ui/core/Divider";
-import ListItem from "@material-ui/core/ListItem";
-import Checkbox from "@material-ui/core/Checkbox";
-import ListItemText from "@material-ui/core/ListItemText";
+import Menu from '@material-ui/core/Menu';
+import List from '@material-ui/core/List';
+import Divider from '@material-ui/core/Divider';
+import ListItem from '@material-ui/core/ListItem';
+import Checkbox from '@material-ui/core/Checkbox';
+import ListItemText from '@material-ui/core/ListItemText';
 import VpnKeyIcon from '@material-ui/icons/VpnKey';
 import RadioButtonCheckedIcon from '@material-ui/icons/RadioButtonChecked';
 import RadioButtonUncheckedIcon from '@material-ui/icons/RadioButtonUnchecked';
 import TheatersButton from '@material-ui/icons/Theaters';
 
 // Redux
-import {connect} from "react-redux";
+import {connect} from 'react-redux';
 import {
     addFirmDeviceRequest, deleteFirmDeviceRequest,
     updateFirmDevice, updateDeviceUsersRequest,
     userDevicesRequest
-} from "../../redux/actions";
+} from '../../redux/actions';
+
+// Services
 import {deviceTypesService} from '../../redux/services/device_types';
 import {userService} from '../../redux/services/user';
 import {devicesService} from '../../redux/services/devices';
 import {checkAccess} from "../privateRoute";
-import TableSNMP from "./DemoTableSNMP";
+
 
 const mapDispatchToProps = (dispatch) => {
     return {
@@ -96,7 +97,8 @@ class FirmDevicesToolBar extends React.Component {
         if (state === 'addDialog') {
             if (this.props.deviceTypes) {
                 this.setState({deviceTypes: this.props.deviceTypes, loading: false});
-            } else {
+            }
+            else {
                 deviceTypesService.getDeviceTypes().then(deviceTypes => {
                     this.setState({deviceTypes, loading: false});
                 }).catch(e => console.log(e))
@@ -234,7 +236,8 @@ class FirmDevicesToolBar extends React.Component {
                 .catch(() => {
                     this.setState({loading: false});
                 });
-        } else {
+        }
+        else {
             alert('No gateways were selected');
         }
 

@@ -4,14 +4,14 @@ import './index.scss';
 import App from './components/App/AppComponent';
 import * as serviceWorker from './serviceWorker';
 import store from './redux/store';
-import {Provider} from "react-redux";
-import socketIOClient from "socket.io-client";
+import {Provider} from 'react-redux';
+import socketIOClient from 'socket.io-client';
 
 const socket = socketIOClient(process.env.REACT_APP_SOCKET);
 
 socket.on('Roles', rolesPayload => {
     localStorage.setItem('roles', JSON.stringify(rolesPayload));
-    localStorage.setItem('mainRoles', JSON.stringify(rolesPayload.filter(el=> el.name!=='Super Admin')));
+    localStorage.setItem('mainRoles', JSON.stringify(rolesPayload.filter(el => el.name !== 'Super Admin')));
     ReactDOM.render(
         <Provider store={store}>
             <App/>

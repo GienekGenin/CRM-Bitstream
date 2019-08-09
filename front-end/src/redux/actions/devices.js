@@ -1,4 +1,4 @@
-import {devicesConstants} from "../constants/index";
+import {devicesConstants} from '../constants/index';
 
 export const userDevicesRequest = (userId) => {
     return {type: devicesConstants.USER_DEVICES_GET_REQUEST, payload: userId}
@@ -13,7 +13,6 @@ export const cleanDevicesSuccess = () => {
 };
 
 /**
- *
  * @param sid
  * @param coid
  * @returns {{payload: {coid: *, sid: *}, type: string}}

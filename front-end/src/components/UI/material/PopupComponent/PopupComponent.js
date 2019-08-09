@@ -1,7 +1,7 @@
-import React from "react";
-import store from "../../../../redux/store";
-import * as PropTypes from "prop-types";
-import {withSnackbar} from "notistack";
+import React from 'react';
+import store from '../../../../redux/store';
+import * as PropTypes from 'prop-types';
+import {withSnackbar} from 'notistack';
 import {
     cleanLoginErrors,
     cleanLoginSuccess,
@@ -13,8 +13,8 @@ import {
     cleanDevicesSuccess,
     cleanDataErrors,
     cleanDataSuccess
-} from "../../../../redux/actions/index";
-import {connect} from "react-redux";
+} from '../../../../redux/actions/index';
+import {connect} from 'react-redux';
 
 const mapDispatchToProps = (dispatch) => {
     return {

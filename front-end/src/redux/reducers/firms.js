@@ -1,4 +1,4 @@
-import {firmConstants} from "../constants/index";
+import {firmConstants} from '../constants/index';
 
 const initialState = {
     firms: null,

@@ -1,6 +1,6 @@
 import {devicesConstants} from '../constants/index';
-import {devicesService} from "../services/devices";
-import {errorParser} from "../../services/http.service";
+import {devicesService} from '../services/devices';
+import {errorParser} from '../../services/http.service';
 
 export const devicesMiddleWare = ({dispatch}) => {
     return (next) => {
