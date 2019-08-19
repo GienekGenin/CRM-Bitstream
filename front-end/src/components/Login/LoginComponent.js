@@ -26,7 +26,7 @@ export default class LoginPage extends React.Component {
         animate();
         this.unsubscribe = store.subscribe(() => {
             if (store.getState().loginReducer.user) {
-                this.props.history.push('/');
+                this.props.history.push('/admin-panel');
             }
         })
     }

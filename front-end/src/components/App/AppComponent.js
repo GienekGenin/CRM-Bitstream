@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Router, Switch, Route, Link} from 'react-router-dom';
+import {HashRouter, Switch, Route, Link} from 'react-router-dom';
 import StepperDocumentation from "../StepperDocumentation/StepperDocumentationComponent";
 import {PrivateRoute} from "../privateRoute";
 import PropTypes from 'prop-types';
@@ -160,7 +160,7 @@ class AppComponent extends Component {
         const {open, animations} = this.state;
         const {classes, theme, userInfo} = this.props;
         return (
-            <Router history={historyService}>
+            <HashRouter history={historyService}>
                 <MuiThemeProvider theme={theme}>
                     <div className={'root'}>
                         <div>
@@ -333,7 +333,7 @@ class AppComponent extends Component {
                         <PopupComponent/>
                     </SnackbarProvider>
                 </MuiThemeProvider>
-            </Router>)
+            </HashRouter>)
     }
 }
 

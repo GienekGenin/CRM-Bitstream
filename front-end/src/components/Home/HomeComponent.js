@@ -11,7 +11,7 @@ export default class HomeComponent extends React.Component {
     render() {
         return (
             <div className={'home'}>
-                <Iframe url="https://bitstream.pl/en/about-us/technical-support/"
+                <Iframe url="https://bitstream.pl/en/"
                         width="100%"
                         height="100%"
                         id="myId"

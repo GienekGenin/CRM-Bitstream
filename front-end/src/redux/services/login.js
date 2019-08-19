@@ -14,7 +14,7 @@ const changePass = (payload) => {
 };
 
 const logout = () => {
-    historyService.push('/login');
+    historyService.push('/');
     localStorage.removeItem('token.service.js');
 };
 
