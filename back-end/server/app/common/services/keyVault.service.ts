@@ -1,3 +1,4 @@
+/* tslint:disable */
 const keyVault = require('azure-keyvault');
 const AuthenticationContext = require('adal-node').AuthenticationContext;
 import {config} from '../../../config';

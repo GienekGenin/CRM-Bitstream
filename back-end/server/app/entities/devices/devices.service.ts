@@ -1,3 +1,4 @@
+/* tslint:disable */
 import {DeviceRepository} from './devices.repository';
 import {Types} from 'mongoose';
 import * as async from 'async';

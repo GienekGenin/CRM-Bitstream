@@ -1,3 +1,4 @@
+/* tslint:disable */
 import {FirmRepository} from './firm.repository';
 import {Types} from 'mongoose';
 import * as async from 'async';

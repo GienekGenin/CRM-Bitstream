@@ -1,3 +1,4 @@
+/* tslint:disable */
 import {Registry, Device} from 'azure-iothub';
 import * as async from 'async';
 import uuid = require('uuid');

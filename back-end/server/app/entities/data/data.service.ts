@@ -1,3 +1,4 @@
+/* tslint:disable */
 import {DataRepository} from './data.repository';
 import * as async from 'async';
 import * as moment from 'moment';

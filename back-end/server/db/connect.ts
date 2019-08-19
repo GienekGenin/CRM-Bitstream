@@ -9,7 +9,9 @@ class DBConnectionHandler {
             auth: {
                 user: process.env.DB_USER,
                 password: process.env.DB_PASS
-            }
+            },
+            connectTimeoutMS: 10000,
+            socketTimeoutMS: 60000
         });
 
         mongoose.set('debug', true);

@@ -1,3 +1,4 @@
+/* tslint:disable */
 import * as async from 'async';
 import * as bcryptjs from 'bcryptjs';
 import * as _ from 'lodash';
@@ -272,7 +273,8 @@ class UsersService {
                 const sids = devices.map(el => el.sid);
                 let devicesToUI = [];
                 return DeviceRegistryService.getActivity(sids)
-                    .then(twins => {
+                    .then((twins:any) => {
+                        // tslint:disable-next-line
                         for (const twinsKey in twins) {
                             devices.forEach(device => {
                                 if (device._doc.sid === twins[twinsKey]['deviceId']) {

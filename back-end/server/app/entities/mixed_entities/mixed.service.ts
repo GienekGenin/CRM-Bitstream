@@ -1,3 +1,4 @@
+/* tslint:disable */
 import * as async from 'async';
 import {firmService} from '../firm/firm.service';
 import {usersService} from '../user/user.service';
